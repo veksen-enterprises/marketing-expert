@@ -6,8 +6,8 @@ tags: risk, opportunity, startup failure, base rates, survival, onion of risk, l
 
 ## Base rates (use these before your own estimate)
 
-- **All new US business establishments** (BLS Business Employment Dynamics): ~80% survive 1 year, ~50% survive 5 years, ~33–35% survive 10 years. Stable for decades. Most closures happen in years 1–5. [government data, via secondary]
-- **VC-backed companies**: survival is the wrong measure; returning capital is. ~75% never return investors' money (Ghosh, ~2,000 companies); ~65% of financings return < 1× and < 4% return ≥ 10× (Correlation Ventures, ~21,000 financings); ~6% of deals produce ~60% of returns (Horsley Bridge, via Chris Dixon). [research / investor data]
+- **All new US business establishments** (BLS Business Employment Dynamics): 77.9% of establishments opened in the year to March 2024 survived 1 year; 51.4% of the 2020 cohort survived 5 years; 34.7% of the 2015 cohort survived 10 years (March 2025 release; each figure is a different cohort). Stable for decades. Most closures happen in years 1–5. [government data, via secondary]
+- **VC-backed companies**: survival is the wrong measure; returning capital is. ~75% never return investors' money (Ghosh, ~2,000 companies); ~65% of financings return < 1×, 10% return ≥ 5× and 4% return ≥ 10× (Correlation Ventures, ~21,000 financings, 2004–2013); ~6% of deals (4.5% of dollars invested) produce ~60% of returns (Horsley Bridge funds since 1985, via Chris Dixon). [research / investor data]
 - Implication: the median VC-backed company loses money. Personal risk should be planned on the median; the investor case rests on the tail.
 
 ## Why startups fail
@@ -38,19 +38,19 @@ Other frameworks: Porter's Five Forces (can anyone earn margins in this industry
 
 ## What the controlled evidence says
 
-- **Hypothesis-driven founding works mainly by killing bad ideas sooner.** RCT with 116 Italian startups (Camuffo et al. 2020): founders trained to state hypotheses and test them rigorously were more likely to abandon or pivot and earned more revenue. Replicated across 759 firms in four RCTs (2024): earlier termination of ideas that weren't valuable; fewer, more deliberate pivots. [research]
-- **Experimentation fattens both tails.** ~35,000 startups: those adopting A/B testing grew page visits 30–100% after a year and launched products more often, and also failed faster (Koning, Hasan & Chatterji 2022). [research]
+- **Hypothesis-driven founding works mainly by killing bad ideas sooner.** RCT with 116 Italian startups (Camuffo et al. 2020): founders trained to state hypotheses and test them rigorously were more likely to abandon or pivot and earned more revenue. Replicated across 759 firms in four RCTs (2024): earlier termination of ideas that weren't valuable and fewer, more deliberate pivots, but **no clear revenue effect** in the replication. The robust benefit is stopping sooner. [research]
+- **Experimentation fattens both tails.** ~35,000 startups: those adopting A/B testing grew page visits 30–100% after a year (HBS's summary: ~10% more weekly visits on average, 9–18% more product launches, 5% more likely to raise VC) and launched products more often, and also failed faster (Koning, Hasan & Chatterji 2022). [research]
 - **Effectuation** (Sarasvathy 2001): start from your means (who you are, what you know, whom you know); commit only an **affordable loss**; let committed partners shape the venture. A 2009 meta-analysis found positive associations with performance for several principles. [research; not re-verified]
 
 ## Founder overconfidence (expect it in yourself)
 
-- Cooper, Woo & Dunkelberg (1988, ~3,000 entrepreneurs): 81% rated their own odds of success at 70% or higher; a third said their chance of failure was zero. [research, via Kahneman]
+- Cooper, Woo & Dunkelberg (1988, ~3,000 entrepreneurs): 81% rated their own odds of success at 7 out of 10 or better, and 33% rated them 10 out of 10; only 39% gave that 7/10 or better to "businesses like yours". [research]
 - Camerer & Lovallo (1999): in experiments, people over-entered competitions decided by skill and lost money in aggregate, forgetting that competitors who self-select are also skilled. [research]
 - Median self-employment earnings after 10 years were ~35% below comparable employment (Hamilton 2000); correcting for under-reported income changes the mean picture. [research]
 
 ## Pre-mortems and kill criteria
 
-- **Pre-mortem** (Gary Klein, HBR 2007): before committing, imagine the project has already failed; each person writes the reasons independently; then address them. Klein cites research that imagining the outcome has happened improves the ability to identify reasons by ~30% (Mitchell, Russo & Pennington 1989). [not re-verified]
+- **Pre-mortem** (Gary Klein, HBR 2007): before committing, imagine the project has already failed; each person writes the reasons independently; then address them. Mitchell, Russo & Pennington (1989) found people generated ~30% more reasons when they imagined an outcome as having already happened (Klein's "correctly identify reasons" overstates this). [research]
 - **Kill criteria**: write metrics and dates that trigger a pivot or shutdown *before* you start. The RCT benefit above is largely this.
 - Andreessen: if five to eight VCs all say no, something is wrong with the plan; stop pitching and fix it.
 
@@ -66,7 +66,7 @@ Absence of fit (Andreessen): word of mouth isn't spreading, usage isn't growing 
 
 ## Risk review: step by step
 
-1. **Base rate first**: write your own probability of surviving 5 years and of returning capital, then compare with ~50% and ~25%. If yours is far higher, write the evidence that justifies the gap.
+1. **Base rate first**: write your own probability of surviving 5 years and of returning capital, then compare with ~51% (5-year survival, all new establishments) and ~25% (VC-backed companies returning capital). If yours is far higher, write the evidence that justifies the gap.
 2. **Peel the onion**: rate each of the 11 layers high/medium/low and name the cheapest evidence that would reduce it. Market risk first.
 3. **Leap-of-faith hypotheses**: value (do they get value once using it?) and growth (how will new customers find it?). Each as a test with a threshold and a deadline, e.g. "≥ 5 of 20 target users pay $X within 30 days."
 4. **Graham tests**: well, path out, origin/domain, schlep, sitcom.

@@ -80,7 +80,7 @@ Tests (synthesis):
 
 ## Regulation is upside, not protection
 
-The EU Digital Markets Act (obligations from March 2024) restricts gatekeeper self-preferencing and use of business users' non-public data; US v. Google (2024 ruling, 2025 remedies) limits exclusive default deals; Japan's smartphone act restricts app-store self-preferencing. None stops a platform shipping your feature, and relief takes years (Slack's 2020 complaint → 2025 remedy). [§ unverified this session except the Teams case]
+The EU Digital Markets Act (obligations from March 2024; first fines 23 Apr 2025: Apple €500M, Meta €200M) restricts gatekeeper self-preferencing and use of business users' non-public data. US v. Google search remedies (2 Sep 2025; final judgment Dec 2025; appealed Jan 2026): no Chrome sale, no exclusive default deals, some data sharing with competitors, six-year term. Japan's smartphone act restricts app-store self-preferencing [not re-verified]. None stops a platform shipping your feature, and relief takes years (Slack's 2020 complaint → 2025 remedy, binding for 7 years, 10 for interoperability and data portability).
 
 ## Risk questions to answer
 

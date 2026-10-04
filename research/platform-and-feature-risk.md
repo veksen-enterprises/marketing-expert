@@ -2,6 +2,8 @@
 
 **Access caveat:** The sandbox egress proxy blocked direct fetching of every primary source attempted (Wiley/SMJ, INFORMS, SSRN, HBS, Harvard DASH, author sites such as fengzhu.info, arXiv, TechCrunch, sec.gov, ec.europa.eu, Sequoia, a16z). All findings below come from search-engine result snippets/abstract summaries, so every item is effectively **[snippet-only]** unless marked otherwise. The session's web-search budget ran out before sections 4 (network-effects literature, NFX), 6 (DMA/US/Japan) and parts of 5 could be searched. Items in those sections marked **[background — not verified this session]** come from the model's prior knowledge of well-known public records. Re-verify them before quoting them to users.
 
+**Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X".
+
 Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/author's own statement · [practitioner] VC/operator essay · [press] reputable journalism · [vendor] data vendor analysis · [anecdote] single-case/social post.
 
 ---
@@ -49,7 +51,7 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
 ## 1. Empirical research: what happens when the platform enters your space
 
 **Amazon (Zhu & Liu 2018) [research][snippet-only]**
-- Sample: 163,853 products in 22 subcategories that were originally sold only by third-party sellers. Two collection rounds, June 2013 to April 2014. Amazon entered 4,852 of them (about 3%) in roughly 10 months.
+- Sample: 163,853 products in 22 subcategories that were originally sold only by third-party sellers. Two collection rounds, June 2013 to April 2014. Amazon entered 4,852 of them (about 3%) in roughly 10 months. ["3% over a 10-month period" and the entry predictors verified-search: sms.onlinelibrary.wiley.com, semanticscholar.org, 2026-10-04; the 163,853 / 22 / 4,852 counts were not found in snippets and remain unverified]
 - Amazon is **more likely to enter product spaces with higher sales and better customer ratings**, and spaces whose sellers **do not use Fulfilled by Amazon (FBA)**.
 - Amazon is **less likely to enter spaces that require greater seller effort to grow**. Complementors' platform-specific investments deter entry.
 - After entry, affected third-party sellers **appear discouraged from growing their business on the platform** later on.
@@ -57,7 +59,7 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
 
 **Google Photos on Android (Foerderer et al. 2018) [research][snippet-only]**
 - Natural experiment: Google entered photography apps on Android in 2015. Panel of 6,620 apps.
-- Entry was associated with a **9.6% increase in the likelihood of major updates** for affected apps versus similar unaffected apps. Entry **did not crowd out** complementary innovation.
+- Entry was associated with a **9.6% increase in the likelihood of major updates** for affected apps versus similar unaffected apps. [6,620 apps and 9.6% verified-search: econpapers.repec.org, questromworld.bu.edu, 2026-10-04] Entry **did not crowd out** complementary innovation.
 - Mechanism: **more consumer attention to the category**, not competitive "racing"/Red Queen effects. The spillover was **stronger for larger and more diversified complementors**.
 - Read: platform entry can validate and grow a category. The upside goes mostly to complementors with scale and a broad portfolio.
 
@@ -68,7 +70,7 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
 - Read: the rational response to credible entry threat is to harvest the exposed product and redeploy R&D. This matches "move up-stack or sideways."
 
 **Apple "Sherlocking" (Leyden 2026 working paper) [research][snippet-only]**
-- Covers 22 App Store submarkets Apple entered between 2016 and 2021. Controls are never-treated Google Play apps in the same markets. Markets are defined with text embeddings, and the design is staggered difference-in-differences.
+- Covers 22 App Store submarkets Apple entered between 2016 and 2021. [All findings in this block verified-search: ssrn.com (abstract 6309158), ideas.repec.org (CESifo WP 12512), 2026-10-04. SSRN posting 2026-02-27, revised 2026-07-18; still a working paper.] Controls are never-treated Google Play apps in the same markets. Markets are defined with text embeddings, and the design is staggered difference-in-differences.
 - Apple's entry **deters third-party entry by about 22%**, with **no detectable change in exit**. Incumbents shift toward **paid pricing** even though Apple's product is free.
 - **Strong heterogeneity:** many markets show no effect. The monetization response is larger when the entry is **integrated into the OS**, and effects vary with how close the app is to Apple's product.
 - Read: Sherlocking mainly chills *new* entrants. Incumbents mostly survive by moving to paid tiers and serving users who want more than the default. OS-level integration is the most dangerous kind of entry.
@@ -81,15 +83,15 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
 
 **Instagram Stories vs Snapchat [press, citing first-party S-1 data][snippet-only]**
 - Instagram launched Stories on **2016-08-02**. Kevin Systrom told TechCrunch Snapchat "deserve[s] all the credit" for the format, but "This isn't about who invented something. This is about a format, and how you take it to a network…" [first-party quote via press]
-- Snap's DAU growth (from the S-1, as reported by TechCrunch 2017-02-02): Q2'16 143M (+17.2% q/q), Q3'16 153M (+7%), Q4'16 158M (+3.2%). TechCrunch framed this as growth slowing about 82% after Stories launched. Correlation only: the effect is not identified.
-- Instagram Stories reported more than 200M DAU within about eight months [press]. Lesson: a platform with an existing network can copy a format and win on distribution.
+- Snap's DAU growth (from the S-1, as reported by TechCrunch 2017-02-02): Q2'16 143M (+17.2% q/q), Q3'16 153M (+7%), Q4'16 158M (+3.2%). [143/153/158M and 7% / 3.2% verified-search: techcrunch.com (relaying the S-1), 2026-10-04; the +17.2% Q2 figure was not re-checked] TechCrunch framed this as growth slowing about 82% after Stories launched. Correlation only: the effect is not identified.
+- Instagram Stories reached 100M DAU by October 2016, 150M by January 2017 and **200M by April 2017** (about eight months after launch), passing Snapchat's last reported 161M DAU; it reported 250M in June 2017 [press; verified-search: techcrunch.com, 2026-10-04]. Lesson: a platform with an existing network can copy a format and win on distribution.
 
 **Microsoft Teams vs Slack (bundling) [first-party + press][snippet-only]**
 - **2020-07-22:** Slack filed an EU complaint. Its statement read: "Microsoft has illegally tied its Teams product into its market-dominant Office productivity suite, force installing it for millions, blocking its removal, and hiding the true cost to enterprise customers." Slack asked that Teams be sold separately.
 - **2023-07-27:** the Commission opened formal proceedings.
 - **Oct 2023 (EEA) / 2024-04-01 (global):** Microsoft began selling M365/O365 suites without Teams. Reported Teams add-on price: $5.25/user/month [press].
 - **2024-06-25:** Statement of Objections, IP/24/3446. The Commission's preliminary view was that tying Teams to O365/M365 breached Art. 102 and that Microsoft's changes were "insufficient" [first-party].
-- **2025-09-12:** commitments made legally binding (IP/25/2048). They cover unbundling at lower prices, interoperability and data portability. Duration is 7 years, or 10 for interoperability/portability. An independent trustee monitors compliance. **No fine** [first-party].
+- **2025-09-12:** commitments made legally binding (IP/25/2048). They cover unbundling at lower prices, interoperability and data portability. Duration is 7 years, or 10 for interoperability/portability. An independent trustee monitors compliance. **No fine** [first-party; verified-search: ec.europa.eu (IP/25/2048), 2026-10-04].
 - Read: remedies came about **5 years after the complaint**. Slack was acquired by Salesforce in the meantime. Do not count on regulation as a survival plan.
 
 ## 2. Access-cutting: API and algorithm changes (dated cases)
@@ -121,7 +123,7 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
   - Jobs introduced iCloud at WWDC in June 2011 [press].
   - An "$800M" offer figure circulates in secondary sources and is **unverified**. Forbes's own wording is "nine-figure."
 - **How Dropbox survived** [first-party S-1][snippet-only].
-  - By the 2018 S-1: **500M+ registered users** in 180 countries, **11M paying users**, revenue of $603.8M / $844.8M / $1,106.8M for 2015–17.
+  - By the 2018 S-1: **500M+ registered users** in 180 countries, **11M paying users** (11.0M at 2017-12-31), revenue of $603.8M / $844.8M / $1,106.8M for 2015–17. [500M+, 11.0M and $1,106.8M verified-search: sec.gov, crunchbase news, 2026-10-04; 2015–16 revenue not re-checked. Some relays give 11.9M paying users, which is a later 2018 figure, not the S-1's]
   - The S-1 risk factors name Amazon, Apple, Google and Microsoft as competitors in storage. They warn that platform owners "have inherent advantages developing products… that more tightly integrate," and could degrade interoperability or give "preferential treatment."
   - Houston has described cross-platform neutrality ("free to use whatever platform they want") as core [first-party via interview; snippet-only].
   - Mechanism (synthesis): be the **neutral layer across rival platforms** (Windows/Mac/iOS/Android/web), which no single OS owner will build well. Then move from a consumer feature (sync) to team and business workflow (paying seats).
@@ -181,19 +183,20 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
   - Harvest and raise price on the exposed product, and move R&D to unaffected adjacencies (Wen & Zhu).
   - Push into paid, power-user segments the free default will not serve (Leyden).
   - If you have scale, use the attention spike and ship major updates (Foerderer et al.).
-- **Exit option value.** Dropbox (2009), Windsurf (2025) and the Slack-to-Salesforce sale all show the platform or a rival may prefer to buy rather than copy. A credible acquisition path is a legitimate mitigation, not a failure (synthesis).
+- **Exit option value.** Dropbox (2009), Windsurf (2025: Google paid ~$2.4B to license the tech and hire the CEO and co-founder, then Cognition bought the remaining company within days; see acquisition-and-exits §5) and the Slack-to-Salesforce sale all show the platform or a rival may prefer to buy rather than copy. A credible acquisition path is a legitimate mitigation, not a failure (synthesis).
 
 ## 7. Regulation of self-preferencing: what it means for a startup
 
-*All items in this section are [background — not verified this session]. Re-verify dates and figures before relying on them.*
+*Items were background-only until a 2026-10-04 verification pass. DMA fines and US v. Google remedies are now search-verified as tagged below; Japan MSCA and FTC v. Amazon items remain unverified.*
 - **EU Digital Markets Act** (Reg. 2022/1925).
   - Gatekeepers designated Sept 2023: Alphabet, Amazon, Apple, ByteDance, Meta, Microsoft. Obligations applied from **2024-03-07**.
   - Relevant obligations: no self-preferencing in ranking (Art. 6(5)); no use of non-public business-user data to compete with those users (Art. 6(2)); anti-steering limits; interoperability; data portability.
-  - Fines can reach 10% of global turnover (20% for repeat infringement). The first non-compliance decisions were in April 2025: Apple €500M (anti-steering) and Meta €200M (pay-or-consent).
+  - Fines can reach 10% of global turnover (20% for repeat infringement). The first non-compliance decisions under the DMA came on **2025-04-23**: Apple **€500M** for breaching the anti-steering obligation, and Meta **€200M** because its "consent or pay" model did not offer an equivalent service using less personal data [first-party; verified-search: digital-markets-act.ec.europa.eu, ec.europa.eu (IP/25/1085), 2026-10-04]. In December 2025 Meta committed to give EU users a choice on personalised ads under the DMA [first-party, snippet-only].
   - Startup relevance: gives EU-market complementors grounds to complain about ranking demotion or misuse of their data, and some steering freedom. It does **not** stop a gatekeeper from building a competing feature.
 - **US v. Google (search).**
   - On 2024-08-05 Judge Mehta found Google unlawfully maintained a general-search monopolist position, largely through default-placement contracts.
-  - Remedies decision in early Sept 2025: no forced Chrome divestiture; limits on exclusive default deals; some sharing of index and interaction data with qualified competitors. Appeals were expected.
+  - Remedies decision on **2025-09-02**: no forced Chrome divestiture. Google may not enter or keep **exclusive** contracts tying distribution of Search, Chrome, Assistant or Gemini, though it may still pay for preloads. It must share certain search-index and user-interaction data (not ads data) with "qualified competitors" and offer search and search-ad syndication to them. A technical committee enforces the judgment, which lasts **six years**. Final judgment was entered **2025-12-05**, and Google filed its appeal on **2026-01-16**, asking to pause the remedies during the appeal [court/press; verified-search: techcrunch.com, cnbc.com, justice.gov, blog.google, 2026-10-04].
+  - Related (new, 2026-10-04): in the separate **ad-tech** case (E.D. Va.), Judge Brinkema ruled on **2026-09-02** that Google need not divest AdX. Instead she ordered behavioral remedies, including AdX– and DFP–Prebid integrations and publisher data export from DFP and AdX [court/press; verified-search: cnbc.com, techcrunch.com, justice.gov, 2026-10-04].
   - Startup relevance: modestly better odds for search/answer-engine entrants getting distribution and data. Little direct protection for publishers or SEO-dependent businesses.
 - **FTC v. Amazon** (filed 2023-09-26 with states). Alleges Amazon maintains its monopoly by penalizing sellers for lower prices elsewhere and tying Prime eligibility to Fulfillment by Amazon. Trial has been reported for 2027. Startup relevance: none yet. Seller-side exposure stays as described in Zhu & Liu.
 - **Japan Mobile Software Competition Act** (enacted June 2024; full application reported for Dec 2025). Applies to designated smartphone OS/app-store providers (Apple, Google). Restricts self-preferencing and requires allowing alternative app stores and payment.
@@ -226,6 +229,8 @@ Tags: [research] peer-reviewed/working paper · [first-party] company/regulator/
 - Exact launch dates for ChatGPT memory, Canvas, Operator/agents and Deep Research were not verified. Neither were any named startups that shut down because of them.
 - Jasper's actual revenue path after 2023 is unverified. The $120M-to-$55M claim comes from low-quality sources.
 - Cursor, Harvey and Perplexity revenue figures after the dated press items above are unverified.
-- Not verified this session (search budget exhausted): Rysman 2009, McIntyre & Srinivasan 2017 (contents); NFX map claims; Casado & Lauten exact passages beyond the single quoted line; all of §7 except the Teams case; Sippey's original blog text.
+- Not verified (search budget exhausted in the original session): Rysman 2009, McIntyre & Srinivasan 2017 (contents); NFX map claims; Casado & Lauten exact passages beyond the single quoted line; Sippey's original blog text. In §7, the DMA fines, US v. Google remedies and Teams case were search-verified on 2026-10-04; Japan MSCA dates and the FTC v. Amazon trial date remain unverified.
+- Zhu & Liu sample counts (163,853 products, 22 subcategories, 4,852 entries) were not found in search snippets; only "3% over 10 months" is confirmed.
+- Leyden (2026) is an unrefereed working paper (revised 2026-07-18); effect sizes may change.
 - HouseFresh / Helpful Content Update traffic figures come from secondary blogs only.
 - No verified empirical study of "monitoring signals" (hiring, earnings calls) as predictors of platform entry. That list is practitioner logic.

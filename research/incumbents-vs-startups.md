@@ -4,6 +4,8 @@ Research date: 2026-10-04.
 
 **Access caveat:** The egress proxy blocked nearly every primary host tried, including hbr.org, hbs.edu, sloanreview.mit.edu, newyorker.com, nber.org, ssrn, semanticscholar, jstor, cambridge.org, belfercenter.org, duke.edu, paulgraham.com, medium/substack and all book-summary sites. Two primary sources were read in full: (1) Chandy & Tellis (2000), via the MSI working-paper PDF on an S3 bucket; (2) Paul Graham's essays, via a GitHub-hosted EPUB of paulgraham.com (ofou/graham-essays). Everything else comes from search-engine snippets and is tagged **[snippet-only]**. When the snippet came from a secondary summary and not the owner's text, it is tagged **[secondary snippet]**. The session's web-search budget ran out partway through. Claims about Lepore, Christensen's 2014 rebuttal, Moore, Thiel, Porter and Barksdale therefore could not be checked this session. They are tagged **[background, unverified this session]** and carry no invented numbers or quotes. Verify them before quoting.
 
+**Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X".
+
 Evidence tags: [research] = peer-reviewed or empirical; [practitioner] = author or operator writing from experience; [vendor] = consultancy or commercial; [anecdote] = single case.
 
 ## Sources
@@ -43,14 +45,14 @@ Evidence tags: [research] = peer-reviewed or empirical; [practitioner] = author 
 ## 2. Empirical tests and critiques
 
 **King & Baatartogtokh (2015), MIT SMR** [research, snippet-only, src 4]
-- Method: they surveyed or interviewed one or more industry experts for each of the **77 cases** Christensen and co-authors used as examples of disruption in *The Innovator's Dilemma* and *The Innovator's Solution*.
+- Method: they surveyed or interviewed one or more industry experts (relays give **79** or **82** experts in total) for each of the **77 cases** Christensen and co-authors used as examples of disruption in *The Innovator's Dilemma* and *The Innovator's Solution*.
 - They decomposed the theory into four testable elements. Counts of the 77 cases where experts saw each element:
   1. Incumbents improving along a sustaining trajectory: **53/77**
   2. That improvement **overshoots** customer needs: **17/77**
   3. Incumbents had the capability to respond but failed to exploit it: **47/77**
   4. Incumbents **floundered** as a result: **48/77**
-- Only **9%** of the 77 (about 7 cases) showed all four.
-- Reported in derivative coverage: 78% of experts thought incumbents were *not* overshooting customer needs, and in 39% of cases incumbents survived or even thrived [secondary snippet]. Both are consistent with the 17/77 and 48/77 counts.
+- Only **9%** of the 77 (about 7 cases) showed all four. [77 cases, four element counts and 9% verified-search: rhsmith.umd.edu news item, researchgate.net, digitopoly.org (element counts via relay snippets), 2026-10-04]
+- Reported in derivative coverage: 78% of experts thought incumbents were *not* overshooting customer needs, and in 39% of cases incumbents survived or even thrived [secondary snippet]. Both are consistent with the 17/77 and 48/77 counts (48/77 ≈ 62% floundered, matching a relay that says incumbents floundered in about 62% of cases).
 
 **Lepore (2014), "The Disruption Machine," New Yorker** [background, unverified this session, src 5]
 - Main lines of critique as commonly summarized: the cases were hand-picked and examined after the fact; several "disrupted" incumbents, disk-drive makers among them, later recovered or persisted; and the theory works as an ideology of inevitability more than as a predictive model. Exact quotes and figures were not retrieved.
@@ -99,9 +101,9 @@ Evidence tags: [research] = peer-reviewed or empirical; [practitioner] = author 
 
 **Arreguín-Toft (2001)** [research, snippet-only, src 8]
 - Thesis: outcomes depend on **strategic interaction**. When both sides use the same approach (direct vs direct, indirect vs indirect), the strong actor is favored. When they use opposite approaches, the weak actor is favored.
-- Data: asymmetric wars **1800–1998**, reported as **197 wars** [secondary snippet]. Gladwell describes the inclusion threshold as one side at least 10x more powerful in armed might and population [secondary snippet, src 9].
-- Strong actors won **76%** of same-approach interactions. Weak actors won **63%** of opposite-approach interactions [snippet-only].
-- Trend: strong actors won **88.2%** of asymmetric conflicts in 1800–1849, **79.5%** in 1850–1899, and only **48.8%** by 1950–1998/99 [snippet-only]. One secondary source gives 65.1% for 1900–1949 [secondary snippet]. Snippets disagree on whether the last period is 1998 or 1999.
+- Data: asymmetric wars over two centuries, reported as **197 wars** [secondary snippet; the count is still unverified]. Gladwell describes the inclusion threshold as one side at least 10x more powerful in armed might and population [secondary snippet, src 9].
+- Strong actors won **76%** of same-approach interactions. Weak actors won **63%** of opposite-approach interactions [snippet-only; still unverified 2026-10-04. One relay of the 2005 book (fs.blog) rounds these to "roughly 80%" and "lose less than 40%", consistent in direction but not exact].
+- Trend: strong actors won **88.2%** of the **34** asymmetric conflicts in 1800–1849, **79.5%** in 1850–1899, and only **48.8%** in the last fifty-year period, labelled **1950–1999** [88.2% (34 conflicts) and 48.8% (1950–1999) verified-search: muse.jhu.edu / belfercenter.org-indexed relays, 2026-10-04; 79.5% still snippet-only]. One secondary source gives 65.1% for 1900–1949 [secondary snippet]. The article's period label appears to be 1950–1999, though its data may end in 1998.
 - Duration: opposite-approach wars lasted longer, reported as 4.86 vs 2.69 years [secondary snippet]. Mechanism: time lets the weak side's higher resolve wear down the strong side's political will.
 
 **Gladwell (2009 New Yorker essay; 2013 book)** [secondary snippet, src 9]
@@ -197,13 +199,13 @@ Evidence tags: [research] = peer-reviewed or empirical; [practitioner] = author 
 
 ## Open questions / could not verify
 
-- **King & Baatartogtokh:** the full text was not read. The counts (53/17/47/48 of 77; 9% all four) come from consistent snippets. Their methodology for choosing and weighting experts, and the 78% and 39% figures, are unverified against the article.
+- **King & Baatartogtokh:** counts (53/17/47/48 of 77; 9% all four) search-verified 2026-10-04 via a rhsmith.umd.edu news item and relay snippets. Still open: the total number of experts (79 vs 82 across relays), how experts were chosen and weighted, and the 78% figure.
 - **Christensen et al. 2015:** the exact wording on Netflix, on "disruption is a process," and on the four clarifications was not retrieved. Only the snippet quotes above are verified.
 - **Christensen's 1997/2003 books:** asymmetric motivation and the low-end/new-market typology are described from background knowledge; the books were not accessed.
 - **Lepore (2014) and Christensen's 2014 rebuttal:** no text retrieved. The summaries are background knowledge. No quotes or numbers are used.
 - **Gans (2016):** only the definitions were retrieved. His evidence and incumbent remedies (e.g. acquiring entrants) were not verified.
 - **Helmer (2016):** all content comes from secondary summaries. The benefit/barrier table should be checked against the book's text and its Netflix/Vanguard chapters. The Blockbuster late-fee figure ($800M, 16% of revenue in 2000) was not traced to a filing.
-- **Arreguín-Toft:** whether the sample is 197 wars, whether the last period ends in 1998 or 1999, and the duration figures (4.86 vs 2.69 years) are snippet- or secondary-level only. Gladwell's 71.5/28.5/63.6 figures are as reported by secondary summaries of Gladwell, not checked against his text.
+- **Arreguín-Toft:** 88.2% (34 conflicts, 1800–1849) and 48.8% (1950–1999) search-verified 2026-10-04. Still unverified: the 197-war total, the 76% / 63% interaction figures (the article vs the 2005 book may differ), and the duration figures (4.86 vs 2.69 years). Gladwell's 71.5/28.5/63.6 figures are as reported by secondary summaries of Gladwell, not checked against his text.
 - **Goolsbee & Syverson:** the abstract-level claims are solid across snippets. The quarterly fare-path numbers (7%, 10%, about 12%) are secondary, and one conflicting "15–20%" snippet was rejected. The authors' preferred interpretation (deterrence vs accommodation or lock-in) was not read.
 - **Chandy & Tellis (1998):** effect sizes not retrieved.
 - **Moore, Thiel, Porter, Barksdale:** unverified this session. The Barksdale quote has no located primary source.

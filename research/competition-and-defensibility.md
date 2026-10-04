@@ -2,6 +2,8 @@
 
 Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly every primary domain tried (a16z.com, aeaweb.org, hbs.edu, hbr.org, justice.gov, nuff.ox.ac.uk, eml.berkeley.edu, bcg.com, stern.nyu.edu, carlsonschool.umn.edu, clozd.com, scip.org, aprildunford.com, congress.gov, sec.gov, ec.europa.eu, researchgate, semanticscholar, arxiv, web.archive.org, medium). GitHub code search was also refused. **The only primary source read in full was Microsoft's FY24 Q1 earnings-call transcript (microsoft.com).** Everything else comes from search-result snippets that quote or point at the named primary URL. The session's web-search budget ran out after about 45 queries, so some planned checks were never run (listed at the end). Tags: **[research]** = peer-reviewed or working paper; **[first-party]** = company filing or statement; **[practitioner]** = essay or book by an operator or investor; **[vendor]** = seller of the service in question; **[anecdote]**; **[snippet-only]** = only seen through a search snippet; **[synthesis]** = my inference.
 
+**Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X".
+
 ## Sources
 
 1. Rysman, M. "The Economics of Two-Sided Markets." *J. Economic Perspectives* 23(3), 2009, 125–43. https://www.aeaweb.org/articles?id=10.1257/jep.23.3.125
@@ -24,7 +26,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 18. NBER WP w32474, "Old Moats for New Models" (2024). https://www.nber.org/system/files/working_papers/w32474/w32474.pdf
 19. Microsoft FY24 Q1 earnings-call transcript (Oct 2023). https://www.microsoft.com/en-us/investor/events/fy-2024/earnings-fy-2024-q1 **[read in full]**
 20. U.S. v. Microsoft, Findings of Fact (D.D.C., 5 Nov 1999), Section V. https://www.justice.gov/atr/cases/f3800/v-e.pdf and related sections
-21. European Commission, decision accepting Microsoft's Teams commitments, 12 Sep 2025 (reported by CNBC, Loyens & Loeff, Hausfeld).
+21. European Commission, decision accepting Microsoft's Teams commitments, 12 Sep 2025, press release IP/25/2048, https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2048 (also reported by CNBC, Loyens & Loeff, Hausfeld). [verified-search: ec.europa.eu, 2026-10-04]
 22. Rao, A., Bergen, M., Davis, S. "How to Fight a Price War." *HBR*, Mar–Apr 2000. https://hbr.org/2000/03/how-to-fight-a-price-war
 23. Bakos, Y. & Brynjolfsson, E. "Bundling Information Goods: Pricing, Profits, and Efficiency." *Management Science* 45(12), 1999, 1613–1630.
 24. Wiggins, R. & Ruefli, T. "Sustained Competitive Advantage: Temporal Dynamics and the Incidence and Persistence of Superior Economic Performance." *Organization Science* 13(1), 2002, 81–105.
@@ -136,10 +138,10 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
   - The court found Microsoft's efforts to take usage share from Navigator "succeeded".
 - **Teams vs Slack:**
   - Slack's S-1 (2019) reported more than 10M DAU; Slack later reported more than 12M [first-party][snippet-only].
-  - Microsoft announced Teams had **13M DAU / 19M WAU in July 2019**, passing Slack two years after launch, distributed through Office 365 [first-party][snippet-only].
-  - Teams reached **75M DAU** (FY20 Q3, April 2020) and **145M DAU** (FY21 Q3, April 2021, "almost double the number a year ago"). It then reported **270M MAU** (FY22 Q2, January 2022) [first-party via press][snippet-only].
-  - FY24 Q1 (October 2023): "more than **320 million monthly active users**", more than 10,000 paid Teams Premium customers, and more than 2,000 apps in the Teams store (19) **[first-party, read in full]**. Microsoft switched from DAU to MAU, so the series is not like-for-like. The press says no newer official count exists [snippet-only].
-  - Slack filed an EU complaint in 2020 and the EC opened a formal probe in July 2023. On **12 Sep 2025** the EC accepted binding commitments for seven-plus years: suites sold without Teams at a lower price, a switch option for long-term licences, interoperability, and data portability (21) [first-party regulatory][snippet-only via press].
+  - Microsoft announced Teams had **13M DAU / 19M WAU in July 2019**, passing Slack two years after launch, distributed through Office 365 [first-party; verified-search: microsoft.com (2019-07-11 Microsoft 365 blog), 2026-10-04].
+  - Teams reached **75M DAU** (FY20 Q3, April 2020) and **145M DAU** (FY21 Q3, April 2021, "almost double the number a year ago"). It then reported **270M MAU** (FY22 Q2, January 2022) and **280M MAU** (FY23 Q2, January 2023) [first-party via press; 13M/75M/145M/270M verified-search: microsoft.com, techcommunity.microsoft.com, 2026-10-04; 280M via a techcommunity.microsoft.com post, snippet-only]. Microsoft also reported **115M DAU** in October 2020 (microsoft.com blog, 2020-10-28) [verified-search: microsoft.com, 2026-10-04].
+  - FY24 Q1 (October 2023): "more than **320 million monthly active users**", more than 10,000 paid Teams Premium customers, and more than 2,000 apps in the Teams store (19) **[first-party, read in full]**. Microsoft switched from DAU to MAU, so the series is not like-for-like. A 2026-10-04 search of microsoft.com found no official Teams user count newer than 320M MAU (October 2023).
+  - Slack filed an EU complaint in 2020 and the EC opened a formal probe in July 2023. On **12 Sep 2025** the EC accepted binding commitments: suites sold without Teams at a lower price, a switch option for long-term licences, interoperability, and data portability. They last **seven years**, except the interoperability and data-portability commitments, which last **ten years**; a monitoring trustee oversees them (corrected 2026-10-04: was "seven-plus years") (21) [first-party regulatory; verified-search: ec.europa.eu (IP/25/2048), 2026-10-04].
 - **Lesson** [synthesis]: when an incumbent can attach your category to a product the buyer already pays for, the effective price of the rival is zero and procurement friction disappears. Small firms should (a) avoid categories that are one feature of a suite the buyer already owns, unless they serve a segment the suite serves badly; (b) own a distribution channel the incumbent cannot bundle into (community, a vertical, partners); (c) know that antitrust relief arrives years later (Slack complaint 2020 → remedy 2025).
 
 ## 7. Price wars and a big competitor's entry
@@ -211,6 +213,6 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
   - Empirical work on incumbent price responses to entry (e.g., airline-entry studies).
   - Slack S-1 exact DAU text.
   - Meta Ad Library official scope page.
-- **Teams numbers:** the DAU-to-MAU switch breaks comparability. No first-party Teams count after October 2023 was found (press claim [snippet-only]).
+- **Teams numbers:** the 2019–2023 series is search-verified on microsoft.com (2026-10-04), but the DAU-to-MAU switch breaks comparability. No first-party Teams count after October 2023 (320M MAU) was found.
 - **Clozd and Primary Intelligence statistics** are vendor claims with no public methodology.
 - **JOLT 40–60% figure:** seen only through secondary summaries.
