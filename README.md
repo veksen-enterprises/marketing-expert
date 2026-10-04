@@ -4,7 +4,7 @@ An MCP server that gives an LLM the parts of marketing expertise it lacks on its
 
 - **Calculators** for the numbers models get wrong in their heads: A/B test sample size and significance (with SRM and peeking checks), LTV/CAC/payback, paid-media break-even, funnel maths.
 - **Audits** of what is actually on a page or in a piece of copy, so critique starts from facts: landing-page extraction, copy signals, platform character limits, UTM hygiene.
-- **Playbooks**: 34 opinionated, sourced Markdown playbooks covering business types, channels, marketing foundations and business strategy (market sizing, startup risk, competing with incumbents, platform and "feature, not a product" risk, competitive analysis, acquisitions and exits). Each claim is tagged by evidence strength (research / first-party / practitioner / vendor / rule-of-thumb).
+- **Playbooks**: 45 opinionated, sourced Markdown playbooks covering business types, channels, marketing foundations and business strategy (market sizing, startup risk, competing with incumbents, platform and "feature, not a product" risk, competitive analysis, acquisitions and exits). Each claim is tagged by evidence strength (research / first-party / practitioner / vendor / rule-of-thumb).
 - **Prompts** that fix the order of thinking (diagnose before prescribing, positioning before copy, power analysis before testing).
 - **Server instructions** that set the operating rules for the model: ask for numbers, use the tools, state evidence quality, recommend at most a couple of ranked moves.
 
@@ -27,14 +27,15 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `build_utm_link` | Tagged URL; lowercases, flags media that break GA4 channel grouping |
 | `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags. `render: true` runs the page in headless Chromium and reports how much content exists only after JavaScript (needs optional `playwright-core`; set `MARKETING_EXPERT_CHROMIUM` to a Chromium binary) |
 | `crawl_site` | Crawls up to 1,000 same-site pages plus the XML sitemap (respects robots.txt) and reports site-wide SEO problems: broken internal links, redirect chains, duplicate titles/descriptions, missing h1, noindex or redirecting URLs in the sitemap, orphan pages, canonical problems, click depth, thin pages, hreflang errors |
+| `check_ai_crawler_access` | Reads robots.txt and reports which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl and others) are allowed, grouped by training / AI search / user-triggered fetch; flags blocks that keep a site out of AI answers; checks llms.txt and sitemaps |
 | `search_playbooks` / `get_playbook` | BM25 search over playbook sections / full playbook. Also exposed as resources at `marketing://playbook/{slug}` |
 
 Prompts: `marketing_strategy`, `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
 
 Playbooks:
-- Business types: b2b-saas-sales-led, self-serve-saas, ecommerce-dtc, marketplaces, local-services, consumer-apps.
-- Channels: seo-and-ai-search, local-seo, international-seo, seo-content-and-architecture, content-marketing, organic-social-and-community, pr-and-influencers, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm.
-- Foundations: positioning, messaging-and-copy, customer-research, brand-and-demand, channel-strategy, pricing, landing-pages-and-cro, experimentation, metrics-and-measurement, launches-and-gtm.
+- Business types: b2b-saas-sales-led, self-serve-saas, ecommerce-dtc, marketplaces, local-services, consumer-apps, professional-services, retail-cpg.
+- Channels: seo-and-ai-search, ai-assistant-visibility, local-seo, international-seo, seo-content-and-architecture, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm.
+- Foundations: positioning, messaging-and-copy, customer-research, brand-and-demand, channel-strategy, pricing, landing-pages-and-cro, experimentation, metrics-and-measurement, launches-and-gtm, retention-and-expansion, behavioral-science, privacy-and-marketing-law, marketing-budget-and-team, ai-in-marketing, glossary.
 - Strategy: market-sizing-and-timing, startup-risk-and-opportunity, competing-with-incumbents, platform-and-feature-risk, competitive-analysis, acquisition-and-exits.
 
 Writing rule: plain vocabulary for readers whose first language may not be English. No "moat"; say "defensibility" or describe what stops competitors.

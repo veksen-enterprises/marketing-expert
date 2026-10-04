@@ -4,7 +4,7 @@ import { loadPlaybooks, searchKnowledge, getPlaybook } from "../src/lib/knowledg
 describe("knowledge base", () => {
   const books = loadPlaybooks();
   it("loads every playbook with frontmatter", () => {
-    expect(books.length).toBeGreaterThanOrEqual(34);
+    expect(books.length).toBeGreaterThanOrEqual(45);
     for (const b of books) {
       expect(b.title, b.slug).not.toBe(`${b.slug}.md`);
       expect(b.summary.length, b.slug).toBeGreaterThan(20);
@@ -53,6 +53,15 @@ describe("knowledge base", () => {
     ["affiliate commission integration partner", "partnerships-and-affiliates"],
     ["referral program double-sided incentive", "referral-programs"],
     ["cold email sequence abm account tiers", "outbound-and-abm"],
+    ["chatgpt perplexity recommend cite brand gptbot", "ai-assistant-visibility"],
+    ["generative ai productivity synthetic personas", "ai-in-marketing"],
+    ["scarcity choice overload priming replication", "behavioral-science"],
+    ["cookie consent gdpr ccpa accessibility", "privacy-and-marketing-law"],
+    ["how much to spend on marketing first marketing hire agency", "marketing-budget-and-team"],
+    ["agency consultancy referrals retainer pitching", "professional-services"],
+    ["grocery retailer slotting fees velocity shelf", "retail-cpg"],
+    ["webinar trade show sponsorship", "events-and-webinars"],
+    ["youtube thumbnail shorts watch time", "video-and-youtube"],
     ["loyalty program win-back click to cancel", "retention-and-expansion"],
   ])("%s → %s", (q, slug) => {
     const hits = searchKnowledge(q, 3);

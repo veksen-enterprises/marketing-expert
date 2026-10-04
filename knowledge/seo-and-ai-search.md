@@ -21,6 +21,8 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 ## Generative engine optimisation (GEO): evidence vs speculation
 
+For the practical side (which bots to allow, what assistants cite, AI shopping feeds, measuring mentions) see ai-assistant-visibility and run check_ai_crawler_access.
+
 - **Evidence**: Aggarwal et al. (KDD 2024) found adding quotations, statistics and source citations raised visibility in generative engine answers by up to ~40% on their benchmark; keyword stuffing didn't help. A lab benchmark; generalisation is contested. [research]
 - **Speculation**: most "AI visibility" playbooks and scores, and claims that schema markup or llms.txt drive LLM citations, have no controlled evidence.
 - **llms.txt**: Google said it doesn't use it (Jul 2025); no major LLM provider had publicly committed to it as of Q1 2026; Ahrefs (137k sites, May 2026): 28% publish an llms.txt and 97% of those files got zero requests. Cheap to add, but don't expect results from it.

@@ -12,7 +12,7 @@ export interface AiBot {
   purpose: BotPurpose;
   /** What blocking it does, in plain words. */
   effectOfBlocking: string;
-  /** Whether the purpose was confirmed from the company's own documentation in this project's research. */
+  /** Purpose confirmed from the company's documentation (via search snippets; pages themselves were blocked) in this project's research. */
   verified: boolean;
   source?: string;
   note?: string;
@@ -21,18 +21,18 @@ export interface AiBot {
 export const AI_BOTS_CHECKED_ON = "2026-10-04";
 
 export const AI_BOTS: AiBot[] = [
-  { token: "GPTBot", company: "OpenAI", purpose: "training", effectOfBlocking: "Content not used to train OpenAI models. Does not remove you from ChatGPT search.", verified: false },
-  { token: "OAI-SearchBot", company: "OpenAI", purpose: "search", effectOfBlocking: "Site can't appear as a cited result in ChatGPT search answers.", verified: false },
-  { token: "ChatGPT-User", company: "OpenAI", purpose: "user-fetch", effectOfBlocking: "ChatGPT can't open your pages when a user asks it to.", verified: false },
-  { token: "ClaudeBot", company: "Anthropic", purpose: "training", effectOfBlocking: "Content not used to train Anthropic models.", verified: false },
-  { token: "Claude-SearchBot", company: "Anthropic", purpose: "search", effectOfBlocking: "Site may not appear in Claude's search results.", verified: false },
+  { token: "GPTBot", company: "OpenAI", purpose: "training", effectOfBlocking: "Content not used to train OpenAI models. Does not remove you from ChatGPT search.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
+  { token: "OAI-SearchBot", company: "OpenAI", purpose: "search", effectOfBlocking: "Site can't appear as a cited result in ChatGPT search answers.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
+  { token: "ChatGPT-User", company: "OpenAI", purpose: "user-fetch", effectOfBlocking: "ChatGPT can't open your pages when a user asks it to.", note: "OpenAI says robots.txt rules may not apply to user-initiated fetches.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
+  { token: "ClaudeBot", company: "Anthropic", purpose: "training", effectOfBlocking: "Content not used to train Anthropic models.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
+  { token: "Claude-SearchBot", company: "Anthropic", purpose: "search", effectOfBlocking: "Site may not appear in Claude's search results.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
   { token: "Claude-User", company: "Anthropic", purpose: "user-fetch", effectOfBlocking: "Claude can't open your pages when a user asks it to.", verified: false },
   { token: "PerplexityBot", company: "Perplexity", purpose: "search", effectOfBlocking: "Site not indexed for Perplexity answers.", verified: false },
-  { token: "Perplexity-User", company: "Perplexity", purpose: "user-fetch", effectOfBlocking: "Perplexity can't fetch pages on a user's request.", verified: false },
-  { token: "Google-Extended", company: "Google", purpose: "training", effectOfBlocking: "Content not used for Gemini training/grounding. Does not affect Google Search or AI Overviews.", verified: false },
+  { token: "Perplexity-User", company: "Perplexity", purpose: "user-fetch", effectOfBlocking: "Perplexity can't fetch pages on a user's request.", note: "Perplexity says this fetcher generally ignores robots.txt.", verified: false },
+  { token: "Google-Extended", company: "Google", purpose: "training", effectOfBlocking: "Content not used for Gemini training/grounding. Does not affect Google Search or AI Overviews.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
   { token: "Googlebot", company: "Google", purpose: "search", effectOfBlocking: "Removes you from Google Search, including AI Overviews and AI Mode.", verified: true, note: "Classic search crawler; listed because Google's AI answers use the Search index." },
   { token: "Bingbot", company: "Microsoft", purpose: "search", effectOfBlocking: "Removes you from Bing, which Microsoft Copilot and other assistants use for search.", verified: false },
-  { token: "Applebot-Extended", company: "Apple", purpose: "training", effectOfBlocking: "Content not used to train Apple's AI models. Applebot (Siri/Spotlight search) is separate.", verified: false },
+  { token: "Applebot-Extended", company: "Apple", purpose: "training", effectOfBlocking: "Content not used to train Apple's AI models. Applebot (Siri/Spotlight search) is separate.", verified: true, source: "company docs via search snippet (research/ai-assistant-visibility.md)" },
   { token: "Applebot", company: "Apple", purpose: "search", effectOfBlocking: "Removes you from Siri and Spotlight suggestions.", verified: false },
   { token: "Meta-ExternalAgent", company: "Meta", purpose: "training", effectOfBlocking: "Content not used to train Meta AI models.", verified: false },
   { token: "Meta-ExternalFetcher", company: "Meta", purpose: "user-fetch", effectOfBlocking: "Meta AI can't fetch pages on a user's request.", verified: false },
