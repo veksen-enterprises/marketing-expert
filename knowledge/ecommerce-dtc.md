@@ -80,15 +80,13 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 ## Retail and wholesale expansion
 
 - Wholesale margins are lower (the retailer takes its share) and come with costs: slotting or placement fees in some grocery chains, promotional spending, returns of unsold stock (chargebacks), and 30–90-day payment terms [practitioner]. Model cash flow, not just margin.
-- Retail works when your product sells **without you explaining it**: clear packaging, a known category, proof from online sales velocity.
-- Start with a small set of stores or a regional chain, measure sales per store per week, and support it with local demand. A failed national rollout is hard to undo.
+- Retail works when the product sells **without you explaining it**. Pilot a few stores or a regional chain and measure sales per store per week before a national rollout.
 
 ## Reviews and UGC
 
 - Reviews move conversion most when a product has **none**: one analysis found purchase likelihood with five reviews was about 270% higher than with zero, with diminishing gains after the first few, and a bigger effect on higher-priced items [research centre with vendor data, Spiegel 2017].
 - Ask for reviews in the post-purchase flow, timed to when the customer has used the product.
 - **US FTC rule (in force 21 October 2024)**: no fake reviews, no paying or rewarding reviews conditioned on positive sentiment, no suppressing negative reviews (narrow exceptions), with civil penalties for knowing violations [first-party / legal]. You may give a neutral incentive for any honest review only if you disclose it, and platforms like Amazon have stricter rules [legal; not re-verified].
-- Show negative reviews. A perfect 5.0 can look fake [rule-of-thumb].
 - Mine reviews for customer language (see messaging-and-copy).
 
 ## Returns policy
@@ -99,7 +97,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Most shoppers say free returns are a major purchase factor (82% in the 2025 NRF survey) [vendor survey].
 - Reduce returns at the source: size guides, fit data, accurate photos, honest descriptions; read return reasons monthly.
 - Offer **exchange or store credit first**, refund second; it keeps revenue.
-- Return fraud is real (retailers estimated 9% of 2025 returns were fraudulent) [vendor survey]; add rules for repeat abusers rather than punishing everyone.
+- Retailers estimated 9% of 2025 returns were fraudulent [vendor survey]; target repeat abusers, not everyone.
 
 ## Measurement: MER and incrementality
 
@@ -121,8 +119,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 
 - Using gross margin instead of contribution margin for ad targets.
 - Scaling a channel because first-order ROAS looks fine, without checking whether its cohorts repeat.
-- Discounting so often that customers wait for the sale.
-- Free shipping thresholds set without modelling CM.
+- Constant discounts and free-shipping thresholds set without modelling CM.
 - Adding up platform-reported ROAS; the sum often exceeds total revenue.
 - Sending SMS to numbers collected without proper written consent.
 - Incentivising only positive reviews or hiding bad ones (now a US federal violation).
