@@ -6,6 +6,7 @@ import { analyzeCopy, checkLimits } from "./lib/copy.js";
 import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit, renderAndAudit } from "./lib/pageAudit.js";
+import { crawlSite } from "./lib/crawl.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
@@ -335,6 +336,23 @@ export function createServer(): McpServer {
       if (!a.url) throw new Error("provide url or html");
       return a.render ? renderAndAudit(a.url) : fetchAndAudit(a.url);
     })
+  );
+
+  server.registerTool(
+    "crawl_site",
+    {
+      title: "Crawl a site (SEO health)",
+      description:
+        "Crawl up to maxPages same-site pages from a start URL plus the XML sitemap, respecting robots.txt, and report site-wide SEO problems: broken internal links, redirect chains, links to redirects, duplicate titles/descriptions, missing titles/h1, noindex or redirecting URLs in the sitemap, orphan pages, canonical problems, click depth, pages with one inlink, thin pages, and hreflang errors. Server HTML only.",
+      inputSchema: {
+        url: z.string().describe("Start URL, usually the homepage"),
+        maxPages: z.number().int().min(1).max(1000).optional().describe("Default 100"),
+        useSitemap: z.boolean().optional().describe("Default true"),
+        respectRobots: z.boolean().optional().describe("Default true; set false only for your own site"),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    safe((a) => crawlSite({ startUrl: a.url, maxPages: a.maxPages, useSitemap: a.useSitemap, respectRobots: a.respectRobots }))
   );
 
   // ── Business profiles ─────────────────────────────────────────────────────
