@@ -24,6 +24,8 @@ Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue
 
 ## Peeking and sequential testing [research]
 
+Use ab_test_sequential when the team will check results continuously: it implements the mixture SPRT ("always valid inference", Johari, Pekelis & Walsh), so stopping when it says stop is valid. In this project's simulation (A/A tests checked 50 times each), it gave false positives 0.8% of the time vs 33% for a repeatedly checked z-test; the price is lower power than a fixed test read once at its planned size.
+
 - Fixed-horizon tests must be evaluated once, at the planned sample.
 - If you need to monitor continuously, use a sequential method designed for it (group sequential designs, mSPRT, always-valid confidence sequences). Many commercial tools offer these.
 - Bayesian tests are not immune to peeking problems.

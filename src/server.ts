@@ -10,6 +10,7 @@ import { crawlSite } from "./lib/crawl.js";
 import { checkAiCrawlerAccess } from "./lib/aiCrawlers.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
+import { sequentialTest } from "./lib/sequential.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
 import { registerPrompts } from "./prompts.js";
@@ -129,6 +130,23 @@ export function createServer(): McpServer {
       if (t.significant && t.relativeLiftCI) warnings.push(`Plan around the low end of the interval (${(t.relativeLiftCI[0] * 100).toFixed(1)}%), not the point estimate. Significant winners' observed lifts are biased upward.`);
       return { ...t, srm, warnings };
     })
+  );
+
+  server.registerTool(
+    "ab_test_sequential",
+    {
+      title: "Sequential A/B test (safe to check any time)",
+      description:
+        "Always-valid test for conversion rates (mSPRT, as used by Optimizely): the p-value and interval stay valid however often you look, so teams can check daily and stop when it says stop. Use instead of ab_test_evaluate when the test is monitored continuously rather than read once at a planned sample size.",
+      inputSchema: {
+        control: z.object({ visitors: z.number().int().positive(), conversions: z.number().int().min(0) }).describe("Cumulative totals so far"),
+        variant: z.object({ visitors: z.number().int().positive(), conversions: z.number().int().min(0) }).describe("Cumulative totals so far"),
+        alpha: rate.optional(),
+        expectedEffect: z.number().positive().optional().describe("Smallest absolute difference you care about, e.g. 0.005 for 0.5 percentage points"),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => sequentialTest(a.control, a.variant, a.alpha ?? 0.05, a.expectedEffect))
   );
 
   server.registerTool(

@@ -29,7 +29,7 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     expect(client.getInstructions()).toMatch(/Diagnose before prescribing/);
     const tools = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(tools).toEqual([
-      "ab_test_evaluate", "ab_test_means_evaluate", "ab_test_means_sample_size", "ab_test_sample_size", "analyze_copy",
+      "ab_test_evaluate", "ab_test_means_evaluate", "ab_test_means_sample_size", "ab_test_sample_size", "ab_test_sequential", "analyze_copy",
       "audit_page", "build_utm_link", "check_ai_crawler_access", "check_copy_limits", "crawl_site", "funnel_analysis", "get_business_profile", "get_playbook",
       "list_business_profiles", "market_size", "paid_media_math", "save_business_profile", "search_playbooks", "unit_economics",
     ]);
