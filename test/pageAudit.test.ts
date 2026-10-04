@@ -32,13 +32,13 @@ describe("auditHtml", () => {
     expect(r.links).toEqual({ internal: 2, external: 1, nofollow: 0 });
     expect(r.images).toBe(2);
     expect(r.imagesMissingAlt).toBe(1);
-    expect(r.forms).toEqual([{ fields: 2, requiredFields: 1, submitText: "Submit" }]);
+    expect(r.forms).toEqual([{ interactive: false, fields: 2, requiredFields: 1, submitText: "Submit" }]);
     expect(r.ctaCandidates).toContain("Start free trial");
   });
   it("flags generic submit and missing og:image", () => {
     const msgs = r.flags.map((f) => f.message).join("\n");
     expect(msgs).toMatch(/Generic submit/);
-    expect(msgs).toMatch(/Open Graph/);
+    expect(msgs).toMatch(/No og:image/);
   });
   it("flags noindex and missing title", () => {
     const bad = auditHtml(`<html><head><meta name="robots" content="noindex"></head><body></body></html>`);

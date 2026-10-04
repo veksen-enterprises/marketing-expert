@@ -5,6 +5,7 @@
 
 import { parse } from "node-html-parser";
 import { guardedFetch } from "./netguard.js";
+import { countWords } from "./text.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
 export { parseRobots, robotsAllows };
@@ -249,10 +250,11 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     page.hreflang = root
       .querySelectorAll('link[rel="alternate"][hreflang]')
       .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", current) ?? "" }));
+    // Count before removing scripts from the body; frameworks often put their module scripts there.
+    page.scriptCount = root.querySelectorAll('script[src],script[type="module"],link[rel="modulepreload"]').length;
     const body = root.querySelector("body") ?? root;
     for (const el of body.querySelectorAll("script,style,noscript,svg,template")) el.remove();
-    page.wordCount = (body.structuredText.match(/\S+/g) ?? []).length;
-    page.scriptCount = root.querySelectorAll("script[src],script[type=module]").length;
+    page.wordCount = countWords(body);
     const nofollowPage = /nofollow/i.test(robotsMeta);
     const links = new Set<string>();
     if (!nofollowPage) {
@@ -361,10 +363,10 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
   add(
     "client-rendered",
     "warning",
-    "Pages whose server HTML is nearly empty (< 50 words) but loads scripts: content is probably built in the browser. Crawlers that don't run JavaScript (most AI crawlers) see an empty page; Google sees it only after rendering. Confirm with audit_page render=true. Missing-h1 and thin findings for these pages describe the server HTML only.",
+    "Pages whose server HTML is nearly empty (< 50 words) but loads scripts: content is probably built in the browser. Crawlers that don't run JavaScript (most AI crawlers) see an empty page; Google sees it only after rendering. Confirm with audit_page render=true. These pages are left out of the missing-h1 and thin findings, which would only restate this one.",
     indexable.filter(shell).map((p) => `${p.url} (${p.wordCount} words in server HTML)`)
   );
-  add("missing-h1", "warning", "Indexable pages without an <h1> in the server HTML (for client-rendered pages, check the rendered page).", indexable.filter((p) => p.h1Count === 0).map((p) => p.url + (shell(p) ? " (client-rendered?)" : "")));
+  add("missing-h1", "warning", "Indexable pages without an <h1> in the server HTML (for client-rendered pages, check the rendered page).", indexable.filter((p) => p.h1Count === 0 && !shell(p)).map((p) => p.url));
 
   add("noindex-in-sitemap", "error", "Pages in the sitemap that are noindex: the sitemap asks Google to index pages that refuse it.", ok.filter((p) => p.noindex && p.inSitemap).map((p) => p.url));
   add("non200-in-sitemap", "warning", "Sitemap URLs that redirect or error. Sitemaps should list final, 200-status URLs only.", pages.filter((p) => p.inSitemap && (p.status !== 200 || p.redirectChain.length)).map((p) => (p.redirectChain.length ? `${p.url} (redirects to ${p.finalUrl})` : `${p.url} (${p.status})`)));
@@ -396,7 +398,7 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
   );
   add("deep-pages", "info", "Pages more than 3 clicks from the start URL. Important pages should be reachable in a few clicks.", ok.filter((p) => p.depth !== null && p.depth > 3).map((p) => `${p.url} (depth ${p.depth})`));
   add("single-inlink", "info", "Indexable pages with only one internal link pointing to them.", indexable.filter((p) => (inlinks.get(p.url)?.size ?? 0) === 1).map((p) => p.url));
-  add("thin", "info", "Indexable pages under 200 words (heuristic; fine for some page types).", indexable.filter((p) => p.wordCount < 200).map((p) => `${p.url} (${p.wordCount} words)`));
+  add("thin", "info", "Indexable pages under 200 words (heuristic; fine for some page types).", indexable.filter((p) => p.wordCount < 200 && !shell(p)).map((p) => `${p.url} (${p.wordCount} words)`));
 
   // hreflang
   const hreflangIssues: string[] = [];

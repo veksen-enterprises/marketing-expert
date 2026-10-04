@@ -3,6 +3,7 @@
 
 import { parse, HTMLElement } from "node-html-parser";
 import { guardedFetch, assertPublicUrl } from "./netguard.js";
+import { visibleText } from "./text.js";
 
 export interface PageFacts {
   url?: string;
@@ -28,7 +29,7 @@ export interface PageFacts {
   images: number;
   imagesMissingAlt: number;
   links: { internal: number; external: number; nofollow: number };
-  forms: Array<{ fields: number; requiredFields: number; submitText: string | null }>;
+  forms: Array<{ interactive: boolean; fields: number; requiredFields: number; submitText: string | null }>;
   ctaCandidates: string[];
   /** First ~600 chars of visible body text: approximates what a visitor reads first. */
   leadText: string;
@@ -38,8 +39,8 @@ export interface PageFacts {
 const CTA_VERBS = /^(get|start|try|book|request|sign|join|buy|download|schedule|contact|talk|see|create|claim|subscribe|register|shop|order|add|watch|learn|explore|apply)\b/i;
 
 function text(el: HTMLElement | null | undefined): string {
-  // structuredText separates block elements; plain .text glues "99" and "0.49%" into "990.49%".
-  return (el?.structuredText ?? "").replace(/\s+/g, " ").trim();
+  // Plain .text glues "99" and "0.49%" into "990.49%", and sibling links into one word.
+  return visibleText(el);
 }
 
 export function auditHtml(html: string, url?: string): PageFacts {
@@ -112,8 +113,10 @@ export function auditHtml(html: string, url?: string): PageFacts {
 
   const forms = body.querySelectorAll("form").map((f) => {
     const fields = f.querySelectorAll("input,select,textarea").filter((i) => !["hidden", "submit", "button"].includes((i.getAttribute("type") ?? "").toLowerCase()));
-    const submit = f.querySelector('button,input[type="submit"]');
+    const submit = f.querySelector('button[type="submit"],input[type="submit"],button:not([type])');
     return {
+      // A form with no submit button and no action is usually an interactive tool (calculator, filter), not a sign-up.
+      interactive: !submit && !f.getAttribute("action"),
       fields: fields.length,
       requiredFields: fields.filter((i) => i.hasAttribute("required")).length,
       submitText: submit ? text(submit) || submit.getAttribute("value") || null : null,
@@ -123,6 +126,9 @@ export function auditHtml(html: string, url?: string): PageFacts {
   const ctaSet = new Set<string>();
   for (const el of body.querySelectorAll("a,button")) {
     const t = text(el);
+    // Buttons that only change the page (type="button", toggles, tabs) are controls, not calls to action.
+    const control = el.tagName === "BUTTON" && (el.getAttribute("type") === "button" || el.hasAttribute("aria-pressed") || el.getAttribute("role") === "tab");
+    if (control && !CTA_VERBS.test(t)) continue;
     if (t && t.length <= 40 && (CTA_VERBS.test(t) || el.tagName === "BUTTON" || /\b(btn|button|cta)\b/i.test(el.getAttribute("class") ?? ""))) ctaSet.add(t);
   }
 
@@ -137,9 +143,12 @@ export function auditHtml(html: string, url?: string): PageFacts {
   if (robots && /noindex/i.test(robots)) flags.push({ severity: "error", message: `meta robots="${robots}": page is excluded from search.` });
   if (!lang) flags.push({ severity: "info", message: "No lang attribute on <html>." });
   if (!root.querySelector('meta[name="viewport"]')) flags.push({ severity: "warning", message: "No viewport meta; page will render poorly on mobile." });
-  if (!og["og:title"] || !og["og:image"]) flags.push({ severity: "info", message: "Incomplete Open Graph tags (og:title / og:image); shared links will render a poor preview." });
+  if (!og["og:image"]) flags.push({ severity: "info", message: "No og:image; shared links show no picture (or one the platform picks)." });
+  else if (!/^https?:\/\//i.test(og["og:image"])) flags.push({ severity: "warning", message: `og:image is relative (${og["og:image"]}); most link previews need an absolute URL.` });
+  if (!og["og:title"] && !title) flags.push({ severity: "info", message: "No og:title or <title>; shared links have no headline." });
   if (imgs.length && missingAlt) flags.push({ severity: "info", message: `${missingAlt}/${imgs.length} images have no alt attribute.` });
   for (const f of forms) {
+    if (f.interactive) continue;
     if (f.fields > 5) flags.push({ severity: "warning", message: `Form with ${f.fields} fields. Each field costs conversions; ask only what you need for the next step.` });
     if (f.submitText && /^(submit|send)$/i.test(f.submitText)) flags.push({ severity: "info", message: `Generic submit button "${f.submitText}"; say what the visitor gets.` });
   }
@@ -260,7 +269,9 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);
     const serverHtml: string = res ? await res.text() : "";
     const renderedHtml: string = await page.content();
-    const finalUrl: string = page.url();
+    // The HTTP final URL, not page.url(): scripts often rewrite the address bar (filters, calculator state).
+    const finalUrl: string = res?.url() ?? page.url();
+    const scriptUrl: string = page.url();
     const server = auditHtml(serverHtml, finalUrl);
     const facts = auditHtml(renderedHtml, finalUrl) as RenderedAudit;
     const clientOnly = facts.wordCount > 0 ? Math.max(0, facts.wordCount - server.wordCount) / facts.wordCount : 0;
@@ -288,6 +299,10 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
       facts.flags.unshift({ severity: "warning", message: "The <h1> exists only after JavaScript runs." });
     }
     applyResponseChecks(facts, res?.status(), finalUrl, res ? ((await res.allHeaders())["x-robots-tag"] ?? null) : null);
+    facts.url = url;
+    if (scriptUrl !== finalUrl) {
+      facts.flags.push({ severity: "info", message: `Scripts changed the address to ${scriptUrl} after load. If people share that URL, give it a canonical pointing at the clean one.` });
+    }
     return facts;
   } finally {
     await browser.close();

@@ -68,6 +68,12 @@ export interface AiAccessReport {
 /** Pure part: evaluate robots.txt text for every AI bot on the given paths (blocked if any path is blocked). */
 export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: string[] = ["/"]): Omit<AiAccessReport, "llmsTxtFound"> {
   const base = new URL(site);
+  const findings: string[] = [];
+  // A catch-all route serving the app's HTML at /robots.txt: crawlers find no rules at all.
+  if (robotsTxt && /^\s*(<!doctype html|<html|<head|<body)/i.test(robotsTxt)) {
+    findings.push("The robots.txt content is an HTML page (probably the app's catch-all route), not a robots file. Crawlers find no rules, so every bot is allowed, and unknown URLs on this site may return 200 pages (soft 404s). Serve a real text/plain robots.txt.");
+    robotsTxt = null;
+  }
   const file = parseRobotsFile(robotsTxt ?? "");
   const bots: BotAccess[] = AI_BOTS.map((b) => {
     const rules = rulesFor(file, b.token);
@@ -76,8 +82,7 @@ export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: 
   });
   const blockedSearch = bots.filter((b) => !b.allowed && (b.purpose === "search" || b.purpose === "search-and-training")).map((b) => b.token);
   const blockedTraining = bots.filter((b) => !b.allowed && b.purpose === "training").map((b) => b.token);
-  const findings: string[] = [];
-  if (!robotsTxt) findings.push("No robots.txt found: every bot is allowed by default.");
+  if (!robotsTxt && !findings.length) findings.push("No robots.txt found: every bot is allowed by default.");
   if (blockedSearch.includes("Googlebot") || blockedSearch.includes("Bingbot")) {
     findings.push(`Classic search crawlers are blocked (${blockedSearch.filter((t) => t === "Googlebot" || t === "Bingbot").join(", ")}). That removes you from search and from AI answers built on it. Almost always a mistake.`);
   }
@@ -90,7 +95,10 @@ export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: 
   if (userFetchBlocked.length) findings.push(`User-triggered fetchers are blocked (${userFetchBlocked.join(", ")}): assistants can't open your pages even when a user pastes your link. Some companies say these fetchers may not follow robots.txt.`);
   const starOnly = bots.filter((b) => b.matchedGroup === "*" && !b.allowed).map((b) => b.token);
   if (starOnly.length) findings.push(`These bots are blocked only by the general "User-agent: *" group, probably unintentionally: ${starOnly.join(", ")}.`);
-  if (!findings.length || (bots.every((b) => b.allowed) && robotsTxt)) findings.push("All listed AI bots are allowed on the checked paths.");
+  if (bots.every((b) => b.allowed) && robotsTxt) {
+    findings.push("robots.txt allows all listed AI bots on the checked paths. This only covers robots.txt: it says nothing about status codes, noindex, or how much text the server HTML holds (use crawl_site or audit_page for that).");
+  }
+  if (robotsTxt && !file.sitemaps.length) findings.push("robots.txt has no Sitemap: line. Add one with the sitemap's absolute URL so crawlers find it without Search Console.");
   findings.push("robots.txt is a request, not enforcement, and not the only gate: firewall/CDN bot rules can block AI bots even when robots.txt allows them (some CDNs block them by default). OpenAI recommends also allowing its published IP ranges for OAI-SearchBot. robots.txt changes take ~24 hours to reach ChatGPT search.");
   return {
     site: base.origin,
