@@ -64,3 +64,6 @@ Evidence tags as in knowledge/_conventions.md.
 - Whether Google Search Console will separate AI Mode / AI Overview citations as Bing now does.
 - Current state of OpenAI's ACP feed programme and Google's agentic checkout outside the US; both change often.
 - Whether Perplexity-User / ChatGPT-User fetches can be identified reliably in server logs (IP lists published vs spoofing).
+
+## Verification addendum (2026-10-04)
+- OpenAI docs (developers.openai.com/api/docs/bots; help.openai.com/en/articles/12627856-publishers-and-developers-faq; help.openai.com/en/articles/20001243): OAI-SearchBot surfaces sites in ChatGPT search; webmasters can allow OAI-SearchBot while disallowing GPTBot; OpenAI recommends allowing its published IP ranges; ~24 hours for robots.txt changes to take effect in search. [first-party, verified-search]

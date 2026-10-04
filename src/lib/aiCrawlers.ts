@@ -87,7 +87,7 @@ export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: 
   const starOnly = bots.filter((b) => b.matchedGroup === "*" && !b.allowed).map((b) => b.token);
   if (starOnly.length) findings.push(`These bots are blocked only by the general "User-agent: *" group, probably unintentionally: ${starOnly.join(", ")}.`);
   if (!findings.length || (bots.every((b) => b.allowed) && robotsTxt)) findings.push("All listed AI bots are allowed on the checked paths.");
-  findings.push("robots.txt is a request, not enforcement. Check server logs or your CDN's bot settings too: some CDNs block AI bots by default.");
+  findings.push("robots.txt is a request, not enforcement, and not the only gate: firewall/CDN bot rules can block AI bots even when robots.txt allows them (some CDNs block them by default). OpenAI recommends also allowing its published IP ranges for OAI-SearchBot. robots.txt changes take ~24 hours to reach ChatGPT search.");
   return {
     site: base.origin,
     robotsTxtFound: !!robotsTxt,

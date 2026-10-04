@@ -33,6 +33,8 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 - **Check the CDN/WAF too.** Bot-protection settings (for example Cloudflare's AI-bot blocking) can block AI crawlers even when robots.txt allows them. [practitioner]
 - **JavaScript:** Vercel and MERJ (Dec 2024) found no evidence that GPTBot, ClaudeBot, PerplexityBot, Meta's or ByteDance's crawlers execute JavaScript; they fetch JS files but don't run them. Gemini (via Googlebot) and Applebot do render. [vendor] If your main content, prices or reviews appear only after JavaScript runs, most AI crawlers do not see them.
 
+- **robots.txt is not the only gate.** OpenAI recommends allowing OAI-SearchBot in robots.txt *and* allowing requests from its published IP ranges; a firewall or CDN bot rule that blocks those IPs keeps you out even when robots.txt allows the bot. After changing robots.txt, allow ~24 hours for ChatGPT search to pick it up. [first-party: developers.openai.com/api/docs/bots; help.openai.com Publishers and Developers FAQ, verified-search 2026-10-04]
+
 ## What gets cited
 
 - **A few large third-party sites take most citations.** Profound (680M citations, Aug 2024–Jun 2025): Wikipedia was 47.9% of ChatGPT's top-10 source share; Reddit about 46.7% of Perplexity's. [vendor] Semrush's 3-month study: Reddit, Wikipedia, YouTube, LinkedIn and Forbes led across platforms. [vendor] Platforms differ strongly: an estimated 11% of domains are cited by both ChatGPT and Perplexity. [vendor, not re-verified]
