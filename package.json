@@ -1,0 +1,45 @@
+{
+  "name": "marketing-expert-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that gives an LLM marketing tooling: calculators, copy/page audits, and opinionated playbooks.",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/veksen/marketing-expert.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/veksen/marketing-expert/issues"
+  },
+  "homepage": "https://github.com/veksen/marketing-expert#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "node-html-parser": "^9.0.4",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  },
+  "type": "module",
+  "bin": {
+    "marketing-expert-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "knowledge"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "private": true
+}
