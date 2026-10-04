@@ -13,7 +13,7 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 - **Expected return cost** = return rate × (return shipping + handling + value lost on items you can't resell). US retailers estimated 15.8% of 2025 sales would be returned, and online orders return more often (about 19% estimated) [vendor survey, NRF/Happy Returns]. Use your own rate by category; apparel is usually far higher than the average [rule-of-thumb].
 - **Gross margin is not contribution margin.** A product with 65% gross margin can have 30% CM after free shipping, fees and returns. Paying for ads using gross margin overstates what you can afford.
 - Put CM (as a share of AOV) into **paid_media_math** as `margin`: break-even ROAS = 1 ÷ CM%. At 30% CM you need 3.3× attributed ROAS just to break even on the first order (see paid-acquisition).
-- Separate **CM1** (after product and fulfilment costs), **CM2** (after marketing). Fixed costs (team, software, rent) come after. Most DTC failures are a CM2 that never turns positive at scale [practitioner].
+- **CM2** = CM after marketing. Most DTC failures are a CM2 that never turns positive at scale [practitioner].
 
 ## First-order vs repeat economics
 
@@ -21,7 +21,7 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 - Decide on purpose which game you are in:
   - **Profitable on first order**: required when repeat purchase is rare (furniture, mattresses, one-off gifts) or when you can't finance a long payback.
   - **Payback over N months**: only if cohort data, not hope, shows repeat purchases. Set a payback limit (e.g. 3, 6 or 12 months) based on cash you actually have.
-- The **unit_economics** tool is built for subscriptions (monthly churn). For repeat-purchase retail, build the cohort table below instead, or convert a subscription product's numbers directly.
+- The **unit_economics** tool assumes subscriptions (monthly churn); for repeat-purchase retail use the cohort table below.
 - **Subscriptions** (subscribe-and-save) raise repeat revenue but add churn, discount cost and customer-service work. Treat subscribe-and-save discount as a CM cost.
 
 ## Cohort repeat rate
@@ -30,7 +30,6 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 - The **second order** is the key step. Customers who buy twice are far more likely to buy again [practitioner]. Manage the time between order 1 and order 2 with flows (see below) and product (consumables, refills, sizing).
 - Compare cohorts by **acquisition channel and first product**. Discount-led or giveaway cohorts often repeat less; check before scaling a channel or offer.
 - Blended repeat rate rises as old loyal customers pile up and hides weaker new cohorts (see metrics-and-measurement for cohort maths).
-- Published "average repeat rate" figures come from Shopify apps and agencies [vendor]; your category and price point matter more.
 
 ## AOV levers (average order value)
 
@@ -39,7 +38,7 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 - **Quantity breaks** and "complete the set" cross-sells on product and cart pages.
 - **Post-purchase upsell** (one-click offer after checkout) adds revenue without adding checkout friction.
 - Each lever must raise **CM per order**, not just AOV. A bundle at a deep discount can raise AOV and lower profit.
-- Test AOV changes with the revenue t-test (see experimentation; use the revenue test, not a conversion test).
+- Test AOV changes with a revenue test, not a conversion test (see experimentation).
 
 ## Paid acquisition for e-commerce
 
@@ -47,13 +46,11 @@ General rules (signal quality, creative as targeting, brand search and retargeti
 - **Google Shopping / Performance Max with a Merchant Center feed**: Shopping ads use your product data, not keywords, to decide where to show [first-party, Google Ads Help]. The **product feed** is your ad copy: clear titles (brand + product type + key attribute such as size or colour), accurate price and availability, good images, correct GTINs (barcodes) [first-party / practitioner].
 - Pass **order value and margin** where possible: value-based bidding on revenue optimises for revenue, not profit. Some brands send profit-adjusted values or exclude low-margin products from campaigns [practitioner].
 - **Separate new-customer acquisition** from returning customers (customer-list exclusions or new-customer goals) so the algorithm doesn't spend to "acquire" people who already buy.
-- **Paid social** (Meta, TikTok) creates demand for products people don't yet search for. It lives or dies on creative.
 
 **Creative testing** [practitioner]:
 - Test **concepts** (different problem, audience, proof or format), not small edits. Examples: founder story, product demo, before/after, customer testimonial video, comparison against the usual alternative, unboxing.
 - UGC-style video (real customers or creators filming on a phone) is the standard format on Meta and TikTok; it must still follow FTC endorsement disclosure rules.
 - Judge creative on cost per **new** customer and on the cohort's later repeat rate, not only on click-through or platform ROAS.
-- Plan a steady supply of new concepts; winners fatigue.
 
 ## Email and SMS flows
 
@@ -75,7 +72,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 | Customer data | Very limited; can't email buyers for marketing | Full: email, SMS, cohorts |
 | Pricing and brand | Price competition, other sellers on your listing, ads needed for visibility | Full control |
 
-- Amazon is often where shoppers check reviews and price even when they found you elsewhere. Many brands see their own ads lift Amazon sales, which their store attribution never shows [practitioner]. Measure total sales across channels (see MER below).
+- Shoppers often check Amazon even when your ads found them, so ads can lift Amazon sales your store attribution never sees [practitioner]. Measure total sales across channels (see MER below).
 - Risks: account suspension, fee changes, Amazon's own products. See platform-and-feature-risk.
 - Enrol in **Brand Registry** before scale to control listings and fight counterfeits [first-party, not re-verified].
 - Rule: use Amazon for reach and search demand; use your store for repeat customers, bundles, subscriptions and data.
@@ -85,7 +82,6 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Wholesale margins are lower (the retailer takes its share) and come with costs: slotting or placement fees in some grocery chains, promotional spending, returns of unsold stock (chargebacks), and 30–90-day payment terms [practitioner]. Model cash flow, not just margin.
 - Retail works when your product sells **without you explaining it**: clear packaging, a known category, proof from online sales velocity.
 - Start with a small set of stores or a regional chain, measure sales per store per week, and support it with local demand. A failed national rollout is hard to undo.
-- Retail presence often lifts online search and brand demand; measure with geo comparisons (see metrics-and-measurement).
 
 ## Reviews and UGC
 
@@ -93,7 +89,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Ask for reviews in the post-purchase flow, timed to when the customer has used the product.
 - **US FTC rule (in force 21 October 2024)**: no fake reviews, no paying or rewarding reviews conditioned on positive sentiment, no suppressing negative reviews (narrow exceptions), with civil penalties for knowing violations [first-party / legal]. You may give a neutral incentive for any honest review only if you disclose it, and platforms like Amazon have stricter rules [legal; not re-verified].
 - Show negative reviews. A perfect 5.0 can look fake [rule-of-thumb].
-- Mine reviews for customer language for ads and product pages (see customer-research and messaging-and-copy).
+- Mine reviews for customer language (see messaging-and-copy).
 
 ## Returns policy
 
@@ -110,7 +106,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - **MER** (marketing efficiency ratio, also called blended ROAS) = total store revenue ÷ total marketing spend, across all channels [practitioner]. Platforms can't inflate it because it uses your real revenue. Track it weekly next to platform ROAS.
 - Better still: **new-customer MER** (first-order revenue ÷ spend) or new-customer CAC, because total revenue includes repeat buyers who would buy anyway.
 - MER tells you whether the whole system works, not which channel works. For that, run **holdout or geo tests** on the big channels, especially brand search, retargeting and Meta (see metrics-and-measurement).
-- Add a "How did you hear about us?" question after checkout; it catches podcasts, creators and word of mouth that clicks miss [practitioner].
+- Add a post-checkout "How did you hear about us?" question [practitioner].
 - Always look at all sales channels (store + Amazon + retail) together when judging an ad channel.
 
 ## What usually works by stage
@@ -127,7 +123,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Scaling a channel because first-order ROAS looks fine, without checking whether its cohorts repeat.
 - Discounting so often that customers wait for the sale.
 - Free shipping thresholds set without modelling CM.
-- Treating attributed ROAS from each platform as additive; the sum is often larger than total revenue.
+- Adding up platform-reported ROAS; the sum often exceeds total revenue.
 - Sending SMS to numbers collected without proper written consent.
 - Incentivising only positive reviews or hiding bad ones (now a US federal violation).
 
