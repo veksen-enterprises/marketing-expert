@@ -187,7 +187,12 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2): Qu
         const e = cite.end ?? s;
         const near = s === undefined || inCited.some(({ l }) => l >= s - lineTolerance && l <= (e ?? s) + lineTolerance);
         const { f, l } = inCited[0];
-        const context = f.raw.slice(Math.max(0, l - 2), l + 1).map((x) => x.trim()).filter(Boolean).join(" / ").slice(0, 400);
+        // The nearest non-blank line before and after the match, plus the match itself.
+        let before = l - 2;
+        while (before >= 0 && !f.raw[before].trim()) before--;
+        let after = l;
+        while (after < f.raw.length && !f.raw[after].trim()) after++;
+        const context = [before >= 0 ? f.raw[before] : "", f.raw[l - 1], after < f.raw.length ? f.raw[after] : ""].map((x) => x.trim()).filter(Boolean).join(" / ").slice(0, 400);
         results.push({ quote, cited: label, status: near ? "verified" : "wrong-line", foundAt: inCited.slice(0, 5).map(({ f, l }) => `${f.rel}:${l}`), context });
         continue;
       }
