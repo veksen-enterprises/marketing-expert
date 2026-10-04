@@ -53,6 +53,7 @@ describe("knowledge base", () => {
     ["affiliate commission integration partner", "partnerships-and-affiliates"],
     ["referral program double-sided incentive", "referral-programs"],
     ["cold email sequence abm account tiers", "outbound-and-abm"],
+    ["loyalty program win-back click to cancel", "retention-and-expansion"],
   ])("%s → %s", (q, slug) => {
     const hits = searchKnowledge(q, 3);
     expect(hits.map((h) => h.slug)).toContain(slug);
