@@ -11,21 +11,21 @@ Skip paid ads, an SEO content calendar and enterprise sales for now. The numbers
 
 ### What I couldn't get from you, and what I assumed
 
-I'd normally ask these first. Here are the assumptions I used instead. Each is labelled so you can correct it:
+I'd normally ask these first. Assumptions used instead, so you can correct them:
 - **Current numbers** (signups per week, how many projects reach a first CI run, paying Pro and Lifetime users, churn). *Assumed:* under ~50 active projects, a handful of paying users, no reliable funnel data yet.
-- **Goal.** *Assumed:* venture-style growth, meaning you want bottom-up adoption that later turns into a team plan. If this is a lifestyle business, moves 1 and 3 stay the same and the team-plan focus goes away.
+- **Goal.** *Assumed:* venture-style growth, meaning you want bottom-up adoption that later turns into a team plan.
 - **Team and budget.** *Assumed:* founders only, about 30% of one founder's time, under $1k of cash spend.
 - **Best current users.** *Assumed:* TypeScript/Node teams on Postgres using Drizzle or Prisma, running GitHub Actions. The docs say CI auto-detection is "Node-only today".
 
 ### What I found in your repo (these findings matter more than tactics)
 
-Your VISION.md is clear. The product is a feedback loop for the data layer: an MCP server while the agent writes code, then a CI gate, then the comparison branch, then production. The marketing site tells a different and older story:
+VISION.md describes a feedback loop for the data layer: MCP while the agent writes code, then CI, then production. The marketing site tells an older story:
 - **Two names.** The homepage sells "PlanView", a visualizer you point at a Postgres URL. The vision and docs sell "DBTool", the CI and agent gate. Visitors can't tell which one is the product.
 - **Shipped features labelled "soon".** The site marks the MCP server as "(soon)" and Alerts as "on our radar". The docs show both as **shipped**: `guides/mcp-server.md` lists the tools, and `guides/alerts.md` covers Slack and webhook delivery. Schema-drift alerts are still "coming soon". Rewrites are marked "soon" on the site, but the docs glossary and ADRs 0031/0032 describe them as part of the engine, so I'd call them **partial**. Local-only mode and the team plan are **planned**. Self-hosting is **shipped**.
 - **Price mismatch.** The homepage says Pro is $20/month. `/pricing` says $16/month.
 - **Example mismatch.** The hero example is Rails (`orders_controller.rb`). Your sqlcommenter guides cover Drizzle, Prisma, TypeORM, MikroORM and EF Core, and CI setup detects Node only.
 
-You are underselling the most distinctive part of the product: the agent and CI loop, backed by a real planner and no LLM guessing. That makes **positioning, not reach, the first constraint.** More traffic sent to a confusing page wastes your one Show HN.
+You are underselling your most distinctive part: the agent and CI loop, backed by a real planner. So **positioning, not reach, is the first constraint.** Traffic sent to a confusing page wastes your one Show HN.
 
 ### What people use instead (from my own knowledge, not verified)
 
@@ -36,7 +36,7 @@ You are underselling the most distinctive part of the product: the agent and CI 
 - **Asking an LLM** to read the SQL.
 - **Most common of all:** doing nothing until there's an incident.
 
-Almost all of these work after the fact or need production access. Your edge is *before merge, inside the agent, proven by the planner*. Say that.
+Most work after the fact. Your edge is *before merge, inside the agent, proven by the planner*.
 
 ### The economics (tool output, using assumed numbers)
 
@@ -44,21 +44,19 @@ Inputs: `unit_economics` with $16/month, 80% gross margin and 5% monthly churn (
 
 Inputs: `paid_media_math` with a $5 cost per click (CPC) and 1% of clicks becoming paying users (both guesses). Result: CPA (cost per paying customer) of **$500** against break-even of $244. The tool's verdict: *"Each conversion loses money."*
 
-At $16 a month, only near-free channels work: agents, docs, community, founder content. Two more points from the same output:
-- **The $100 Lifetime deal is below the modelled lifetime value of a Pro user ($256).** Keep it capped as an early-backer offer.
-- **The real money is a team plan.** You'll need one before any paid channel can make sense.
+At $16/month only near-free channels work. Also: the $100 Lifetime deal is below the modelled Pro lifetime value ($256), so keep it capped; a team plan is what would make paid channels possible later.
 
 ### The three moves
 
 **1. Positioning and site accuracy (weeks 1–3)**
-- *Mechanism:* developers judge the product by its homepage and docs. If the page says MCP is "soon", people who would use it through an agent leave.
+- *Mechanism:* developers judge you by the homepage and docs; "MCP soon" turns away agent users.
 - *Cheapest test:*
   - Hold 8–10 short calls with your most active users. Ask "When did a slow query last bite you? What did you do?" (Mom Test style: ask about past events, not opinions on your idea).
   - Pick one name and one story. My suggestion: *"Postgres query review for your coding agent and CI. A real planner, not a guess."* Aim it at TypeScript teams on Postgres.
   - Fix the four mismatches above. Make the hero example Drizzle or Prisma.
 - *Metric:* the share of site visitors who start the quickstart, plus whether 5 of the 8–10 interviewees describe the product back to you in your words.
 - *Stop or change if:* the interviews show the people who stay care about the production dashboard, not CI or agents. Then position around that instead.
-- *Evidence:* April Dunford's positioning method and Mom Test interviewing. Both are practitioner methods, not controlled research.
+- *Evidence:* practitioner methods (Dunford, Mom Test), not controlled research.
 
 **2. The agent and CI path as your main way in (weeks 3–8)**
 - *Mechanism:* your docs already say "ask your agent to set up DBTool CI for this repo." Agents are both your users and a channel.
@@ -69,10 +67,10 @@ At $16 a month, only near-free channels work: agents, docs, community, founder c
   - Time 5 clean-machine runs from "nothing installed" to the first PR comment.
 - *Metric:* activation, defined as the share of new projects that get a first CI run with a PR comment within 7 days. Also track **weekly active projects** (not signups or GitHub stars). Log the MCP client name so agent-sourced use shows up as its own channel.
 - *Stop or change if:* after 6 weeks, fewer than about 1 in 4 new projects reach a first CI run. Then fix setup friction before adding any traffic. That threshold is my judgement, not a benchmark.
-- *Evidence:* MCP Registry and GitHub Marketplace rules come from the platforms' own documentation. "Docs are the marketing" is practitioner advice.
+- *Evidence:* platform documentation (registry, Marketplace); practitioner advice for the rest.
 
 **3. Founder-led technical content and one Show HN (weeks 6–12)**
-- *Mechanism:* your Codex/SQLite tracing post shows you can write deep, credible engineering posts, and developers trust those.
+- *Mechanism:* your Codex/SQLite post shows you can write credible engineering posts.
 - *Cheapest test:*
   - Write 3 posts. Each takes a real query that is fast at 200 rows and slow at 10M rows, in Drizzle or Prisma code. Use **reproducible** methods: publish the schema, statistics and versions, and say "cost", not "time", as VISION.md requires.
   - Post each by hand to r/PostgreSQL and the Drizzle and Prisma communities, following each community's self-promotion rules.
@@ -85,7 +83,7 @@ At $16 a month, only near-free channels work: agents, docs, community, founder c
 
 ### Not yet
 - **Paid ads.** The tool's verdict above says they lose money.
-- **SEO volume content.** It's slow, and nobody searches for your category yet.
+- **SEO volume content** (slow; little search demand for the category yet).
 - **Enterprise or outbound sales,** or announcing the team plan before it ships.
 - **AI-written posts.** They would undercut "proven, not guessed".
 - **Counting stars or downloads as traction.**
