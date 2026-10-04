@@ -82,19 +82,48 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const concurrency = Math.min(opts.concurrency ?? 4, 8);
   const timeoutMs = opts.timeoutMs ?? 15000;
   const fetchFn: FetchFn = opts.fetchFn ?? ((u, init) => fetch(u, init));
-  const start = normalize(opts.startUrl, opts.startUrl);
-  if (!start) throw new RangeError("startUrl must be an http(s) URL");
-  const host = new URL(start).host;
+  const requested = normalize(opts.startUrl, opts.startUrl);
+  if (!requested) throw new RangeError("startUrl must be an http(s) URL");
   const notes: string[] = [];
 
   const get = async (url: string) =>
     fetchFn(url, { redirect: "manual", headers: { "user-agent": UA, accept: "text/html,application/xml,text/xml,*/*;q=0.8" }, signal: AbortSignal.timeout(timeoutMs) });
+  // For robots.txt, sitemaps and the start URL: follow up to 5 redirects (any host).
+  const getFollow = async (url: string): Promise<{ res: Response; url: string }> => {
+    let current = url;
+    for (let hop = 0; hop < 5; hop++) {
+      const res = await get(current);
+      const loc = res.headers.get("location");
+      if (res.status >= 300 && res.status < 400 && loc) {
+        const next = normalize(loc, current);
+        if (!next) return { res, url: current };
+        current = next;
+        continue;
+      }
+      return { res, url: current };
+    }
+    return { res: await get(current), url: current };
+  };
+
+  // Resolve the start URL first: example.com → www.example.com redirects are common.
+  let start = requested;
+  try {
+    const r = await getFollow(requested);
+    if (r.url !== requested) {
+      start = r.url;
+      notes.push(`Start URL redirects to ${start}; crawling that host.`);
+    }
+  } catch {
+    // Leave start as requested; the page fetch will record the error.
+  }
+  const host = new URL(start).host;
 
   // robots.txt
   let robots: RobotsRules = { allow: [], disallow: [], sitemaps: [] };
   try {
-    const r = await get(new URL("/robots.txt", start).toString());
+    const { res: r } = await getFollow(new URL("/robots.txt", start).toString());
     if (r.ok) robots = parseRobots(await r.text());
+    else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
   } catch {
     notes.push("robots.txt could not be fetched.");
   }
@@ -107,14 +136,14 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     const candidates = robots.sitemaps.length ? robots.sitemaps : [new URL("/sitemap.xml", start).toString()];
     for (const sm of candidates.slice(0, 5)) {
       try {
-        const r = await get(sm);
+        const { res: r } = await getFollow(sm);
         if (!r.ok) continue;
         const xml = await r.text();
         sitemapSource ??= sm;
         if (/<sitemapindex/i.test(xml)) {
           for (const child of extractLocs(xml).slice(0, 20)) {
             try {
-              const cr = await get(child);
+              const { res: cr } = await getFollow(child);
               if (cr.ok) extractLocs(await cr.text()).forEach((l) => sitemapSet.add(normalize(l, l) ?? l));
             } catch {
               notes.push(`Child sitemap failed: ${child}`);
@@ -191,7 +220,13 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     if (xr && /noindex/i.test(xr)) page.noindex = true;
     const ct = res!.headers.get("content-type") ?? "";
     if (!res!.ok || !ct.includes("html") || new URL(current).host !== host) return { page, links: [] };
-    const html = await res!.text();
+    let html: string;
+    try {
+      html = await res!.text();
+    } catch (e) {
+      page.error = `body download failed: ${e instanceof Error ? e.message : String(e)}`;
+      return { page, links: [] };
+    }
     const root = parse(html, { blockTextElements: { script: true, style: true, noscript: true } });
     page.title = root.querySelector("title")?.text.trim() || null;
     page.metaDescription = root.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() || null;

@@ -107,9 +107,11 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
   const get = (path: string) =>
     fetch(new URL(path, base), { headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1)" }, signal: AbortSignal.timeout(timeoutMs) });
   let robotsTxt: string | null = null;
+  let serverError: number | null = null;
   try {
     const r = await get("/robots.txt");
     if (r.ok && !(r.headers.get("content-type") ?? "").includes("html")) robotsTxt = await r.text();
+    else if (r.status >= 500) serverError = r.status;
   } catch {
     robotsTxt = null;
   }
@@ -120,7 +122,12 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
   } catch {
     llms = null;
   }
-  const report = evaluateAiAccess(robotsTxt, site, paths);
+  // Google's documented behaviour: a 5xx on robots.txt means "disallow everything" until it recovers.
+  const report = evaluateAiAccess(serverError ? "User-agent: *\nDisallow: /" : robotsTxt, site, paths);
+  if (serverError) {
+    report.robotsTxtFound = false;
+    report.findings.unshift(`robots.txt returned HTTP ${serverError}. Crawlers that follow Google's rules treat this as "block everything", so every bot is reported as blocked. Fix the server error.`);
+  }
   report.findings.push(
     llms
       ? "llms.txt found. Harmless, but there is no evidence major assistants use it (see seo-and-ai-search)."

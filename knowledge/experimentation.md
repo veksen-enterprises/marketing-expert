@@ -8,13 +8,13 @@ tags: a/b testing, ab test, experiment, split test, statistical significance, sa
 
 1. **Hypothesis**: "Because [evidence], changing [X] for [audience] will improve [metric]." No evidence → you're guessing; that's fine, but say so and size bets accordingly.
 2. **One primary metric** (the overall evaluation criterion), close enough to the change to move detectably, but tied to value (completed signups, purchases, not clicks). Plus **guardrails** (revenue per visitor, refund rate, page speed, unsubscribe rate) that must not get worse.
-3. **Power analysis**: call ab_test_sample_size. Required sample scales with 1/MDE²: halving the effect you want to detect quadruples the traffic. Default 80% power, α = 0.05 two-sided.
+3. **Power analysis**: call ab_test_sample_size (conversion rates) or ab_test_means_sample_size (revenue per visitor, order value: needs the standard deviation per visitor from historical data). Required sample scales with 1/MDE²: halving the effect you want to detect quadruples the traffic. Default 80% power, α = 0.05 two-sided.
 4. **Fix duration in whole weeks** (weekday/weekend behaviour differs) and the decision rule in advance: what result means ship, kill, or iterate.
 5. **QA** every variant on every major browser/device; check the tracking fires identically in both arms.
 
 ## Reading results
 
-Use ab_test_evaluate. In order:
+Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue-type metrics (give raw per-visitor values if you can, and also run it with capPercentile 0.99: a few large orders can decide a revenue test). In order:
 1. **Sample ratio mismatch** first. If a 50/50 test's split differs significantly (p < 0.001), randomisation or tracking is broken (bots, redirects, a variant that errors, tracking differences). Don't interpret the result until it's found.
 2. **Was the planned sample reached?** Stopping when it "looks significant" invalidates the p-value. Checking 10 times inflates a nominal 5% false-positive rate to ~26% (Evan Miller).
 3. **Effect and interval**, not just p. Plan around the lower end of the CI: winners' observed lifts are biased upward (winner's curse), so expect regression on rollout.

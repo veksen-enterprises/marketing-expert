@@ -54,8 +54,12 @@ export function listProfiles(): Array<{ name: string; product?: string; updatedA
   return readdirSync(dir)
     .filter((f) => f.endsWith(".json"))
     .map((f) => {
-      const p = JSON.parse(readFileSync(join(dir, f), "utf8")) as BusinessProfile;
-      return { name: p.name, product: p.product, updatedAt: p.updatedAt };
+      try {
+        const p = JSON.parse(readFileSync(join(dir, f), "utf8")) as BusinessProfile;
+        return { name: p.name, product: p.product, updatedAt: p.updatedAt };
+      } catch (e) {
+        return { name: f.replace(/\.json$/, ""), product: `UNREADABLE: ${e instanceof Error ? e.message : String(e)}` };
+      }
     });
 }
 

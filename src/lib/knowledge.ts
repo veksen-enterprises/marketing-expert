@@ -19,6 +19,8 @@ export interface Section {
   playbookTitle: string;
   heading: string;
   text: string;
+  /** Playbook-level tags from frontmatter; they describe what the whole playbook is about. */
+  tags: string[];
 }
 
 export const KNOWLEDGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "knowledge");
@@ -65,7 +67,7 @@ export function sections(books = loadPlaybooks()): Section[] {
     const parts = b.body.split(/^(?=## )/m);
     for (const part of parts) {
       const h = /^## (.+)$/m.exec(part);
-      out.push({ slug: b.slug, playbookTitle: b.title, heading: h ? h[1].trim() : b.title, text: part.trim() });
+      out.push({ slug: b.slug, playbookTitle: b.title, heading: h ? h[1].trim() : b.title, text: part.trim(), tags: b.tags });
     }
   }
   return out.filter((s) => s.text.length > 0);
@@ -98,7 +100,8 @@ export function searchKnowledge(query: string, limit = 5, corpus = sections()): 
   const docs = corpus.map((s) => {
     const head = tokenize(`${s.playbookTitle} ${s.heading}`);
     // Heading terms count triple: a section titled "Pricing" is about pricing.
-    return { s, toks: [...tokenize(s.text), ...head, ...head] };
+    // Tags count once per section: they tie every section to its playbook's topic.
+    return { s, toks: [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))] };
   });
   const N = docs.length;
   const avg = docs.reduce((n, d) => n + d.toks.length, 0) / Math.max(1, N);
