@@ -22,7 +22,7 @@ Local SEO means getting found when people search for a business near them ("plum
 - **Services, products, description, hours, holiday hours**: complete everything; Google says complete, accurate information helps relevance. Wrong hours create bad reviews. [first-party]
 - **Photos**: JPG/PNG, 10 KB–5 MB, recommended 720×720 px; in focus, well lit, no heavy filters. Add exterior (helps people find the door), interior, team, work examples. No controlled evidence that photo count affects ranking; it does affect whether people choose you. [first-party; practitioner]
 - **Posts**: Update, Offer (needs title and dates) or Event (needs title and dates). Use them for real news, offers and seasonal hours, with a tracked link. Treat posts as conversion content, not a ranking lever; there is no first-party claim that posts affect ranking. [first-party; practitioner]
-- **Q&A**: agency reports say Google discontinued the Q&A API in Nov 2025 and began removing the public Q&A section from Dec 2025, replacing it with AI answers built from your profile, reviews and website. So put answers to common questions (parking, prices, booking, languages spoken) on your website and in your profile description. [practitioner: secondary only]
+- **Q&A**: Google discontinued the Business Profile Q&A API on 3 Nov 2025 while it updates the Q&A experience. [first-party] Agency reports say Google began removing the public Q&A section from Dec 2025, replacing it with AI answers built from your profile, reviews and website. [practitioner: secondary only] So put answers to common questions (parking, prices, booking, languages spoken) on your website and in your profile description.
 - **Links**: Google crawls your profile links to check they work; broken links can be removed. [first-party]
 
 ## Reviews
@@ -60,7 +60,7 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Local Services Ads (LSA)
 
-- LSAs are pay-per-lead ads that appear above the local pack for many service categories, with a "Google Screened" or "Google Verified" badge after licence, insurance or background checks. Ranking uses your bid plus profile quality: rating, number of reviews, how fast you answer, photos, verification. Better profiles may pay less per lead. [first-party]
+- LSAs are pay-per-lead ads that appear above the local pack for many service categories, with a "Google Verified" badge after licence, insurance or background checks (since 7 Nov 2025 this single badge replaced Google Guaranteed, Google Screened and License Verified). Ranking uses your bid plus profile quality: rating, number of reviews, how fast you answer, photos, verification. Better profiles may pay less per lead. [first-party]
 - An LSA account must be linked to a GBP; since July 2025 LSA reviews are managed in the Business Profile. So review work helps both organic local ranking and LSA cost. [first-party]
 - Use LSA to cover areas or categories where you can't rank organically; dispute bad leads. See local-services and paid-acquisition. [practitioner]
 

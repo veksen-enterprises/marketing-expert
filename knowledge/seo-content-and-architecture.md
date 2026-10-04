@@ -26,7 +26,7 @@ Start with crawl_site: it reports click depth, pages with one or zero internal l
 
 ## Crawl budget
 
-- **Most sites don't need to think about it.** Google's crawl budget guide is written for sites with 1 million+ unique pages that change about weekly, or 10,000+ pages that change daily. Below that, if pages aren't indexed, the cause is usually quality or duplication, not crawl budget. [first-party]
+- **Most sites don't need to think about it.** Google's crawl budget guide is written for sites with 1 million+ unique pages that change about weekly, or 10,000+ pages that change daily, or sites where a large share of URLs sit in "Discovered – currently not indexed". Below that, if pages aren't indexed, the cause is usually quality or duplication, not crawl budget. [first-party]
 - Crawl budget = **crawl capacity** (how much Google can crawl without overloading your server) + **crawl demand** (how much it wants to crawl). You control demand most: duplicate and low-value URLs waste it. [first-party]
 - For large sites: block worthless URL spaces in robots.txt (internal search results, endless filters, calendars), return correct 404/410 for removed pages, avoid redirect chains, keep sitemaps to canonical indexable URLs with accurate lastmod, and keep servers fast. [first-party]
 

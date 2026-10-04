@@ -34,7 +34,7 @@ hreflang is an annotation that tells Google "this page has equivalent versions i
 
 - **Where**: in the HTML `<head>` as `<link rel="alternate" hreflang="..." href="...">`, in the HTTP header (for PDFs), or in the XML sitemap. Use one method per page set. Sitemaps are easiest to maintain at scale. [first-party]
 - **Codes**: language in ISO 639-1 (two letters: en, de, es), optionally followed by a region in ISO 3166-1 Alpha 2 (US, GB, MX): `en-GB`, `es-MX`. Other codes are not supported. [first-party]
-- **Self-reference**: each page lists itself as well as every alternate. [first-party] [not re-verified]
+- **Self-reference**: each page lists itself as well as every alternate; the set of links is identical on every version. [first-party]
 - **Return links**: if page A points to page B, page B must point back to A. Missing return links are the most common reason annotations are ignored. [first-party]
 - **x-default**: the fallback for users whose language/region matches none of your versions, often a language picker or the main English page. `<link rel="alternate" hreflang="x-default" href="https://example.com/">`. [first-party]
 - **Example set** (every page in the set carries all four lines):
