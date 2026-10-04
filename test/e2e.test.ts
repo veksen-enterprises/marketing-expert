@@ -24,7 +24,7 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     const tools = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(tools).toEqual([
       "ab_test_evaluate", "ab_test_sample_size", "analyze_copy", "audit_page", "build_utm_link",
-      "check_copy_limits", "funnel_analysis", "get_playbook", "paid_media_math", "search_playbooks", "unit_economics",
+      "check_copy_limits", "funnel_analysis", "get_playbook", "market_size", "paid_media_math", "search_playbooks", "unit_economics",
     ]);
     const prompts = (await client.listPrompts()).prompts.map((p) => p.name);
     expect(prompts).toContain("landing_page_teardown");

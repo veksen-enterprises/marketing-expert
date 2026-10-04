@@ -6,6 +6,7 @@ import { analyzeCopy, checkLimits } from "./lib/copy.js";
 import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit } from "./lib/pageAudit.js";
+import { marketSize } from "./lib/marketSize.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
 import { registerPrompts } from "./prompts.js";
 
@@ -187,6 +188,36 @@ export function createServer(): McpServer {
       annotations: readOnly,
     },
     safe((a) => analyzeFunnel(a.stages, a.spend, a.improvement))
+  );
+
+  server.registerTool(
+    "market_size",
+    {
+      title: "Market sizing (bottom-up)",
+      description:
+        "Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity and/or acquisition budget (with churn), top-down cross-check, and the penetration a revenue target implies. Use instead of quoting analyst TAMs.",
+      inputSchema: {
+        segments: z
+          .array(
+            z.object({
+              name: z.string(),
+              accounts: z.number().positive().describe("Potential buying accounts"),
+              annualValue: z.number().positive().describe("Annual revenue per account (ACV)"),
+              serviceableShare: z.number().min(0).max(1).optional().describe("Share you can serve today, 0–1"),
+              source: z.string().optional().describe("Where the account count came from"),
+            })
+          )
+          .min(1),
+        topDownAnnualSpend: z.number().positive().optional(),
+        horizonYears: z.number().int().min(1).max(15).optional(),
+        salesCapacity: z.object({ reps: z.number().positive(), dealsPerRepPerYear: z.number().positive() }).optional(),
+        acquisitionBudget: z.object({ annualBudget: z.number().positive(), cac: z.number().positive() }).optional(),
+        annualChurn: z.number().min(0).lt(1).optional(),
+        revenueTarget: z.number().positive().optional(),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => marketSize(a))
   );
 
   // ── Copy ──────────────────────────────────────────────────────────────────
