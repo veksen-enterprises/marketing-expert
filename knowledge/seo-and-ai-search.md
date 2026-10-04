@@ -6,7 +6,7 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 ## What changed (2024–2026)
 
-- **Fewer clicks per ranking.** When an AI Overview appears, organic CTR drops substantially. Pew (Mar 2025 browsing data, 900 US adults): users clicked a result on 8% of visits with an AI summary vs 15% without, and clicked a link inside the summary on 1%. Ahrefs: position-1 CTR −34.5% (Apr 2025), −58% in a Dec 2025 update. Seer Interactive (informational queries, Jun 2024–Sep 2025): −61% organic CTR on AIO queries, and −41% even on queries without one. Semrush clickstream: 92–94% of AI Mode sessions were zero-click. Methods differ; the direction is consistent, the size ranges ~35–61%. [research / vendor]
+- **Fewer clicks per ranking.** When an AI Overview appears, organic CTR drops substantially. Pew (Mar 2025 browsing data, 900 US adults): users clicked a result on 8% of visits with an AI summary vs 15% without, and clicked a link inside the summary on 1%. Ahrefs: position-1 CTR −34.5% (Apr 2025), −58% in a Dec 2025 update. Seer Interactive (informational queries, Jun 2024–Sep 2025): −61% organic CTR on AIO queries, and −41% even on queries without one. Semrush clickstream: 92–94% of AI Mode sessions were zero-click. Methods differ; the direction is consistent, the size ranges ~35–61%. Seer's 2026 update shows some rebound: organic CTR on AI Overview queries rose from 1.3% (Dec 2025) to 2.4% (Feb 2026), and cited brands got ~120% more clicks per impression. [research / vendor]
 - **Quality systems**: the March 2024 core update folded "helpful content" into core ranking and added spam policies for scaled content abuse (mass-produced pages, by any method including AI), expired domain abuse, and site reputation abuse (third-party content riding a host site's authority; clarified Nov 2024 to apply even with first-party oversight). Core updates continued in March and May 2026. [first-party]
 
 **Implication**: informational traffic per keyword is falling. Plan for SEO to deliver fewer, higher-intent visits; value it on pipeline/revenue per visit, not sessions.
@@ -23,7 +23,7 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 - **Evidence**: Aggarwal et al. (KDD 2024) found adding quotations, statistics and source citations raised visibility in generative engine answers by up to ~40% on their benchmark; keyword stuffing didn't help. A lab benchmark; generalisation is contested. [research]
 - **Speculation**: most "AI visibility" playbooks and scores, and claims that schema markup or llms.txt drive LLM citations, have no controlled evidence.
-- **llms.txt**: Google said it doesn't use it (Jul 2025); no major LLM provider had publicly committed to it as of Q1 2026; Ahrefs reported 97% of llms.txt files got zero requests (May 2026, second-hand). Cheap to add, but don't expect results from it.
+- **llms.txt**: Google said it doesn't use it (Jul 2025); no major LLM provider had publicly committed to it as of Q1 2026; Ahrefs (137k sites, May 2026): 28% publish an llms.txt and 97% of those files got zero requests. Cheap to add, but don't expect results from it.
 - Practical stance: the things that make content citable by LLMs (clear claims, data, named sources, being mentioned across the web and in communities) are the same things that make it useful to people and to Google. Track branded search and referral traffic from AI assistants rather than buying "AI rank" scores.
 
 ## Keyword and topic research

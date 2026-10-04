@@ -194,7 +194,7 @@ export function createServer(): McpServer {
     safe((a) => ({
       ...unitEconomics(a),
       context:
-        "Benchmarks are investor heuristics, not laws: LTV:CAC ≈ 3:1 is a rule of thumb; Bessemer frames CAC payback 0–6 months best, 6–12 better, 12–18 good. KeyBanc/Sapphire 2025 survey median payback was reported at ~18 months (self-reported, private SaaS). See playbook 'metrics-and-measurement'.",
+        "Benchmarks are investor heuristics, not laws: LTV:CAC ≈ 3:1 is a rule of thumb; Bessemer frames CAC payback 0–6 months best, 6–12 better, 12–18 good. KeyBanc's 2024 survey reported median CAC payback of 20–25 months for 2022–2024 (self-reported, private SaaS). See playbook 'metrics-and-measurement'.",
     }))
   );
 

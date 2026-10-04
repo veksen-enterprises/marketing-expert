@@ -57,9 +57,9 @@ Evidence tags: **[replicated]** = several independent studies or field replicati
 - **Claimed ProfitWell data.** Value-metric companies grow expansion revenue faster than feature-differentiated ones. Outcome metrics (money saved or earned) perform best. ProfitWell claimed a dataset of ~37,000 SaaS companies. [vendor data, snippet-only via secondary summaries; no dated primary report located]
 - **UBP adoption, OpenView survey series** [17]:
   - 34% of SaaS companies used some UBP in 2020.
-  - 45% in 2021.
+  - 45% in 2021 (2021 report, ~600 SaaS companies surveyed). [34%/45% verified-search: prnewswire.com (OpenView's own release) + openviewpartners.com, 2026-10-04]
   - 61% in 2022, published in the 2023 report.
-  - 2023 report breakdown: 23% usage-based subscription tiers, 18% largely usage-based, 17% testing, 42% none. 46% hybrid.
+  - 2023 report breakdown: 23% usage-based subscription tiers, 18% largely usage-based, 17% testing, 42% none. 46% hybrid. [61% and 46% confirmed only via secondary relays (TechCrunch 2023-02-02, DigitalRoute), 2026-10-04; the 23/18/17/42 split not re-checked]
   - [vendor data: OpenView was a VC investor in PLG/UBP companies; self-selected survey respondents]
 - **UBP and net dollar retention (NDR), 2021 report.** Top-quartile NDR was 122% for largely usage-based companies vs 110% for usage-based tiers vs 109% for no UBP. Among public software companies, UBP companies grew 29.9% vs 21.7% and had NDR of 120% vs 110%. [17] [vendor data; correlational, so survivorship and category mix (infrastructure/API businesses) likely confound]
 - **Operational.** UBP aligns price with value but makes revenue forecasting harder and lets a customer's spend drop when its usage falls. Hybrid (platform fee + usage) is the modal 2023 choice. [17] [vendor data]
@@ -147,8 +147,9 @@ Evidence tags: **[replicated]** = several independent studies or field replicati
   - The Totango 2012 figures as relayed by Chargebee:
     - Card-required (opt-out) trials converted ~50% of trial users to paid. No-card (opt-in) trials converted ~15%.
     - No-card trials drew far more signups and had better 90-day retention: 80% vs 60%.
-    - End-to-end conversion of visitors was reportedly about 2× higher for no-card trials (1.2% vs 0.6%).
-  - [vendor data, secondary relay, original not located: treat as directional]
+    - End-to-end conversion of visitors was reportedly about 2× higher for no-card trials (1.2% vs 0.6%); visit-to-trial ~2% (card) vs ~10% (no card).
+    - Sample: ~100 SaaS vendors.
+  - [vendor data; 50/15, 80/60 and 1.2/0.6 verified-search: chargebee.com, 2026-10-04. A Totango press page "What makes a free trial work (or not)" exists on totango.com but the figures were not seen on it. Original report still not located: treat as directional]
 - **OpenView 2022 Product Benchmarks** [18]
   - Per 1,000 visitors, the median freemium company converted ~3 to paid, about 2 of them without sales contact.
   - The median free-trial company converted ~7, about 1 without sales contact.
@@ -187,7 +188,8 @@ Evidence tags: **[replicated]** = several independent studies or field replicati
 - The survey method behind the "72% of innovations fail" stat in *Monetizing Innovation* was not seen.
 - No dated primary ProfitWell or Paddle value-metric report was located. Specific percentages on secondary sites are untraceable, so omit them.
 - OpenView reports are self-selected surveys by a growth-stage investor. OpenView reportedly wound down in late 2023, so later "OpenView" figures are suspect. [not verified]
-- The original Totango 2012 report was not found. The 50%/15% and 80%/60% figures are known only through vendor blogs.
+- The original Totango 2012 report was not found. The 50%/15% and 80%/60% figures are confirmed only on Chargebee (vendor relay), 2026-10-04.
+- OpenView 2023 UBP figures (61% / 46% hybrid) are confirmed only via secondary relays; 2020/2021 figures confirmed via OpenView's release.
 - No independent peer-reviewed replication of Ariely's Economist numbers was found.
 - The Van Westendorp 1976 paper and Newton–Miller–Smith 1993 were not read. Descriptions come from secondary methods literature.
 - No primary controlled data was found on grandfathering, price-increase notice periods, or reverse-trial outcomes.

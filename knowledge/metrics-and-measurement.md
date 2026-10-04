@@ -16,7 +16,7 @@ Attribution assigns credit for conversions to touchpoints. Incrementality asks h
 
 ## GA4 and platform attribution [first-party]
 
-In 2023 Google removed first-click, linear, time-decay and position-based models from GA4 and Google Ads; data-driven (default) and last-click remain. Data-driven attribution still only sees Google-measurable touchpoints and is not a lift estimate. With Consent Mode and iOS ATT, part of reported conversions is modelled (see paid-acquisition).
+In 2023 Google removed first-click, linear, time-decay and position-based models (Google Ads from mid-July 2023; GA4 by November 2023); data-driven (default) and last-click remain. Data-driven attribution still only sees Google-measurable touchpoints and is not a lift estimate. With Consent Mode and iOS ATT, part of reported conversions is modelled (see paid-acquisition).
 
 ## Incrementality tests
 
@@ -46,7 +46,7 @@ Use unit_economics; don't compute by hand.
 - **CAC** = fully loaded sales and marketing spend ÷ new customers (lag spend by the sales cycle if long). Blended CAC hides that paid CAC may be far higher than organic.
 - **LTV** = monthly gross profit per account ÷ monthly churn (simple). With low churn this assumes lifetimes longer than your data; use a bounded horizon (e.g. 36–60 months).
 - **CAC payback** = CAC ÷ monthly gross profit per account.
-- **Heuristics, not laws**: LTV:CAC ≈ 3:1 is a rule of thumb. Bessemer frames payback 0–6 months best, 6–12 better, 12–18 good. KeyBanc/Sapphire 2025 survey reported median payback ~18 months (self-reported private SaaS; CAC definitions vary).
+- **Heuristics, not laws**: LTV:CAC ≈ 3:1 is a rule of thumb. Bessemer frames payback 0–6 months best, 6–12 better, 12–18 good, with targets under 12 / 18 / 24 months for SMB / mid-market / enterprise. KeyBanc's 2024 SaaS survey reported median CAC payback of 25, 21 and 20 months for 2022, 2023 and 2024 (estimate): real companies are slower than the investor targets (self-reported private SaaS; CAC definitions vary).
 
 ## Retention maths
 
@@ -67,7 +67,7 @@ Use unit_economics; don't compute by hand.
 
 Benchmarks are context, not targets. Before quoting one, check: who collected it (vendor platforms report their own customers), the definition (what counts as a conversion, CAC fully loaded or not), the date, and selection (survey respondents, awards entries, survivors). Your own trend over time is a better benchmark than someone else's median.
 
-Examples with caveats: Unbounce Q4 2024 median landing-page conversion 6.6% (SaaS 3.8%), Unbounce-hosted pages only; Klaviyo 2026 campaign click rate 1.69%, flows 5.58%, Klaviyo customers only.
+Examples with caveats: Unbounce 2024 report (Q4 2024 data): median landing-page conversion 6.6% (SaaS 3.8%), Unbounce-hosted pages only; Klaviyo 2026 campaign click rate 1.69%, flows 5.58%, Klaviyo customers only.
 
 ## Sources
 

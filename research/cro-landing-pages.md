@@ -9,7 +9,7 @@ Evidence tags: **[research]** peer-reviewed or a documented primary study with a
 1. Pernice, K. — "F-Shaped Pattern of Reading on the Web: Misunderstood, But Still Relevant (Even on Mobile)", NN/g, 2017-11-12. https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/ [snippet-only]
 2. NN/g — "Text Scanning Patterns: Eyetracking Evidence". https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/ [snippet-only, title only]
 3. Nielsen, J. — "Scrolling and Attention (original research study)", NN/g, 2010. https://www.nngroup.com/articles/scrolling-and-attention-original-research/ [snippet-only]
-4. Fessenden, T. — "Scrolling and Attention", NN/g, 2018-04-15. https://www.nngroup.com/articles/scrolling-and-attention/ [snippet-only; author attribution from memory, unverified]
+4. Fessenden, T. — "Scrolling and Attention", NN/g, 2018-04-15. https://www.nngroup.com/articles/scrolling-and-attention/ [snippet-only; author and date verified-search: nngroup.com, 2026-10-04]
 5. Pernice, K. — "Banner Blindness Revisited: Users Dodge Ads on Mobile and Desktop", NN/g, 2018-04-22. https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/ [snippet-only]
 6. NN/g — "Plain Language Is for Everyone, Even Experts". https://www.nngroup.com/articles/plain-language-experts/ [snippet-only]
 7. NN/g — "Legibility, Readability, and Comprehension: Making Users Read Your Words". https://www.nngroup.com/articles/legibility-readability-comprehension/ [snippet-only]
@@ -34,10 +34,10 @@ Evidence tags: **[research]** peer-reviewed or a documented primary study with a
 
 ## 1. How users read: scanning, fold, ads
 
-- **F-pattern is one of several scanning patterns.** It is not a layout template. NN/g first reported it in 2006. The 2017 update names four main patterns for text: F, spotted, layer-cake and commitment. The F shape is the default when text lacks visual structure, so it is a symptom of poor formatting, not a target to design for. [practitioner][1][snippet-only]
+- **F-pattern is one of several scanning patterns.** It is not a layout template. NN/g first reported it in 2006 (Nielsen, 2006-04-16; 232 users) [verified-search: nngroup.com, 2026-10-04]. The 2017 update names four main patterns for text: F, spotted, layer-cake and commitment. The F shape is the default when text lacks visual structure, so it is a symptom of poor formatting, not a target to design for. [practitioner][1][snippet-only]
 - **What to do about it:** front-load headings and the first words of each paragraph and bullet. Use descriptive subheads so readers can follow the "layer-cake" pattern (scanning headings only). Treat the F-pattern as a reason to add structure, not as a placement guide for CTAs. [practitioner][1]
 - **The 80% fold figure is obsolete.** Nielsen's 2010 eyetracking found ~80% of viewing time above the fold. [practitioner][3][snippet-only]
-- **2018 update:** ~57% of viewing time was above the fold, and ~74% fell within the first two screenfuls (≤2160px). Attention still drops sharply after the fold, and that pattern was unchanged from 2010. [practitioner][4][snippet-only]
+- **2018 update:** ~57% of viewing time was above the fold, and ~74% fell within the first two screenfuls (≤2160px). Attention still drops sharply after the fold, and that pattern was unchanged from 2010. [practitioner][4][verified-search: nngroup.com, 2026-10-04]
 - **Operational rule:** put the value proposition and primary action in the first screen, but don't cram. Users do scroll, and attention falls off with distance rather than at a hard line. [practitioner][4]
 - **Banner blindness persists, including on mobile.** Users skip anything that looks like an ad, sits next to ads, or occupies ad-typical positions (top banner, right rail). The 2018 study saw some users skip Google's top-of-SERP text ads. One task had 26 participants on a single page. [practitioner][5][snippet-only]
 - **CRO implication:** don't style key offers, promos or CTAs as banners, and don't put them in the right rail. Ad-like styling hides real content. [practitioner][5]
@@ -61,23 +61,25 @@ Evidence tags: **[research]** peer-reviewed or a documented primary study with a
 
 ## 3. Checkout and forms: Baymard
 
-- **Cart abandonment average: ~70%.** Baymard's 2026 page states **70.22%**. Earlier 2024–25 snippets cite 70.19% from 49 studies.
+- **Cart abandonment average: ~70%.** Baymard's 2026 page ("50 Cart Abandonment Rate Statistics 2026") states **70.22%**, averaged over 50 studies [verified-search: baymard.com, 2026-10-04]. Earlier 2024–25 snippets cite 70.19% from 49 studies.
   - **How it is computed:** a simple average of the abandonment rates reported in ~50 third-party studies, 2006 onward. It is not weighted and not Baymard's own measurement. Studies differ in how they define "cart" and "abandonment".
   - Use it as a rough benchmark only. Don't compare it directly with your own analytics funnel. [practitioner][9][snippet-only]
 - **Not all abandonment is fixable.** About 42% of US shoppers have abandoned because they were "just browsing / not ready to buy". Baymard treats this as largely unavoidable and excludes it before ranking the fixable reasons. [practitioner][9][snippet-only]
-- **Top avoidable reasons** (Baymard survey of ~1,000 US adults; snippet sources disagree slightly by survey year):
-  - Extra costs too high (shipping, tax, fees): ~39–40%
-  - Site wanted me to create an account: ~18–19% (the 1,026-respondent survey gives 18%)
-  - Too long or complicated checkout: ~17%
-  - Couldn't see or calculate the total cost up-front: ~12%
-  - Card declined: ~10%
-  - Not enough payment methods: ~9%
-  - [practitioner][9][12][snippet-only]
+- **Top avoidable reasons** (Baymard 2025 survey, 1,026 US adults; [verified-search: baymard.com, 2026-10-04] for the 40/20/19/18/17 figures):
+  - Extra costs too high (shipping, tax, fees): 40%
+  - Delivery too slow: 20%
+  - Didn't trust the site with card information: 19%
+  - Site wanted me to create an account: 18%
+  - Too long or complicated checkout: 17%
+  - Couldn't see or calculate the total cost up-front: ~12% (not re-checked)
+  - Card declined: ~10% (not re-checked)
+  - Not enough payment methods: ~9% (not re-checked)
+  - [practitioner][9][12]
 - **Conflicting figures exist.** Some secondary sites cite 48% for extra costs and 26% for account creation, which are older Baymard survey waves. Always quote the year with the figure. [practitioner][snippet-only]
 - **Recoverable uplift: 35.26%.** Baymard claims the average large e-commerce site could raise conversion this much through better checkout design (about $260B in recoverable US+EU orders). This is a modelled estimate, not a measured result. [practitioner][9][snippet-only]
 - **Form fields:**
-  - The average checkout in 2024 had **11.3 form fields** (11.8 in 2021) and **5.1 steps**.
-  - Baymard says most sites need only **8 fields**.
+  - The average checkout in 2024 had **11.3 form fields** (11.8 in 2021) and **5.1 steps**. [verified-search: baymard.com, 2026-10-04]
+  - Baymard says most sites need only **8 fields**. [verified-search: baymard.com, 2026-10-04]
   - The average US checkout shows **23.48 form elements** by default. An ideal flow needs about 12 (7 fields, 2 checkboxes, 2 drop-downs, 1 radio group).
   - [practitioner][10][snippet-only]
 - **Guest checkout:**
@@ -109,17 +111,17 @@ Evidence tags: **[research]** peer-reviewed or a documented primary study with a
 
   | Metric | Good | Poor | Notes |
   |---|---|---|---|
-  | LCP | ≤2.5 s | >4 s | Verified-source for 2.5 s; 4 s is snippet-only [14][16] |
-  | INP | ≤200 ms | >500 ms | 200–500 ms "needs improvement" [15] |
-  | CLS | ≤0.1 | >0.25 | Verified-source for 0.1; 0.25 is snippet-only [14][16] |
+  | LCP | ≤2.5 s | >4 s | Verified-source for 2.5 s; 4 s verified-search: web.dev, 2026-10-04 [14][16] |
+  | INP | ≤200 ms | >500 ms | 200–500 ms "needs improvement"; >500 ms verified-search: web.dev, 2026-10-04 [15][16] |
+  | CLS | ≤0.1 | >0.25 | Verified-source for 0.1; 0.25 verified-search: web.dev, 2026-10-04 [14][16] |
 
   Each metric is assessed at the **75th percentile** of page loads, split by mobile and desktop. [research/Google docs][14][verified-source]
-- **INP replaced FID as a Core Web Vital on 12 March 2024.** Google announced the plan on 2023-05-10, and FID was deprecated with the switch. [15][verified-source for the announcement]; [snippet-only for the 12 March date]
+- **INP replaced FID as a Core Web Vital on 12 March 2024.** Google announced the plan on 2023-05-10, and FID was deprecated with the switch. [15][verified-source for the announcement]; 12 March 2024 date [verified-search: web.dev ("Interaction to Next Paint becomes a Core Web Vital on March 12"), 2026-10-04]
 - **"Milliseconds Make Millions" (Deloitte for Google, 2020):**
   - Data: 37 brands (retail, travel, luxury, lead-gen) in EU and US, ~30M sessions, 4 weeks.
   - Finding: a **0.1 s** mobile speed improvement was associated with **+8.4% conversions** and **+9.2% average order value** in retail, and **+10.1% conversions** and **+1.9% AOV** in travel.
   - Engagement also rose: page views +7% for lead-gen and +8% for luxury.
-  - [vendor-commissioned][17][snippet-only]
+  - [vendor-commissioned][17]; 37 brands / 4 weeks / 8.4% / 9.2% / 10.1% / 1.9% [verified-search: deloitte.com, 2026-10-04]; the +7%/+8% page-view figures were not re-checked.
 - **Caveats on that study:**
   - Google commissioned it, and Google benefits from a faster web.
   - It is observational and cross-site, not a randomized test, so slower and faster sites may differ in other ways.
@@ -168,9 +170,9 @@ Evidence tags: **[research]** peer-reviewed or a documented primary study with a
 
 ## Open questions / could not verify
 
-- No primary pages from NN/g, Baymard, web.dev or Think with Google could be fetched. All their figures are [snippet-only] except the web.dev threshold and announcement text read from the GitHub source.
-- The 2018 "Scrolling and Attention" author (Fessenden) is from memory. The 2006 F-pattern study's sample size (~232 users) was not confirmed.
-- Baymard reason percentages differ across survey waves (40/18 vs 48/26). The exact current list and year need a direct read.
+- No primary pages from NN/g, Baymard, web.dev or Think with Google could be fetched. On 2026-10-04, the priority figures (NN/g 57%/74%, Baymard 70.22%, 40/20/19/18/17 reasons, 11.3/8 fields, CWV poor thresholds, INP date, Deloitte figures) were confirmed via searches scoped to the owner's domain. Other figures remain [snippet-only].
+- The 2006 F-pattern study's 232 users is confirmed (nngroup.com search, 2026-10-04); Fessenden authorship of the 2018 article is confirmed.
+- Baymard's lower-ranked reasons (12% / 10% / 9%) were not re-checked against the 2025 survey.
 - I could not get the full "Milliseconds Make Millions" PDF to check its method (regression controls, how speed was attributed).
 - The original Silicon.com Expedia article was not located. The story stays [anecdote].
 - Not fetched this session:

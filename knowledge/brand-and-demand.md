@@ -9,10 +9,10 @@ tags: brand, brand awareness, performance marketing, binet field, 60/40, how bra
 From 996 IPA Effectiveness Awards campaigns (1980–2010):
 - **Activation** (sales-focused, targeted, rational): sharp short-term response that decays within weeks.
 - **Brand building** (broad reach, emotional, memorable): slow, compounding growth in baseline sales and pricing power. Pricing effects take 6+ months to show and keep growing past 3 years.
-- Best average balance across their most effective cases: about **60% brand / 40% activation** for B2C. The B2B cut (LinkedIn B2B Institute, 2019) is reported as about **46/54**; some summaries say 50/50.
+- Best average balance across their most effective cases: about **60% brand / 40% activation** for B2C. The B2B cut (LinkedIn B2B Institute, 2019) is **46/54** (brand/activation).
 - Optimal share varies by category (higher brand share in financial services, lower in perishable services like travel), brand size and life stage (Effectiveness in Context, 2018).
 - Emotional campaigns underperform rational ones on short-term response and outperform them after ~6 months.
-- **Excess share of voice** (share of voice − share of market) correlates with share growth; the often quoted rule is +10 points ESOV ≈ +0.5 points annual share growth. Use for direction, not as a forecast.
+- **Excess share of voice** (share of voice − share of market) correlates with share growth; the often quoted rule is +10 points ESOV ≈ +0.5 points annual share growth (LinkedIn reports ~0.7 for B2B vs ~0.6 for B2C). Use for direction, not as a forecast.
 
 **Limits:** awards entries are self-selected successes (survivorship bias), effects are self-reported, analysis is observational, and the data skews to large B2C advertisers. These are priors, not budget formulas.
 

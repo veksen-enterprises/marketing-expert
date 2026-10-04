@@ -17,14 +17,14 @@ Look at segment data before the page: conversion by traffic source, device and n
 ## How people actually read [practitioner, NN/g]
 
 - Scanning is the default. The F-pattern is one of several patterns (F, spotted, layer-cake, commitment); it appears when text lacks structure. It's a symptom of poor formatting, not a layout to design for. Front-load headings, paragraphs and bullets with the meaningful words.
-- **The fold**: NN/g eyetracking found ~80% of viewing time above the fold in 2010 and ~57% in 2018, with ~74% in the first two screenfuls. Put the value proposition and primary action on the first screen; people do scroll, but attention falls with distance.
+- **The fold**: NN/g eyetracking found ~80% of viewing time above the fold in 2010 and ~57% in 2018 (Fessenden), with ~74% in the first two screenfuls. Put the value proposition and primary action on the first screen; people do scroll, but attention falls with distance.
 - **Banner blindness**: users skip anything that looks like an ad or sits in ad positions. Don't style offers as banners or put key content in the right rail.
 - **Plain language** helps experts too. NN/g suggests roughly 8th-grade reading level for broad audiences. Readability formulas measure only sentence length and syllables per word, not comprehension; use analyze_copy as a signal, and test comprehension with users.
 
 ## Forms and checkout [practitioner, Baymard usability research]
 
 - Average documented cart abandonment ~70% (Baymard's simple average of ~50 third-party studies; definitions vary, so don't compare directly with your own funnel). A large share ("just browsing") isn't fixable.
-- Top fixable reasons in Baymard's US survey: unexpected extra costs (~39–48% depending on survey year), forced account creation (~18–26%), long/complicated checkout (~17%), can't see total cost up front (~12%).
+- Top fixable reasons in Baymard's 2025 US survey (1,026 adults): extra costs too high 40%, delivery too slow 20%, didn't trust the site with card details 19%, forced account creation 18%, long/complicated checkout 17%. Older survey waves give different figures; always quote the year.
 - Average checkout has ~11 form fields; Baymard says most need ~8. Make guest checkout the most prominent option; ask for account creation after purchase.
 - Inline validation helps when it validates after the user finishes a field, not while typing.
 - **Form length is about decisions and ambiguity, not raw count.** The famous Expedia "$12M company field" story (an ambiguous optional field caused card verification failures) is an anecdote with no published method. Removing fields can lower lead quality on lead-gen forms: measure downstream (qualified pipeline, revenue), not just submissions.

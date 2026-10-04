@@ -13,7 +13,7 @@ tags: email marketing, lifecycle, deliverability, spf, dkim, dmarc, unsubscribe,
 
 **Yahoo**: SPF or DKIM for all senders; bulk senders need both plus DMARC; complaints < 0.3%; one-click unsubscribe honoured within 2 days.
 
-**Microsoft Outlook.com/Hotmail** (5,000+/day, from May 2025): SPF pass, DKIM pass, DMARC at least p=none aligned. Non-compliant mail reported as rejected (550 5.7.515).
+**Microsoft Outlook.com/Hotmail** (5,000+/day, from May 2025): SPF pass, DKIM pass, DMARC at least p=none aligned. Non-compliant mail is rejected with error 550 5.7.515 (Microsoft first said it would go to Junk, then changed this).
 
 If any of this is missing, fix it before anything else in email: no content strategy survives the spam folder.
 
@@ -26,10 +26,10 @@ If any of this is missing, fix it before anything else in email: no content stra
 
 ## Metrics after Apple Mail Privacy Protection
 
-Apple MPP preloads images through a proxy, so opens fire whether or not a person read the email. Apple Mail is over half of tracked opens (Litmus 2025). Consequences:
+Apple MPP preloads images through a proxy, so opens fire whether or not a person read the email. Over half of tracked opens come from devices with MPP on (Litmus, data to Aug 2026). Consequences:
 - **Open rate is not a valid performance or A/B metric.** Don't pick subject-line winners by opens; don't define "engaged" by opens alone.
 - Use: click rate, click-to-conversion, revenue or conversions per recipient, replies, unsubscribe and complaint rates, and inbox placement.
-- Benchmarks: Klaviyo 2026 campaign click rate 1.69% (top 10%: 3.38%), flow click rate 5.58%; placed-order rate 0.16% for campaigns vs 2.11% for flows. Klaviyo customers only. The gap between campaigns and flows is the useful part: triggered, behaviour-based email outperforms broadcasts.
+- Benchmarks: Klaviyo 2026 campaign click rate 1.69% (top 10%: 3.38%), flow click rate 5.58% (top 10%: 10.48%). Klaviyo reports flows produce far more orders per recipient than campaigns (placed-order figures of 0.16% vs 2.11% circulate but weren't confirmed). Klaviyo customers only. The gap between campaigns and flows is the useful part: triggered, behaviour-based email outperforms broadcasts.
 
 ## Lifecycle programs by stage
 

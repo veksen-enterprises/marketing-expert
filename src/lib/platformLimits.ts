@@ -72,9 +72,9 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
     counting: "plain",
     source: "https://www.facebook.com/business/ads-guide/update/image/facebook-feed/link-clicks",
     fields: {
-      primary_text: { recommended: 150, verified: false, note: "Meta recommends 50–150; truncation before 'See more' varies by placement" },
-      headline: { recommended: 27, verified: true, note: "recommended length; hard max unverified" },
-      description: { verified: false, note: "often hidden depending on placement" },
+      primary_text: { recommended: 150, verified: true, note: "Meta Ads Guide recommends 50–150 (re-checked 2026-10-04). No hard max or ~125 'See more' cut-off published by Meta; third-party 2,200/125 figures unconfirmed" },
+      headline: { recommended: 27, verified: true, note: "recommended length (Meta Ads Guide, re-checked 2026-10-04); hard max not published by Meta (third-party sites claim 255)" },
+      description: { verified: false, note: "no feed-image description length found in Meta Ads Guide; often hidden depending on placement" },
     },
   },
   meta_carousel: {
@@ -92,7 +92,7 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
     counting: "plain",
     source: "https://www.linkedin.com/help/lms/answer/a426534",
     fields: {
-      intro_text: { max: 600, recommended: 150, verified: false, note: "hard max reported as 600 (some sources say 3,000); ~150 avoids truncation" },
+      intro_text: { max: 600, recommended: 150, verified: false, note: "150 to avoid truncation confirmed on linkedin.com 2026-10-04; hard max unresolved: linkedin.com snippets show both 600 and 3,000. 600 kept as the conservative cap" },
       headline: { max: 200, recommended: 70, verified: true },
       description: { max: 300, recommended: 100, verified: true, note: "only shown in some placements" },
     },

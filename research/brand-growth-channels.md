@@ -8,7 +8,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 2. Binet, L. & Field, P. *Media in Focus: Marketing Effectiveness in the Digital Era*. IPA, 2017. https://www.thinkbox.tv/research/thinkbox-research/marketing-effectiveness-in-the-digital-era-media-in-focus
 3. Binet, L. & Field, P. *Effectiveness in Context: A Manual for Brand Building*. IPA, 2018 (ISBN 9780852941454). Field deck: https://thinktv.ca/wp-content/uploads/2018/10/Peter-Field_Effectiveness-in-Context.pdf
 4. Binet, L. & Field, P. / LinkedIn B2B Institute. *The 5 Principles of Growth in B2B Marketing*. 2019. https://business.linkedin.com/advertise/resources/b2b-institute/marketing-as-growth ; IPA page: https://ipa.co.uk/effworks/marketing-marketing-v2/five-principles-of-growth-in-b2b-marketing
-5. Dawes, J. (Ehrenberg-Bass) for LinkedIn B2B Institute. *Advertising Effectiveness and the 95-5 Rule*. 2021. Discussed at https://marketingscience.info/news-and-insights/the-955-rule-why-b2b-growth-starts-long-before-the-purchase
+5. Dawes, J. (Ehrenberg-Bass) for LinkedIn B2B Institute. *Advertising effectiveness and the 95-5 rule: most B2B buyers are not in the market right now*. 2021. PDF: https://business.linkedin.com/content/dam/me/business/en-us/marketing-solutions/resources/pdfs/advertising-effectiveness-and-the-95-5-rule.pdf (title verified-search: marketingscience.info, 2026-10-04; PDF URL from a search relay, not opened). Discussed at https://marketingscience.info/news-and-insights/the-955-rule-why-b2b-growth-starts-long-before-the-purchase
 6. Sharp, B. *How Brands Grow*. Oxford University Press, 2010. https://www.researchgate.net/publication/259196911_How_Brands_Grow
 7. Romaniuk, J. & Sharp, B. *How Brands Grow Part 2*. OUP, 2015/2016 (ISBN 9780195596267).
 8. Romaniuk, J. *Building Distinctive Brand Assets*. OUP, 2018.
@@ -37,8 +37,8 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 - Operational: do not judge brand campaigns on short-term ROI windows (6 months or less). Fund both modes at once, because activation converts the demand that brand building creates.
 
 **Share of voice (ESOV)**
-- Brands whose share of voice exceeds their share of market tend to grow. Rule of thumb: **+10 pts ESOV ≈ +0.5 pt annual market-share growth** on average [snippet-only via secondary summaries; originally Field/IPA, building on Jones 1990 — not verified].
-- B2B: a secondary source says 10 pts ESOV ≈ +0.7%/yr in B2B vs 0.6% in B2C [secondary; unverified against [4]]. Principle #1 of the B2B report is "invest in share of voice" [4] [snippet-only].
+- Brands whose share of voice exceeds their share of market tend to grow. Rule of thumb: **+10 pts ESOV ≈ +0.5 pt annual market-share growth** on average — Binet & Field analysis of IPA cases (search relay: 171 campaigns, 1980–2010); leaders gain more per point than challengers (~1.4 vs ~0.4 per 10 pts, same relay) [verified-search: ipa.co.uk, 2026-10-04 — snippet drawn from an IPA-hosted document, primary deck not opened; the Jones 1990 lineage remains unverified].
+- B2B: the LinkedIn B2B Institute / Binet & Field B2B work reports 10 pts ESOV ≈ +0.7%/yr market-share growth in B2B vs 0.6% in B2C [verified-search: linkedin.com (B2B Institute posts), 2026-10-04]. Note the B2C 0.6 here differs from the classic 0.5 rule of thumb (different dataset/cut). Principle #1 of the B2B report is "invest in share of voice" [4] [snippet-only].
 - Operational: compute ESOV = SOV − SOM. Use it to set budget against competitors, not as a precise forecast.
 
 **Media in Focus (2017) [2]**
@@ -53,7 +53,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 **B2B (2019, LinkedIn B2B Institute) [4]**
 - Data: IPA Databank B2B cases, **1998–2018**. LinkedIn calls it the first B2B cut of the IPA data [4] [snippet-only].
 - Five principles: (1) invest in share of voice; (2) balance brand and activation; (3) expand the customer base, because acquisition beats loyalty; (4) maximise mental availability, since fame and share of mind campaigns are most effective; (5) harness emotion, which wins long term while rational messaging wins short term [4] [snippet-only].
-- Ratio: widely reported as **~46% brand / 54% activation** for B2B [The Drum exclusive; LinkedIn blog], though some summaries say "50/50" [snippet-only; conflict unresolved]. Reported rationale: longer purchase cycles and buying groups give activation more time to convert, and narrower targetable markets help [secondary].
+- Ratio: **46% brand / 54% activation** for B2B, stated on the LinkedIn B2B Institute page for *The 5 Principles of Growth in B2B Marketing* [verified-search: business.linkedin.com, 2026-10-04]. "50/50" summaries are rounding or misreports; do not use them. Reported rationale: longer purchase cycles and buying groups give activation more time to convert, and narrower targetable markets help [secondary].
 - Broad reach across all category buyers outperformed loyalty-only or acquisition-only targeting [4] [snippet-only].
 
 **Evidence quality: Binet & Field**
@@ -86,6 +86,8 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 - Strong for descriptive empirical regularities (double jeopardy, Pareto 60/20, NBD-Dirichlet), which are peer-reviewed and replicated. Weaker for causal prescriptions (reach > targeting, distinctiveness > differentiation), which are inferred from the patterns. B2B and startup evidence is thinner.
 
 ## 3. The 95-5 rule (Dawes, 2021) [5]
+
+- Title: "Advertising effectiveness and the 95-5 rule: most B2B buyers are not in the market right now" (LinkedIn B2B Institute, 2021) [verified-search: marketingscience.info, 2026-10-04].
 
 - Derivation: firms switch providers like their main bank or law firm "around once every five years", so ~20% are in-market per year and "something like 5% in a quarter". So 95% are not in-market in a given quarter [5] [snippet-only, quote via CustomerThink/marketingscience.info].
 - It is an **illustrative arithmetic** from purchase-cycle length, not a measured universal constant. The percentage scales with each category's repurchase interval.
@@ -132,18 +134,18 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 
 ## 6. Synthesis for the MCP (our inference, flagged)
 
-- Default stance: "and not or". Fund brand reach to all category buyers, at a share that depends on context: ~60/40 B2C benchmark and ~46/54 reported for B2B. Run activation against in-market demand.
+- Default stance: "and not or". Fund brand reach to all category buyers, at a share that depends on context: ~60/40 B2C benchmark and 46/54 for B2B (confirmed on business.linkedin.com, 2026-10-04). Run activation against in-market demand.
 - At startup stage, channel fit (Bullseye + Four Fits) comes before brand budget. Build distinctive assets and CEP associations into every activation asset, so performance spend also does some memory work.
 - Re-test channels on a schedule, because of channel decay [15]. Judge brand on 6–36 month windows [1].
 
 ## Open questions / could not verify
 
-- No primary PDF could be opened (proxy). The exact B2B ratio needs checking against [4]: 46:54 vs "50/50" both appear.
+- No primary PDF could be opened (proxy). Resolved 2026-10-04 via domain-scoped search: B2B 46:54, ESOV 10:0.5 (IPA) and B2B 0.7 vs B2C 0.6 (LinkedIn), Dawes 2021 title.
 - Effectiveness in Context category ratios (financial services ~80% brand max, online ~50/50, new launch ~70:30) were not verified. Only the "brand peaks in financial services / lowest in travel; activation ≤56%" claim came via a single summary.
-- The original source and exact coefficients of the ESOV 10:0.5 rule were not verified, nor were the B2B 0.7 vs B2C 0.6 figures. Field's attribution vs Jones (1990) is unconfirmed.
+- Field's attribution vs Jones (1990) for the ESOV rule is unconfirmed; the 171-campaign / 1980–2010 base comes from one search relay.
 - Thomaz's peer-reviewed paper (journal, year) was not located. Only press coverage was seen.
 - The year of Chen's post (believed 2012) and the exact HotWired CTR are unconfirmed.
 - The date of Balfour's original Four Fits essay (believed 2017) and the "avoid the middle" claim were not confirmed from primary text.
-- The Dawes 2021 paper's exact title and URL on LinkedIn were not opened. The quote came via secondary reproduction.
+- The Dawes 2021 PDF was not opened; the 5-year/20%/5% derivation quote still comes via secondary reproduction.
 - PLG ACV thresholds have no primary research source. Treat them as heuristics.
 - No independent (non-awards) replication of 60:40 was found.
