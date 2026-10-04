@@ -51,9 +51,9 @@ describe.skipIf(!built)("MCP server over stdio", () => {
   });
 
   it("returns tool errors, not crashes", async () => {
-    const r = await call("unit_economics", { arpaMonthly: 100, grossMargin: 0.8, monthlyChurn: 0.02 });
+    const r = await call("market_size", { segments: [{ name: "x", accounts: 0, annualValue: 10 }] });
     expect(r.isError).toBe(true);
-    expect(r.text).toMatch(/provide cac/);
+    expect(r.text).toMatch(/Too small|must be > 0/);
     const p = await call("get_playbook", { slug: "nope" });
     expect(p.isError).toBe(true);
   });
