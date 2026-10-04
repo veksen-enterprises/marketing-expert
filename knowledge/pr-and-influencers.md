@@ -76,13 +76,13 @@ If an idea passes none of these, put it on your blog instead.
 - Benefit: you can test creator content as ads, target it, and scale the posts that work. Contract for it explicitly: duration, spend limits, and who approves edits.
 - Turn the best creator content into ads only after checking it with paid-acquisition testing rules.
 
-### FTC disclosure rules (United States) [first-party]
+### FTC disclosure rules (United States) [first-party; verified-search: ftc.gov, federalregister.gov, 2026-10-04]
 
 - The FTC updated its **Endorsement Guides** (16 CFR Part 255) in June 2023 (published in the Federal Register on 26 July 2023). Key changes: a definition of "clear and conspicuous"; a statement that a platform's built-in disclosure tool may not be enough; endorsements now explicitly cover fake reviews, virtual influencers and social media tags; clearer liability for advertisers, endorsers and intermediaries (for example agencies); special concern for advertising aimed at children; and rules on incentivised, employee and suppressed reviews.
 - **Disclose any "material connection"**: payment, free or discounted products, employment, or family or personal relationships with the brand.
 - **How to disclose** (FTC "Disclosures 101 for Social Media Influencers"): use plain words such as "ad", "advertisement" or "sponsored" (#ad is fine); put it in the post itself, not only in a bio or behind "more"; in videos, say it and show it on screen, not only in the description; in image-based stories, place it over the image long enough to read.
 - **The brand is responsible too**: give creators written disclosure instructions, monitor posts, and correct problems.
-- **Consumer Reviews and Testimonials Rule** (in force 21 October 2024): bans fake reviews and testimonials (including AI-generated ones, and ones from people who didn't use the product), paying for reviews of a particular sentiment, and undisclosed insider reviews. It lets the FTC seek civil penalties; the FTC's Q&A cited up to $53,088 per violation (the amount is adjusted for inflation). The FTC sent warning letters to 10 companies under the rule in December 2025.
+- **Consumer Reviews and Testimonials Rule** (in force 21 October 2024): bans fake reviews and testimonials (including AI-generated ones, and ones from people who didn't use the product), paying for reviews of a particular sentiment, and undisclosed insider reviews. It lets the FTC seek civil penalties; the FTC's Q&A cited up to $53,088 per violation (normally adjusted for inflation each year; there was no 2026 adjustment, so this figure still applies). The FTC sent warning letters to 10 companies under the rule on 22 December 2025.
 - Other countries have their own rules (for example the UK CAP Code and ASA guidance); check local rules before campaigns outside the US [not re-verified this session].
 
 ## Measuring PR and influencer work

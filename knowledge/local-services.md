@@ -19,7 +19,7 @@ Detailed tactics (categories, citations, service-area setup, website location pa
 
 ## Reviews: getting them and answering them
 
-**The rules (US).** The FTC Rule on the Use of Consumer Reviews and Testimonials (announced Aug 2024, in force **21 Oct 2024**) bans fake reviews (including AI-written ones and reviews from people with no real experience), buying reviews, rewards **conditioned on a positive (or negative) review**, undisclosed reviews from insiders, and review suppression. Civil penalties can reach **$53,088 per violation**. The FTC sent warning letters to 10 companies in Dec 2025. [first-party]
+**The rules (US).** The FTC Rule on the Use of Consumer Reviews and Testimonials (announced Aug 2024, in force **21 Oct 2024**) bans fake reviews (including AI-written ones and reviews from people with no real experience), buying reviews, rewards **conditioned on a positive (or negative) review**, undisclosed reviews from insiders, and review suppression. Civil penalties can reach **$53,088 per violation** (unchanged for 2026). The FTC sent warning letters to 10 companies in Dec 2025. [first-party; verified-search: ftc.gov, 2026-10-04]
 
 **Google's rules are stricter than the FTC's.** Google bans **any** incentive for a review (discount, gift, entry into a draw), even if it does not depend on sentiment; bans **review gating** (asking happy customers to review and sending unhappy ones to a private form); and bans pressuring customers to review on the premises. Penalties include blocking new reviews, removing existing ones, and a public warning on the profile. [first-party]
 

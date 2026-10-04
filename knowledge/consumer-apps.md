@@ -19,29 +19,30 @@ Before spending on growth, check whether people stay. Paying to acquire users wh
 ASO means improving how an app ranks in store search and how many store visitors install it. Two levers: being found (metadata) and converting the visit (product page).
 
 **Apple App Store** [first-party]:
-- Name, subtitle and the hidden keyword field drive search ranking; widely cited limits are 30, 30 and 100 characters. [first-party, not re-verified]
+- Name, subtitle and the hidden keyword field drive search ranking; limits are 30, 30 and 100 characters. [first-party]
 - Up to **10 screenshots** and **3 app preview videos** per localisation. When there is no preview video, the **first one to three screenshots appear in search results**, so they must explain the app on their own.
 - **Product page optimization**: test up to **three alternative** icons, screenshot sets or previews against the original, then apply the winner.
 - **Custom product pages**: extra versions of the page with their own screenshots, previews and promotional text, reached by unique URLs. Use one per ad theme or audience so the page matches the ad. They cannot be used in product page optimization tests.
 
-**Google Play**: title, short description and full description are indexed for search (commonly cited limits: 30, 80 and 4,000 characters), and store listing experiments test graphics and text. [first-party, not re-verified]
+**Google Play**: title, short description and full description are indexed for search (limits: 30, 80 and 4,000 characters), and store listing experiments test graphics and text. [first-party; experiments not re-verified]
 
 **Ratings prompts** [first-party]:
 - iOS: the system review prompt (SKStoreReviewController / requestReview) is shown **at most three times per user in 365 days**, whatever your code calls. Apple decides whether it appears.
 - Android: the Play In-App Review API has a time-bound quota whose size Google does not publish and may change; calling it more than once in a short period (for example under a month) may show nothing. Do not attach it to a button, because the dialog may not appear.
-- Both: ask after a moment of success (task completed, streak reached), never on first launch or after an error. Asking only happy users through a pre-screen is a common practice but check each store's current rules before filtering. [practitioner]
+- Both: ask after a moment of success (task completed, streak reached), never on first launch or after an error. [practitioner]
+- **Don't pre-screen.** Google says your app must not ask any question before or while showing the Play review card, including "Do you like the app?" or "Would you rate this 5 stars?". Apple's guidelines require its system API and disallow custom review prompts. A "happy users only" filter in front of the store prompt breaks Google's rule and is risky on iOS. [first-party]
 - General copy and landing-page conversion principles also apply to store pages (see **landing-pages-and-cro** and **messaging-and-copy**).
 
 ## Paid user acquisition after ATT
 
 General paid-media math and creative rules are in **paid-acquisition**; app-specific points:
 - **App Tracking Transparency (ATT)**, since iOS 14.5, requires opt-in before an app may track users across other companies' apps. Opt-in averages roughly a third of users (Adjust, 2025; see **paid-acquisition**). [vendor]
-- Without opt-in, iOS install attribution comes from Apple's privacy frameworks: **SKAdNetwork** and its successor **AdAttributionKit** (iOS 17.4+ [not re-verified]). They send ad networks delayed, aggregated "postbacks" (reports) with a limited "conversion value" you define, such as tutorial complete or trial started. AdAttributionKit adds **re-engagement** attribution (ads that bring existing users back), with multiple active re-engagement windows since iOS 18.4. [first-party]
+- Without opt-in, iOS install attribution comes from Apple's privacy frameworks: **SKAdNetwork** and its successor **AdAttributionKit** (iOS 17.4+). They send ad networks delayed, aggregated "postbacks" (reports) with a limited "conversion value" you define, such as tutorial complete or trial started. AdAttributionKit adds **re-engagement** attribution (ads that bring existing users back), with multiple active re-engagement windows since iOS 18.4. [first-party]
 - Consequences:
   - Choose conversion values that predict revenue in the **first days**, because later events arrive late or not at all.
   - Expect platform-reported results to be **modelled and delayed**. Judge spend by blended cost per payer and by incrementality tests (geo or holdout; see **metrics-and-measurement** and **experimentation**).
   - Match each ad to a custom product page and measure page conversion.
-- Apple Ads (formerly Apple Search Ads; renamed 2025 [not re-verified]), shown in App Store search, captures existing intent and is usually the first paid channel to test for an app with clear search demand. [practitioner]
+- Apple Ads (formerly Apple Search Ads; renamed April 2025), shown in App Store search, captures existing intent and is usually the first paid channel to test for an app with clear search demand. [practitioner]
 
 ## Virality and referral
 
@@ -70,8 +71,8 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 
 ## Web-to-app funnels after the 2025 US ruling
 
-- On **30 April 2025** a US federal court (Epic v. Apple) found Apple in contempt of a 2021 injunction, and ordered it to stop limiting links and buttons that send users to outside payment, and to stop charging a commission on those purchases. Apple updated its App Review Guidelines on **1 May 2025**: apps on the **US storefront** may include buttons, links and other calls to action to the developer's own website for purchases, without a special entitlement. [first-party / court record]
-- In **Dec 2025** the Ninth Circuit Court of Appeals upheld the contempt finding but sent the **total ban on any commission** back to the lower court. On **30 June 2026** the US Supreme Court agreed to hear Apple's appeal (No. 25-1311); a decision is expected during the term that starts Oct 2026. **Whether Apple may charge a fee on linked-out US purchases is not settled.** Check current terms before building a business case on it. [court record]
+- On **30 April 2025** a US federal court (Epic v. Apple) found Apple in contempt of a 2021 injunction, and ordered it to stop limiting links and buttons that send users to outside payment, and to stop charging a commission on those purchases. Apple updated its App Review Guidelines on **1 May 2025**: apps on the **US storefront** may include buttons, links and other calls to action to the developer's own website for purchases, without a special entitlement. [first-party / court record; verified-search: apple.com, uscourts.gov, 2026-10-04]
+- On **11 Dec 2025** the Ninth Circuit Court of Appeals upheld the contempt finding (a 27% commission on linked purchases broke the injunction) but found parts of the lower court's restrictions too broad, including the **total ban on any commission**, and sent them back. On **30 June 2026** the US Supreme Court agreed to hear Apple's appeal (No. 25-1311), limited to one of Apple's questions. Apple filed its brief on 14 Sept 2026; Epic's brief is due 13 Nov 2026, so argument has not happened yet. A decision is expected before the term ends in mid-2027. **Whether Apple may charge a fee on linked-out US purchases is not settled.** Check current terms before building a business case on it. [court record; verified-search: supremecourt.gov, uscourts.gov, 2026-10-04]
 - Other countries follow different rules; this section covers the US storefront only. See **platform-and-feature-risk** for planning around platform rule changes.
 - Practical use:
   - **Web checkout for US users** can keep more revenue per sale and gives you the customer's email, but expect lower conversion than one-tap in-app purchase. Test both; measure revenue per user, not margin per sale.
@@ -83,7 +84,7 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 | Stage | Focus | Typical actions |
 |---|---|---|
 | Pre-launch / beta | Prove a flattening retention curve | Small cohorts from communities and friends; instrument activation; skip paid UA |
-| Early (first retained cohort) | Cheap, intent-led installs | ASO basics; Apple Search Ads on clear-intent keywords; build referral into the core loop; ratings prompt after success moments |
+| Early (first retained cohort) | Cheap, intent-led installs | ASO basics; Apple Ads on clear-intent keywords; build referral into the core loop; ratings prompt after success moments |
 | Growth | Scale paid with discipline | Conversion values tied to early revenue; custom product pages per ad; incrementality tests; paywall and trial experiments; web-to-app funnel for US |
 | Mature | Retention and monetisation | Win-back and re-engagement ads; plan mix and price tests; notification relevance; localisation of store pages |
 

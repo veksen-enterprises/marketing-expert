@@ -22,8 +22,8 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 
 ## Legal rules (summary, not legal advice)
 
-**United States: CAN-SPAM** [first-party, FTC]
-- No consent needed before the first commercial email, but: honest "From" and subject line, identify the message as an ad, a valid physical postal address, a clear way to opt out, and honour opt-outs within 10 business days. Penalties up to $53,088 per violating email (FTC figure, adjusted for inflation).
+**United States: CAN-SPAM** [first-party, FTC; verified-search: ftc.gov, 2026-10-04]
+- No consent needed before the first commercial email, but: honest "From" and subject line, identify the message as an ad, a valid physical postal address, a clear way to opt out, and honour opt-outs within 10 business days. Penalties up to $53,088 per violating email (FTC figure; normally adjusted for inflation each year, but there was no 2026 adjustment, so it still applies).
 
 **United Kingdom: PECR + UK GDPR** [first-party, ICO]
 - Emails to **corporate subscribers** (companies, LLPs, some government bodies) do not need prior consent under PECR. You must identify yourself and give a valid opt-out address.
@@ -37,7 +37,7 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 - **Germany (UWG §7)**: advertising email generally needs prior express consent, **including B2B**. Treat Germany as opt-in only.
 - Check each target country's rules before sending.
 
-**Canada: CASL** [first-party, CRTC]
+**Canada: CASL** [first-party, CRTC; verified-search: crtc.gc.ca, 2026-10-04]
 - Commercial electronic messages need express or implied consent, sender identification and an unsubscribe mechanism.
 - One form of implied consent: the person **conspicuously published** their address (e.g. on a company website) without a "no unsolicited messages" statement, **and** your message is relevant to their business role. The sender must prove consent.
 - Maximum penalty per violation: C$1M for individuals, C$10M for businesses.

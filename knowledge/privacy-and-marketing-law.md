@@ -14,19 +14,20 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 - **Refusing must be as easy as accepting** [first-party]:
   - The EDPB Cookie Banner Taskforce report (January 2023): a vast majority of EU authorities said that a banner with an "accept" button but no "reject" option on the same layer is an infringement.
   - The French CNIL fined Google €150M and Facebook €60M (announced January 2022) because accepting took one click but refusing took several.
+- **UK change** [first-party]: the Data (Use and Access) Act 2025 lets UK sites set some low-risk cookies without consent, including analytics cookies used only to collect statistics to improve the service. Its data protection provisions were all in force by 19 June 2026. Read the ICO's list of exceptions and their conditions before dropping consent for analytics; ad and tracking pixels still need consent. [verified-search: ico.org.uk, gov.uk, 2026-10-04]
 - **Practical design**: "Accept all" and "Reject all" on the first layer, same size and weight; no tracker fires before a choice; a link to change the choice on every page; re-test after tag changes.
 - **Measurement effect**: refusals remove data. Use Google Consent Mode v2 (required for EEA ads measurement and remarketing since March 2024; see paid-acquisition) and server-side tagging only within consent.
 - **Tag audit**: list every script, its owner, and what data goes to which vendor.
 
 ## US state privacy laws and opt-out signals
 
-- **Number of states** [secondary; not re-verified on each statute]: the IAPP tracker (updated September 2026, via search snippet) counts 20 states with comprehensive privacy laws in force, including Indiana, Kentucky and Rhode Island from 1 January 2026, plus Alabama, Louisiana, Oklahoma and Vermont enacted in 2026 but not yet in force (24 enacted).
+- **Number of states** [secondary; Oklahoma date verified-search: okhouse.gov, 2026-10-04]: 24 states have enacted comprehensive privacy laws. About 20 are in force (trackers say 19 or 20, depending on whether Florida's narrower law counts), including Indiana, Kentucky and Rhode Island from 1 January 2026. Four were signed in 2026 and are not yet in force: Oklahoma and Louisiana (1 January 2027), Alabama (1 May 2027) and Vermont (1 January 2028).
 - **California (CCPA as amended by CPRA)** [first-party]:
   - Consumers can opt out of the "sale" or "sharing" of personal information. "Sharing" covers cross-context behavioural advertising, so normal ad pixels and retargeting audiences are usually in scope.
   - You need a "Do Not Sell or Share My Personal Information" link (or alternative) and must honour browser opt-out signals such as **Global Privacy Control (GPC)**.
 - **Sephora (California AG, August 2022)** [first-party]: $1.2M settlement. Alleged failures: not disclosing that it sold data (via ad and analytics trackers), not processing GPC opt-outs, and not curing within 30 days.
 - **Symmetry and dark patterns** [first-party]:
-  - The California Privacy Protection Agency fined American Honda $632,500 (March 2025). The issues: asking for too much information to opt out, an opt-out tool without symmetrical choices, and barriers for authorised agents.
+  - The California Privacy Protection Agency fined American Honda $632,500 (March 2025). The issues: asking for too much information to opt out, an opt-out tool without symmetrical choices, and barriers for authorised agents. In May 2025 it fined retailer Todd Snyder $345,178, partly for making people verify their identity before they could opt out of sale or sharing. [verified-search: cppa.ca.gov, 2026-10-04]
   - CPPA guidance: an opt-out that needs more steps than opting in is not symmetrical; "Accept all" vs "Decline all" is.
 - California, Colorado and Connecticut ran a joint 2025 sweep on businesses that ignore opt-outs [first-party].
 - **Practical**: treat GPC as an opt-out of sale/share for that browser (and known user); suppress ad pixels and audiences for them.
@@ -76,7 +77,7 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Subscriptions, auto-renewal and cancellation
 
-- The FTC's "click-to-cancel" Negative Option Rule was **vacated** by the US Eighth Circuit Court of Appeals on 8 July 2025, before it took effect, on procedural grounds [secondary, multiple law-firm summaries]. The FTC can still act under the FTC Act and ROSCA. State automatic renewal laws (for example California's) remain and can be stricter [secondary; not re-verified].
+- The FTC's "click-to-cancel" Negative Option Rule was **vacated** by the US Eighth Circuit Court of Appeals on 8 July 2025, before it took effect, because the FTC skipped a required preliminary regulatory analysis. In February 2026 the FTC restored the rule's older text, and on 13 March 2026 it published an Advance Notice of Proposed Rulemaking asking whether a new rule is needed (comments closed 13 April 2026). No federal click-to-cancel rule is in force. [verified-search: ftc.gov, federalregister.gov, 2026-10-04] The FTC can still act under the FTC Act and ROSCA. State automatic renewal laws (for example California's) remain and can be stricter [secondary; not re-verified].
 - Safe practice: show price, renewal frequency and how to cancel before checkout; get express consent to the renewal; send renewal reminders; let people cancel online as easily as they signed up. Flow design: see retention-and-expansion.
 
 ## Dark patterns (brief)
@@ -85,19 +86,19 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Accessibility of marketing sites
 
-- **European Accessibility Act** [first-party]: applies from **28 June 2025** to covered products and services newly placed on the market, including e-commerce services. Microenterprises providing services (fewer than 10 staff and turnover or balance sheet up to €2M) are exempt.
+- **European Accessibility Act** [first-party; verified-search: ec.europa.eu, 2026-10-04]: applies from **28 June 2025** to covered products and services newly placed on the market, including e-commerce services. Microenterprises providing services (fewer than 10 staff and turnover or balance sheet up to €2M) are exempt.
 - **US (ADA Title III)** [secondary, Seyfarth Shaw data via search]: 3,117 federal website-accessibility lawsuits in 2025, up 27% from 2,452 in 2024. State-court filings push the total above 5,000 (vendor-relayed estimate).
 - **Standard**: build to **WCAG 2.2 level AA** [first-party, W3C; not re-verified]. Common failures: low contrast, missing text alternatives, uncaptioned video, keyboard traps in pop-ups and cookie banners. Scanners find only part of the problems; test with a keyboard and a screen reader. "Overlay" widgets do not make a site compliant [practitioner].
 
 ## AI-generated content
 
-- **EU AI Act Art. 50** [secondary, several law-firm and vendor summaries; not verified on EUR-Lex]: transparency obligations apply from **2 August 2026**. The 2026 AI Digital Omnibus delayed high-risk rules but not Art. 50, except a grace period to 2 December 2026 for the machine-readable marking duty on generative-AI providers (Art. 50(2)). Deployers must disclose deepfakes (realistic synthetic images, audio or video of real people, places or events) and AI-generated text published to inform the public on matters of public interest, unless it had human editorial review.
-- **US (FTC Operation AI Comply, September 2024)** [first-party]: an enforcement sweep against deceptive AI claims. DoNotPay ("robot lawyer") paid $193,000. The FTC set aside the Rytr order (AI review generator) in December 2025, but fake reviews remain illegal under the reviews rule (see pr-and-influencers).
+- **EU AI Act Art. 50** [first-party; verified-search: digital-strategy.ec.europa.eu, 2026-10-04]: transparency obligations apply from **2 August 2026**. The AI Omnibus (in force 27 July 2026) delayed the high-risk rules to 2 December 2027 and 2 August 2028, but not Art. 50. The only grace period is for generative-AI systems already on the market before 2 August 2026: their providers have until 2 December 2026 to add machine-readable marking (Art. 50(2)). Systems launched after 2 August 2026 must comply from launch. Deployers must disclose deepfakes (realistic synthetic images, audio or video of real people, places or events) and AI-generated text published to inform the public on matters of public interest, unless it had human editorial review.
+- **US (FTC Operation AI Comply, September 2024)** [first-party; verified-search: ftc.gov, 2026-10-04]: an enforcement sweep against deceptive AI claims. DoNotPay ("robot lawyer") paid $193,000. The FTC set aside the Rytr order (AI review generator) in December 2025, but fake reviews remain illegal under the reviews rule (see pr-and-influencers).
 - **Practical**: prove any "AI-powered" result claim; label synthetic people and voices; no AI testimonials.
 
 ## Children
 
-- **COPPA amended rule** [first-party]: published 22 April 2025, effective about 60 days later, full compliance by **22 April 2026**. Key change: **separate verifiable parental consent** before disclosing children's data to third parties such as advertisers.
+- **COPPA amended rule** [first-party; verified-search: ftc.gov, federalregister.gov, 2026-10-04]: published 22 April 2025, effective 23 June 2025, compliance required for most provisions from **22 April 2026**. Key change: **separate verifiable parental consent** before disclosing children's data to third parties such as advertisers.
 
 ## Pre-launch checklist
 
