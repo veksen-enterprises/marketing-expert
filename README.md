@@ -16,6 +16,8 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 |---|---|
 | `ab_test_sample_size` | Per-arm sample for a two-proportion test; duration from daily traffic; flags tests too long to run and gives the MDE you *can* detect in 4 weeks |
 | `ab_test_evaluate` | z-test, p-value, CI on absolute and relative lift, P(variant > control), sample ratio mismatch, peeking / Twyman's law warnings |
+| `ab_test_means_sample_size` / `ab_test_means_evaluate` | Same for revenue per visitor, order value and other continuous metrics: Welch's t-test from raw values or summary stats, optional outlier capping at a percentile, skew warnings, CUPED-style variance reduction in sample size |
+| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Persistent business context (product, best-fit customers, alternatives, differentiators, pricing, dated metrics, voice) stored as JSON in `~/.marketing-expert/profiles/` (override with `MARKETING_EXPERT_DATA_DIR`). Reports missing fields and stale metrics. Also exposed as `marketing://profile/{name}` |
 | `unit_economics` | LTV (simple and horizon-bounded), LTV:CAC, simple and churn-adjusted CAC payback, with warnings where the formulas mislead |
 | `paid_media_math` | Break-even ROAS/CPA, max CPC, implied CPA/ROAS from CPC or CPM+CTR, budget projection, verdict |
 | `market_size` | Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity / acquisition budget with churn, top-down cross-check, and the share of the market a revenue target requires |
@@ -83,7 +85,6 @@ Before anyone quotes a number from a playbook as fact, re-verify it against the 
 
 ## Not built yet
 
-- Persistent brand context (ICP, positioning, voice, competitors) stored per project so every tool call uses it.
 - Live data connectors (GA4, Search Console, ad platforms) so diagnosis runs on real numbers.
-- Revenue-per-visitor / continuous-metric tests (t-test, CUPED), sequential testing.
+- Sequential (always-valid) testing for teams that monitor tests continuously.
 - Rendering client-side pages in `audit_page` (currently server HTML only).

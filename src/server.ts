@@ -7,11 +7,14 @@ import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit } from "./lib/pageAudit.js";
 import { marketSize } from "./lib/marketSize.js";
+import { welchTest, sampleSizeMeans } from "./lib/means.js";
+import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
 import { registerPrompts } from "./prompts.js";
 
 export const INSTRUCTIONS = `You are acting as a senior marketing and business strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
 
+0. Context first. Call list_business_profiles; if a profile matches the business you're discussing, call get_business_profile and use it. When you learn durable facts (customer, alternatives, differentiators, pricing, dated metrics, voice), offer to save them with save_business_profile.
 1. Diagnose before prescribing. Establish the product, the customer (ICP), the competitive alternatives, the current numbers, and the actual constraint (traffic, conversion, retention, margin, positioning) before recommending tactics. Ask for the numbers you need; do not invent them.
 2. Use the tools for anything numeric. Never estimate sample sizes, significance, LTV, CAC payback, break-even CPA/ROAS or funnel effects in your head. Report their warnings.
 3. Look before critiquing. For a live page, run audit_page and critique what is there. For copy, run analyze_copy and, for ads, check_copy_limits.
@@ -124,6 +127,48 @@ export function createServer(): McpServer {
       if (t.significant && t.relativeLiftCI) warnings.push(`Plan around the low end of the interval (${(t.relativeLiftCI[0] * 100).toFixed(1)}%), not the point estimate. Significant winners' observed lifts are biased upward.`);
       return { ...t, srm, warnings };
     })
+  );
+
+  server.registerTool(
+    "ab_test_means_sample_size",
+    {
+      title: "A/B test sample size (revenue / continuous metric)",
+      description:
+        "Visitors needed per arm to detect a change in a mean such as revenue per visitor or average order value. Needs the metric's standard deviation per unit (from historical data, zeros included). Supports CUPED-style variance reduction.",
+      inputSchema: {
+        baselineMean: z.number().positive(),
+        baselineSd: z.number().positive().describe("Standard deviation per unit (visitor/user), zeros included"),
+        mde: z.number().positive().describe("Relative by default (0.05 = +5%)"),
+        mdeIsAbsolute: z.boolean().optional(),
+        alpha: rate.optional(),
+        power: rate.optional(),
+        varianceReduction: z.number().min(0).max(0.9).optional().describe("Expected variance reduction from covariate adjustment, e.g. 0.3"),
+        dailyTrafficTotal: z.number().positive().optional(),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => {
+      const r = sampleSizeMeans(a);
+      const days = a.dailyTrafficTotal ? Math.ceil(r.total / a.dailyTrafficTotal) : null;
+      return { ...r, estimatedDays: days };
+    })
+  );
+
+  server.registerTool(
+    "ab_test_means_evaluate",
+    {
+      title: "Evaluate A/B test on a revenue / continuous metric",
+      description:
+        "Welch's t-test for a difference in means (revenue per visitor, order value, items per order). Takes raw per-unit values (preferred; enables outlier capping and skew checks) or summary stats (n, mean, sd).",
+      inputSchema: {
+        control: z.object({ values: z.array(z.number()).optional(), n: z.number().int().optional(), mean: z.number().optional(), sd: z.number().min(0).optional() }),
+        variant: z.object({ values: z.array(z.number()).optional(), n: z.number().int().optional(), mean: z.number().optional(), sd: z.number().min(0).optional() }),
+        alpha: rate.optional(),
+        capPercentile: z.number().gt(0.5).lt(1).optional().describe("Cap raw values at this pooled percentile before testing, e.g. 0.99"),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => welchTest(a.control, a.variant, a.alpha ?? 0.05, a.capPercentile))
   );
 
   // ── Economics ─────────────────────────────────────────────────────────────
@@ -291,6 +336,71 @@ export function createServer(): McpServer {
     })
   );
 
+  // ── Business profiles ─────────────────────────────────────────────────────
+  server.registerTool(
+    "list_business_profiles",
+    {
+      title: "List business profiles",
+      description: "Stored business profiles (product, customers, positioning, metrics, voice). Check at the start of a conversation.",
+      inputSchema: {},
+      annotations: readOnly,
+    },
+    safe(() => listProfiles())
+  );
+
+  server.registerTool(
+    "get_business_profile",
+    {
+      title: "Get business profile",
+      description: "Load a stored business profile, plus which important fields are still missing and which metrics are stale.",
+      inputSchema: { name: z.string() },
+      annotations: readOnly,
+    },
+    safe((a) => {
+      const p = getProfile(a.name);
+      if (!p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
+      return { profile: p, missingFields: missingFields(p), staleMetrics: staleMetrics(p) };
+    })
+  );
+
+  const strList = z.array(z.string()).nullable().optional();
+  server.registerTool(
+    "save_business_profile",
+    {
+      title: "Save business profile",
+      description:
+        "Create or update a business profile. Scalars and lists replace (send the full list); metrics and voice merge by key; null deletes a field or metric. Only save facts the user confirmed; date every metric.",
+      inputSchema: {
+        name: z.string().describe("Profile id: lowercase letters, digits, dashes"),
+        product: z.string().nullable().optional(),
+        category: z.string().nullable().optional(),
+        businessModel: z.string().nullable().optional(),
+        stage: z.string().nullable().optional(),
+        bestFitCustomers: z.string().nullable().optional(),
+        competitiveAlternatives: strList,
+        differentiators: strList,
+        valueThemes: strList,
+        proof: strList,
+        pricing: z.string().nullable().optional(),
+        channels: strList,
+        metrics: z
+          .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional() }).nullable())
+          .optional()
+          .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe"}}'),
+        voice: z.object({ do: z.array(z.string()).optional(), dont: z.array(z.string()).optional() }).optional(),
+        constraints: strList,
+        openQuestions: strList,
+        notes: z.string().nullable().optional(),
+      },
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+    },
+    safe((a) => {
+      const { name, ...patch } = a;
+      const p = saveProfile(name, patch);
+      return { saved: p, missingFields: missingFields(p) };
+    })
+  );
+
   // ── Knowledge ─────────────────────────────────────────────────────────────
   server.registerTool(
     "search_playbooks",
@@ -332,6 +442,21 @@ export function createServer(): McpServer {
       const p = getPlaybook(String(slug));
       if (!p) throw new Error(`no playbook "${slug}"`);
       return { contents: [{ uri: uri.href, mimeType: "text/markdown", text: `# ${p.title}\n\n${p.body}` }] };
+    }
+  );
+
+  server.registerResource(
+    "business-profile",
+    new ResourceTemplate("marketing://profile/{name}", {
+      list: async () => ({
+        resources: listProfiles().map((p) => ({ uri: `marketing://profile/${p.name}`, name: p.name, description: p.product, mimeType: "application/json" })),
+      }),
+    }),
+    { title: "Business profile", description: "Stored business context", mimeType: "application/json" },
+    async (uri, { name }) => {
+      const p = getProfile(String(name));
+      if (!p) throw new Error(`no profile "${name}"`);
+      return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(p, null, 2) }] };
     }
   );
 

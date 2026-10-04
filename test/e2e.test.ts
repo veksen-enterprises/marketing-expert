@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { existsSync } from "node:fs";
+import { existsSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 // Exercises the built server over real stdio. Run `npm run build` first.
 const built = existsSync("dist/index.js");
@@ -9,7 +11,11 @@ const built = existsSync("dist/index.js");
 describe.skipIf(!built)("MCP server over stdio", () => {
   const client = new Client({ name: "test", version: "0.0.0" });
   beforeAll(async () => {
-    await client.connect(new StdioClientTransport({ command: process.execPath, args: ["dist/index.js"] }));
+    await client.connect(new StdioClientTransport({
+        command: process.execPath,
+        args: ["dist/index.js"],
+        env: { ...(process.env as Record<string, string>), MARKETING_EXPERT_DATA_DIR: mkdtempSync(join(tmpdir(), "me-e2e-")) },
+      }));
   });
   afterAll(async () => client.close());
 
@@ -23,8 +29,9 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     expect(client.getInstructions()).toMatch(/Diagnose before prescribing/);
     const tools = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(tools).toEqual([
-      "ab_test_evaluate", "ab_test_sample_size", "analyze_copy", "audit_page", "build_utm_link",
-      "check_copy_limits", "funnel_analysis", "get_playbook", "market_size", "paid_media_math", "search_playbooks", "unit_economics",
+      "ab_test_evaluate", "ab_test_means_evaluate", "ab_test_means_sample_size", "ab_test_sample_size", "analyze_copy",
+      "audit_page", "build_utm_link", "check_copy_limits", "funnel_analysis", "get_business_profile", "get_playbook",
+      "list_business_profiles", "market_size", "paid_media_math", "save_business_profile", "search_playbooks", "unit_economics",
     ]);
     const prompts = (await client.listPrompts()).prompts.map((p) => p.name);
     expect(prompts).toContain("landing_page_teardown");
@@ -49,6 +56,16 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     expect(r.text).toMatch(/provide cac/);
     const p = await call("get_playbook", { slug: "nope" });
     expect(p.isError).toBe(true);
+  });
+
+  it("saves and reads a business profile", async () => {
+    const s = await call("save_business_profile", { name: "acme", product: "x", metrics: { mrr: { value: 100, asOf: "2026-09" } } });
+    expect(s.json.saved.metrics.mrr.value).toBe(100);
+    const g = await call("get_business_profile", { name: "acme" });
+    expect(g.json.missingFields).toContain("bestFitCustomers");
+    expect((await call("list_business_profiles", {})).json).toHaveLength(1);
+    const r = await client.readResource({ uri: "marketing://profile/acme" });
+    expect((r.contents[0] as { text: string }).text).toMatch(/"product": "x"/);
   });
 
   it("audits raw html and renders prompts", async () => {
