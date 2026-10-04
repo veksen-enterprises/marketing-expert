@@ -19,20 +19,25 @@ export interface UnitEconomicsInput {
   horizonMonths?: number;
   /** Annual discount rate for the bounded LTV (optional, e.g. 0.1). */
   annualDiscountRate?: number;
+  /** Target CAC payback in months for the affordable-CAC calculation. Default 12. */
+  targetPaybackMonths?: number;
 }
 
 export interface UnitEconomicsResult {
-  cac: number;
+  /** null when no CAC or spend was given: see affordableCac instead of inventing one. */
+  cac: number | null;
   monthlyGrossProfitPerAccount: number;
   expectedLifetimeMonths: number | null;
   ltvSimple: number | null;
   ltvBounded: number;
   horizonMonths: number;
   ltvToCacSimple: number | null;
-  ltvToCacBounded: number;
-  paybackMonthsSimple: number;
+  ltvToCacBounded: number | null;
+  paybackMonthsSimple: number | null;
   /** Months until cumulative gross profit of a cohort (with churn) covers CAC; null if never within 240 months. */
   paybackMonthsChurnAdjusted: number | null;
+  /** The most you can pay to acquire a customer under two common targets. Useful before CAC is known. */
+  affordableCac: { targetPaybackMonths: number; maxCacForPayback: number; maxCacForLtvToCac3: number };
   warnings: string[];
 }
 
@@ -42,14 +47,9 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
   if (!(i.grossMargin > 0 && i.grossMargin <= 1)) throw new RangeError("grossMargin must be in (0,1]");
   if (!(i.monthlyChurn >= 0 && i.monthlyChurn < 1)) throw new RangeError("monthlyChurn must be in [0,1)");
 
-  let cac = i.cac;
-  if (cac === undefined) {
-    if (i.salesAndMarketingSpend === undefined || !i.newCustomers) {
-      throw new RangeError("provide cac, or salesAndMarketingSpend and newCustomers");
-    }
-    cac = i.salesAndMarketingSpend / i.newCustomers;
-  }
-  if (!(cac > 0)) throw new RangeError("cac must be > 0");
+  let cac: number | null = i.cac ?? null;
+  if (cac === null && i.salesAndMarketingSpend !== undefined && i.newCustomers) cac = i.salesAndMarketingSpend / i.newCustomers;
+  if (cac !== null && !(cac > 0)) throw new RangeError("cac must be > 0");
 
   const gp = i.arpaMonthly * i.grossMargin;
   const expansion = i.monthlyExpansion ?? 0;
@@ -75,7 +75,7 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
 
   let cumulative = 0;
   let paybackAdj: number | null = null;
-  for (let t = 0; t < 240; t++) {
+  for (let t = 0; cac !== null && t < 240; t++) {
     cumulative += gp * Math.pow(1 - netDecay, t);
     if (cumulative >= cac) {
       paybackAdj = t + 1;
@@ -95,16 +95,21 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
     );
   }
   if (i.grossMargin === 1) warnings.push("Gross margin of 100% overstates LTV; include hosting, support and payment costs.");
-  if (i.cac === undefined) {
+  if (cac === null) {
+    warnings.push("No CAC given, so ratios and payback aren't computed. affordableCac shows the most you could pay per customer; compare channel costs against it rather than assuming a CAC.");
+  } else if (i.cac === undefined) {
     warnings.push(
       "CAC computed as spend / new customers in the same period. If your sales cycle is long, lag spend by the cycle length, and make sure spend is fully loaded (salaries, tools, agencies)."
     );
   }
 
-  const ratioBounded = ltvBounded / cac;
-  const paybackSimple = cac / gp;
-  if (paybackAdj === null) warnings.push("CAC is never paid back within 240 months at this churn rate.");
-  else if (paybackAdj > horizon) warnings.push("Churn-adjusted payback is beyond the LTV horizon.");
+  const ratioBounded = cac === null ? null : ltvBounded / cac;
+  const paybackSimple = cac === null ? null : cac / gp;
+  if (cac !== null && paybackAdj === null) warnings.push("CAC is never paid back within 240 months at this churn rate.");
+  else if (paybackAdj !== null && paybackAdj > horizon) warnings.push("Churn-adjusted payback is beyond the LTV horizon.");
+  const targetPayback = i.targetPaybackMonths ?? 12;
+  let maxCacForPayback = 0;
+  for (let t = 0; t < targetPayback; t++) maxCacForPayback += gp * Math.pow(1 - netDecay, t);
 
   return {
     cac,
@@ -113,10 +118,11 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
     ltvSimple,
     ltvBounded,
     horizonMonths: horizon,
-    ltvToCacSimple: ltvSimple === null ? null : ltvSimple / cac,
+    ltvToCacSimple: ltvSimple === null || cac === null ? null : ltvSimple / cac,
     ltvToCacBounded: ratioBounded,
     paybackMonthsSimple: paybackSimple,
     paybackMonthsChurnAdjusted: paybackAdj,
+    affordableCac: { targetPaybackMonths: targetPayback, maxCacForPayback, maxCacForLtvToCac3: ltvBounded / 3 },
     warnings,
   };
 }

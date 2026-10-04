@@ -7,7 +7,7 @@ import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit, renderAndAudit } from "./lib/pageAudit.js";
 import { crawlSite } from "./lib/crawl.js";
-import { checkAiCrawlerAccess } from "./lib/aiCrawlers.js";
+import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
@@ -211,6 +211,7 @@ export function createServer(): McpServer {
         newCustomers: z.number().positive().optional(),
         horizonMonths: z.number().int().positive().max(240).optional(),
         annualDiscountRate: z.number().min(0).lt(1).optional(),
+        targetPaybackMonths: z.number().int().positive().max(60).optional().describe("For affordableCac; default 12"),
       },
       annotations: readOnly,
     },
@@ -386,10 +387,15 @@ export function createServer(): McpServer {
       inputSchema: {
         url: z.string().describe("Site URL"),
         paths: z.array(z.string()).optional().describe('Paths to check, default ["/"], e.g. ["/", "/blog/", "/pricing"]'),
+        robotsTxt: z.string().optional().describe("robots.txt contents to evaluate instead of fetching (e.g. from the repo's public/ folder when the site can't be reached)"),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    safe((a) => checkAiCrawlerAccess(a.url, a.paths))
+    safe((a) =>
+      a.robotsTxt !== undefined
+        ? { ...evaluateAiAccess(a.robotsTxt, a.url, a.paths), llmsTxtFound: null, note: "Evaluated the robots.txt text you supplied; the live site was not fetched. Firewall/CDN rules and the live file may differ." }
+        : checkAiCrawlerAccess(a.url, a.paths)
+    )
   );
 
   // ── Business profiles ─────────────────────────────────────────────────────

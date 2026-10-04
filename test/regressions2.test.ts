@@ -82,3 +82,26 @@ describe("profile review fix", () => {
     expect(list.find((p) => p.name === "bad")!.product).toMatch(/UNREADABLE/);
   });
 });
+
+describe("eval-driven fixes (2026-10-04)", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+  it("unreachable site is an error, never 'allowed'", async () => {
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
+    vi.stubGlobal("fetch", async () => {
+      throw new Error("ECONNREFUSED");
+    });
+    await expect(checkAiCrawlerAccess("https://e.test")).rejects.toThrow(/Could not reach .*Nothing was checked/);
+  });
+  it("unit_economics without CAC returns affordable CAC instead of failing", async () => {
+    const { unitEconomics } = await import("../src/lib/economics.js");
+    const r = unitEconomics({ arpaMonthly: 100, grossMargin: 0.8, monthlyChurn: 0.03 });
+    expect(r.cac).toBeNull();
+    expect(r.ltvToCacBounded).toBeNull();
+    expect(r.affordableCac.maxCacForPayback).toBeCloseTo((80 * (1 - 0.97 ** 12)) / 0.03, 6);
+    expect(r.affordableCac.maxCacForLtvToCac3).toBeCloseTo(r.ltvBounded / 3, 6);
+    expect(r.warnings.join(" ")).toMatch(/No CAC given/);
+  });
+});

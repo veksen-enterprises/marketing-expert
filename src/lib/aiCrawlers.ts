@@ -112,13 +112,15 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
     guardedFetch(new URL(path, base), { headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1)" }, signal: AbortSignal.timeout(timeoutMs) });
   let robotsTxt: string | null = null;
   let serverError: number | null = null;
+  let r: Response;
   try {
-    const r = await get("/robots.txt");
-    if (r.ok && !(r.headers.get("content-type") ?? "").includes("html")) robotsTxt = await r.text();
-    else if (r.status >= 500) serverError = r.status;
-  } catch {
-    robotsTxt = null;
+    r = await get("/robots.txt");
+  } catch (e) {
+    // Never report "allowed" for a site we couldn't check.
+    throw new Error(`Could not reach ${base.origin} to read robots.txt (${e instanceof Error ? e.message : String(e)}). Nothing was checked; no conclusion about AI crawler access can be drawn. Paste the robots.txt contents instead, or check from a network that can reach the site.`);
   }
+  if (r.ok && !(r.headers.get("content-type") ?? "").includes("html")) robotsTxt = await r.text();
+  else if (r.status >= 500) serverError = r.status;
   let llms: boolean | null = null;
   try {
     const r = await get("/llms.txt");
