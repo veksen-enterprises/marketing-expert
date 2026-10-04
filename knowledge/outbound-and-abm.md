@@ -48,7 +48,7 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 - **Use triggers** (signals that a company may need you now): hiring for a related role, new funding, a new leader in the buying role, a technology change, an expansion. Trigger-based lists are smaller and convert better in practitioner experience.
 - **Intent data** (third-party signals that a company is researching a topic) is noisy; treat it as one input to prioritise, not proof of interest. [practitioner; vendor claims vary]
 - **Contact data decays** as people change jobs. Re-verify before every campaign.
-- Small, tight lists: Instantly reports campaigns to under 50 recipients average higher reply rates than large sends, per secondary relays of its data. [vendor, not re-verified]
+- Small, tight lists beat large blasts in practitioner experience; figures comparing small and large sends circulate without a traceable source.
 
 ## Message structure
 
@@ -88,7 +88,7 @@ A **sequence** (or cadence) is the planned series of touches to one person.
 | Tier | Accounts | What it looks like |
 |---|---|---|
 | Strategic ABM (1:1) | A handful to a few dozen | A marketer works with the account team on custom research, content and events per account |
-| ABM Lite (1:few) | Clusters of ~5–15 accounts with shared needs | Content and plays per cluster (industry, use case) |
+| ABM Lite (1:few) | Small clusters of accounts with shared needs (tens of accounts in total) | Content and plays per cluster (industry, use case) |
 | Programmatic ABM (1:many) | Hundreds to thousands | Targeted ads, personalised pages and sequences by segment, using tools |
 - ITSMA research (via secondary relay) put the median Strategic ABM program at 13 accounts and about US$59,000 spend per account per year, and ABM Lite at about 50 accounts and US$4,000 per account. [vendor, secondary, not re-verified]
 

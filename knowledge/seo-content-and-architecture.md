@@ -13,7 +13,7 @@ This playbook covers how pages are organised, linked and written so Google can f
 - **Anchor text** (the clickable words) should be descriptive, reasonably short and relevant to both pages; the words around the link also matter. Don't stuff keywords and don't chain several links side by side. "Click here" tells Google and users nothing. [first-party]
 - **Shallow structure**: important pages within about 3 clicks of the home page. Depth is a practitioner heuristic, but deep pages tend to be crawled less often and get fewer internal links. [rule-of-thumb]
 - **Link in context**, inside the body text, from pages that already get traffic or links to pages you want to grow. A link from a related high-traffic article helps more than one more footer link. [practitioner]
-- **Navigation reflects the business**: main categories in the header, related items in breadcrumbs, related content blocks at the end of articles. Add BreadcrumbList structured data. [first-party; practitioner]
+- **Navigation**: main categories in the header, breadcrumbs (with BreadcrumbList structured data), related-content blocks after articles. [first-party; practitioner]
 
 ## Topic clusters and hub pages
 
@@ -26,13 +26,11 @@ This playbook covers how pages are organised, linked and written so Google can f
 - **Most sites don't need to think about it.** Google's crawl budget guide is written for sites with 1 million+ unique pages that change about weekly, or 10,000+ pages that change daily. Below that, if pages aren't indexed, the cause is usually quality or duplication, not crawl budget. [first-party]
 - Crawl budget = **crawl capacity** (how much Google can crawl without overloading your server) + **crawl demand** (how much it wants to crawl). You control demand most: duplicate and low-value URLs waste it. [first-party]
 - For large sites: block worthless URL spaces in robots.txt (internal search results, endless filters, calendars), return correct 404/410 for removed pages, avoid redirect chains, keep sitemaps to canonical indexable URLs with accurate lastmod, and keep servers fast. [first-party]
-- Note: robots.txt stops crawling, not indexing; to remove a page from results use noindex (and allow it to be crawled so Google sees the noindex). [first-party] [not re-verified]
 
 ## Pagination
 
 - Google no longer uses `rel="next"`/`rel="prev"`. [first-party]
 - Give each page its own URL (`?page=2`, not `#page=2`; Google ignores fragments), link pages in sequence with normal `<a href>` links, and let each page canonicalise to itself, not to page 1. [first-party]
-- Paginated pages may share a title and description. [first-party]
 - Infinite scroll and "load more" buttons need a paginated URL fallback with real links, or items beyond the first batch may never be crawled. [first-party] [not re-verified]
 
 ## Faceted navigation (filters)
