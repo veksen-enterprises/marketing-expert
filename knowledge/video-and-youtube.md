@@ -18,7 +18,7 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 - The title and thumbnail are the "ad" for the video. Write them before you film, so the video is built to deliver that promise [practitioner].
 - **For search videos**: use the words people search ("how to reconcile bank transactions in Xero"). **For recommended videos**: lead with curiosity, a result or a conflict, in a few words.
 - Thumbnail: one clear subject, readable at phone size, few words, and not repeating the title [practitioner].
-- **YouTube's own testing tool, Test & Compare** (rolled out in 2024 to channels with Advanced Features) tests up to three thumbnails at the same time on roughly equal audience groups; a newer help page also covers testing titles and title-thumbnail combinations [first-party]. Key points:
+- **YouTube's own testing tool, Test & Compare** (rolled out in 2024 to channels with Advanced Features) tests up to three thumbnails at the same time on roughly equal audience groups; title testing and title-thumbnail combinations were added in 2025 (announced at Made on YouTube 2025); the winner is the option with the highest watch time [first-party]. Key points:
   - It picks the winner by **watch time share**, not click-through rate, because watch time includes both the click and how long people stay. YouTube says this is to avoid rewarding thumbnails that mislead.
   - Tests take a few days to two weeks; "no winner" means the options performed about the same, so test clearly different ideas, not small colour changes.
   - Eligible: public long-form videos and podcast episodes, not Shorts.
@@ -34,8 +34,8 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 ## Shorts vs long-form
 
 - Since 15 October 2024, square or vertical videos up to **three minutes** count as Shorts [first-party].
-- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data.
-- YouTube says Shorts performance does not hurt long-form recommendations and can help people discover a channel [first-party; exact page not confirmed, see research].
+- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. Creator reports say that from 24 Aug 2026 views in all formats count from the first frame, with most analytics and YPP still based on engaged views; not confirmed on a YouTube Help or Blog page [not re-verified].
+- YouTube says Shorts performance does not hurt long-form recommendations and can help people discover a channel [first-party: YouTube Blog "Shorts truths"].
 - **Use Shorts for**: reach and testing topics cheaply, clips from long videos, quick tips. **Use long-form for**: search demand, trust, depth, and the viewers who buy. In B2B, a long tutorial watched by 500 buyers is often worth more than a Short watched by 50,000 strangers [practitioner].
 - Judge Shorts on subscribers gained, profile visits and the long videos they lead to, not on views.
 
