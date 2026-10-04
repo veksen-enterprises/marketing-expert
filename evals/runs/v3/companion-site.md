@@ -16,14 +16,13 @@ I checked the production build of the app running locally, not companion.example
 - Nothing in the app sets noindex (the tag that keeps a page out of search). I searched apps/app/src and found no noindex, X-Robots-Tag or canonical. /admin, /create, /planner, /stash, /watches, /design-system and /components all return 200 with no noindex. That contradicts the comment in robots[.]txt.ts:5-6 ("Private pages opt out with a noindex tag"). A route-level tag wouldn't reach crawlers anyway for these routes: the server stops building `<head>` at the first `ssr: false` route (__root.tsx:75-78).
 - Missing items return **200**: /items/00000000-… shows "Couldn't load this item." Google calls this a "soft 404" (an error page served as if it were real). The sitemap API lists every item ever stored, newest first, with no sold or expired filter (apps/api/src/routes/items.ts:236-241). VISION.md:128 leaves item lifecycle as an open question.
 - **Contradiction:** VISION.md:64-65 says "The owner is anonymous until contacted." Item pages show "Owned by <Discord display name>" with the avatar (items.$id.tsx Provenance, around lines 249-303), and the sitemap submits those pages to search engines.
-- `/` redirects to /search with a temporary **307**, which should be a permanent 301/308. /SEARCH also returns 200 as a duplicate page.
 - robots.txt allows every AI bot, which is right for being cited (check_ai_crawler_access). The local robots.txt has no `Sitemap:` line and no og:image, because the build lacks `VITE_SITE_URL`. The Dockerfile marks that variable "Optional", and I found no value for it in the repo. Whether production sets it is **inferred**.
-- Speed (lab, local, unthrottled, not Lighthouse): the H1 appears at about 0.5 s. Each page loads about 400 KB of gzipped JavaScript before it shows anything. On mid-range phones that is a real risk, but a later one.
+- Speed (lab, local, unthrottled): H1 at ~0.5 s, but ~400 KB of gzipped JavaScript per page. A risk on phones, a later one.
 
 ### Three moves, in order
 
 **1. Take private and junk pages out of search with one server rule.** In server.mjs, add an `X-Robots-Tag: noindex` header for /admin*, /create, /planner, /stash, /watches, /design-system, /components and /items/*/resolve. Send the same header on every response from staging.companion.example (that host name appears in .claude/skills/debug-capture/SKILL.md:20).
-- Why: a header reaches crawlers even where the browser-only routes never render a tag. Staging is a full copy of the site, so if it gets indexed it competes with production.
+- Why: a header reaches crawlers where browser-only routes never render a tag; an indexed staging copy competes with production.
 - Test: `curl -sI https://companion.example/admin | grep -i x-robots-tag` should print `noindex`, and /search should not.
 - Metric: the Search Console "Pages" report, using a `site:` search for these URLs. Time box: 2–4 weeks.
 - Stop condition: none. This is hygiene. Small change, one file.
@@ -37,7 +36,6 @@ I checked the production build of the app running locally, not companion.example
 
 **3. Keep item pages out of the index for now.** Add `noindex` to /items/* and drop items from sitemap.xml. Keep /search, /ias-calculator and /imbue-calculator in the sitemap.
 - Why: the item pages, as they stand, are browser-rendered and short-lived, with no defined way to retire sold items. They return 200 when an item is missing, and they publish Discord names your own vision says stay anonymous. Google's spam policies treat masses of thin pages built from a template as low value. The playbook says such pages only work with "real, unique supply" and recommends noindex until there is enough [practitioner].
-- Shared links keep working: the Discord preview comes from og tags, not from indexing.
 - Test: `curl -s https://companion.example/sitemap.xml | grep -c /items/` returns 0.
 - Revisit when item lifecycle is defined, the owner display is decided, and missing items return a real 404/410.
 
@@ -48,11 +46,11 @@ I checked the production build of the app running locally, not companion.example
 - Blocking AI training bots by accident: it's a separate decision from the search bots.
 - A blog, or bulk pages per affix or per item.
 - Lighthouse tuning before moves 1–2.
-- Don't rely on SEO to replace Discord moderators as your main channel. The playbook ("Community and hobby products", sources "All read via search snippets") treats moderators and shareable outputs as the main growth loop [practitioner].
+- Treating SEO as the main channel: the "Community and hobby products" playbook (sources "All read via search snippets") puts moderators and shareable outputs first [practitioner].
 
 **What would prove this wrong:** Search Console shows the calculators already indexed with their full text and getting impressions. That would mean Google's rendering is enough, and move 2 matters only for AI assistants.
 
-**Small items, one line each:** `/` should use 308 instead of 307 (index.tsx). The search page's H1 is screen-reader-only (search.tsx:437). Source maps are publicly served (/assets/*.js.map returns 200). Leftover `console.log` at ias-calculator.tsx:388.
+**Small items:** `/` redirects with a temporary 307, use 308 (index.tsx). /SEARCH returns a duplicate 200. The search page's H1 is screen-reader-only (search.tsx:437). Source maps are publicly served (/assets/*.js.map returns 200). Leftover `console.log` at ias-calculator.tsx:388.
 
 ### Open questions
 
