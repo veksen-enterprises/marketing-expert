@@ -70,7 +70,7 @@ describe("crawlSite", async () => {
     expect(issue("non200-in-sitemap")!.examples[0]).toMatch(/\/old \(redirects to https:\/\/site.test\/a\)/);
     expect(issue("canonical-broken")!.examples).toEqual([`${B}/a → ${B}/old`]);
     expect(issue("deep-pages")!.examples).toEqual([`${B}/e (depth 4)`]);
-    expect(issue("thin")!.examples[0]).toMatch(/\/b \(50 words\)/);
+    expect(issue("thin")!.examples[0]).toMatch(/\/b \(51 words\)/);
     expect(issue("hreflang")!.examples.join(" ")).toMatch(/target doesn't link back/);
     expect(r.issues[0].severity).toBe("error");
   });

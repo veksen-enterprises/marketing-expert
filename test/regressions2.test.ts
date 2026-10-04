@@ -51,7 +51,7 @@ describe("crawl review fixes", () => {
     });
     expect(r.startUrl).toBe("https://www.c.test/");
     expect(r.pagesCrawled).toBe(2);
-    expect(r.notes.join(" ")).toMatch(/redirects to https:\/\/www.c.test\//);
+    expect(r.notes.join(" ")).toMatch(/301 → https:\/\/www.c.test\//);
   });
 });
 
@@ -103,5 +103,26 @@ describe("eval-driven fixes (2026-10-04)", () => {
     expect(r.affordableCac.maxCacForPayback).toBeCloseTo((80 * (1 - 0.97 ** 12)) / 0.03, 6);
     expect(r.affordableCac.maxCacForLtvToCac3).toBeCloseTo(r.ltvBounded / 3, 6);
     expect(r.warnings.join(" ")).toMatch(/No CAC given/);
+  });
+});
+
+describe("robots.txt edge cases (devtool-site grade)", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+  it("a proxy/firewall 403 is reported as unverified, not as 'allowed'", async () => {
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
+    vi.stubGlobal("fetch", async () => new Response("denied", { status: 403, headers: { "content-type": "text/plain", "x-deny-reason": "egress blocked" } }));
+    const r = await checkAiCrawlerAccess("https://f.test");
+    expect(r.findings[0]).toMatch(/HTTP 403 \(x-deny-reason: egress blocked\).*NOT verified/);
+    expect(r.findings.join(" ")).not.toMatch(/No robots.txt found/);
+    expect(r.llmsTxtFound).toBeNull();
+  });
+  it("robots.txt served as HTML is flagged", async () => {
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
+    vi.stubGlobal("fetch", async () => new Response("<html>app</html>", { status: 200, headers: { "content-type": "text/html" } }));
+    const r = await checkAiCrawlerAccess("https://g.test");
+    expect(r.findings[0]).toMatch(/served as an HTML page/);
   });
 });

@@ -45,3 +45,12 @@ describe("auditHtml", () => {
     expect(bad.flags.filter((f) => f.severity === "error").length).toBe(2);
   });
 });
+
+describe("text extraction", () => {
+  it("separates block elements", () => {
+    const r = auditHtml("<html><body><h1>affix level 99</h1><p>0.49%</p></body></html>");
+    expect(r.wordCount).toBe(4);
+    expect(r.leadText).toBe("affix level 99 0.49%");
+  });
+});
+

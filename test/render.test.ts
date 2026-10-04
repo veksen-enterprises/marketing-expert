@@ -19,6 +19,11 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
     process.env.MARKETING_EXPERT_ALLOW_PRIVATE = "1"; // local test server
     server = createServer((req, res) => {
       if (req.url === "/poll") return; // never answers
+      if (req.url === "/jsnoindex") {
+        res.writeHead(200, { "content-type": "text/html" });
+        res.end(`<html><head><title>T</title></head><body><h1>Hi</h1><script>const m=document.createElement("meta");m.name="robots";m.content="noindex";document.head.appendChild(m);</script></body></html>`);
+        return;
+      }
       if (req.url === "/noindex") {
         res.writeHead(200, { "content-type": "text/html", "x-robots-tag": "noindex" });
         res.end(page);
@@ -53,6 +58,12 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
     await expect(renderAndAudit(url)).rejects.toThrow(/non-public address/);
     process.env.MARKETING_EXPERT_ALLOW_PRIVATE = "1";
   });
+
+  it("flags head tags that only JavaScript adds", async () => {
+    const r = await renderAndAudit(url + "jsnoindex");
+    expect(r.rendering.headDiff).toEqual([{ field: "robots", server: null, rendered: "noindex" }]);
+    expect(r.flags.map((f) => f.message).join(" ")).toMatch(/robots differs between server HTML/);
+  }, 60000);
 
   it("keeps HTTP-level checks in render mode", async () => {
     const r = await renderAndAudit(url + "noindex");

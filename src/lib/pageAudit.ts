@@ -8,6 +8,8 @@ export interface PageFacts {
   url?: string;
   status?: number;
   finalUrl?: string;
+  /** Redirects followed before the final response, e.g. ["307 → https://x/search"]. */
+  redirectChain?: string[];
   xRobotsTag?: string | null;
   lang: string | null;
   title: string | null;
@@ -36,7 +38,8 @@ export interface PageFacts {
 const CTA_VERBS = /^(get|start|try|book|request|sign|join|buy|download|schedule|contact|talk|see|create|claim|subscribe|register|shop|order|add|watch|learn|explore|apply)\b/i;
 
 function text(el: HTMLElement | null | undefined): string {
-  return (el?.text ?? "").replace(/\s+/g, " ").trim();
+  // structuredText separates block elements; plain .text glues "99" and "0.49%" into "990.49%".
+  return (el?.structuredText ?? "").replace(/\s+/g, " ").trim();
 }
 
 export function auditHtml(html: string, url?: string): PageFacts {
@@ -181,6 +184,14 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
   const html = await res.text();
   const facts = auditHtml(html, res.url || url);
   applyResponseChecks(facts, res.status, res.url || url, res.headers.get("x-robots-tag"));
+  const chain = (res as Response & { redirectChain?: string[] }).redirectChain ?? [];
+  if (chain.length) {
+    facts.redirectChain = chain;
+    facts.flags.unshift({
+      severity: chain.some((c) => /^30[27] /.test(c)) ? "warning" : "info",
+      message: `Redirected: ${url} ${chain.join(" ")}.${chain.some((c) => /^30[27] /.test(c)) ? " Temporary redirect (302/307): if the move is permanent, use 301/308 or serve content at the original URL." : ""}${chain.length > 1 ? " More than one hop: link straight to the final URL." : ""}`,
+    });
+  }
   return facts;
 }
 
@@ -213,6 +224,8 @@ export interface RenderedAudit extends PageFacts {
     /** Share of rendered text that is missing from the server HTML. */
     clientOnlyShare: number;
     serverH1s: string[];
+    serverHead: { title: string | null; metaDescription: string | null; canonical: string | null; robots: string | null };
+    headDiff: Array<{ field: string; server: string | null; rendered: string | null }>;
   };
 }
 
@@ -251,7 +264,18 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     const server = auditHtml(serverHtml, finalUrl);
     const facts = auditHtml(renderedHtml, finalUrl) as RenderedAudit;
     const clientOnly = facts.wordCount > 0 ? Math.max(0, facts.wordCount - server.wordCount) / facts.wordCount : 0;
-    facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, clientOnlyShare: clientOnly, serverH1s: server.h1s };
+    const head = (f: PageFacts) => ({ title: f.title, metaDescription: f.metaDescription, canonical: f.canonical, robots: f.robots });
+    const sh = head(server);
+    const rh = head(facts);
+    const headDiff = (Object.keys(sh) as Array<keyof typeof sh>).filter((k) => (sh[k] ?? null) !== (rh[k] ?? null)).map((k) => ({ field: k, server: sh[k] ?? null, rendered: rh[k] ?? null }));
+    facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, clientOnlyShare: clientOnly, serverH1s: server.h1s, serverHead: sh, headDiff };
+    for (const d of headDiff) {
+      const critical = d.field === "robots" || d.field === "canonical";
+      facts.flags.unshift({
+        severity: critical ? "warning" : "info",
+        message: `<head> ${d.field} differs between server HTML (${JSON.stringify(d.server)}) and the rendered page (${JSON.stringify(d.rendered)}). Crawlers that don't run JavaScript only see the server value${critical ? "; Google may act on the server value before rendering. Put robots and canonical tags in the server HTML" : ""}.`,
+      });
+    }
     // The "few words" flag is about server HTML; drop it from the rendered audit and judge the gap instead.
     facts.flags = facts.flags.filter((f) => !f.message.includes("words of server-rendered text"));
     if (clientOnly > 0.3) {

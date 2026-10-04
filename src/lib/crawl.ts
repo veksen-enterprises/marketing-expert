@@ -38,6 +38,7 @@ export interface CrawledPage {
   internalLinksOut: number;
   inlinks: number;
   hreflang: Array<{ lang: string; href: string }>;
+  scriptCount?: number;
 }
 
 export interface Issue {
@@ -90,20 +91,22 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const get = async (url: string) =>
     fetchFn(url, { redirect: "manual", headers: { "user-agent": UA, accept: "text/html,application/xml,text/xml,*/*;q=0.8" }, signal: AbortSignal.timeout(timeoutMs) });
   // For robots.txt, sitemaps and the start URL: follow up to 5 redirects (any host).
-  const getFollow = async (url: string): Promise<{ res: Response; url: string }> => {
+  const getFollow = async (url: string): Promise<{ res: Response; url: string; chain: string[] }> => {
     let current = url;
+    const chain: string[] = [];
     for (let hop = 0; hop < 5; hop++) {
       const res = await get(current);
       const loc = res.headers.get("location");
       if (res.status >= 300 && res.status < 400 && loc) {
         const next = normalize(loc, current);
-        if (!next) return { res, url: current };
+        if (!next) return { res, url: current, chain };
+        chain.push(`${res.status} → ${next}`);
         current = next;
         continue;
       }
-      return { res, url: current };
+      return { res, url: current, chain };
     }
-    return { res: await get(current), url: current };
+    return { res: await get(current), url: current, chain };
   };
 
   // Resolve the start URL first: example.com → www.example.com redirects are common.
@@ -112,7 +115,11 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     const r = await getFollow(requested);
     if (r.url !== requested) {
       start = r.url;
-      notes.push(`Start URL redirects to ${start}; crawling that host.`);
+      const temporary = r.chain.some((c) => /^30[27] /.test(c));
+      notes.push(
+        `Start URL redirects: ${requested} ${r.chain.join(" ")}; crawling ${start}.` +
+          (temporary ? " A temporary redirect (302/307) on the start URL: if it's permanent, use 301/308 or serve content at the start URL." : "")
+      );
     }
   } catch {
     // Leave start as requested; the page fetch will record the error.
@@ -138,7 +145,10 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     for (const sm of candidates.slice(0, 5)) {
       try {
         const { res: r } = await getFollow(sm);
-        if (!r.ok) continue;
+        if (!r.ok) {
+          notes.push(`Sitemap ${sm} returned HTTP ${r.status}${r.status >= 500 ? " (server error: crawlers can't read it until it recovers)" : ""}.`);
+          continue;
+        }
         const xml = await r.text();
         sitemapSource ??= sm;
         if (/<sitemapindex/i.test(xml)) {
@@ -157,7 +167,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         notes.push(`Sitemap could not be fetched: ${sm}`);
       }
     }
-    if (!sitemapSource) notes.push("No XML sitemap found (checked robots.txt Sitemap lines and /sitemap.xml).");
+    if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines and /sitemap.xml).");
   }
 
   const pages = new Map<string, CrawledPage>();
@@ -241,7 +251,8 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
       .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", current) ?? "" }));
     const body = root.querySelector("body") ?? root;
     for (const el of body.querySelectorAll("script,style,noscript,svg,template")) el.remove();
-    page.wordCount = (body.text.match(/\S+/g) ?? []).length;
+    page.wordCount = (body.structuredText.match(/\S+/g) ?? []).length;
+    page.scriptCount = root.querySelectorAll("script[src],script[type=module]").length;
     const nofollowPage = /nofollow/i.test(robotsMeta);
     const links = new Set<string>();
     if (!nofollowPage) {
@@ -325,6 +336,12 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
 
   const linkedRedirects = pages.filter((p) => p.redirectChain.length && (inlinks.get(p.url)?.size ?? 0) > 0);
   add("links-to-redirects", "warning", "Internal links pointing at redirects. Link straight to the final URL.", linkedRedirects.map((p) => `${p.url} ${p.redirectChain.join(" ")}`));
+  add(
+    "temporary-redirects",
+    "info",
+    "Internal URLs using temporary redirects (302/307). If the move is permanent, use 301/308 so search engines consolidate signals on the target.",
+    pages.filter((p) => p.redirectChain.some((c) => /^30[27] /.test(c))).map((p) => `${p.url} ${p.redirectChain.join(" ")}`)
+  );
   add("redirect-chains", "warning", "Redirect chains with more than one hop.", pages.filter((p) => p.redirectChain.length > 1).map((p) => `${p.url} ${p.redirectChain.join(" ")}`));
 
   const dup = (key: (p: CrawledPage) => string | null, id: string, label: string) => {
@@ -340,7 +357,14 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
   dup((p) => p.metaDescription, "duplicate-descriptions", "meta descriptions");
   add("missing-title", "error", "Indexable pages without a <title>.", indexable.filter((p) => !p.title).map((p) => p.url));
   add("missing-description", "info", "Indexable pages without a meta description.", indexable.filter((p) => !p.metaDescription).map((p) => p.url));
-  add("missing-h1", "warning", "Indexable pages without an <h1>.", indexable.filter((p) => p.h1Count === 0).map((p) => p.url));
+  const shell = (p: CrawledPage) => p.wordCount < 50 && (p.scriptCount ?? 0) > 0;
+  add(
+    "client-rendered",
+    "warning",
+    "Pages whose server HTML is nearly empty (< 50 words) but loads scripts: content is probably built in the browser. Crawlers that don't run JavaScript (most AI crawlers) see an empty page; Google sees it only after rendering. Confirm with audit_page render=true. Missing-h1 and thin findings for these pages describe the server HTML only.",
+    indexable.filter(shell).map((p) => `${p.url} (${p.wordCount} words in server HTML)`)
+  );
+  add("missing-h1", "warning", "Indexable pages without an <h1> in the server HTML (for client-rendered pages, check the rendered page).", indexable.filter((p) => p.h1Count === 0).map((p) => p.url + (shell(p) ? " (client-rendered?)" : "")));
 
   add("noindex-in-sitemap", "error", "Pages in the sitemap that are noindex: the sitemap asks Google to index pages that refuse it.", ok.filter((p) => p.noindex && p.inSitemap).map((p) => p.url));
   add("non200-in-sitemap", "warning", "Sitemap URLs that redirect or error. Sitemaps should list final, 200-status URLs only.", pages.filter((p) => p.inSitemap && (p.status !== 200 || p.redirectChain.length)).map((p) => (p.redirectChain.length ? `${p.url} (redirects to ${p.finalUrl})` : `${p.url} (${p.status})`)));

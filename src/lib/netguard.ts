@@ -78,14 +78,19 @@ export async function assertPublicUrl(url: string | URL): Promise<void> {
 export async function guardedFetch(url: string | URL, init: RequestInit = {}, maxRedirects = 5): Promise<Response> {
   let current = new URL(url);
   const manual = init.redirect === "manual";
+  const chain: string[] = [];
   for (let hop = 0; ; hop++) {
     await assertPublicUrl(current);
     const res = await fetch(current, { ...init, redirect: "manual" });
     const loc = res.headers.get("location");
     if (manual || !(res.status >= 300 && res.status < 400 && loc)) {
-      if (!manual) Object.defineProperty(res, "url", { value: current.toString() });
+      if (!manual) {
+        Object.defineProperty(res, "url", { value: current.toString() });
+        Object.defineProperty(res, "redirectChain", { value: chain });
+      }
       return res;
     }
+    chain.push(`${res.status} → ${new URL(loc, current).toString()}`);
     if (hop >= maxRedirects) throw new Error(`too many redirects (> ${maxRedirects})`);
     current = new URL(loc, current);
   }

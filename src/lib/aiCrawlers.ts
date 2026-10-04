@@ -119,25 +119,43 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
     // Never report "allowed" for a site we couldn't check.
     throw new Error(`Could not reach ${base.origin} to read robots.txt (${e instanceof Error ? e.message : String(e)}). Nothing was checked; no conclusion about AI crawler access can be drawn. Paste the robots.txt contents instead, or check from a network that can reach the site.`);
   }
-  if (r.ok && !(r.headers.get("content-type") ?? "").includes("html")) robotsTxt = await r.text();
+  const robotsCt = r.headers.get("content-type") ?? "";
+  const caveats: string[] = [];
+  if (r.ok && !robotsCt.includes("html")) robotsTxt = await r.text();
+  else if (r.ok) caveats.push("robots.txt is served as an HTML page (probably the app's catch-all route), so crawlers find no valid rules and treat everything as allowed. Serve a real text/plain robots.txt.");
   else if (r.status >= 500) serverError = r.status;
+  else if (r.status === 404 || r.status === 410) caveats.push(`No robots.txt (HTTP ${r.status}): crawlers treat this as "everything allowed".`);
+  else {
+    const deny = r.headers.get("x-deny-reason");
+    caveats.push(
+      `robots.txt returned HTTP ${r.status}${deny ? ` (x-deny-reason: ${deny})` : ""}. This may be a firewall, CDN or proxy blocking this checker rather than the site's real answer, so the result below is NOT verified. (Google treats a genuine 4xx on robots.txt as "no restrictions".) Check from another network or pass the file's contents as robotsTxt.`
+    );
+  }
   let llms: boolean | null = null;
   try {
-    const r = await get("/llms.txt");
-    llms = r.ok && !(r.headers.get("content-type") ?? "").includes("html");
+    const lr = await get("/llms.txt");
+    if (lr.ok) llms = !(lr.headers.get("content-type") ?? "").includes("html");
+    else if (lr.status === 404 || lr.status === 410) llms = false;
+    // Any other status: unknown (null), not "absent".
   } catch {
     llms = null;
   }
   // Google's documented behaviour: a 5xx on robots.txt means "disallow everything" until it recovers.
   const report = evaluateAiAccess(serverError ? "User-agent: *\nDisallow: /" : robotsTxt, site, paths);
+  if (caveats.length) {
+    report.findings = report.findings.filter((f) => !f.startsWith("No robots.txt found"));
+    report.findings.unshift(...caveats);
+  }
   if (serverError) {
     report.robotsTxtFound = false;
     report.findings.unshift(`robots.txt returned HTTP ${serverError}. Crawlers that follow Google's rules treat this as "block everything", so every bot is reported as blocked. Fix the server error.`);
   }
   report.findings.push(
-    llms
-      ? "llms.txt found. Harmless, but there is no evidence major assistants use it (see seo-and-ai-search)."
-      : "No llms.txt. Not a problem: there is no evidence major assistants use it (see seo-and-ai-search)."
+    llms === null
+      ? "Couldn't determine whether llms.txt exists."
+      : llms
+        ? "llms.txt found. Harmless, but there is no evidence major assistants use it (see seo-and-ai-search)."
+        : "No llms.txt. Not a problem: there is no evidence major assistants use it (see seo-and-ai-search)."
   );
   return { ...report, llmsTxtFound: llms };
 }

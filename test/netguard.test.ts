@@ -43,3 +43,13 @@ describe("guardedFetch", () => {
     expect(r.url).toBe("http://1.1.1.1/b");
   });
 });
+
+describe("redirect chain", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it("records each hop", async () => {
+    let n = 0;
+    vi.stubGlobal("fetch", async () => (n++ === 0 ? new Response("", { status: 307, headers: { location: "http://1.1.1.1/search" } }) : new Response("ok")));
+    const r = (await guardedFetch("http://8.8.8.8/")) as Response & { redirectChain: string[] };
+    expect(r.redirectChain).toEqual(["307 → http://1.1.1.1/search"]);
+  });
+});
