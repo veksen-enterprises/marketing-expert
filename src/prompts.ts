@@ -124,7 +124,7 @@ List the assumptions that most need customer validation, and the interview quest
 URL: ${url}${opt(audience, "Audience / traffic source")}${opt(goal, "Goal")}
 
 Structure:
-0. Facts check: if you have the product's docs or repo, compare the page's claims (features, "coming soon", prices, setup steps, plans) with them. Mismatches go to the top of the list: they're cheap to fix and cost trust.
+0. Facts check: if you have the product's docs or repo, compare the page's claims (features, "coming soon", prices, setup steps, plans, and every data-handling or credential claim, tooltips and FAQ included) with them. If the docs disagree with each other, report that instead of picking one. Mismatches go to the top of the list: they're cheap to fix and cost trust.
 1. The 5-second read: from the lead text and h1 alone, what does a first-time visitor think this is, who it's for, and what to do next? Quote the page.
 2. Message match: does the headline continue what the traffic source promised? If the source is unknown, say what to check.
 3. Run analyze_copy on the lead text. Note vague claims, missing proof, writer-centric framing.

@@ -60,6 +60,7 @@ More code is now written by agents. Stack Overflow's 2025 survey found 31% of re
 - **Be honest in descriptions.** Mark read-only and destructive tools with MCP annotations. Clients are told to treat annotations from unknown servers as untrusted, and hidden instructions in tool descriptions ("tool poisoning") are a known attack [first-party]. Never put instructions to the agent in descriptions to favour your product; it is the same behaviour that security tools look for.
 - **Being the tool an agent chooses.** Clear docs, working examples, stable APIs and helpful error messages make you easier for agents to use correctly [practitioner]. Whether llms.txt helps is unproven; see seo-and-ai-search and ai-assistant-visibility rather than relying on it.
 - Track agent usage separately (user agent, MCP client name) so the channel is visible.
+- To check whether agents find you at all, see ai-assistant-visibility ("Developer tools: coding agents are a separate audience").
 
 ## Self-hosting and the enterprise upgrade path
 

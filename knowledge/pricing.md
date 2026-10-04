@@ -56,6 +56,13 @@ OpenView surveys: companies using some usage-based pricing rose from 34% (2020) 
 - Raise for new customers first, measure conversion by segment, then migrate existing customers.
 - Expect churn on price increases to concentrate among customers who weren't getting value; check activation and usage before blaming price.
 
+## Lifetime deals [rule-of-thumb]
+
+A one-off "lifetime" price (often sold through deal sites) brings early cash and users, but those buyers never pay again, tend to be deal-hunters rather than your target customer, and still cost support and hosting. Treat one as a financing decision, not a pricing tier:
+- Cap the number sold and the end date, and say what "lifetime" covers (current plan features, the product's lifetime, not the buyer's).
+- Recheck it when the paid plan gains features: a deal that includes "everything coming" gives away each new feature too.
+- Compare its price with the modelled gross-profit lifetime value of a subscriber (unit_economics), not with list revenue.
+
 ## Common mistakes
 
 - Pricing by cost-plus or by copying a competitor.

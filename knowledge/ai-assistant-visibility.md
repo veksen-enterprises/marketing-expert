@@ -56,6 +56,13 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 - **Practical:** treat feeds as a visibility channel, not just an ads input. Make on-page price, stock and reviews match the feed and be in server HTML.
 - Platforms change these programmes often (see platform-and-feature-risk). Check current merchant docs before building.
 
+## Developer tools: coding agents are a separate audience
+
+For developer tools the assistant that matters is often a coding agent (Claude Code, Cursor, Copilot and others) choosing a library or calling a tool while it works, not a chat assistant answering a web search. What drives that choice is less studied than web citations [rule-of-thumb for everything below].
+- Test it directly: give a coding agent the task your product solves ("my Postgres query is slow, find out why") in a clean project and record whether it suggests or uses you. Repeat monthly; treat it as a direction check, not a measurement.
+- Docs-site llms.txt files and agent "skill" files are cheap to keep, but there is no evidence yet that agents use them more than normal docs. Check whether they exist before recommending them, and don't count them as a channel.
+- An MCP server listed in the MCP Registry and the client directories is a way to be found and called; see developer-tools ("AI coding agents as users and channel").
+
 ## Measurement
 
 - **Referral traffic:** create an analytics channel group for assistant domains (chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com, claude.ai). ChatGPT adds **utm_source=chatgpt.com** to links. [first-party] Many AI-driven visits arrive without a referrer (copy-pasted links, apps), so referral traffic is a minimum, not a total. Watch branded search and direct traffic as well.

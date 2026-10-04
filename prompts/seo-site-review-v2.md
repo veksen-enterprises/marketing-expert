@@ -6,6 +6,7 @@ Review how each public page of this site looks to Google and to AI crawlers, and
 
 - **Measure, don't infer.** Every claim needs evidence: a command and its output, or `file:line`. Anything you couldn't verify (live site, real data, keyword volume, Search Console) is labelled **inferred**.
 - **Production build, production server.** Build the app and run it the way production runs it (not the dev server). If pages need data, point it at a stub API or a seeded DB, and say which data each page saw. Note any env vars production sets that you didn't (site URL, API URL, feature flags), because head tags and sitemaps often depend on them.
+- **Look for build-mode flags.** Grep for env flags read at build time (`VITE_*`, `NEXT_PUBLIC_*`, `PUBLIC_*`) that change routes, redirects or headings, and say which mode you built.
 - **Don't load the live site** beyond a handful of requests, and only if I've said it's OK.
 
 ## 1. Inventory: find every URL a crawler could reach
@@ -74,6 +75,7 @@ For each sampled URL:
   - No sold, expired or deleted records.
 - **noindex**
   - On admin, dev, design-system, logged-in-only, staging and preview pages.
+  - Name the mechanism for each (meta tag, `X-Robots-Tag` header, route `head`) and curl the page to prove it is in the server response. A tag set by a route whose layout renders only in the browser never reaches crawlers.
   - Check that staging and preview deployments can't be indexed at all.
 - **Rendering**
   - SSR vs client-only per template.
@@ -127,5 +129,7 @@ Programmatic pages (one per record) are a risk if most of them are thin or short
    - the files it touches
    - **a check that proves it's fixed**: a curl command and expected output, or a rendered-page assertion I can rerun after the change
 4. **Open questions and inferred items**: what needs the live site, real data, Search Console or keyword volume to confirm.
+
+Spot-check any word count you quote against the curl'd body text before using it.
 
 If the marketing-expert MCP server is connected, also run `crawl_site` on the local URL, `audit_page` with and without `render: true` on one URL per template, and `check_ai_crawler_access` with the repo's robots.txt. Compare their output with your own measurements, and report any disagreement.
