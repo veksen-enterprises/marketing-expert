@@ -3,7 +3,8 @@
 An MCP server that gives an LLM the parts of marketing expertise it lacks on its own:
 
 - **Calculators** for the numbers models get wrong in their heads: A/B test sample size and significance (with SRM and peeking checks), LTV/CAC/payback, paid-media break-even, funnel maths.
-- **Audits** of what is actually on a page or in a piece of copy, so critique starts from facts: landing-page extraction, copy signals, platform character limits, UTM hygiene.
+- **Audits** of what is actually there, so critique starts from facts: a landing page (optionally rendered with JavaScript), a whole-site SEO crawl, AI-crawler access in robots.txt, copy signals, platform character limits, UTM hygiene.
+- **Business profiles** stored on disk, so advice uses the same facts every time.
 - **Playbooks**: 45 opinionated, sourced Markdown playbooks covering business types, channels, marketing foundations and business strategy (market sizing, startup risk, competing with incumbents, platform and "feature, not a product" risk, competitive analysis, acquisitions and exits). Each claim is tagged by evidence strength (research / first-party / practitioner / vendor / rule-of-thumb).
 - **Prompts** that fix the order of thinking (diagnose before prescribing, positioning before copy, power analysis before testing).
 - **Server instructions** that set the operating rules for the model: ask for numbers, use the tools, state evidence quality, recommend at most a couple of ranked moves.
@@ -65,6 +66,21 @@ Claude Desktop (`claude_desktop_config.json`):
   }
 }
 ```
+
+## What to ask
+
+Once the server is connected, ask in plain words; the server's instructions tell the model which tools and playbooks to use. Examples:
+
+- "Here's my business: … Propose a marketing strategy." (uses the `marketing_strategy` prompt: business-type playbook, economics, three channels with stop criteria, 90-day plan)
+- "Our signups are flat. What's wrong?" (`marketing_diagnosis`)
+- "Tear down https://example.com/pricing for visitors from Google Ads." (`landing_page_teardown` → `audit_page`)
+- "Crawl example.com and tell me what to fix for SEO." (`crawl_site`)
+- "Can ChatGPT and Perplexity find us?" (`check_ai_crawler_access` + the `ai-assistant-visibility` playbook)
+- "We have 3,000 visitors a day at 2.5% conversion. Can we test a new headline?" (`ab_test_sample_size`)
+- "Is this market big enough for VC?" (`opportunity_assessment` → `market_size`)
+- "Microsoft just launched something like our product. What now?" (`competitive_strategy`)
+
+Tell it to save what it learns about your business (`save_business_profile`) so the next conversation starts with that context.
 
 ## Development
 
