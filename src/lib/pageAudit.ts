@@ -180,15 +180,20 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
   if (!ct.includes("html")) throw new Error(`expected HTML, got content-type "${ct}" (status ${res.status})`);
   const html = await res.text();
   const facts = auditHtml(html, res.url || url);
-  facts.status = res.status;
-  facts.finalUrl = res.url;
-  facts.xRobotsTag = res.headers.get("x-robots-tag");
-  if (res.status >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${res.status}.` });
-  if (facts.xRobotsTag && /noindex/i.test(facts.xRobotsTag)) facts.flags.unshift({ severity: "error", message: `X-Robots-Tag: ${facts.xRobotsTag}` });
-  if (facts.canonical && res.url && normalize(facts.canonical, res.url) !== normalize(res.url, res.url)) {
-    facts.flags.push({ severity: "info", message: `Canonical (${facts.canonical}) differs from the fetched URL (${res.url}). Fine if intentional.` });
-  }
+  applyResponseChecks(facts, res.status, res.url || url, res.headers.get("x-robots-tag"));
   return facts;
+}
+
+/** HTTP-level checks shared by fetch and render modes. */
+function applyResponseChecks(facts: PageFacts, status: number | undefined, finalUrl: string, xRobotsTag: string | null): void {
+  facts.status = status;
+  facts.finalUrl = finalUrl;
+  facts.xRobotsTag = xRobotsTag;
+  if (status !== undefined && status >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${status}.` });
+  if (xRobotsTag && /noindex/i.test(xRobotsTag)) facts.flags.unshift({ severity: "error", message: `X-Robots-Tag: ${xRobotsTag}` });
+  if (facts.canonical && normalize(facts.canonical, finalUrl) !== normalize(finalUrl, finalUrl)) {
+    facts.flags.push({ severity: "info", message: `Canonical (${facts.canonical}) differs from the fetched URL (${finalUrl}). Fine if intentional.` });
+  }
 }
 
 function normalize(href: string, base: string): string {
@@ -228,15 +233,14 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
   const browser = await chromium.launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true });
   try {
     const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)" });
-    const res = await page.goto(u.toString(), { waitUntil: "networkidle", timeout: timeoutMs });
+    const res = await page.goto(u.toString(), { waitUntil: "load", timeout: timeoutMs });
+    // Give client-side rendering a moment; pages with beacons or polling never go fully idle.
+    await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);
     const serverHtml: string = res ? await res.text() : "";
     const renderedHtml: string = await page.content();
     const finalUrl: string = page.url();
     const server = auditHtml(serverHtml, finalUrl);
     const facts = auditHtml(renderedHtml, finalUrl) as RenderedAudit;
-    facts.status = res?.status();
-    facts.finalUrl = finalUrl;
-    facts.xRobotsTag = res ? ((await res.allHeaders())["x-robots-tag"] ?? null) : null;
     const clientOnly = facts.wordCount > 0 ? Math.max(0, facts.wordCount - server.wordCount) / facts.wordCount : 0;
     facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, clientOnlyShare: clientOnly, serverH1s: server.h1s };
     // The "few words" flag is about server HTML; drop it from the rendered audit and judge the gap instead.
@@ -250,7 +254,7 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     if (facts.h1s.length && server.h1s.length === 0) {
       facts.flags.unshift({ severity: "warning", message: "The <h1> exists only after JavaScript runs." });
     }
-    if (res && res.status() >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${res.status()}.` });
+    applyResponseChecks(facts, res?.status(), finalUrl, res ? ((await res.allHeaders())["x-robots-tag"] ?? null) : null);
     return facts;
   } finally {
     await browser.close();
