@@ -58,7 +58,7 @@ function visibleParts(line: string): string {
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
 }
 
-function walk(root: string, out: string[], state: { truncated: boolean }) {
+export function walk(root: string, out: string[], state: { truncated: boolean }, exts: Set<string> = EXTS, names: Set<string> = new Set()) {
   let entries: string[];
   try {
     entries = readdirSync(root);
@@ -78,8 +78,8 @@ function walk(root: string, out: string[], state: { truncated: boolean }) {
     } catch {
       continue;
     }
-    if (st.isDirectory()) walk(p, out, state);
-    else if (st.isFile() && EXTS.has(extname(name).toLowerCase()) && st.size <= MAX_BYTES && !/\.(test|spec|d)\.[tj]sx?$/.test(name)) out.push(p);
+    if (st.isDirectory()) walk(p, out, state, exts, names);
+    else if (st.isFile() && (exts.has(extname(name).toLowerCase()) || names.has(name)) && st.size <= MAX_BYTES && !/\.(test|spec|d)\.[tj]sx?$/.test(name)) out.push(p);
   }
 }
 

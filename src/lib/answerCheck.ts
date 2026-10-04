@@ -17,7 +17,7 @@ export interface AnswerCheck {
 
 const BANNED = ["moat", "moats", "flywheel", "synergy", "game-changer", "game changer", "best-in-class", "world-class"];
 // Abbreviations and terms a non-native reader may not know. Explained = followed within a few words by "(" or ", meaning", or preceded by an expansion in parentheses.
-const JARGON = ["ICP", "LTV", "CAC", "ARR", "MRR", "NRR", "GRR", "SAM", "SOM", "TAM", "PLG", "PQL", "MQL", "SQL lead", "ABM", "CRO", "ROAS", "CPA", "CPC", "CTR", "SERP", "GTM", "JTBD", "P&L", "HN", "DTC", "CPG", "SKU", "AOV", "RMT", "counter-positioning", "atomic network", "core loop", "growth loop", "north star", "dark social", "incrementality"];
+const JARGON = ["ICP", "LTV", "CAC", "ARR", "MRR", "NRR", "GRR", "SAM", "SOM", "TAM", "PLG", "PQL", "MQL", "SQL lead", "ABM", "CRO", "ROAS", "CPA", "CPC", "CTR", "SERP", "GTM", "JTBD", "P&L", "HN", "DTC", "CPG", "SKU", "AOV", "RMT", "counter-positioning", "atomic network", "core loop", "growth loop", "north star", "dark social", "incrementality", "H1", "noindex", "canonical", "SSR", "CSR", "hydration", "hreflang", "LCP", "CLS", "INP", "soft 404", "structured data"];
 
 export function checkAnswer(text: string, maxWords = 1200): AnswerCheck {
   // Count prose words; code spans and URLs count as one word each, like a reader sees them.

@@ -27,6 +27,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `analyze_copy` | Readability, sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, missing numbers |
 | `scan_source` | Lists claims in a local site or docs source tree (data handling, prices, availability, setup, proof), with `file:line`, plus build-time env flags and where they change output |
 | `check_answer` | Checks the advisor's own draft before sending: word count against the limit, banned words, abbreviations used without an explanation |
+| `verify_quotes` | Checks every quoted phrase in a draft against the repo file and line it cites: verbatim match, wrong line, wrong file, or not found |
 | `check_copy_limits` | Google RSA / PMax / Demand Gen, Microsoft, Meta, LinkedIn, X, TikTok, SERP, email, Open Graph limits (CJK = 2 for Google, URLs = 23 on X). Unverified limits warn instead of failing |
 | `build_utm_link` | Tagged URL; lowercases, flags media that break GA4 channel grouping |
 | `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags. `render: true` runs the page in headless Chromium and reports how much content exists only after JavaScript (needs optional `playwright-core`; set `MARKETING_EXPERT_CHROMIUM` to a Chromium binary) |
@@ -91,7 +92,7 @@ The audit and crawl tools fetch URLs chosen by the model, and the model reads te
 - Requests to private, loopback, link-local (including cloud metadata at 169.254.169.254), carrier-NAT and IPv6 local addresses are refused, for every redirect hop and, in render mode, for every request the page itself makes. Set `MARKETING_EXPERT_ALLOW_PRIVATE=1` to audit a local dev server.
 - Tool results that contain page text are labelled as untrusted, and the server instructions tell the model not to follow instructions found in web content.
 - Limits: DNS can change between the check and the request (DNS rebinding); this is a guard, not a firewall.
-- `scan_source` reads files on this machine: only markup, docs and script extensions (`.astro .html .md .mdx .tsx .jsx .ts .js .mjs .vue .svelte`), up to 512 KB each and 4,000 files, skipping dot-folders, `node_modules` and build output. It refuses the filesystem root. Point it at a repo, not at your home folder.
+- `scan_source` and `verify_quotes` read files on this machine: only markup, docs and script extensions (`.astro .html .md .mdx .tsx .jsx .ts .js .mjs .vue .svelte`), up to 512 KB each and 4,000 files, skipping dot-folders, `node_modules` and build output. It refuses the filesystem root. Point it at a repo, not at your home folder.
 
 ## Development
 
