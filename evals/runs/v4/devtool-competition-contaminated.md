@@ -1,3 +1,5 @@
+> **Invalid run.** The Answer section is a GameX Companion draft (another concurrent advisor's text, probably through a shared temp file used for check_answer); the tool log is DBTool's. Kept for the record; the case was rerun as devtool-competition.md with a private scratch directory.
+
 ## Answer
 
 **Short answer.** Don't go looking for website visitors yet. GameX Companion is only useful when a search or a watch finds real items, and today the database is close to empty: your own decision records say "no real users exist yet" (docs/adr/0004 line 52, 0006 line 81), and a production table held 141 items on 2026-08-04 (0006 lines 15–16). So the thing holding you back is **supply**: how many items flow in. That supply is controlled by the moderators of the Discord trade servers. Your first "customers" are two or three moderators, then about 20 traders who keep a watch running. A public launch comes after that, timed to a ladder season.
