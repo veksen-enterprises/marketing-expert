@@ -22,6 +22,16 @@ export interface EnvFlag {
   uses: Array<{ file: string; line: number; text: string; affectsOutput: boolean }>;
 }
 
+export interface Decision {
+  id: string;
+  title: string;
+  /** From the record itself: frontmatter "status:", a "Status:" line, or the first paragraph under "## Status". */
+  status: string | null;
+  /** From the decision index table (e.g. docs/adr/README.md), when there is one. */
+  indexStatus: string | null;
+  file: string;
+}
+
 export interface SourceScan {
   dir: string;
   filesScanned: number;
@@ -29,7 +39,58 @@ export interface SourceScan {
   claims: Record<ClaimKind, Claim[]>;
   claimCounts: Record<ClaimKind, number>;
   envFlags: EnvFlag[];
+  /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
+  decisions: Decision[];
   notes: string[];
+}
+
+const ADR_FILE = /^(\d{3,4})-[\w.-]+\.md$/;
+
+function decisionStatus(src: string): string | null {
+  const fm = /^---\n[\s\S]*?^status:\s*(.+)$[\s\S]*?^---/m.exec(src);
+  if (fm) return fm[1].trim();
+  const line = /^\s*(?:\*\*)?status(?:\*\*)?\s*:\s*(.+)$/im.exec(src);
+  if (line) return line[1].replace(/\*\*/g, "").trim().slice(0, 240);
+  const sec = /^#{2,3}\s*status\s*\n+([\s\S]*?)(?:\n\s*\n|\n#)/im.exec(src);
+  return sec ? sec[1].replace(/\s+/g, " ").trim().slice(0, 240) : null;
+}
+
+function readDecisions(root: string, files: string[]): Decision[] {
+  const out = new Map<string, Decision>();
+  for (const f of files) {
+    const rel = relative(root, f);
+    const name = rel.split("/").pop() ?? "";
+    const m = ADR_FILE.exec(name);
+    if (!m || !/(^|\/)(adr|adrs|decisions)\//i.test(rel)) continue;
+    let src = "";
+    try {
+      src = readFileSync(f, "utf8");
+    } catch {
+      continue;
+    }
+    const title = (/^#\s+(.+)$/m.exec(src)?.[1] ?? name).trim();
+    out.set(m[1], { id: m[1], title, status: decisionStatus(src), indexStatus: null, file: rel });
+  }
+  // Index tables: | [0003](0003-....md) | Decision | Date | Status |
+  for (const f of files) {
+    const rel = relative(root, f);
+    if (!/(^|\/)(adr|adrs|decisions)\/(README|index)\.md$/i.test(rel)) continue;
+    let src = "";
+    try {
+      src = readFileSync(f, "utf8");
+    } catch {
+      continue;
+    }
+    for (const row of src.split("\n")) {
+      const cells = row.split("|").map((c) => c.trim());
+      const id = /\[?(\d{3,4})\]?/.exec(cells[1] ?? "")?.[1];
+      if (!id || cells.length < 5) continue;
+      const d = out.get(id);
+      const status = cells[cells.length - 2].replace(/\[(\d+)\]\([^)]*\)/g, "$1");
+      if (d) d.indexStatus = status;
+    }
+  }
+  return [...out.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
 
 const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte"]);
@@ -155,5 +216,9 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   ];
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
   for (const k of Object.keys(counts) as ClaimKind[]) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
-  return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, notes };
+  const decisions = readDecisions(root, files);
+  if (decisions.length) {
+    notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped, and prefer the index status when it differs from the record.");
+  }
+  return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, decisions, notes };
 }

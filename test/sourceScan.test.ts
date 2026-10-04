@@ -31,6 +31,22 @@ function fixture() {
   return d;
 }
 
+describe("scanSource decisions", () => {
+  it("reads ADR statuses from frontmatter, a Status section and the index table", () => {
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    mkdirSync(join(d, "adr"));
+    writeFileSync(join(d, "adr", "0001-a.md"), "---\nstatus: proposed\n---\n\n# Use A\n");
+    writeFileSync(join(d, "adr", "0002-b.md"), "# 2. Use B\n\nDate: 2026-01-01\n\n## Status\n\nAccepted, not fully built.\n\n## Context\n");
+    writeFileSync(join(d, "adr", "README.md"), "| # | Decision | Date | Status |\n| --- | --- | --- | --- |\n| [0002](0002-b.md) | Use B | 2026-01-01 | Accepted; monitor mode open |\n");
+    const r = scanSource(d);
+    expect(r.decisions).toEqual([
+      { id: "0001", title: "Use A", status: "proposed", indexStatus: null, file: join("adr", "0001-a.md") },
+      { id: "0002", title: "2. Use B", status: "Accepted, not fully built.", indexStatus: "Accepted; monitor mode open", file: join("adr", "0002-b.md") },
+    ]);
+    expect(r.notes.join(" ")).toMatch(/not fully built/);
+  });
+});
+
 describe("scanSource", () => {
   const r = scanSource(fixture());
   it("finds bare prices with their context, so two prices for one plan can be compared", () => {

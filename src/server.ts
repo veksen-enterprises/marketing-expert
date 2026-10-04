@@ -313,7 +313,7 @@ export function createServer(): McpServer {
     {
       title: "Scan site or app source for claims and build flags",
       description:
-        "Reads a local source directory (markup, docs and script files only; skips node_modules, build output and dot-folders) and lists, with file:line: claims about data handling, prices, availability and setup, including tooltips, FAQ answers and attribute text; and build-time env flags (import.meta.env, process.env) with the lines that use them. Use it on the marketing site and on the docs, then check each claim against the docs and against the other files. Lines are matched by keyword, so some are not claims.",
+        "Reads a local source directory (markup, docs and script files only; skips node_modules, build output and dot-folders) and lists, with file:line: claims about data handling, prices, availability and setup, including tooltips, FAQ answers and attribute text; build-time env flags (import.meta.env, process.env) with the lines that use them; and decision records (ADRs) with their recorded status, so you don't call something shipped that its record says is partial or open. Use it on the marketing site and on the docs, then check each claim against the docs and against the other files. Lines are matched by keyword, so some are not claims.",
       inputSchema: { dir: z.string().min(1).max(1000), maxPerKind: z.number().int().min(5).max(300).optional() },
       annotations: readOnly,
     },
