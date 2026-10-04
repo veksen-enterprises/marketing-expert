@@ -83,6 +83,13 @@ Once the server is connected, ask in plain words; the server's instructions tell
 
 Tell it to save what it learns about your business (`save_business_profile`) so the next conversation starts with that context.
 
+## Security
+
+The audit and crawl tools fetch URLs chosen by the model, and the model reads text from web pages, which may contain hidden instructions. So:
+- Requests to private, loopback, link-local (including cloud metadata at 169.254.169.254), carrier-NAT and IPv6 local addresses are refused, for every redirect hop and, in render mode, for every request the page itself makes. Set `MARKETING_EXPERT_ALLOW_PRIVATE=1` to audit a local dev server.
+- Tool results that contain page text are labelled as untrusted, and the server instructions tell the model not to follow instructions found in web content.
+- Limits: DNS can change between the check and the request (DNS rebinding); this is a guard, not a firewall.
+
 ## Development
 
 ```bash

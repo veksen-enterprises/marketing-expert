@@ -2,6 +2,7 @@
 // critiques what is actually on the page rather than what it imagines is there.
 
 import { parse, HTMLElement } from "node-html-parser";
+import { guardedFetch, assertPublicUrl } from "./netguard.js";
 
 export interface PageFacts {
   url?: string;
@@ -171,8 +172,7 @@ export function auditHtml(html: string, url?: string): PageFacts {
 export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<PageFacts> {
   const u = new URL(url);
   if (!/^https?:$/.test(u.protocol)) throw new RangeError("only http(s) URLs are supported");
-  const res = await fetch(u, {
-    redirect: "follow",
+  const res = await guardedFetch(u, {
     signal: AbortSignal.timeout(timeoutMs),
     headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", accept: "text/html,*/*;q=0.8" },
   });
@@ -232,7 +232,16 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
   }
   const browser = await chromium.launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true });
   try {
+    await assertPublicUrl(u);
     const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)" });
+    // Apply the same address guard to every request the page makes (scripts, frames, fetches, redirects).
+    const hostOk = new Map<string, Promise<boolean>>();
+    await page.route("**/*", async (route: any) => {
+      const reqUrl = new URL(route.request().url());
+      if (!/^https?:$/.test(reqUrl.protocol)) return route.continue();
+      if (!hostOk.has(reqUrl.host)) hostOk.set(reqUrl.host, assertPublicUrl(reqUrl).then(() => true, () => false));
+      return (await hostOk.get(reqUrl.host)) ? route.continue() : route.abort("blockedbyclient");
+    });
     const res = await page.goto(u.toString(), { waitUntil: "load", timeout: timeoutMs });
     // Give client-side rendering a moment; pages with beacons or polling never go fully idle.
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);

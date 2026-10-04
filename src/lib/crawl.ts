@@ -4,6 +4,7 @@
 // canonical problems, link depth and hreflang errors.
 
 import { parse } from "node-html-parser";
+import { guardedFetch } from "./netguard.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
 export { parseRobots, robotsAllows };
@@ -81,7 +82,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const maxPages = Math.min(opts.maxPages ?? 100, 1000);
   const concurrency = Math.min(opts.concurrency ?? 4, 8);
   const timeoutMs = opts.timeoutMs ?? 15000;
-  const fetchFn: FetchFn = opts.fetchFn ?? ((u, init) => fetch(u, init));
+  const fetchFn: FetchFn = opts.fetchFn ?? ((u, init) => guardedFetch(u, init));
   const requested = normalize(opts.startUrl, opts.startUrl);
   if (!requested) throw new RangeError("startUrl must be an http(s) URL");
   const notes: string[] = [];

@@ -16,6 +16,7 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
   let server: Server;
   let url = "";
   beforeAll(async () => {
+    process.env.MARKETING_EXPERT_ALLOW_PRIVATE = "1"; // local test server
     server = createServer((req, res) => {
       if (req.url === "/poll") return; // never answers
       if (req.url === "/noindex") {
@@ -46,6 +47,12 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
     expect(msgs).toMatch(/only appears after JavaScript/);
     expect(msgs).toMatch(/<h1> exists only after JavaScript/);
   }, 60000);
+
+  it("refuses private addresses unless allowed", async () => {
+    delete process.env.MARKETING_EXPERT_ALLOW_PRIVATE;
+    await expect(renderAndAudit(url)).rejects.toThrow(/non-public address/);
+    process.env.MARKETING_EXPERT_ALLOW_PRIVATE = "1";
+  });
 
   it("keeps HTTP-level checks in render mode", async () => {
     const r = await renderAndAudit(url + "noindex");

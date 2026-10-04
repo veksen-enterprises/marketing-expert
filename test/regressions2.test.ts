@@ -56,9 +56,13 @@ describe("crawl review fixes", () => {
 });
 
 describe("ai crawler review fix", () => {
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
   it("treats a 5xx robots.txt as block-all", async () => {
     vi.stubGlobal("fetch", async () => new Response("err", { status: 503, headers: { "content-type": "text/plain" } }));
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1"); // fake host has no DNS
     const r = await checkAiCrawlerAccess("https://d.test");
     expect(r.bots.every((b) => !b.allowed)).toBe(true);
     expect(r.findings[0]).toMatch(/HTTP 503/);
