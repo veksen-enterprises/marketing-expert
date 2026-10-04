@@ -159,4 +159,80 @@ Launching: ${whatsLaunching}${opt(audience, "Audience")}${opt(date, "Date")}
 5. After: the 30 days when most launches die. Follow-up content, sales plays, onboarding changes, and the metrics review on day 7 and day 30 (adoption, activation, pipeline, not impressions).
 6. Risks and what would make you delay.`)
   );
+
+  server.registerPrompt(
+    "opportunity_assessment",
+    {
+      title: "Opportunity and risk assessment",
+      description: "Honest go/no-go review of a business idea or new product: base rates, market size, timing, risks, kill criteria.",
+      argsSchema: {
+        idea: z.string().describe("The product or business, who it's for, and how it makes money"),
+        evidence: z.string().optional().describe("What you know so far: customers talked to, paying users, numbers"),
+      },
+    },
+    ({ idea, evidence }) =>
+      user(`Assess this opportunity honestly. Read get_playbook "startup-risk-and-opportunity" and "market-sizing-and-timing" first.
+
+Idea: ${idea}${opt(evidence, "Evidence so far")}
+
+1. Base rates: state the relevant base rates (survival, return of capital) before any opinion. Ask the founder for their own probability estimate and compare.
+2. Who wants it urgently? Name the smallest concentrated group with the problem and a budget, the evidence they exist, and the path to the next group.
+3. Market: run market_size bottom-up with sourced account counts (ask for them; say where to get them). Report SAM, capacity-bounded obtainable market, and the $100M ARR test. Say whether this is venture-scale, a strong bootstrapped business, or neither, and why.
+4. Why now: the specific, dated change that makes this possible now. If none, say so.
+5. Risks, layer by layer (founder, market, competition, timing, financing, marketing/CAC, distribution, technology, product, hiring): rate each and name the cheapest evidence that would reduce it. Include platform/feature risk (get_playbook "platform-and-feature-risk") and incumbent response (get_playbook "competing-with-incumbents").
+6. Pre-mortem: it's 18 months later and this has shut down. List the most likely reasons.
+7. The two or three leap-of-faith hypotheses, each as a test with a threshold and deadline, and the kill criteria.
+Finish with a one-paragraph verdict and the single next test to run. Don't soften it.`)
+  );
+
+  server.registerPrompt(
+    "competitive_strategy",
+    {
+      title: "Competitive strategy vs larger players",
+      description: "How a small company should position against incumbents and platforms: what stops them copying you, where to fight, and how exposed you are to being absorbed.",
+      argsSchema: {
+        company: z.string().describe("What you do and for whom"),
+        competitors: z.string().describe("The incumbents, platforms and alternatives you face"),
+      },
+    },
+    ({ company, competitors }) =>
+      user(`Build a competitive strategy for a small company facing larger players. Read get_playbook "competing-with-incumbents", "platform-and-feature-risk" and "competitive-analysis" first.
+
+Company: ${company}
+Competitors / platforms: ${competitors}
+
+1. Alternatives from the buyer's view, including "do nothing" and suites they already pay for.
+2. For each major incumbent: what would copying us cost them, in their own revenue or margin terms? If nothing, say they will copy us and plan for it.
+3. Is our innovation sustaining (better for their best customers) or does it start where they won't follow (low end, non-consumers, a business model they can't adopt)? Be honest.
+4. Platform and feature risk: answer the risk questions from the platform playbook (dependence share, access clauses, who owns the customer, feature vs product vs company test).
+5. What protects us now (a business model they won't copy, an exclusive asset) and what we must build next (switching costs, network effects in our niche, brand), in order. Plain words; don't use the word "moat".
+6. Where to fight: the axis where their money doesn't convert directly into results. Where not to fight.
+7. Pre-planned responses if a big player enters: which segments we defend, which we cede, what we do on price (usually: don't match).
+8. Warning signs to monitor and who watches them.`)
+  );
+
+  server.registerPrompt(
+    "exit_options",
+    {
+      title: "Exit options and acquirability",
+      description: "Realistic view of exits: likelihood, who might buy and why, what founders would actually receive, and how to stay acquirable without building for a sale.",
+      argsSchema: {
+        company: z.string().describe("What you do, stage, revenue if any"),
+        capTable: z.string().optional().describe("Money raised and preferences, if known"),
+      },
+    },
+    ({ company, capTable }) =>
+      user(`Assess exit options. Read get_playbook "acquisition-and-exits" first.
+
+Company: ${company}${opt(capTable, "Funding / preferences")}
+
+1. Base rates: likelihood of no exit, acquisition, IPO for a company like this. Plan in that order.
+2. Plausible acquirers and their motive for each (technology, team, customers, removing a competitor). Is there a single-buyer risk? What happens if that buyer builds it instead?
+3. Waterfall: if preferences are known, compute what common shareholders receive at sale prices of 0.5×, 1× and 2× total preferences. If they're underwater, say what carve-outs and retention terms to negotiate.
+4. Regulatory exposure if the likely buyer is a dominant platform; reverse break fee; could we survive a failed deal?
+5. If a license-and-hire offer came: what to get in writing for remaining employees and common shareholders.
+6. Post-deal reality: retention evidence and what to negotiate (team kept together, separate unit, product continuity).
+7. Acquirability checklist we fail today (cap table, IP assignment, finances, partnerships).
+Verdict: should this company optimise for being acquired, stay acquirable, or ignore it for now?`)
+  );
 }

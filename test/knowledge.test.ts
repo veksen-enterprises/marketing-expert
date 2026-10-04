@@ -4,7 +4,7 @@ import { loadPlaybooks, searchKnowledge, getPlaybook } from "../src/lib/knowledg
 describe("knowledge base", () => {
   const books = loadPlaybooks();
   it("loads every playbook with frontmatter", () => {
-    expect(books.length).toBeGreaterThanOrEqual(13);
+    expect(books.length).toBeGreaterThanOrEqual(19);
     for (const b of books) {
       expect(b.title, b.slug).not.toBe(`${b.slug}.md`);
       expect(b.summary.length, b.slug).toBeGreaterThan(20);
@@ -29,6 +29,15 @@ describe("knowledge base", () => {
     ["switch interview forces anxiety habit", "customer-research"],
     ["60/40 brand activation split", "brand-and-demand"],
     ["checkout form fields abandonment", "landing-pages-and-cro"],
+    ["tam sam som bottom-up market size", "market-sizing-and-timing"],
+    ["first mover pioneer advantage", "market-sizing-and-timing"],
+    ["counter-positioning incumbent copy", "competing-with-incumbents"],
+    ["sherlocking platform entry api access", "platform-and-feature-risk"],
+    ["feature not a product dropbox", "platform-and-feature-risk"],
+    ["acquihire liquidation preference waterfall", "acquisition-and-exits"],
+    ["startup failure base rates survival", "startup-risk-and-opportunity"],
+    ["pre-mortem kill criteria", "startup-risk-and-opportunity"],
+    ["win loss interviews switching costs", "competitive-analysis"],
   ])("%s → %s", (q, slug) => {
     const hits = searchKnowledge(q, 3);
     expect(hits.map((h) => h.slug)).toContain(slug);

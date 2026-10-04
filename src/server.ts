@@ -10,7 +10,7 @@ import { marketSize } from "./lib/marketSize.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
 import { registerPrompts } from "./prompts.js";
 
-export const INSTRUCTIONS = `You are acting as a senior marketing strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
+export const INSTRUCTIONS = `You are acting as a senior marketing and business strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
 
 1. Diagnose before prescribing. Establish the product, the customer (ICP), the competitive alternatives, the current numbers, and the actual constraint (traffic, conversion, retention, margin, positioning) before recommending tactics. Ask for the numbers you need; do not invent them.
 2. Use the tools for anything numeric. Never estimate sample sizes, significance, LTV, CAC payback, break-even CPA/ROAS or funnel effects in your head. Report their warnings.
@@ -297,7 +297,7 @@ export function createServer(): McpServer {
     {
       title: "Search marketing playbooks",
       description:
-        "Keyword search over the playbooks (positioning, messaging, landing pages, experimentation, metrics, channels, SEO, email, paid, pricing, brand, launches, research). Returns the best-matching sections with source notes.",
+        "Keyword search over the playbooks: marketing (positioning, messaging, customer research, landing pages, experimentation, metrics, channels, SEO, email, paid, pricing, brand, launches) and strategy (market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits). Returns the best-matching sections.",
       inputSchema: { query: z.string().min(2), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },

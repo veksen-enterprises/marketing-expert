@@ -4,7 +4,7 @@ An MCP server that gives an LLM the parts of marketing expertise it lacks on its
 
 - **Calculators** for the numbers models get wrong in their heads: A/B test sample size and significance (with SRM and peeking checks), LTV/CAC/payback, paid-media break-even, funnel maths.
 - **Audits** of what is actually on a page or in a piece of copy, so critique starts from facts: landing-page extraction, copy signals, platform character limits, UTM hygiene.
-- **Playbooks**: 13 opinionated, sourced Markdown playbooks. Each claim is tagged by evidence strength (research / first-party / practitioner / vendor / rule-of-thumb).
+- **Playbooks**: 19 opinionated, sourced Markdown playbooks covering marketing and business strategy (market sizing, startup risk, competing with incumbents, platform and "feature, not a product" risk, competitive analysis, acquisitions and exits). Each claim is tagged by evidence strength (research / first-party / practitioner / vendor / rule-of-thumb).
 - **Prompts** that fix the order of thinking (diagnose before prescribing, positioning before copy, power analysis before testing).
 - **Server instructions** that set the operating rules for the model: ask for numbers, use the tools, state evidence quality, recommend at most a couple of ranked moves.
 
@@ -18,6 +18,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `ab_test_evaluate` | z-test, p-value, CI on absolute and relative lift, P(variant > control), sample ratio mismatch, peeking / Twyman's law warnings |
 | `unit_economics` | LTV (simple and horizon-bounded), LTV:CAC, simple and churn-adjusted CAC payback, with warnings where the formulas mislead |
 | `paid_media_math` | Break-even ROAS/CPA, max CPC, implied CPA/ROAS from CPC or CPM+CTR, budget projection, verdict |
+| `market_size` | Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity / acquisition budget with churn, top-down cross-check, and the share of the market a revenue target requires |
 | `funnel_analysis` | Step/cumulative rates, losses, cost per stage, the effect of improving any step |
 | `analyze_copy` | Readability, sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, missing numbers |
 | `check_copy_limits` | Google RSA / PMax / Demand Gen, Microsoft, Meta, LinkedIn, X, TikTok, SERP, email, Open Graph limits (CJK = 2 for Google, URLs = 23 on X). Unverified limits warn instead of failing |
@@ -25,9 +26,13 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags |
 | `search_playbooks` / `get_playbook` | BM25 search over playbook sections / full playbook. Also exposed as resources at `marketing://playbook/{slug}` |
 
-Prompts: `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`.
+Prompts: `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
 
-Playbooks: positioning, messaging-and-copy, customer-research, brand-and-demand, channel-strategy, pricing, landing-pages-and-cro, experimentation, metrics-and-measurement, seo-and-ai-search, email-and-lifecycle, paid-acquisition, launches-and-gtm.
+Playbooks:
+- Marketing: positioning, messaging-and-copy, customer-research, brand-and-demand, channel-strategy, pricing, landing-pages-and-cro, experimentation, metrics-and-measurement, seo-and-ai-search, email-and-lifecycle, paid-acquisition, launches-and-gtm.
+- Strategy: market-sizing-and-timing, startup-risk-and-opportunity, competing-with-incumbents, platform-and-feature-risk, competitive-analysis, acquisition-and-exits.
+
+Writing rule: plain vocabulary for readers whose first language may not be English. No "moat"; say "defensibility" or describe what stops competitors.
 
 ## Install
 
@@ -70,7 +75,8 @@ Layout: `src/lib/*` holds pure, tested logic; `src/server.ts` registers tools/re
 `research/` holds the source notes, one file per domain, with citations and an "open questions" list. The research was done from a sandbox whose network policy blocked most primary domains (Google support, NN/g, Baymard, IPA, arXiv, journal sites). As a result:
 
 - Most figures were taken from search-result snippets of the cited primary URL, not from reading the full page. They are marked `[snippet-only]` or `[verify]` in the research notes.
-- Read in full: web.dev Core Web Vitals text (via GitHub); the Meridian, Robyn, GeoLift and PyMC-Marketing repos; the Gordon et al. (2019) working paper.
+- Read in full: web.dev Core Web Vitals text (via GitHub); the Meridian, Robyn, GeoLift and PyMC-Marketing repos; the Gordon et al. (2019) working paper; Chandy & Tellis (2000); Microsoft FY24 Q1 earnings call; CB Insights 2016 post-mortems; and, via copies on GitHub, essays by Paul Graham, Marc Andreessen and Bill Gurley, Bill Gross's TED transcript, Sequoia's and YC's guides, Zero to One chapters, and Uber/Apple releases.
+- The strategy research hit the session's 200-web-search limit; topics not reached are listed under "Open questions" in each research file (e.g. EU DMA details, 2025 AI license-and-hire terms, Startup Genome, Kauffman).
 - Meta ad text hard limits and the LinkedIn intro-text maximum are unverified; the tool treats them as warnings.
 
 Before anyone quotes a number from a playbook as fact, re-verify it against the primary source; the research notes say which ones need it most.
