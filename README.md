@@ -25,7 +25,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `analyze_copy` | Readability, sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, missing numbers |
 | `check_copy_limits` | Google RSA / PMax / Demand Gen, Microsoft, Meta, LinkedIn, X, TikTok, SERP, email, Open Graph limits (CJK = 2 for Google, URLs = 23 on X). Unverified limits warn instead of failing |
 | `build_utm_link` | Tagged URL; lowercases, flags media that break GA4 channel grouping |
-| `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags |
+| `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags. `render: true` runs the page in headless Chromium and reports how much content exists only after JavaScript (needs optional `playwright-core`; set `MARKETING_EXPERT_CHROMIUM` to a Chromium binary) |
 | `search_playbooks` / `get_playbook` | BM25 search over playbook sections / full playbook. Also exposed as resources at `marketing://playbook/{slug}` |
 
 Prompts: `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
@@ -87,4 +87,3 @@ Before anyone quotes a number from a playbook as fact, re-verify it against the 
 
 - Live data connectors (GA4, Search Console, ad platforms) so diagnosis runs on real numbers.
 - Sequential (always-valid) testing for teams that monitor tests continuously.
-- Rendering client-side pages in `audit_page` (currently server HTML only).

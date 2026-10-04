@@ -5,7 +5,7 @@ import { unitEconomics, paidMediaMath, analyzeFunnel } from "./lib/economics.js"
 import { analyzeCopy, checkLimits } from "./lib/copy.js";
 import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
-import { auditHtml, fetchAndAudit } from "./lib/pageAudit.js";
+import { auditHtml, fetchAndAudit, renderAndAudit } from "./lib/pageAudit.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
@@ -322,17 +322,18 @@ export function createServer(): McpServer {
     {
       title: "Audit a landing page",
       description:
-        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Only sees server-rendered HTML.",
+        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side.",
       inputSchema: {
         url: z.string().optional().describe("http(s) URL to fetch"),
         html: z.string().optional().describe("Raw HTML instead of fetching"),
+        render: z.boolean().optional().describe("Render with headless Chromium (optional playwright-core) and compare with server HTML"),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     safe(async (a) => {
       if (a.html) return auditHtml(a.html, a.url);
       if (!a.url) throw new Error("provide url or html");
-      return fetchAndAudit(a.url);
+      return a.render ? renderAndAudit(a.url) : fetchAndAudit(a.url);
     })
   );
 

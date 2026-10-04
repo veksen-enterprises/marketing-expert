@@ -200,3 +200,59 @@ function normalize(href: string, base: string): string {
     return href;
   }
 }
+
+export interface RenderedAudit extends PageFacts {
+  rendering: {
+    serverWordCount: number;
+    renderedWordCount: number;
+    /** Share of rendered text that is missing from the server HTML. */
+    clientOnlyShare: number;
+    serverH1s: string[];
+  };
+}
+
+/**
+ * Render the page in headless Chromium (needs the optional `playwright-core` package and a Chromium
+ * binary), audit the rendered DOM, and compare it with the server HTML. Content that only exists after
+ * JavaScript runs is at risk with crawlers and LLM fetchers that don't execute scripts.
+ */
+export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<RenderedAudit> {
+  const u = new URL(url);
+  if (!/^https?:$/.test(u.protocol)) throw new RangeError("only http(s) URLs are supported");
+  let chromium: { launch: (o: object) => Promise<any> };
+  try {
+    ({ chromium } = await import("playwright-core"));
+  } catch {
+    throw new Error("render mode needs the optional dependency playwright-core: run `npm install playwright-core` and set MARKETING_EXPERT_CHROMIUM to a Chromium binary (or install one with `npx playwright-core install chromium`).");
+  }
+  const browser = await chromium.launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true });
+  try {
+    const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)" });
+    const res = await page.goto(u.toString(), { waitUntil: "networkidle", timeout: timeoutMs });
+    const serverHtml: string = res ? await res.text() : "";
+    const renderedHtml: string = await page.content();
+    const finalUrl: string = page.url();
+    const server = auditHtml(serverHtml, finalUrl);
+    const facts = auditHtml(renderedHtml, finalUrl) as RenderedAudit;
+    facts.status = res?.status();
+    facts.finalUrl = finalUrl;
+    facts.xRobotsTag = res ? ((await res.allHeaders())["x-robots-tag"] ?? null) : null;
+    const clientOnly = facts.wordCount > 0 ? Math.max(0, facts.wordCount - server.wordCount) / facts.wordCount : 0;
+    facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, clientOnlyShare: clientOnly, serverH1s: server.h1s };
+    // The "few words" flag is about server HTML; drop it from the rendered audit and judge the gap instead.
+    facts.flags = facts.flags.filter((f) => !f.message.includes("words of server-rendered text"));
+    if (clientOnly > 0.3) {
+      facts.flags.unshift({
+        severity: "warning",
+        message: `${(clientOnly * 100).toFixed(0)}% of the page text only appears after JavaScript runs (server HTML: ${server.wordCount} words; rendered: ${facts.wordCount}). Crawlers and AI fetchers that don't run scripts see much less. Server-render the main content.`,
+      });
+    }
+    if (facts.h1s.length && server.h1s.length === 0) {
+      facts.flags.unshift({ severity: "warning", message: "The <h1> exists only after JavaScript runs." });
+    }
+    if (res && res.status() >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${res.status()}.` });
+    return facts;
+  } finally {
+    await browser.close();
+  }
+}
