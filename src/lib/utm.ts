@@ -40,7 +40,7 @@ export function buildUtm(i: UtmInput): { url: string; warnings: string[] } {
     if (u.searchParams.has(k)) warnings.push(`${k} already present in the URL; overwritten.`);
     u.searchParams.set(k, v.toLowerCase().replace(/\s+/g, "-"));
   }
-  const medium = i.medium.trim().toLowerCase();
+  const medium = i.medium.trim().toLowerCase().replace(/\s+/g, "-");
   if (!KNOWN_MEDIUMS.has(medium)) {
     warnings.push(`utm_medium="${medium}" isn't a value GA4's default channel grouping recognises; traffic may land in "Unassigned". Common values: cpc, paid_social, email, social, referral, affiliate, display.`);
   }

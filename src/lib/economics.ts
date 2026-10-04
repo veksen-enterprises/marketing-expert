@@ -61,6 +61,8 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
   let lifetime: number | null = null;
   if (i.monthlyChurn > 0) lifetime = 1 / i.monthlyChurn;
   if (netDecay > 0) ltvSimple = gp / netDecay;
+  else if (i.monthlyChurn === 0 && expansion === 0)
+    warnings.push("Monthly churn of 0 makes the textbook LTV infinite. No business has zero churn; use a measured churn rate, or rely on the horizon-bounded LTV.");
   else
     warnings.push(
       "Net revenue churn is <= 0 (expansion offsets churn), so the textbook LTV formula is infinite. Use the horizon-bounded LTV."

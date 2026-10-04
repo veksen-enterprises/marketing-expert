@@ -96,9 +96,9 @@ export function auditHtml(html: string, url?: string): PageFacts {
   for (const a of body.querySelectorAll("a[href]")) {
     const href = a.getAttribute("href") ?? "";
     if ((a.getAttribute("rel") ?? "").includes("nofollow")) links.nofollow++;
-    if (/^https?:\/\//i.test(href)) {
+    if (/^(https?:)?\/\//i.test(href)) {
       try {
-        if (host && new URL(href).host === host) links.internal++;
+        if (host && new URL(href, url).host === host) links.internal++;
         else links.external++;
       } catch {
         links.external++;

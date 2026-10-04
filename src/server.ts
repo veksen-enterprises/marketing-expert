@@ -80,7 +80,7 @@ export function createServer(): McpServer {
         const weeks = Math.max(1, Math.ceil(days / 7));
         notes.push(`Run for whole weeks to cover weekday/weekend differences: plan ${weeks} week(s).`);
         if (days > 56) {
-          const mde4w = minimumDetectableEffect(a.baselineRate, Math.floor((a.dailyTrafficTotal * 28) / (a.variants ?? 2)), a.alpha, a.power);
+          const mde4w = minimumDetectableEffect(a.baselineRate, Math.floor((a.dailyTrafficTotal * 28) / (a.variants ?? 2)), r.alphaUsed, a.power);
           notes.push(
             `This takes ${days} days. Tests running past ~8 weeks suffer from cookie churn and seasonal drift. ` +
               (mde4w ? `With 4 weeks of traffic the smallest detectable relative lift is ~${(mde4w * 100).toFixed(1)}%. ` : "") +

@@ -29,13 +29,11 @@ const VAGUE_TERMS: Record<string, string> = {
   "unlock": "overused metaphor; name the outcome",
   "unleash": "overused metaphor; name the outcome",
   "empower": "vague; name what the reader can now do",
-  "empowers": "vague; name what the reader can now do",
   "supercharge": "overused metaphor; quantify",
   "elevate": "vague; name the change",
   "streamline": "vague; say what step disappears or how much time is saved",
   "optimize": "vague without a metric",
   "solution": "category noun that hides what the product is",
-  "solutions": "category noun that hides what the product is",
   "all-in-one": "often signals unclear positioning; name the 2–3 jobs it replaces",
   "end-to-end": "often signals unclear positioning",
   "holistic": "vague",
@@ -49,7 +47,7 @@ const VAGUE_TERMS: Record<string, string> = {
 };
 
 // Words that are fine when backed up on the page; flag softly.
-const SOFT_TERMS = new Set(["simple", "easy", "fast", "powerful", "leading", "optimize", "solution", "solutions"]);
+const SOFT_TERMS = new Set(["simple", "easy", "fast", "powerful", "leading", "optimize", "solution"]);
 
 const HEDGES = ["may help", "can help", "helps you", "could potentially", "might", "aims to", "strives to", "designed to help"];
 

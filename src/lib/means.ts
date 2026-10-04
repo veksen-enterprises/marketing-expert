@@ -159,12 +159,12 @@ export function welchTest(controlIn: ArmInput, variantIn: ArmInput, alpha = 0.05
   const crit = tCrit(alpha, df);
 
   if (raw && cappedAt === null) {
-    const all = [...controlIn.values!, ...variantIn.values!].sort((a, b) => a - b);
-    const p99 = quantile(all, 0.99);
-    const max = all[all.length - 1];
-    const mean = all.reduce((s, x) => s + x, 0) / all.length;
-    if (max > 10 * Math.max(p99, mean)) {
-      warnings.push(`Heavy tail: the largest value (${max}) is over 10× the 99th percentile. A handful of outliers can decide this test; rerun with capPercentile 0.99 and report both.`);
+    const all = [...controlIn.values!, ...variantIn.values!].sort((a, b) => b - a);
+    const total = all.reduce((s, x) => s + Math.max(0, x), 0);
+    const topN = Math.max(1, Math.ceil(all.length * 0.01));
+    const topShare = total > 0 ? all.slice(0, topN).reduce((s, x) => s + Math.max(0, x), 0) / total : 0;
+    if (topShare > 0.2) {
+      warnings.push(`Heavy tail: the top ${topN} value(s) (${topN === 1 ? "1 unit" : "top 1% of units"}) account for ${(topShare * 100).toFixed(0)}% of the total. A few outliers can decide this test; rerun with capPercentile 0.99 and report both.`);
     }
   }
   if (!raw && c.mean > 0 && c.sd / c.mean > 3) {

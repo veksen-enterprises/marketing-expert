@@ -103,7 +103,10 @@ export function marketSize(i: MarketSizeInput): MarketSizeResult {
     const min = bounds.reduce((a, b) => (b[1] < a[1] ? b : a));
     binding = min[0];
     customers = Math.min(min[1], servAccounts);
-    if (min[1] > servAccounts) warnings.push("Your capacity exceeds the serviceable market; the market, not capacity, is the binding constraint.");
+    if (min[1] > servAccounts) {
+      binding = "serviceable market";
+      warnings.push("Your capacity exceeds the serviceable market; the market, not capacity, is the binding constraint.");
+    }
   } else {
     warnings.push("No capacity constraint given, so no obtainable market computed. Add salesCapacity and/or acquisitionBudget: SOM is bounded by how many customers you can actually win, not by a share of TAM you pick.");
   }
