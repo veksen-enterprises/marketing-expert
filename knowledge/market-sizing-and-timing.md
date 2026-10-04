@@ -66,7 +66,7 @@ So: customer first, number second, evidence that it's real, and growth.
 ## Where to get the counts
 
 - US Census **County Business Patterns** (establishments with employees, by industry and size, down to county; Census says it's used "for analyzing market potential… setting sales quotas"), **Statistics of U.S. Businesses** (firms by size class), **Nonemployer Statistics** (solo businesses). Data lags 2–3 years. Count establishments for location-based products, firms for software sold to HQ.
-- Others (indicative, deduplicate): LinkedIn Sales Navigator, technographic data (BuiltWith/Wappalyzer), app-store intelligence, association membership, licensing registries, incumbents' 10-K segment revenue (floor for current spend).
+- Others (indicative, deduplicate): LinkedIn Sales Navigator, technographic data (BuiltWith/Wappalyzer), app-store intelligence, association membership, licensing registries, incumbents' 10-K (US annual report) segment revenue (floor for current spend).
 
 ## Sanity checks
 

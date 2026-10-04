@@ -6,7 +6,7 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 ## What changed (2024–2026)
 
-- **Fewer clicks per ranking.** When an AI Overview appears, organic CTR drops substantially. Pew (Mar 2025 browsing data, 900 US adults): users clicked a result on 8% of visits with an AI summary vs 15% without, and clicked a link inside the summary on 1%. Ahrefs: position-1 CTR −34.5% (Apr 2025), −58% in a Dec 2025 update. Seer Interactive (informational queries, Jun 2024–Sep 2025): −61% organic CTR on AIO queries, and −41% even on queries without one. Semrush clickstream: 92–94% of AI Mode sessions were zero-click. Methods differ; the direction is consistent, the size ranges ~35–61%. Seer's 2026 update shows some rebound: organic CTR on AI Overview queries rose from 1.3% (Dec 2025) to 2.4% (Feb 2026), and cited brands got ~120% more clicks per impression. [research / vendor]
+- **Fewer clicks per ranking.** When an AI Overview appears, organic CTR drops substantially. Pew (Mar 2025 browsing data, 900 US adults): users clicked a result on 8% of visits with an AI summary vs 15% without, and clicked a link inside the summary on 1%. Ahrefs: position-1 CTR −34.5% (Apr 2025), −58% in a Dec 2025 update. Seer Interactive (informational queries, Jun 2024–Sep 2025): −61% organic CTR on AI Overview queries, and −41% even on queries without one. Semrush clickstream: 92–94% of AI Mode sessions were zero-click. Methods differ; the direction is consistent, the size ranges ~35–61%. Seer's 2026 update shows some rebound: organic CTR on AI Overview queries rose from 1.3% (Dec 2025) to 2.4% (Feb 2026), and cited brands got ~120% more clicks per impression. [research / vendor]
 - **Quality systems**: the March 2024 core update folded "helpful content" into core ranking and added spam policies for scaled content abuse (mass-produced pages, by any method including AI), expired domain abuse, and site reputation abuse (third-party content riding a host site's authority; clarified Nov 2024 to apply even with first-party oversight). Core updates continued in March and May 2026. [first-party]
 
 **Implication**: informational traffic per keyword is falling. Plan for SEO to deliver fewer, higher-intent visits; value it on pipeline/revenue per visit, not sessions.
@@ -15,7 +15,7 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 1. **Target intent where you can win the click**: commercial and transactional queries (comparisons, alternatives, pricing, "[category] for [use case]", integrations), and queries where a summary can't substitute for the page (tools, calculators, templates, data, detailed how-tos with product context).
 2. **Information gain**: first-hand experience, original data, specific examples, expert opinion. Pages that restate the top 10 results add nothing for Google or for AI summaries to cite.
-3. **Be the source that gets cited.** Being cited in an AI Overview correlates with ~35% higher organic CTR than not being cited (Seer; correlation, not cause).
+3. **Be the source that gets cited.** Being cited in an AI Overview correlates with ~35% higher organic CTR than not being cited (Seer; correlation, not cause) [vendor].
 4. **Whole-site quality**: weak sections can drag the site. Prune or improve thin, outdated and duplicate pages. Recovery from a core update usually comes only at a later core update.
 5. **Don't**: mass-produce templated or AI pages without unique value; rent subfolders to third parties; buy expired domains for their links.
 

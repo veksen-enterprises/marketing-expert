@@ -25,11 +25,11 @@ Price-specific effects (decoy, charm/left-digit pricing, compromise effect, refe
 | Social / behavioral priming | Failed to replicate | Do not use | Includes "elderly" walking and money/flag primes |
 | Ego depletion | Failed to replicate | Do not use | "Tired shoppers buy more" claims rest on it |
 | Power posing (behavior/hormones) | Failed to replicate | Do not use | Only self-reported "feeling powerful" held |
-| Nudges overall | Small at scale | Expect about 1–2 pp, not 8–9 pp | Published lifts are inflated |
+| Nudges overall | Small at scale | Expect about 1–2 percentage points (pp), not 8–9 pp | Published lifts are inflated |
 
 ## Defaults [research, robust]
 
-Johnson & Goldstein (2003) compared organ donation across European countries: where people had to opt in, effective consent was rarely above about a quarter; where they had to opt out, it was often above 90%. A meta-analysis of 58 studies (73,675 people) found a medium-to-large average default effect, d=0.68, stronger in consumer decisions than environmental ones (Jachimowicz et al. 2019).
+Johnson & Goldstein (2003) compared organ donation across European countries: where people had to opt in, effective consent was rarely above about a quarter; where they had to opt out, it was often above 90%. A meta-analysis of 58 studies (73,675 people) found a medium-to-large average default effect, d=0.68 (d is a standard measure of effect size), stronger in consumer decisions than environmental ones (Jachimowicz et al. 2019).
 
 Marketing use: the plan, billing period or add-on you pre-select will be chosen more often. This is the most reliable lever in this file. The legal line: a default the customer would not want, hidden or hard to undo (pre-ticked insurance, auto-renew buried in terms), is what regulators call a dark pattern.
 

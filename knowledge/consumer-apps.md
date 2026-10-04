@@ -36,7 +36,7 @@ ASO means improving how an app ranks in store search and how many store visitors
 ## Paid user acquisition after ATT
 
 General paid-media math and creative rules are in **paid-acquisition**; app-specific points:
-- **App Tracking Transparency (ATT)**, since iOS 14.5, requires opt-in before an app may track users across other companies' apps. Opt-in averages roughly a third of users (Adjust, 2025; see **paid-acquisition**). [vendor]
+- **App Tracking Transparency (ATT)**, since iOS 14.5, requires opt-in before an app may track users across other companies' apps. Opt-in averages about 35% of users (Adjust, 2025; see **paid-acquisition**). [vendor]
 - Without opt-in, iOS install attribution comes from Apple's privacy frameworks: **SKAdNetwork** and its successor **AdAttributionKit** (iOS 17.4+). They send ad networks delayed, aggregated "postbacks" (reports) with a limited "conversion value" you define, such as tutorial complete or trial started. AdAttributionKit adds **re-engagement** attribution (ads that bring existing users back), with multiple active re-engagement windows since iOS 18.4. [first-party]
 - Consequences:
   - Choose conversion values that predict revenue in the **first days**, because later events arrive late or not at all.
@@ -76,7 +76,7 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 - Other countries follow different rules; this section covers the US storefront only. See **platform-and-feature-risk** for planning around platform rule changes.
 - Practical use:
   - **Web checkout for US users** can keep more revenue per sale and gives you the customer's email, but expect lower conversion than one-tap in-app purchase. Test both; measure revenue per user, not margin per sale.
-  - **Web-to-app funnels**: acquire on the web (quiz or landing page, paid social), take payment on the web, then send the user to install. This avoids some iOS attribution limits because the conversion happens on your site. Use deferred deep links so the account is ready on first open.
+  - **Web-to-app funnels**: acquire on the web (quiz or landing page, paid social), take payment on the web, then send the user to install. This avoids some iOS attribution limits because the conversion happens on your site. Use deferred deep links (links that still open the right screen after the user installs the app first) so the account is ready on first open.
   - Keep in-app purchase available unless you have tested removing it.
 
 ## What usually works by stage

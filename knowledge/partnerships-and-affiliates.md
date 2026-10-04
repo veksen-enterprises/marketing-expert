@@ -13,7 +13,7 @@ A **partnership** here means another company helps you reach or win customers. T
 | Integration / technology partner | Their product connects to yours; shared customers | Engineering time, joint marketing | Products used next to a popular tool |
 | App marketplace listing | The platform's store shows you to its users | Revenue share, review rules | Products that extend a platform (Shopify, Salesforce, Atlassian, HubSpot, Slack) |
 | Co-marketing | Joint webinar, report, content, event | Time; shared lists only with consent | Two companies with the same buyer, different products |
-| Reseller / channel partner (VAR, distributor) | Sells your product, often on their own paper (contract) | Margin or discount, often 10–30%+ [rule-of-thumb] | Markets where buyers buy through intermediaries (public sector, SMB IT, regions you can't staff) |
+| Reseller / channel partner (VAR: value-added reseller; distributor) | Sells your product, often on their own paper (contract) | Margin or discount, often 10–30%+ [rule-of-thumb] | Markets where buyers buy through intermediaries (public sector, SMB IT, regions you can't staff) |
 | Agency / consultant / MSP (managed service provider) | Recommends, implements and runs your product for clients | Referral fee or revenue share, partner tier benefits | Products that need setup or ongoing service |
 | Affiliate | Publishes content or links that send buyers; paid per sale or lead | Commission per conversion | Self-serve products with clear online checkout |
 

@@ -22,7 +22,7 @@ The laws and their critiques are in brand-and-demand. What they mean on the shel
   - Why the item will **grow the category**, not just take sales from another brand.
   - Proof of demand: sales in other stores (velocity, below), online sales, reviews, social following.
   - A marketing plan for launch: promotions, demos, retail media, local advertising.
-  - Margin for the retailer, and that you can supply reliably (production, food-safety certificates, insurance, EDI ordering).
+  - Margin for the retailer, and that you can supply reliably (production, food-safety certificates, insurance, EDI ordering (electronic orders sent between company systems)).
 - **Routes**: direct to retailer, or through **distributors** (in US natural grocery, UNFI and KeHE are the large ones) who take a margin and charge for promotions [practitioner]. **Brokers** represent you to buyers for a commission.
 - **Slotting fees** (payments to get shelf space): the US FTC's 2003 case study found large variation by category, and national launches in some categories cost from just under $1 million to over $2 million [first-party: regulator; small sample, over 20 years old]. Current prices aren't public; ask brokers and peers. Free product ("free fill") for the first order is a common alternative [practitioner].
 - Start with fewer stores where you can support sales. Expanding to hundreds of stores without money for promotion and demos often leads to low velocity and delisting [practitioner].

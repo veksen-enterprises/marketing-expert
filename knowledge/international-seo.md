@@ -64,7 +64,7 @@ hreflang is an annotation that tells Google "this page has equivalent versions i
 
 - **Translation** changes the words. **Localisation** changes everything a local buyer notices: currency, prices, units, date formats, payment methods, shipping and returns, legal pages, examples, case studies, images, support hours and phone numbers. [practitioner]
 - **Do keyword research per market.** People in different countries search with different words, not translations of your English keyword (e.g. Spanish users in Spain and Mexico use different terms for the same product). Translate the intent, then check local search volume and the local results page. [practitioner]
-- Translate the whole page: title tag, meta description, headings, image alt text, structured data, URL slug (optional but helpful), navigation and forms. A German page with English navigation looks like a doorway. [practitioner]
+- Translate the whole page: title tag, meta description, headings, image alt text, structured data, URL slug (optional but helpful), navigation and forms. A German page with English navigation looks like a doorway page (a page made only to catch searches). [practitioner]
 - Localise reviews and proof: a US logo wall persuades little in Japan. [practitioner]
 - Prioritise: translate the pages that earn money first (home, product, pricing, top landing pages), not the whole blog.
 
@@ -79,7 +79,7 @@ hreflang is an annotation that tells Google "this page has equivalent versions i
 
 Google leads in most markets, but not all. Shares below are from aggregator sites relaying StatCounter-style data and differ by 5–10 points between sources. [vendor: secondary]
 
-- **China — Baidu** (~53–54% share). Google is blocked. Needs simplified Chinese, fast access from the mainland (often local hosting, which needs an ICP licence), and Baidu's own webmaster tools. Usually a separate project with a local partner. [practitioner] [not re-verified]
+- **China — Baidu** (~53–54% share). Google is blocked. Needs simplified Chinese, fast access from the mainland (often local hosting, which needs a Chinese ICP licence, a government website licence, unrelated to "ideal customer profile"), and Baidu's own webmaster tools. Usually a separate project with a local partner. [practitioner] [not re-verified]
 - **South Korea — Naver** (~42% vs Google ~51%, 2024). Naver mixes in its own properties (Naver Blog, Cafe, Knowledge iN) heavily, so presence on those platforms often matters more than your website. [practitioner] [not re-verified]
 - **Russia — Yandex** (~76%, May 2025). Has its own webmaster tools and regional targeting. Check sanctions and payment restrictions before investing. [practitioner]
 - **Czech Republic — Seznam** (~12–13%). Small share, but the only EU country with a meaningful local engine; register in Seznam's webmaster tools and keep Czech content solid. [practitioner]

@@ -34,7 +34,7 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 ## Shorts vs long-form
 
 - Since 15 October 2024, square or vertical videos up to **three minutes** count as Shorts [first-party].
-- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. Creator reports say that from 24 Aug 2026 views in all formats count from the first frame, with most analytics and YPP still based on engaged views; not confirmed on a YouTube Help or Blog page [not re-verified].
+- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. Creator reports say that from 24 Aug 2026 views in all formats count from the first frame, with most analytics and YouTube Partner Program (YPP) still based on engaged views; not confirmed on a YouTube Help or Blog page [not re-verified].
 - YouTube says Shorts performance does not hurt long-form recommendations and can help people discover a channel [first-party: YouTube Blog "Shorts truths"].
 - **Use Shorts for**: reach and testing topics cheaply, clips from long videos, quick tips. **Use long-form for**: search demand, trust, depth, and the viewers who buy. In B2B, a long tutorial watched by 500 buyers is often worth more than a Short watched by 50,000 strangers [practitioner].
 - Judge Shorts on subscribers gained, profile visits and the long videos they lead to, not on views.

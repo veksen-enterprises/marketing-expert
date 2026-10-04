@@ -22,8 +22,8 @@ In 2023 Google removed first-click, linear, time-decay and position-based models
 
 | Method | Use when | Notes |
 |---|---|---|
-| Platform conversion lift (user-level RCT) | One platform, enough conversions | Meta Conversion Lift; Google Conversion Lift. Ghost-ads designs avoid buying placebo ads |
-| Geo experiment | Channels without user-level control (TV, OOH, search, cross-platform); cookieless | Meta GeoLift (synthetic control): ≥ 20 geos, ≥ 25 pre-periods (ideally 52 weeks), ≥ 15 days daily data or 4–6 weeks weekly, cover a purchase cycle, hold other local media constant. Google: Time-Based Regression, Trimmed Match |
+| Platform conversion lift (user-level RCT) | One platform, enough conversions | Meta Conversion Lift; Google Conversion Lift. Ghost-ads designs (logging who would have seen the ad in the control group) avoid buying placebo ads |
+| Geo experiment | Channels without user-level control (TV, OOH (out-of-home: billboards, transit), search, cross-platform); cookieless | Meta GeoLift (synthetic control: a weighted mix of untreated regions built to match the test regions): ≥ 20 geos, ≥ 25 pre-periods (ideally 52 weeks), ≥ 15 days daily data or 4–6 weeks weekly, cover a purchase cycle, hold other local media constant. Google: Time-Based Regression, Trimmed Match |
 | Persistent holdout | Owned channels (email, push, lifecycle) | Keep 5–10% randomly excluded to measure programme lift |
 | Turn-off test | Suspected waste (brand search, retargeting) | Pause in some regions or time windows, compare with control |
 
@@ -67,7 +67,7 @@ Use unit_economics; don't compute by hand.
 
 Benchmarks are context, not targets. Before quoting one, check: who collected it (vendor platforms report their own customers), the definition (what counts as a conversion, CAC fully loaded or not), the date, and selection (survey respondents, awards entries, survivors). Your own trend over time is a better benchmark than someone else's median.
 
-Examples with caveats: Unbounce 2024 report (Q4 2024 data): median landing-page conversion 6.6% (SaaS 3.8%), Unbounce-hosted pages only; Klaviyo 2026 campaign click rate 1.69%, flows 5.58%, Klaviyo customers only.
+Examples with caveats: Unbounce 2024 report (Q4 2024 data): median landing-page conversion 6.6% (SaaS 3.8%), Unbounce-hosted pages only; Klaviyo 2026 campaign click rate 1.69%, flows 5.58%, Klaviyo customers only [vendor].
 
 ## Sources
 

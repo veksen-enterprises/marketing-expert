@@ -42,7 +42,7 @@ Limits: misrepresentation, bribery, inducing breach of confidentiality and theft
 
 **Proprietary data**: most "data network effects" are data **scale** effects: after a minimum useful amount, more data adds less and costs more (Casado & Lauten, a16z 2019). Tests: does more usage improve the product for *other* customers? Where does accuracy flatten? Can a rival buy, license or generate equivalent data? Is the data produced inside a workflow you own? In AI, fine-tuning on modest proprietary data is cheap to copy; durable advantage more likely comes from owning the workflow. [practitioner]
 
-**Distribution**: the best product doesn't always win. Netscape's browser share fell from > 80% (1996) to ~55% (1997) as Internet Explorer, bundled with Windows, rose from ~5% to 36% (US v. Microsoft findings of fact). Microsoft Teams passed Slack within two years of launch via Office 365 bundling. [first-party]
+**Distribution**: the best product doesn't always win. Netscape's browser share fell from > 80% (1996) to ~55% (1997) as Internet Explorer, bundled with Windows, rose from ~5% to 36% (US v. Microsoft findings of fact). Microsoft Teams passed Slack in daily users about two years after launch (July 2019) via Office 365 bundling. [first-party]
 
 ## Bundling vs point solutions
 

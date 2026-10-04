@@ -10,7 +10,7 @@ tags: incumbents, startups, david vs goliath, disruption, christensen, counter-p
 - What predicts radical innovation is **willingness to cannibalize** existing revenue, more than firm size (Chandy & Tellis 1998). [research]
 - Incumbents may deliberately wait for an outsider to prove a market, then enter as fast followers with their marketing and distribution. [hypothesis noted in Chandy & Tellis 2000; untested]
 
-So the question is never "are they big?" It's "**what stops them from copying us, in their own P&L terms?**"
+So the question is never "are they big?" It's "**what stops them from copying us, in their own P&L (profit and loss) terms?**"
 
 ## Disruption theory: useful mechanism, weak base rate
 
@@ -59,7 +59,7 @@ Gladwell popularised it (David and Goliath, 2013). Caveat: "winning" in insurgen
 - **Before you launch, and on your segment only.** When Southwest became likely to enter an airline route, incumbents cut fares on that route before Southwest flew; over half of Southwest's fare impact came before entry, mostly on routes that were concentrated beforehand (Goolsbee & Syverson 2008). [research]
 - **Bundling.** Microsoft Teams, bundled into Office 365, went from launch (2017) to 13M daily users in July 2019, passing Slack, then 145M daily users by April 2021 (Microsoft). Slack's EU complaint (2020) led to binding remedies only in September 2025, by which time Slack had been sold to Salesforce. When an incumbent bundles your category into something the buyer already pays for, your rival's effective price is zero. [first-party]
 - **Copying a format onto an existing network.** Instagram Stories (Aug 2016) followed by sharply slowing Snapchat user growth (Snap S-1; correlation, not a causal estimate). [first-party / press]
-- **Price response**: Rao, Bergen & Davis (HBR 2000): "the best counterattack does not involve a retaliatory price." If a big player cuts price, respond first with non-price moves, then selective offers to specific segments, and cede segments where fighting costs more than it returns. [practitioner]
+- **Price response**: if a big player cuts price, answer first with non-price moves, not a matching cut (Rao, Bergen & Davis 2000); see competitive-analysis for the full sequence. [practitioner]
 
 ## Tactics with some support
 

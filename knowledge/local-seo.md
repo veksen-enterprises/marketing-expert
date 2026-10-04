@@ -27,8 +27,7 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Reviews
 
-- **Ask every customer, not only happy ones.** Google bans "review gating" (asking only satisfied customers, or screening with "how did we do?" before sending the review link), discouraging negative reviews, incentives of any kind (discounts, gifts, entry to a draw) for posting or changing a review, pressuring customers on site, and asking for specific content, including naming a staff member. Penalties include review removal and profile restrictions. [first-party]
-- **US law (FTC Consumer Reviews and Testimonials Rule, in force 21 Oct 2024)**: bans writing, buying or selling fake reviews (including AI-written ones or ones from people with no real experience); bans legal threats, intimidation or false accusations to remove negative reviews; bans presenting your on-site reviews as complete when you suppressed bad ones. Civil penalties up to $53,088 per violation (unchanged for 2026). The FTC sent warning letters to 10 companies under the rule in Dec 2025. [verified-search: ftc.gov, 2026-10-04] Similar consumer-law rules exist in the UK and EU [not re-verified]. [first-party: regulator]
+- **Ask every customer, not only happy ones.** Google bans review gating and any incentive for a review, and the US FTC rule (in force 21 Oct 2024) bans fake, bought and suppressed reviews; see local-services for the full rules and penalties. Similar consumer-law rules exist in the UK and EU [not re-verified]. [first-party]
 - **Process that works**: send the review link (from the GBP dashboard) by SMS or email within a day of the job; one reminder; make it part of the job checklist, not a campaign. [practitioner]
 - **Recency and steady flow** matter: practitioners rate review recency among the top factors; a burst of 50 reviews in one week looks unnatural and may be filtered. [practitioner]
 - **Reply to every review**, especially negative ones, briefly and without customer personal details. Future customers read the reply more than the complaint. [practitioner]
@@ -60,9 +59,7 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Local Services Ads (LSA)
 
-- LSAs are pay-per-lead ads that appear above the local pack for many service categories, with a "Google Verified" badge after licence, insurance or background checks (since 7 Nov 2025 this single badge replaced Google Guaranteed, Google Screened and License Verified). Ranking uses your bid plus profile quality: rating, number of reviews, how fast you answer, photos, verification. Better profiles may pay less per lead. [first-party]
-- An LSA account must be linked to a GBP; since July 2025 LSA reviews are managed in the Business Profile. So review work helps both organic local ranking and LSA cost. [first-party]
-- Use LSA to cover areas or categories where you can't rank organically; dispute bad leads. See local-services and paid-acquisition. [practitioner]
+- LSAs are pay-per-lead ads shown above the local pack, with a "Google Verified" badge. The account is linked to your GBP, so review work helps both organic local ranking and LSA cost. Use LSA to cover areas or categories where you can't rank organically; badge, ranking, lead disputes and the move into Performance Max: see local-services. [first-party; practitioner]
 
 ## Tracking
 

@@ -13,8 +13,8 @@ tags: acquisition, exit, m&a, acquihire, acqui-hire, sell the company, liquidati
 
 ## What founders actually receive
 
-Sale proceeds flow through the **liquidation waterfall**: debts and costs, then preferred shareholders up to their preference, then common. If the price is below the preference stack, common stock gets nothing.
-- 1× non-participating preference is the norm; > 1× appeared in ~8% of rounds (Carta Q1 2024).
+Sale proceeds flow through the **liquidation waterfall**: debts and costs, then preferred shareholders (investors) up to their preference, then common shareholders (usually founders and employees). If the price is below the preference stack, common stock gets nothing.
+- 1× non-participating preference (investors get their money back once, or convert to common shares, not both) is the norm; > 1× appeared in ~8% of rounds (Carta Q1 2024).
 - In trade sales, VCs gave the team "carve-outs" in **45%** of deals, averaging **9%** of deal value (Broughman & Fried) [research].
 - **Acqui-hires** typically split consideration: a small amount buys the company (goes through the waterfall to investors) and a larger amount goes to hired people as buyer equity and bonuses.
 
@@ -42,7 +42,7 @@ Small acquirers buying private targets earn positive announcement returns on ave
 - Blocked or abandoned deals: **Adobe–Figma** abandoned Dec 2023 ($1B termination fee to Figma; Figma later IPO'd, Jul 2025). **Amazon–iRobot** abandoned Jan 2024 ($94M fee); iRobot laid off 31% the same day and filed Chapter 11 in Dec 2025. **Microsoft–Activision** closed Oct 2023 after restructuring for the UK CMA.
 - **AI license-and-hire deals** ("reverse acqui-hires"): Microsoft–Inflection (Mar 2024, ~$650M, mostly a licence; UK CMA treated it as a merger and cleared it), Amazon–Adept (Jun 2024; investors roughly repaid; FTC inquiry), Google–Character.AI (Aug 2024, ~$2.7B; DOJ review reported). Investors got repaid through licence fees, hired staff got buyer compensation, and **remaining employees were left with a hollowed-out company**. **Google–Windsurf** (Jul 2025): $2.4B for a licence plus the CEO and co-founder; days later Cognition bought the remaining company (~$82M ARR), paying out all remaining staff with vesting accelerated. **Meta–Scale AI** (Jun 2025): $14.3B for 49% and the CEO; OpenAI and Google pulled work, and ~200 staff (14%) were laid off on 16 Jul 2025.
 
-If the likely buyer is a dominant platform overlapping its core business, expect long reviews or a block. Negotiate a reverse break fee, and ask whether you could survive a failed deal (Figma did; iRobot didn't).
+If the likely buyer is a dominant platform overlapping its core business, expect long reviews or a block. Negotiate a reverse break fee (money the buyer pays you if the deal fails, for example because a regulator blocks it), and ask whether you could survive a failed deal (Figma did; iRobot didn't).
 
 ## Should you build for acquisition?
 
@@ -61,7 +61,7 @@ Rule: build a company that works on its own, and make it **acquirable**, not dep
 
 ## Staying acquirable (useful even if you never sell)
 
-- Clean cap table; simple, 1× non-participating preferences.
+- Clean cap table (the record of who owns which shares); simple, 1× non-participating preferences.
 - Signed IP assignment from every founder, employee and contractor.
 - Diligence-ready finances: monthly close, correct revenue recognition, contracts without change-of-control traps.
 - Real partnerships (integrations, co-selling) with likely buyers: they create the internal champion who argues "buy, don't build." [practitioner]

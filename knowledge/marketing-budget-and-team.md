@@ -9,7 +9,7 @@ tags: marketing budget, how much to spend, percent of revenue, gartner cmo spend
 The two most quoted surveys:
 
 - **Gartner CMO Spend Survey 2025**: marketing budgets were **7.7% of company revenue**, flat from 2024. Half of CMOs reported **6% or less**, so the average is pulled up by a few high spenders. 59% said their budget was not enough for their strategy. Sample: 402 marketing leaders in North America and Europe, mostly at companies with over US$1 billion revenue. [analyst]
-- Inside that budget Gartner reported paid media at 30.6%, the largest line. Trade press gave the rest as roughly martech 22%, internal staff 22% and agencies 21%, with 39% of CMOs planning to cut agency spend. [analyst via trade press, not re-verified]
+- Inside that budget Gartner reported paid media at 30.6%, the largest line. Trade press gave the rest as roughly martech (marketing software) 22%, internal staff 22% and agencies 21%, with 39% of CMOs planning to cut agency spend. [analyst via trade press, not re-verified]
 - **The CMO Survey (Duke Fuqua / Deloitte), Spring 2025**: marketing was **9.4% of revenue** and 11.4% of total company budget, up from 7.7% in Fall 2024 (281 US marketing leaders). A secondary report gives B2C product companies 15.5% of revenue vs B2B product companies 6.4%. [academic survey; sector split not re-verified]
 
 SaaS (all [vendor]: lenders and investors publish these, and their samples are their own clients and contacts):

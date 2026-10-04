@@ -23,7 +23,7 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 
 ## Measurement after privacy changes [first-party]
 
-- iOS App Tracking Transparency opt-in averaged ~35% (Adjust, 2025); Meta reports a partly modelled, delayed view of iOS conversions.
+- iOS App Tracking Transparency opt-in averaged ~35% (Adjust, 2025) [vendor]; Meta reports a partly modelled, delayed view of iOS conversions.
 - Google Consent Mode v2 has been required for EEA ads measurement and remarketing since March 2024; without it you lose EEA conversion data and audiences. Advanced mode enables modelled conversions.
 - Third-party cookies remain in Chrome (Google abandoned deprecation; most Privacy Sandbox APIs retired Oct 2025). Safari and Firefox still block them.
 - Consequence: platform numbers are partly modelled and all attributed. Validate important channels with lift or geo tests (see metrics-and-measurement).
@@ -39,7 +39,7 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 - **Search** captures existing demand; it can't create it. Useless for products nobody searches for yet.
 - **Paid social** creates demand and can target broad interest; it needs strong creative and a clear, low-friction offer.
 - **LinkedIn**: expensive per click but precise B2B targeting; works best for high ACV, account-based programs and content distribution, rarely for cheap self-serve.
-- **Copy limits**: use check_copy_limits for Google RSA (30/90), PMax, Demand Gen, Meta, LinkedIn, X and TikTok.
+- **Copy limits**: use check_copy_limits for Google responsive search ads (RSA, 30/90), PMax, Demand Gen, Meta, LinkedIn, X and TikTok.
 
 ## Testing and scaling
 

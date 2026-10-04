@@ -1,10 +1,10 @@
 ---
 title: Sales-led B2B SaaS playbook
-summary: Marketing for sales-led B2B software (ACV roughly $15–25k and up, buying committees); ICP and account selection, pipeline math and sales capacity, buying groups instead of MQLs, the day-one shortlist, proof content, events, measuring with pipeline and win rate, and what works at each ARR stage.
+summary: Marketing for sales-led B2B software (ACV roughly $25–50k and up, buying committees); ICP and account selection, pipeline math and sales capacity, buying groups instead of MQLs, the day-one shortlist, proof content, events, measuring with pipeline and win rate, and what works at each ARR stage.
 tags: b2b, saas, sales-led, enterprise, mid-market, icp, ideal customer profile, pipeline, win rate, sales cycle, quota, ramp, mql, sql, buying group, buying committee, opportunity, forrester waterfall, gartner, day one list, shortlist, case study, roi calculator, analyst relations, events, demand generation, founder-led sales
 ---
 
-Use this playbook when one deal is worth enough to pay for a salesperson's time: annual contract value (ACV, the yearly price of one contract) roughly ≥ $15–25k, several people involved in the decision, and a sales cycle of weeks to months. Below that, see self-serve-saas. For when to choose this motion at all, see channel-strategy (channel-model fit).
+Use this playbook when one deal is worth enough to pay for a salesperson's time: annual contract value (ACV, the yearly price of one contract) roughly ≥ $25–50k, several people involved in the decision, and a sales cycle of weeks to months. These thresholds are heuristics [rule-of-thumb]; derive yours from CAC payback. Below roughly $1–5k, see self-serve-saas; in between, a hybrid of self-serve and sales help is common. For when to choose this motion at all, see channel-strategy (channel-model fit).
 
 ## ICP and account selection
 
@@ -62,6 +62,8 @@ Account-based marketing (ABM) = marketing and sales coordinate on a named list o
 
 ## Events
 
+Event types, cost per meeting, follow-up and webinar benchmarks: see events-and-webinars. The short version:
+
 - **Own small events** (dinners, roundtables for 10–20 target-account executives) usually create more pipeline per dollar than big booths. [practitioner]
 - **Trade shows**: book meetings with target accounts *before* the show; the booth alone rarely pays back. Measure opportunities created and influenced from attending accounts, 1–2 sales cycles later.
 - **Your own conference**: a later-stage play (usually $10M+ ARR) when you have a community and customers to put on stage.
@@ -76,7 +78,7 @@ Account-based marketing (ABM) = marketing and sales coordinate on a named list o
 
 ## What usually works by stage
 
-- **$0–1M ARR**: founder-led sales (the founder sells the first deals to learn the pitch and objections) [practitioner, not re-verified: Kazanjy, Founding Sales]. Narrow ICP, warm intros, personal outbound, a few design partners who become case studies. Marketing = website that explains the product clearly, two or three proof assets, founder content in one channel. Don't hire a VP Sales or buy ABM software yet.
+- **$0–1M ARR**: founder-led sales (the founder sells the first deals to learn the pitch and objections) [practitioner, not re-verified: Kazanjy, Founding Sales]. Narrow ICP, warm intros, personal outbound, a few design partners (early customers who help shape the product) who become case studies. Marketing = website that explains the product clearly, two or three proof assets, founder content in one channel. Don't hire a VP Sales or buy ABM software yet.
 - **$1–10M ARR**: hire AEs in small batches and measure ramp before adding more [practitioner, not re-verified: Roberge]. Add SDRs (sales development reps, who book meetings) only after AEs can close a repeatable pitch. Marketing builds capture (search, review sites, comparison pages), a case study library by segment, targeted events, and starts ABM on tier-1 accounts. Move the team goal from MQLs to pipeline. Start brand/category work once capture plateaus (see brand-and-demand).
 - **$10M+ ARR**: segment teams (SMB / mid-market / enterprise), formal analyst relations, own-event programs, partner and channel sales, multi-product proof, and measurement with holdouts or MMM. Expansion and net revenue retention become a larger share of growth; customer marketing gets its own owner.
 

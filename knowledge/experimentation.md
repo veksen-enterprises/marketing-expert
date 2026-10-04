@@ -17,7 +17,7 @@ tags: a/b testing, ab test, experiment, split test, statistical significance, sa
 Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue-type metrics (give raw per-visitor values if you can, and also run it with capPercentile 0.99: a few large orders can decide a revenue test). In order:
 1. **Sample ratio mismatch** first. If a 50/50 test's split differs significantly (p < 0.001), randomisation or tracking is broken (bots, redirects, a variant that errors, tracking differences). Don't interpret the result until it's found.
 2. **Was the planned sample reached?** Stopping when it "looks significant" invalidates the p-value. Checking 10 times inflates a nominal 5% false-positive rate to ~26% (Evan Miller).
-3. **Effect and interval**, not just p. Plan around the lower end of the CI: winners' observed lifts are biased upward (winner's curse), so expect regression on rollout.
+3. **Effect and interval**, not just p. Plan around the lower end of the confidence interval (CI, the range of effects consistent with the data): winners' observed lifts are biased upward (winner's curse), so expect regression on rollout.
 4. **Twyman's law**: any figure that looks interesting or different is usually wrong. Lifts above ~30% from a UI change are rare; check for bugs before celebrating.
 5. **Guardrails** didn't degrade.
 6. **Segments** only to generate new hypotheses, not to rescue a flat test (with 20 segments, one will be "significant" by chance).
@@ -56,7 +56,7 @@ Don't run underpowered tests and report "no significant difference" as "no diffe
 
 - Stopping at the first significant reading.
 - Ignoring SRM.
-- Testing ten variants without correcting for multiple comparisons (use Bonferroni in ab_test_sample_size, or a dedicated method).
+- Testing ten variants without correcting for multiple comparisons (use the Bonferroni correction in ab_test_sample_size, which divides the significance level by the number of comparisons, or a dedicated method).
 - Optimising clicks while revenue per visitor falls.
 - Copying "winning tests" from case-study libraries; context dependence and publication bias make them weak priors.
 

@@ -68,7 +68,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 | | Amazon | Own store (e.g. Shopify) |
 |---|---|---|
 | Demand | Existing shoppers with purchase intent | You must bring all traffic |
-| Fees | Referral fee, mostly 8–15% by category, plus $39.99/month Professional plan; FBA fulfilment and storage on top [first-party, Amazon] | Payment fees + your own fulfilment |
+| Fees | Referral fee, mostly 8–15% by category, plus $39.99/month Professional plan; FBA (Fulfilment by Amazon) fulfilment and storage on top [first-party, Amazon] | Payment fees + your own fulfilment |
 | Customer data | Very limited; can't email buyers for marketing | Full: email, SMS, cohorts |
 | Pricing and brand | Price competition, other sellers on your listing, ads needed for visibility | Full control |
 
@@ -111,7 +111,7 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 
 | Stage | Focus | Usually works | Usually wastes money |
 |---|---|---|---|
-| Pre-launch / < $1M revenue | Prove people buy and come back | Founder-led social content, small creator seeding, waitlist, one hero product, Meta with simple offers, Google Shopping on brand and core terms, welcome + abandoned-cart flows | Big agency retainers, many SKUs, retail before online proof |
+| Pre-launch / < $1M revenue | Prove people buy and come back | Founder-led social content, small creator seeding, waitlist, one hero product, Meta with simple offers, Google Shopping on brand and core terms, welcome + abandoned-cart flows | Big agency retainers, many SKUs (product variants), retail before online proof |
 | $1–10M | Scale one paid engine without killing CM | Structured creative testing, PMax/Shopping with clean feed, post-purchase and replenishment flows, reviews program, Amazon if category demand is there, cohort reporting | Chasing platform ROAS, constant site-wide discounts |
 | $10M+ | Add channels and defend margin | Incrementality tests, MMM (see metrics-and-measurement), wholesale/retail pilots, brand campaigns (see brand-and-demand), new product lines for repeat | Expanding channels before measuring the existing ones |
 

@@ -22,13 +22,13 @@ Start with crawl_site: it reports click depth, pages with one or zero internal l
 
 - A **topic cluster** is a hub page (also called a pillar page) that gives an overview of a topic and links to detailed pages on each sub-topic; the detailed pages link back to the hub and to each other where it helps the reader. [practitioner]
 - Why it works (plausibly): it creates dense, relevant internal links and forces you to cover a topic completely. There is no controlled evidence that the "cluster" format itself is a ranking factor. [practitioner]
-- One page per intent. If two pages target the same query and intent, they compete ("cannibalisation"); merge them and 301-redirect the weaker. Check in Search Console: one query showing two of your URLs alternating. [practitioner]
+- One page per intent. If two pages target the same query and intent, they compete ("cannibalisation"); merge them and 301-redirect (permanently redirect) the weaker. Check in Search Console: one query showing two of your URLs alternating. [practitioner]
 
 ## Crawl budget
 
 - **Most sites don't need to think about it.** Google's crawl budget guide is written for sites with 1 million+ unique pages that change about weekly, or 10,000+ pages that change daily, or sites where a large share of URLs sit in "Discovered – currently not indexed". Below that, if pages aren't indexed, the cause is usually quality or duplication, not crawl budget. [first-party]
 - Crawl budget = **crawl capacity** (how much Google can crawl without overloading your server) + **crawl demand** (how much it wants to crawl). You control demand most: duplicate and low-value URLs waste it. [first-party]
-- For large sites: block worthless URL spaces in robots.txt (internal search results, endless filters, calendars), return correct 404/410 for removed pages, avoid redirect chains, keep sitemaps to canonical indexable URLs with accurate lastmod, and keep servers fast. [first-party]
+- For large sites: block worthless URL spaces in robots.txt (internal search results, endless filters, calendars), return correct 404/410 ("not found" / "gone") status codes for removed pages, avoid redirect chains, keep sitemaps to canonical indexable URLs with accurate lastmod, and keep servers fast. [first-party]
 
 ## Pagination
 

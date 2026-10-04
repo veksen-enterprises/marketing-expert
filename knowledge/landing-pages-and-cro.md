@@ -18,7 +18,7 @@ Look at segment data before the page: conversion by traffic source, device and n
 
 - Scanning is the default. The F-pattern is one of several patterns (F, spotted, layer-cake, commitment); it appears when text lacks structure. It's a symptom of poor formatting, not a layout to design for. Front-load headings, paragraphs and bullets with the meaningful words.
 - **The fold**: NN/g eyetracking found ~80% of viewing time above the fold in 2010 and ~57% in 2018 (Fessenden), with ~74% in the first two screenfuls. Put the value proposition and primary action on the first screen; people do scroll, but attention falls with distance.
-- **Banner blindness**: users skip anything that looks like an ad or sits in ad positions. Don't style offers as banners or put key content in the right rail.
+- **Banner blindness**: users skip anything that looks like an ad or sits in ad positions. Don't style offers as banners or put key content in the right-hand column.
 - **Plain language** helps experts too. NN/g suggests roughly 8th-grade reading level for broad audiences. Readability formulas measure only sentence length and syllables per word, not comprehension; use analyze_copy as a signal, and test comprehension with users.
 
 ## Forms and checkout [practitioner, Baymard usability research]
@@ -63,7 +63,7 @@ Run audit_page and analyze_copy first.
 6. **Objections** answered: price, switching cost, setup time, security/compliance, "will it work for us".
 7. **Risk reversal**: free trial terms, guarantee, cancel anytime, no card required, whichever is true.
 8. **Friction**: form fields, steps, mobile layout, speed (CWV), errors.
-9. **Technical**: indexability, title/meta, OG tags, structured data, from audit flags.
+9. **Technical**: indexability, title/meta, OG (Open Graph) tags that control link previews on social media, structured data, from audit flags.
 
 Output the top three changes ranked by impact × confidence, each as a hypothesis, and decide which to A/B test (see experimentation) versus ship.
 

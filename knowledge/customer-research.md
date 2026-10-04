@@ -60,7 +60,7 @@ Pull from the CRM / billing data, not opinions:
 - One idea per question; no leading wording; include "none/other".
 - Sample from the population you care about (churned users, not just happy ones).
 - Report n and response rate. A 4% response rate means you heard from an unusual 4%.
-- The **Sean Ellis PMF survey** ("How would you feel if you could no longer use the product?" with ≥40% "very disappointed" as the threshold) is a practitioner benchmark from Ellis's experience, not a validated cutoff. Useful for tracking over time and for segmenting who is "very disappointed" (that's your ICP).
+- The **Sean Ellis PMF survey** (share of users "very disappointed" without the product; 40% threshold) is a practitioner benchmark, not a validated cutoff; see metrics-and-measurement.
 
 ## Win/loss and churn interviews
 

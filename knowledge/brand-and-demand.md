@@ -28,7 +28,7 @@ Prescriptions drawn from them:
 - **Distinctive brand assets**: colours, shapes, characters, sounds the market links only to you. Assess on fame × uniqueness. Use them consistently in every asset, including performance ads.
 - **Reach all category buyers** rather than narrowly targeting loyalists.
 
-**Critiques:** Ritson argues for "and, not or" (mass brand for everyone plus targeted activation for in-market buyers). Thomaz argues How Brands Grow describes how big brands keep share, not how they got it, and that differentiation drives growth (press coverage; paper not located). The evidence base is mostly established FMCG in stable categories.
+**Critiques:** Ritson argues for "and, not or" (mass brand for everyone plus targeted activation for in-market buyers). Thomaz argues How Brands Grow describes how big brands keep share, not how they got it, and that differentiation drives growth (press coverage; paper not located). The evidence base is mostly established FMCG (fast-moving consumer goods, such as food and toiletries) in stable categories.
 
 ## The 95-5 rule (Dawes, LinkedIn B2B Institute, 2021)
 
@@ -38,7 +38,7 @@ If buyers switch providers about every five years, roughly 20% are in-market per
 
 - **Pre-product-market fit**: brand budget is mostly wasted; the job is finding a channel that works (see channel-strategy). But make every asset distinctive and consistent from day one: it costs nothing and compounds.
 - **Post-PMF, when demand capture plateaus** (branded search flat, paid CAC rising as you exhaust in-market demand): this is the signal that you need to create demand, not just capture it.
-- **Judge brand work on the right window**: 6–36 months, on branded search volume, direct traffic, share of search, win rates, price realisation, and aided/unaided awareness in your category, not on last-click ROAS.
+- **Judge brand work on the right window**: 6–36 months, on branded search volume, direct traffic, share of search, win rates, price realisation, and aided/unaided awareness (whether people recognise you from a list, or name you without help) in your category, not on last-click ROAS.
 - **Performance ads should also build memory**: distinctive assets, consistent brand cues, the category entry points you want to own.
 - **Share of search** (your branded search volume ÷ total branded search in the category) is a cheap, practitioner-favoured proxy for share of mind.
 

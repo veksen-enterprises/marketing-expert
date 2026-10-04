@@ -13,7 +13,7 @@ An assistant answer comes from three places. Each needs different work.
 - **Live retrieval (search at answer time).** The assistant runs searches, fetches pages and cites them. This is where most citations and clicks come from.
   - ChatGPT search uses "third-party search providers" plus partner content, and OpenAI's own index built by OAI-SearchBot. [first-party] OpenAI does not name the providers in the material we could check; Bing is widely reported as one. [not re-verified]
   - Perplexity uses its own retrieval index built by PerplexityBot. [first-party]
-  - Gemini and Google AI Mode / AI Overviews use Google's index (Googlebot). Microsoft Copilot uses Bing ("grounding queries" in Bing Webmaster Tools). [first-party]
+  - Gemini and Google AI Mode / AI Overviews use Google's index (Googlebot). Microsoft Copilot uses Bing; Bing Webmaster Tools calls the searches it runs to support an answer "grounding queries". [first-party]
   - Claude uses Claude-SearchBot for search and Claude-User for user-requested fetches. [first-party]
 - **Training data.** What the model learned before its cutoff date. It shapes which brands the model "knows" without searching. It changes slowly (months to a year) and you cannot check it directly.
 - **Product feeds and partner data.** Merchant feeds (Google Merchant Center, OpenAI's commerce feeds) power shopping answers. See "AI shopping" below.
@@ -35,7 +35,7 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 - **Others:** DuckAssistBot = DuckDuckGo AI answers, not training, blocking doesn't affect organic results; MistralAI-User = user fetches, MistralAI-Training = training. [first-party]
 - **Ads and agent bots:** advertisers in ChatGPT ads must allow OAI-AdsBot (landing-page review, not training). Google-CloudVertexBot only crawls when a site owner builds a Vertex AI Agent; no effect on Search. [first-party]
 - **Common default for a business that wants to be recommended:** allow the search and user bots (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User, Googlebot, Bingbot, Applebot, Amzn-SearchBot, DuckAssistBot). Training bots are a business choice: blocking them protects content but may reduce how well future models know your brand (no study measures this). [practitioner]
-- **Check the CDN/WAF too.** Bot-protection settings (for example Cloudflare's AI-bot blocking) can block AI crawlers even when robots.txt allows them. [practitioner]
+- **Check the CDN/WAF too** (content delivery network and web application firewall, the services in front of your site). Bot-protection settings (for example Cloudflare's AI-bot blocking) can block AI crawlers even when robots.txt allows them. [practitioner]
 - **JavaScript:** Vercel and MERJ (Dec 2024) found no evidence that GPTBot, ClaudeBot, PerplexityBot, Meta's or ByteDance's crawlers execute JavaScript; they fetch JS files but don't run them. Gemini (via Googlebot) and Applebot do render. [vendor] If your main content, prices or reviews appear only after JavaScript runs, most AI crawlers do not see them.
 
 - **robots.txt is not the only gate.** OpenAI recommends allowing OAI-SearchBot in robots.txt *and* allowing requests from its published IP ranges; a firewall or CDN bot rule that blocks those IPs keeps you out even when robots.txt allows the bot. After changing robots.txt, allow ~24 hours for ChatGPT search to pick it up. [first-party: developers.openai.com/api/docs/bots; help.openai.com Publishers and Developers FAQ, verified-search 2026-10-04]

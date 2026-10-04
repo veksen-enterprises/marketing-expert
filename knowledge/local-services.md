@@ -21,7 +21,9 @@ Detailed tactics (categories, citations, service-area setup, website location pa
 
 **The rules (US).** The FTC Rule on the Use of Consumer Reviews and Testimonials (announced Aug 2024, in force **21 Oct 2024**) bans fake reviews (including AI-written ones and reviews from people with no real experience), buying reviews, rewards **conditioned on a positive (or negative) review**, undisclosed reviews from insiders, and review suppression. Civil penalties can reach **$53,088 per violation** (unchanged for 2026). The FTC sent warning letters to 10 companies in Dec 2025. [first-party; verified-search: ftc.gov, 2026-10-04]
 
-**Google's rules are stricter than the FTC's.** Google bans **any** incentive for a review (discount, gift, entry into a draw), even if it does not depend on sentiment; bans **review gating** (asking happy customers to review and sending unhappy ones to a private form); and bans pressuring customers to review on the premises. Penalties include blocking new reviews, removing existing ones, and a public warning on the profile. [first-party]
+The rule also bans legal threats, intimidation or false accusations used to remove negative reviews, and presenting your on-site reviews as complete when you suppressed bad ones. Similar consumer-law rules exist in the UK and EU [not re-verified].
+
+**Google's rules are stricter than the FTC's.** Google bans **any** incentive for a review (discount, gift, entry into a draw), even if it does not depend on sentiment; bans **review gating** (asking happy customers to review, or screening with "how did we do?" and sending unhappy ones to a private form); bans discouraging negative reviews and pressuring customers to review on the premises; and bans asking for specific content, including naming a staff member. Penalties include blocking new reviews, removing existing ones, and a public warning on the profile. [first-party]
 
 **Getting more reviews (legally):**
 - Ask **every** customer, at the moment of highest satisfaction (job finished, treatment done, meal paid), with a direct review link or QR code. Staff asking in person, then a text or email the same day, is the common pattern. [practitioner]
@@ -35,7 +37,7 @@ Detailed tactics (categories, citations, service-area setup, website location pa
 
 ## Referrals and word of mouth
 
-- In a three-year study of about 10,000 bank customers, referred customers had higher margins at first, **higher retention that persisted**, and lifetime value at least 16% higher than similar non-referred customers (Schmitt, Skiera & Van den Bulte, *Journal of Marketing*, 2011). One industry, one country; direction is plausible for local services. [research]
+- Referred customers were worth at least 16% more and stayed longer in one long bank study (Schmitt, Skiera & Van den Bulte, 2011); one industry, one country, but the direction is plausible for local services. See referral-programs. [research]
 - Ask for referrals at the same moments you ask for reviews. Make it concrete ("Do you know one neighbour who needs their boiler checked before winter?").
 - A two-sided reward (both the referrer and the new customer get something) is common practice. Referral rewards are allowed; tying a reward to a *review* is not.
 - Record "How did you hear about us?" at booking. Word of mouth is invisible in click tracking (see **channel-strategy**). [practitioner]
@@ -43,7 +45,8 @@ Detailed tactics (categories, citations, service-area setup, website location pa
 
 ## Local Services Ads (LSA)
 
-- Google's pay-per-lead ads for service businesses: you pay for a valid lead (call or message), not a click. They appear above normal search ads with a **Google Verified** badge after background and licence checks. Google discontinued the old **Google Guaranteed** badge and money-back guarantee on **7 Nov 2025**. [first-party]
+- Google's pay-per-lead ads for service businesses: you pay for a valid lead (call or message), not a click. They appear above normal search ads with a **Google Verified** badge after licence, insurance or background checks. On **7 Nov 2025** this single badge replaced Google Guaranteed (including its money-back guarantee), Google Screened and License Verified. [first-party]
+- Ranking uses your bid plus profile quality: rating, number of reviews, how fast you answer, photos, verification; better profiles may pay less per lead. The LSA account must be linked to your Business Profile, and since July 2025 LSA reviews are managed there. [first-party]
 - Google credits leads it judges invalid, and you can dispute charges. Review every lead weekly and dispute the wrong ones. [first-party]
 - **Change in progress:** from **Aug 2026** Google began moving LSA campaigns into Performance Max with "pay-per-lead goals" inside Google Ads, starting with select US home and storefront service advertisers, with wider groups in late 2026 (including service-area businesses without a storefront and accounts with custom bidding or booking setups). You then manage budgets, targeting and lead replies in Google Ads instead of the LSA dashboard. Ads stay keywordless and on Search and Maps; manual bidding and industry-level target CPA are being removed. Check your account status before planning budgets. [first-party]
 - Expert surveys rank budget/bids, reviews, service selection and **response time** as the strongest LSA factors (Whitespark 2026). Answering the phone fast matters. [practitioner]

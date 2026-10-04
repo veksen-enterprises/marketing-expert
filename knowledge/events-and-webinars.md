@@ -8,7 +8,7 @@ This playbook covers events you run, attend or sponsor, and webinars. How events
 
 ## When events pay off
 
-- **Best fit**: B2B with high annual contract value (roughly $15–25k and up), long sales cycles and buying groups. One won deal can pay for a whole event program. For low-price self-serve products, events rarely pay back as acquisition; use them for community, recruiting or partnerships instead [practitioner].
+- **Best fit**: B2B with high annual contract value (roughly $25–50k and up; a heuristic, see channel-strategy), long sales cycles and buying groups. One won deal can pay for a whole event program. For low-price self-serve products, events rarely pay back as acquisition; use them for community, recruiting or partnerships instead [practitioner].
 - **Why they work in B2B**: deals involve many people. Forrester's 2025 Buyers' Journey Survey reports an average of 13 people inside the buying organisation and 9 outside it, and that 86% of purchases stall at some point [vendor: analyst survey]. A dinner or a meeting at a show can reach several of these people at once, and can restart a stalled deal.
 - **Trend**: in Forrester's 2024 B2B Event Trends Survey, 58% of marketers planned more small hosted in-person events (the fastest-growing type), and 92% planned to improve post-event follow-up [vendor: analyst survey]. Bizzabo's 2025 survey of 1,500+ organisers and attendees found 78% of organisers say in-person events have unmatched impact on their goals [vendor: Bizzabo sells event software; opinion, not measured outcomes].
 - **Bad fit signs**: no clear ICP (ideal customer profile, see b2b-saas-sales-led), no sales team to follow up, or a goal of "awareness" with no way to check it.

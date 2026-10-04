@@ -77,7 +77,7 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Subscriptions, auto-renewal and cancellation
 
-- The FTC's "click-to-cancel" Negative Option Rule was **vacated** by the US Eighth Circuit Court of Appeals on 8 July 2025, before it took effect, because the FTC skipped a required preliminary regulatory analysis. In February 2026 the FTC restored the rule's older text, and on 13 March 2026 it published an Advance Notice of Proposed Rulemaking asking whether a new rule is needed (comments closed 13 April 2026). No federal click-to-cancel rule is in force. [verified-search: ftc.gov, federalregister.gov, 2026-10-04] The FTC can still act under the FTC Act and ROSCA. State automatic renewal laws (for example California's) remain and can be stricter [secondary; not re-verified].
+- No US federal click-to-cancel rule is in force (the FTC's rule was vacated in July 2025), but the FTC can still act under the FTC Act and ROSCA, and state automatic renewal laws remain; see retention-and-expansion for the dated status and EU, German and UK rules. [first-party]
 - Safe practice: show price, renewal frequency and how to cancel before checkout; get express consent to the renewal; send renewal reminders; let people cancel online as easily as they signed up. Flow design: see retention-and-expansion.
 
 ## Dark patterns (brief)

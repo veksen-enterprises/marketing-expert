@@ -80,7 +80,7 @@ Tests (synthesis):
 
 ## Regulation is upside, not protection
 
-The EU Digital Markets Act (obligations from March 2024; first fines 23 Apr 2025: Apple €500M, Meta €200M) restricts gatekeeper self-preferencing and use of business users' non-public data. US v. Google search remedies (2 Sep 2025; final judgment Dec 2025; appealed Jan 2026): no Chrome sale, no exclusive default deals, some data sharing with competitors, six-year term. Japan's smartphone act restricts app-store self-preferencing [not re-verified]. None stops a platform shipping your feature, and relief takes years (Slack's 2020 complaint → 2025 remedy, binding for 7 years, 10 for interoperability and data portability).
+The EU Digital Markets Act (obligations from March 2024; first fines 23 Apr 2025: Apple €500M, Meta €200M) restricts "gatekeeper" (the largest platforms) self-preferencing and use of business users' non-public data. US v. Google search remedies (2 Sep 2025; final judgment Dec 2025; appealed Jan 2026): no Chrome sale, no exclusive default deals, some data sharing with competitors, six-year term. Japan's smartphone act restricts app-store self-preferencing [not re-verified]. None stops a platform shipping your feature, and relief takes years (Slack's 2020 complaint → 2025 remedy, binding for 7 years, 10 for interoperability and data portability).
 
 ## Risk questions to answer
 
@@ -90,7 +90,7 @@ The EU Digital Markets Act (obligations from March 2024; first fines 23 Apr 2025
 4. Which clause could end our access, and how much notice would we get?
 5. Do we own customer identity, billing and contact?
 6. Are we neutral across rival platforms/models? Could we switch providers in a week?
-7. Are we one step of a workflow or the whole job / system of record?
+7. Are we one step of a workflow or the whole job / system of record (the main place the customer's data lives)?
 8. Is our data exclusive and compounding, or a scale effect?
 9. Who watches the warning signs, and what's the pre-agreed response?
 10. Who would rather buy us than build us?

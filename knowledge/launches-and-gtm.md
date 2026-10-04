@@ -12,7 +12,7 @@ Evidence note: this playbook is [practitioner] throughout. No controlled researc
 2. **Positioning** for that segment (see positioning). The launch message comes from it.
 3. **Motion**: self-serve, sales-led or hybrid, decided by ACV and complexity (see channel-strategy). Pricing and packaging fit the motion (see pricing).
 4. **First channel**: where that segment already gathers. Run the Bullseye on a small budget.
-5. **Proof**: get 3–10 design partners or beta customers who will be quoted, named, or used as case studies at launch.
+5. **Proof**: get 3–10 design partners (early customers who help shape the product in return for early access) or beta customers who will be quoted, named, or used as case studies at launch.
 6. **Success metrics**: activation and retention of the launch cohort, pipeline and revenue. Not impressions or signups alone.
 
 ## Launch tiers

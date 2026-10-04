@@ -42,7 +42,7 @@ Most teams start at step 4 and copy a competitor's number.
 
 ## Usage-based pricing [vendor data]
 
-OpenView surveys: companies using some usage-based pricing rose from 34% (2020) to 61% (2022); hybrid (platform fee + usage) was the most common form. Usage-based companies reported higher net dollar retention, but these are self-selected surveys by a VC that invested in such companies, and infrastructure/API businesses dominate the usage-based group. Trade-off: price tracks value and expands with the customer; revenue is less predictable and falls when the customer's usage falls.
+OpenView surveys: companies using some usage-based pricing rose from 34% (2020) to 61% (2022); hybrid (platform fee + usage) was the most common form. Usage-based companies reported higher net dollar retention (the same idea as NRR), but these are self-selected surveys by a VC that invested in such companies, and infrastructure/API businesses dominate the usage-based group. Trade-off: price tracks value and expands with the customer; revenue is less predictable and falls when the customer's usage falls.
 
 ## Trials, freemium, reverse trials [vendor / practitioner]
 
