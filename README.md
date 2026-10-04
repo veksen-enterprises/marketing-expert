@@ -25,6 +25,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `market_size` | Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity / acquisition budget with churn, top-down cross-check, and the share of the market a revenue target requires |
 | `funnel_analysis` | Step/cumulative rates, losses, cost per stage, the effect of improving any step |
 | `analyze_copy` | Readability, sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, missing numbers |
+| `check_answer` | Checks the advisor's own draft before sending: word count against the limit, banned words, abbreviations used without an explanation |
 | `check_copy_limits` | Google RSA / PMax / Demand Gen, Microsoft, Meta, LinkedIn, X, TikTok, SERP, email, Open Graph limits (CJK = 2 for Google, URLs = 23 on X). Unverified limits warn instead of failing |
 | `build_utm_link` | Tagged URL; lowercases, flags media that break GA4 channel grouping |
 | `audit_page` | Fetch a URL or take HTML; returns title/meta/headings/lead text/CTAs/forms/OG/JSON-LD/indexability plus objective flags. `render: true` runs the page in headless Chromium and reports how much content exists only after JavaScript (needs optional `playwright-core`; set `MARKETING_EXPERT_CHROMIUM` to a Chromium binary) |
