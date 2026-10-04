@@ -25,6 +25,10 @@ describe("checkQuotes", () => {
     expect(status('The tooltip says "Parameter values aren\'t included" (`pricing.astro:2`).')).toEqual(["verified"]);
     expect(status('The FAQ says "Credentials *you* control, always" (pricing.astro:3).')).toEqual(["verified"]);
   });
+  it("returns the surrounding lines of a verified quote", () => {
+    const r = checkQuotes('ADR 0006 line 5: "held 141 items on the day".', [d]);
+    expect(r.results[0].context).toMatch(/Intro\..*held 141 items/);
+  });
   it("flags a wrong line", () => {
     const r = checkQuotes('ADR 0006 line 1 says "held 141 items on the day".', [d]);
     expect(r.results[0].status).toBe("wrong-line");

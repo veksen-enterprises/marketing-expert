@@ -325,7 +325,7 @@ export function createServer(): McpServer {
     {
       title: "Verify quotes and file citations in your draft",
       description:
-        "Run on your final answer when it quotes or cites a repository. For every quoted phrase, finds the file and line cited in the same sentence (paths like pricing.astro:263, 'ADR 0006 lines 15–16') and reports whether the words are there verbatim, on a different line, in a different file, or nowhere in the given directories. Fix every problem it lists: correct the citation, quote the exact words, or drop the quotation marks.",
+        "Run on your final answer when it quotes or cites a repository. For every quoted phrase, finds the file and line cited in the same sentence (paths like pricing.astro:263, 'ADR 0006 lines 15–16') and reports whether the words are there verbatim, on a different line, in a different file, or nowhere in the given directories. Fix every problem it lists: correct the citation, quote the exact words, or drop the quotation marks. Read each verified quote's context too: a quote can be verbatim and still be misread (a subtotal used as a total).",
       inputSchema: { text: z.string().min(1).max(100000), dirs: z.array(z.string().min(1).max(1000)).min(1).max(5) },
       annotations: readOnly,
     },

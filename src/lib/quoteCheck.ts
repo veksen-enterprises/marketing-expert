@@ -15,6 +15,8 @@ export interface QuoteResult {
   status: QuoteStatus;
   /** Where the quote actually is (first few matches). */
   foundAt: string[];
+  /** The source line before, at and after the first match, so the quote's scope is visible (e.g. "of the rare and crafted table"). */
+  context?: string;
 }
 
 export interface QuoteCheck {
@@ -43,6 +45,7 @@ function norm(s: string): string {
 
 interface Indexed {
   rel: string;
+  raw: string[];
   lines: string[];
   joined: string;
   /** Character offset in `joined` where each line starts. */
@@ -64,14 +67,15 @@ function index(dirs: string[]): Indexed[] {
       } catch {
         continue;
       }
-      const lines = src.split("\n").map(norm);
+      const raw = src.split("\n");
+      const lines = raw.map(norm);
       const starts: number[] = [];
       let pos = 0;
       for (const l of lines) {
         starts.push(pos);
         pos += l.length + 1;
       }
-      out.push({ rel: relative(root, f), lines, joined: lines.join(" "), starts });
+      out.push({ rel: relative(root, f), raw, lines, joined: lines.join(" "), starts });
     }
   }
   return out;
@@ -182,7 +186,9 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2): Qu
         const s = cite.start;
         const e = cite.end ?? s;
         const near = s === undefined || inCited.some(({ l }) => l >= s - lineTolerance && l <= (e ?? s) + lineTolerance);
-        results.push({ quote, cited: label, status: near ? "verified" : "wrong-line", foundAt: inCited.slice(0, 5).map(({ f, l }) => `${f.rel}:${l}`) });
+        const { f, l } = inCited[0];
+        const context = f.raw.slice(Math.max(0, l - 2), l + 1).map((x) => x.trim()).filter(Boolean).join(" / ").slice(0, 400);
+        results.push({ quote, cited: label, status: near ? "verified" : "wrong-line", foundAt: inCited.slice(0, 5).map(({ f, l }) => `${f.rel}:${l}`), context });
         continue;
       }
       const at = everywhere();
