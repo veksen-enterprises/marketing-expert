@@ -1,0 +1,64 @@
+# Privacy and Marketing Law
+
+Research date: 2026-10-04. **Not legal advice.** **Access caveat:** page fetches were blocked; every claim below comes from search-result snippets that point at the named URL. Nothing was read in full. Tags: **[snippet-only]** = the snippet came from or quotes the primary source; **[secondary]** = only third-party write-ups (law firms, vendors) said it; **[not re-verified]** = known source whose specific claim was not confirmed this session. Evidence tags follow knowledge/_conventions.md ([first-party] = regulator or official legal text).
+
+## 1. Cookies and consent (EU)
+
+1. EDPB, "Report of the work undertaken by the Cookie Banner Taskforce" (adopted 17 January 2023). https://www.edpb.europa.eu/system/files/2023-01/edpb_20230118_report_cookie_banner_taskforce_en.pdf — If "accept" is on any layer, a "reject" option should be too; a vast majority of authorities said no reject option on a layer with an accept button is an infringement; common position on pre-ticked boxes, banner design, withdrawal icons. Set up after noyb complaints. [first-party][snippet-only]
+2. CNIL, "Cookies : la CNIL sanctionne GOOGLE à hauteur de 150 millions d'euros et FACEBOOK à hauteur de 60 millions d'euros" (January 2022). https://www.cnil.fr/fr/cookies-la-cnil-sanctionne-google-hauteur-de-150-millions-deuros-et-facebook-hauteur-de-60-millions — google.fr, youtube.com and facebook.com: one click to accept, several to refuse; order to fix within 3 months, €100,000/day penalty. [first-party][snippet-only]
+3. CNIL, "Dark Patterns in Cookie Banners: CNIL issues formal notice to website publishers." https://www.cnil.fr/en/dark-patterns-cookie-banners-cnil-issues-formal-notice-website-publishers [first-party][snippet-only; contents not read]
+4. EDPB Guidelines 03/2022 on deceptive design patterns in social media platform interfaces, v2. https://www.edpb.europa.eu/system/files/documents/2023-02/edpb_03-2022_guidelines_on_deceptive_design_patterns_in_social_media_platform_interfaces_v2_en_0.pdf [first-party][not re-verified beyond title]
+5. Google Consent Mode v2 requirement (March 2024): already recorded in research/landscape-2026.md; not re-checked here.
+
+## 2. US state privacy laws
+
+6. IAPP, US State Privacy Legislation Tracker (last updated 8 September 2026, per snippet). https://iapp.org/resources/article/us-state-privacy-legislation-tracker — 20 states with comprehensive laws; Indiana, Kentucky, Rhode Island effective 1 January 2026; Alabama, Louisiana, Oklahoma, Vermont passed in 2026, not yet in force; 24 enacted. [secondary][snippet-only] Other trackers (MultiState, secureprivacy.ai) say 19 or 20 in force depending on whether Florida counts.
+7. California AG, "Attorney General Bonta Announces Settlement with Sephora…" (24 August 2022). https://oag.ca.gov/news/press-releases/attorney-general-bonta-announces-settlement-sephora-part-ongoing-enforcement — $1.2M; failed to disclose sale, failed to process GPC opt-outs, failed to cure within 30 days; must honour GPC, fix disclosures and service-provider contracts, report to AG. [first-party][snippet-only]
+8. CPPA, "Honda Settles With CPPA Over Privacy Violations" (12 March 2025). https://cppa.ca.gov/announcements/2025/20250312.html ; order https://cppa.ca.gov/regulations/pdf/20250307_hmc_order.pdf — $632,500; excessive verification for opt-out, non-symmetrical choices in the privacy tool, barriers for authorised agents; must consult a UX designer. [first-party][snippet-only]
+9. CPPA Enforcement Advisory 2024-02 (dark patterns / symmetry). https://cppa.ca.gov/pdf/enfadvisory202402.pdf — Opt-out requiring more steps than opt-in is not symmetrical; "Accept All" vs "Decline All" is. [first-party][snippet-only]
+10. CPPA, Todd Snyder order (6 May 2025). https://cppa.ca.gov/announcements/2025/20250506.html — "six-figure fine" per title. [first-party][snippet-only; amount not confirmed, not used]
+11. CPPA / California AG, joint CA–CO–CT investigative sweep on opt-out of sale (September 2025). https://cppa.ca.gov/announcements/2025/20250909.html [first-party][snippet-only]
+12. CCPA "sharing" = cross-context behavioural advertising; GPC as opt-out preference signal: general knowledge of the statute and regulations. [first-party][not re-verified this session]
+
+## 3. Health data and pixels
+
+13. FTC, "FTC Enforcement Action to Bar GoodRx from Sharing Consumers' Sensitive Health Info for Advertising" (1 February 2023). https://www.ftc.gov/news-events/news/press-releases/2023/02/ftc-enforcement-action-bar-goodrx-sharing-consumers-sensitive-health-info-advertising — $1.5M civil penalty; first HBNR action; data to Facebook, Google, Criteo, Branch, Twilio; ban on sharing health data for advertising. [first-party][snippet-only]
+14. FTC, "FTC Gives Final Approval to Order Banning BetterHelp…" (July 2023). https://www.ftc.gov/news-events/news/press-releases/2023/07/ftc-gives-final-approval-order-banning-betterhelp-sharing-sensitive-health-data-advertising — $7.8M for refunds; emails, IPs, intake questionnaire data to Facebook, Snapchat, Criteo, Pinterest. [first-party][snippet-only]
+15. FTC, "FTC Finalizes Changes to the Health Breach Notification Rule" (26 April 2024) and business blog. https://www.ftc.gov/news-events/news/press-releases/2024/04/ftc-finalizes-changes-health-breach-notification-rule — Effective 29 July 2024; covers most non-HIPAA health apps; breach includes unauthorised disclosure; notices must identify recipient third parties and data types. [first-party][snippet-only]
+
+## 4. Claims, comparisons, origin, prices
+
+16. ASA, "Substantiation" advice and CAP Code ch. 3. https://www.asa.org.uk/advice-online/substantiation.html — Rule 3.7: hold documentary evidence before publication for claims consumers likely regard as objective; ASA judges likely interpretation, not intent; subjective/self-reported data insufficient for objective claims. [first-party][snippet-only]
+17. FTC "reasonable basis" substantiation doctrine and health-claim standard. [first-party][not re-verified this session]
+18. Directive 2006/114/EC on misleading and comparative advertising, Art. 4. https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex:32006L0114 — Cumulative conditions: not misleading; same needs/purpose; objective comparison of material, relevant, verifiable, representative features (may include price); no discrediting; no unfair advantage of competitor's mark. [first-party][snippet-only] The imitation/replica condition (Art. 4(g)) is from memory of the text [not re-verified].
+19. Lanham Act §43(a) false advertising (15 U.S.C. §1125(a)); NAD self-regulation. [not re-verified; no search spent]
+20. FTC, "FTC Issues Rule to Deter Rampant Made in USA Fraud" (July 2021) and "Complying with the Made in USA Standard." https://www.ftc.gov/news-events/news/press-releases/2021/07/ftc-issues-rule-deter-rampant-made-usa-fraud ; https://www.ftc.gov/business-guidance/resources/complying-made-usa-standard — "All or virtually all": final assembly, all significant processing and nearly all components in the US; civil penalties per violation (inflation-adjusted). [first-party][snippet-only]
+21. FTC, "Williams-Sonoma Will Pay Record $3.17 Million Civil Penalty…" (April 2024). https://search.ftc.gov/news-events/news/press-releases/2024/04/williams-sonoma-will-pay-record-317-million-civil-penalty-violating-ftc-made-usa-order [first-party][snippet-only]
+22. FTC Guides Against Deceptive Pricing, 16 CFR 233.1 (via Cornell LII and govinfo copies). https://www.law.cornell.edu/cfr/text/16/233.1 — Former price must be actual, bona fide, openly and actively offered for a reasonably substantial period in good faith; inflated prices set to enable a reduction are fictitious. [first-party text][snippet-only]
+23. European Commission, Guidance on Article 6a of Directive 98/6/EC (Price Indication Directive), OJ C 526, 29 December 2021. https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52021XC1229(06) — Prior price = lowest price in at least 30 days before reduction, including earlier promotional prices; percentage discounts must use it. [first-party][snippet-only] CJEU C-330/23 (26 September 2024) also concerns Art. 6a [not read].
+
+## 5. Subscriptions
+
+24. Law-firm summaries (Greenberg Traurig, Cooley, Crowell, Sidley, Perkins Coie), July 2025. e.g. https://www.cooley.com/news/insight/2025/2025-07-11-click-to-cancel-just-got-cancelled-eighth-circuit-vacates-entirety-of-ftcs-negative-option-rule — Eighth Circuit vacated the Negative Option ("click-to-cancel") Rule on 8 July 2025 (FTC failed to issue a preliminary regulatory analysis); rule would have taken effect 14 July 2025; state auto-renewal laws remain. Crowell reports the FTC moved to revive the rule. [secondary][snippet-only]
+
+## 6. Accessibility
+
+25. European Commission, "European accessibility act" and "The EU becomes more accessible for all" (31 July 2025). https://commission.europa.eu/news-and-media/news/eu-becomes-more-accessible-all-2025-07-31_en — From 28 June 2025 newly marketed covered products/services must be accessible; e-commerce covered; service microenterprises (<10 staff, ≤€2M turnover or balance sheet) exempt. [first-party][snippet-only]
+26. Seyfarth Shaw, ADA Title III blog, "Federal Court Website Accessibility Lawsuit Filings Bounce Back in 2025" (March 2026). https://www.adatitleiii.com/2026/03/federal-court-website-accessibility-lawsuit-filings-bounce-back-in-2025/ — 3,117 federal website suits in 2025, +27% vs 2,452 in 2024; 36% of 8,667 ADA Title III federal suits. ">5,000 including state courts" came from a separate vendor relay. [secondary][snippet-only]
+27. W3C WCAG 2.2 (Recommendation October 2023). [first-party][not re-verified this session]
+
+## 7. AI and children
+
+28. Law-firm and vendor summaries of the AI Digital Omnibus and Art. 50 (Gibson Dunn; aiactblog.nl; Usercentrics; Cloud Security Alliance). e.g. https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/ — Omnibus entered into force 27 July 2026; high-risk dates moved (2 December 2027; 2 August 2028); Art. 50 applies from 2 August 2026; Art. 50(2) marking grace period to 2 December 2026. [secondary][snippet-only; not checked on EUR-Lex]
+29. FTC, "FTC Announces Crackdown on Deceptive AI Claims and Schemes" (September 2024). https://www.ftc.gov/news-events/news/press-releases/2024/09/ftc-announces-crackdown-deceptive-ai-claims-schemes ; DoNotPay final order (February 2025, $193,000); Rytr order set aside (December 2025) https://www.ftc.gov/news-events/news/press-releases/2025/12/ftc-reopens-sets-aside-rytr-final-order-response-trump-administrations-ai-action-plan [first-party][snippet-only]
+30. FTC, "FTC Finalizes Changes to Children's Privacy Rule…" (January 2025) and 16 CFR Part 312 final rule amendments. https://www.ftc.gov/legal-library/browse/federal-register-notices/16-cfr-part-312-coppa-final-rule-amendments — Published 22 April 2025; effective 60 days later; one year (to 22 April 2026) for most compliance; separate parental opt-in for third-party advertising disclosures. [first-party][snippet-only]
+
+## Open questions
+
+- Exact count of US states: 19, 20 or 24 depending on "in force" vs "enacted" and whether Florida counts. Re-check IAPP before quoting.
+- AI Act Art. 50: confirm the final Omnibus text on EUR-Lex (which providers get the 2 December 2026 grace period; any change for deployers). The Commission's code of practice on AI-content marking was not checked.
+- Whether the FTC has re-proposed a negative-option rule after the 2025 vacatur (Crowell mentions a move to revive it).
+- Current per-violation FTC civil penalty figure for 2026 (inflation-adjusted yearly).
+- Todd Snyder fine amount; Healthline (California AG, 2025) and other state cases not checked.
+- UK: whether the Data (Use and Access) Act 2025 changed cookie consent exemptions for analytics; ICO guidance not checked this session.
+- EU national approaches to "consent or pay" models and to the EAA's implementation in each member state.
