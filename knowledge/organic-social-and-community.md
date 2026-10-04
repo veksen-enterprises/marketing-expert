@@ -22,7 +22,7 @@ This playbook covers unpaid posting and community. For what to say and which for
 - Avoid: "comment YES for the guide" bait, engagement pods (groups that like each other's posts on cue), and posts that only exist to carry a link.
 
 **X (formerly Twitter)**
-- The 2026 open-source documentation lists predicted actions such as like, reply, repost, quote, share via DM, dwell time and video views, combined as a weighted sum, with negative actions (mute, block, report, "not interested") subtracting. It also lists an author-diversity penalty (the same author shown repeatedly is discounted) and a boost for low-reach new authors [first-party].
+- The 2026 open-source documentation lists predicted actions such as like, reply, repost, quote, share via DM, dwell time and video views, combined as a weighted sum; negative actions (mute, block, report, "not interested") are predicted and weighted too. It also lists an author-diversity penalty (the same author shown repeatedly is discounted) and a boost for low-reach new authors [first-party].
 - Works for developer tools, AI, finance and media audiences; replies to larger accounts in your niche are a fast way to be discovered.
 
 **Instagram**
@@ -71,7 +71,7 @@ A community is a place where members get value from each other, not only from yo
 - Some communities use the "10% rule": at most 10% of your posts and comments should be self-promotional [first-party: Reddit describes it as used by some communities].
 - Disclose that you work for the company. Undisclosed promotion found by users usually produces public backlash.
 - Reddit threads often appear in Google results and are used as sources by AI answers, so honest answers in the right threads can keep bringing visitors (see seo-and-ai-search).
-- Never buy upvotes or use fake accounts: it breaks Reddit's rules, and the FTC's 2024 reviews rule bans buying fake social media indicators (see pr-and-influencers).
+- Never buy upvotes or use fake accounts: it breaks Reddit's rules, and the FTC's 2024 reviews rule also covers buying fake social media indicators such as followers or views [first-party; not re-verified] (see pr-and-influencers).
 
 ## Measuring organic social and community
 

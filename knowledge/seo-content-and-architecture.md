@@ -14,13 +14,11 @@ This playbook covers how pages are organised, linked and written so Google can f
 - **Shallow structure**: important pages within about 3 clicks of the home page. Depth is a practitioner heuristic, but deep pages tend to be crawled less often and get fewer internal links. [rule-of-thumb]
 - **Link in context**, inside the body text, from pages that already get traffic or links to pages you want to grow. A link from a related high-traffic article helps more than one more footer link. [practitioner]
 - **Navigation reflects the business**: main categories in the header, related items in breadcrumbs, related content blocks at the end of articles. Add BreadcrumbList structured data. [first-party; practitioner]
-- **URLs**: readable words, hyphens, lowercase, one URL per page; avoid session IDs and endless parameter combinations. [first-party]
 
 ## Topic clusters and hub pages
 
 - A **topic cluster** is a hub page (also called a pillar page) that gives an overview of a topic and links to detailed pages on each sub-topic; the detailed pages link back to the hub and to each other where it helps the reader. [practitioner]
 - Why it works (plausibly): it creates dense, relevant internal links and forces you to cover a topic completely. There is no controlled evidence that the "cluster" format itself is a ranking factor. [practitioner]
-- Build clusters around topics your buyers research, mapped to product use cases, not around keyword tools' suggestion lists.
 - One page per intent. If two pages target the same query and intent, they compete ("cannibalisation"); merge them and 301-redirect the weaker. Check in Search Console: one query showing two of your URLs alternating. [practitioner]
 
 ## Crawl budget
@@ -72,8 +70,7 @@ A brief is the instruction sheet for a writer. Include:
 4. **Information gain**: what this page will add that the top results don't — original data, a worked example, screenshots of the real process, expert opinion, a template. Google holds a patent on scoring "information gain" (granted 2022); a patent does not prove use in ranking, but Google's own helpful-content guidance asks whether content provides original information and substantial value compared with other results. [first-party guidance; patent; practitioner]
 5. **Entity coverage**: the people, products, concepts and terms a complete answer would mention (e.g. a "CRM for small business" page should name the main products, pricing models, integrations). Use ranking pages and knowledge sources to list them; don't stuff. [practitioner]
 6. **Author expertise**: who writes or reviews it and why they are qualified; show it on the page (byline, bio, first-hand experience). Google's guidance asks "Who created this, how, and why". [first-party; practitioner]
-7. **Internal links**: which hub links to this page, which pages this page links to, with anchor text.
-8. **Success metric**: target queries and the conversion action, not word count.
+7. **Internal links and success metric**: which pages link in and out (with anchor text); target queries and the conversion action, not word count.
 
 ## Content refreshes and pruning
 
@@ -88,7 +85,7 @@ A brief is the instruction sheet for a writer. Include:
 - Average position falls when you start appearing for more, lower-ranked queries; it can drop while traffic grows. Read it per query, not site-wide. [first-party; practitioner]
 - Use **page + query** views to find cannibalisation, refresh candidates (high impressions, low CTR) and pages with rising impressions but no clicks (often AI Overview or SERP features above you).
 - Use the **Page indexing report** for "Crawled – currently not indexed" and "Discovered – currently not indexed" counts, especially for programmatic sets. [first-party] [not re-verified]
-- Compare periods year on year to remove seasonality; annotate core update dates. Join Search Console data with GA4 conversions (see metrics-and-measurement) to judge pages on revenue, not clicks.
+- Compare year on year, annotate core update dates, and join with GA4 conversions (see metrics-and-measurement) to judge pages on revenue.
 
 ## Checklist
 
