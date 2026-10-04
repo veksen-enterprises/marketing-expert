@@ -19,6 +19,12 @@ describe("checkAnswer", () => {
   it("handles terms with regex characters", () => {
     expect(checkAnswer("Check the P&L first.").unexplainedTerms).toEqual(["P&L"]);
   });
+  it("fingerprints the text, ignoring whitespace differences", () => {
+    const a = checkAnswer("Fix the price first.\n\nThen the docs.");
+    expect(a.fingerprint).toBe(checkAnswer("Fix the price  first. Then the docs.").fingerprint);
+    expect(a.fingerprint).not.toBe(checkAnswer("Fix the docs first. Then the price.").fingerprint);
+    expect(a.fingerprint).toMatch(/^[0-9a-f]{10} "Fix the price first\. Then the…"$/);
+  });
   it("passes a clean short answer", () => {
     expect(checkAnswer("Fix the homepage price first. It says $20; the pricing page says $16.").problems).toEqual([]);
   });

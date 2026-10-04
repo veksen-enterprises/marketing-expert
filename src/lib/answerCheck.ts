@@ -2,7 +2,11 @@
 // that instructions alone don't keep answers under the length limit or free of unexplained jargon:
 // models don't count words reliably. This counts them.
 
+import { createHash } from "node:crypto";
+
 export interface AnswerCheck {
+  /** Identifies the checked text: first words plus a hash of the whitespace-normalised text. Log it, so a reviewer can confirm the text sent is the text checked. */
+  fingerprint: string;
   words: number;
   maxWords: number;
   overBy: number;
@@ -34,5 +38,7 @@ export function checkAnswer(text: string, maxWords = 1200): AnswerCheck {
   if (overBy) problems.push(`${words} words, ${overBy} over the ${maxWords}-word limit. Cut status tables to the rows that change the advice, competitor lists to the few that matter, and secondary findings to one line each, then check again.`);
   if (bannedWords.length) problems.push(`Replace: ${bannedWords.join(", ")} (say what you mean in plain words).`);
   if (unexplainedTerms.length) problems.push(`Explain on first use, in brackets, or replace: ${unexplainedTerms.join(", ")}.`);
-  return { words, maxWords, overBy, bannedWords, unexplainedTerms, problems };
+  const norm = text.replace(/\s+/g, " ").trim();
+  const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
+  return { fingerprint, words, maxWords, overBy, bannedWords, unexplainedTerms, problems };
 }

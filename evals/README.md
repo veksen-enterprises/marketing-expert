@@ -33,3 +33,8 @@ Still failing in round 2, and the changes made after it:
 Round 3 ran after the round-2 instruction changes. Totals: 100, 101, 101 out of 120. One run per case, so a one-point move is within grader noise.
 - Improved: fabricated or misattributed quotes from repo files dropped to zero in the GameX Companion cases (round 2 had three); every answer says what would prove the diagnosis wrong; playbook labels and snippet caveats were mostly copied correctly; the GameX Companion public item feed was found after two misses; the round-2 tool bugs were confirmed fixed by the companion-site grader.
 - Still failing: every answer was over 1,200 words (1,323 to 1,679), so check_answer now counts words mechanically; moves still bundle several actions; wrong line numbers and status overstatements (a retired package called shipped); some findings missed in every round despite explicit instructions (GameX Companion's VITE_CALC_ONLY build flag; the DBTool pricing tooltip "Parameter values aren't included").
+
+## Harness rules learned the hard way
+
+- Give every concurrent advisor its own scratch directory and tell it not to read elsewhere in /tmp. In round 4 two advisors evidently shared a temp file: the devtool-competition answer was a GameX Companion draft under a DBTool tool log (kept as `runs/v4/devtool-competition-contaminated.md`), and the companion-risk answer was a devtool-strategy draft (`runs/v4/companion-risk-contaminated.md`). Before grading, check that each answer is about the right business and that its word count matches the last check_answer in its log.
+- check_answer returns a fingerprint (hash plus first words) of the text it checked. Graders: recompute it on the saved answer to confirm the checked text is the sent text.

@@ -1,3 +1,5 @@
+> **Invalid run.** The Answer section is a DBTool devtool-strategy draft (another concurrent advisor's text, via the shared scratchpad); the tool log is the real GameX Companion risk run. Kept for the record; rerun as companion-risk.md with a private scratch directory.
+
 ## Answer
 
 ## Answer
