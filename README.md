@@ -32,7 +32,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `check_ai_crawler_access` | Reads robots.txt and reports which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl and others) are allowed, grouped by training / AI search / user-triggered fetch; flags blocks that keep a site out of AI answers; checks llms.txt and sitemaps |
 | `search_playbooks` / `get_playbook` | BM25 search over playbook sections / full playbook. Also exposed as resources at `marketing://playbook/{slug}` |
 
-Prompts: `marketing_strategy`, `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
+Prompts: `technical_seo_review` (text in `prompts/seo-site-review-v2.md`), `marketing_strategy`, `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
 
 Playbooks:
 - Business types: b2b-saas-sales-led, self-serve-saas, ecommerce-dtc, marketplaces, local-services, consumer-apps, professional-services, retail-cpg.

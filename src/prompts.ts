@@ -1,5 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const PROMPTS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "prompts");
 
 // Prompts are workflows: they fix the ORDER of thinking, which is where most marketing advice goes
 // wrong (tactics before diagnosis, copy before positioning, tests before power analysis).
@@ -11,6 +16,23 @@ function user(text: string) {
 const opt = (s: string | undefined, label: string) => (s ? `\n${label}: ${s}` : "");
 
 export function registerPrompts(server: McpServer): void {
+  server.registerPrompt(
+    "technical_seo_review",
+    {
+      title: "Technical SEO review of a site you can build",
+      description: "Measured review of how each public page looks to Google and AI crawlers: production build, raw vs rendered HTML, status codes, canonicals, crawl paths, sitemap/robots, noindex, rendering, speed; ranked fixes with a check that proves each is fixed.",
+      argsSchema: {
+        repo: z.string().optional().describe("Path or name of the site's repo"),
+        localUrl: z.string().optional().describe("URL where the production build is running locally, if already started"),
+      },
+    },
+    ({ repo, localUrl }) =>
+      user(
+        `${opt(repo, "Repo")}${opt(localUrl, "Local production build")}\n\n` +
+          readFileSync(join(PROMPTS_DIR, "seo-site-review-v2.md"), "utf8").replace(/^# .*\n+/, "")
+      )
+  );
+
   server.registerPrompt(
     "marketing_diagnosis",
     {

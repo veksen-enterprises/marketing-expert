@@ -36,7 +36,8 @@
   },
   "files": [
     "dist",
-    "knowledge"
+    "knowledge",
+    "prompts"
   ],
   "engines": {
     "node": ">=20"
