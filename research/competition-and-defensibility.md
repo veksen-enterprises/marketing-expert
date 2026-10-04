@@ -1,4 +1,4 @@
-# Competitive Analysis, Moats, and Defensibility for Small Companies
+# Competitive Analysis and Defensibility for Small Companies
 
 Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly every primary domain tried (a16z.com, aeaweb.org, hbs.edu, hbr.org, justice.gov, nuff.ox.ac.uk, eml.berkeley.edu, bcg.com, stern.nyu.edu, carlsonschool.umn.edu, clozd.com, scip.org, aprildunford.com, congress.gov, sec.gov, ec.europa.eu, researchgate, semanticscholar, arxiv, web.archive.org, medium). GitHub code search was also refused. **The only primary source read in full was Microsoft's FY24 Q1 earnings-call transcript (microsoft.com).** Everything else comes from search-result snippets that quote or point at the named primary URL. The session's web-search budget ran out after about 45 queries, so some planned checks were never run (listed at the end). Tags: **[research]** = peer-reviewed or working paper; **[first-party]** = company filing or statement; **[practitioner]** = essay or book by an operator or investor; **[vendor]** = seller of the service in question; **[anecdote]**; **[snippet-only]** = only seen through a search snippet; **[synthesis]** = my inference.
 
@@ -106,10 +106,10 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
   - Earlier critiques: Abernathy & Wayne, "Limits of the Learning Curve" (HBR 1974); Kiechel, "The Decline of the Experience Curve" (Fortune 1981) [snippet-only].
   - Lieberman (1987) models how *learning diffusion* (spillovers to rivals) changes entry barriers and profits (14) [research][snippet-only]. When learning leaks to rivals, a cumulative-volume lead protects less [synthesis].
 - **Small-firm reading** [synthesis]: in software, marginal cost is near zero, so production-cost experience curves rarely decide outcomes. Scale shows up instead in distribution, R&D amortisation and data (see §5–6). Do not compete on unit cost against a larger rival.
-- **Brand as moat (Helmer).** Helmer defines Branding as "the durable attribution of higher value to an objectively identical offering that arises from historical information about the seller". The barrier is **hysteresis**: a brand takes a long period of reinforcing actions to build (15) [practitioner][snippet-only]. Test: can you charge more for an objectively identical offering? If not, you have reputation, not brand power.
+- **Brand as a lasting advantage (Helmer).** Helmer defines Branding as "the durable attribution of higher value to an objectively identical offering that arises from historical information about the seller". The barrier is **hysteresis**: a brand takes a long period of reinforcing actions to build (15) [practitioner][snippet-only]. Test: can you charge more for an objectively identical offering? If not, you have reputation, not brand power.
 - **Process Power** is one of Helmer's 7 Powers (alongside Scale Economies, Network Economies, Counter-Positioning, Switching Costs, Branding and Cornered Resource). Helmer's exact definition was not verified this session.
 
-## 5. Data moats
+## 5. Proprietary data as an advantage
 
 - **Casado & Lauten** (a16z, 9 May 2019) (16) [practitioner][snippet-only]:
   - Most claimed "data network effects" are really **data scale effects**.
@@ -127,7 +127,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
   - (c) Can a rival buy, license or synthesise an equivalent corpus?
   - (d) Is the data produced inside a workflow you own?
 
-## 6. Distribution as moat ("the best product doesn't always win")
+## 6. Distribution as an advantage ("the best product doesn't always win")
 
 - **Browser war findings of fact (U.S. v. Microsoft, 1999)** (20) [first-party court finding][snippet-only]:
   - Navigator's usage share fell from **above 80% in January 1996 to 55% in November 1997**. Internet Explorer rose from **about 5% to 36%** over the same period (estimates Microsoft executives cited).
@@ -176,13 +176,13 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 - **McGrath (2013)** argues for "transient advantage": exploit an advantage and prepare the next before it erodes (26) [practitioner].
   - Her growth-outlier screen covered 4,793 public companies over $1B market cap. About 8% met a 5%-per-year growth bar over five years. Only **10** did so over ten years [practitioner][snippet-only]. Snippets disagree on whether the bar was revenue or net income growth, so do not quote the bar without the original.
   - Outliers combined experimentation with a stable core of leadership, strategy and values.
-- **For founders** [synthesis]: plan moats as a *sequence* (atomic network → switching costs → brand) rather than a single wall. Re-test the advantage every planning cycle.
+- **For founders** [synthesis]: plan defensibility as a *sequence* (atomic network → switching costs → brand) rather than a single wall. Re-test the advantage every planning cycle.
 
 ## Competitive analysis procedure [synthesis]
 
 1. **List alternatives from the buyer's view.** For the last 10–20 deals (won, lost, stalled), record what the buyer would otherwise have done. Include status quo, DIY/spreadsheet, hiring, adjacent tools, suites they already own and direct rivals (27, 28).
 2. **Run win/loss interviews** with a non-sales interviewer and at least 5 wins, 5 losses and 5 no-decisions per quarter. Code decision criteria and the decision moment. Do not trust CRM loss codes, especially "price" (vendor data: 48% vs 23%).
-3. **Map moats honestly** for you and each top alternative:
+3. **Map defensibility honestly** for you and each top alternative:
    - Network effects: global or clustered, single- or multi-homing, disintermediation risk.
    - Switching costs: which ones are real, and where each customer is in the lock-in cycle.
    - Scale: cost vs distribution vs R&D.
@@ -193,12 +193,12 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 5. **Monitor signals monthly:** pricing-page diffs, job posts, changelogs, review-site complaints, Meta Ad Library, Google Ads Transparency Center, and earnings calls for public rivals. Log changes and act only on patterns.
 6. **Pre-plan responses to a big entrant** using Rao et al.: signal → non-price response → selective/fighter offer → cede segments. Write down in advance which segments you will defend and which you will cede.
 7. **Stay legal:** public information, buying the product and reverse-engineering are fine. Misrepresenting who you are, inducing breaches of confidentiality, and taking rivals' confidential files are not (DTSA §1839; SCIP).
-8. **Re-run quarterly.** Advantages erode (Wiggins & Ruefli), so update the moat map and the next advantage in the sequence.
+8. **Re-run quarterly.** Advantages erode (Wiggins & Ruefli), so update the defensibility map and the next advantage in the sequence.
 
 ## Open questions / could not verify
 
 - **Nothing read in full except Microsoft FY24 Q1.** Every journal paper, HBR article, a16z essay, court finding, statute and vendor stat above is [snippet-only]. Exact wording and page numbers should be checked before quoting.
-- **a16z data-moats essay:** the "40%" chatbot figure and the full list of recommendations are known only through snippets.
+- **a16z essay on proprietary data (Casado & Lauten):** the "40%" chatbot figure and the full list of recommendations are known only through snippets.
 - **Wiggins & Ruefli:** which percentages belong to the 2002 paper and which to the 2005 paper is unconfirmed, and the sample details of the 2005 paper are unknown.
 - **McGrath growth-outlier screen:** whether the bar was revenue or net income growth, and the sample years, are unconfirmed.
 - **Bakos & Brynjolfsson:** marginal-cost and competition/entry results (including their later 2000 *Marketing Science* paper on bundling and competition) were not verified.
@@ -207,7 +207,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 - **Search budget ran out before checking:**
   - NBER w32474 authorship and content.
   - Greylock "New New Moats".
-  - 2024–26 essays on fine-tuning and proprietary-data moats (e.g., BloombergGPT vs general models).
+  - 2024–26 essays on fine-tuning and proprietary-data advantages (e.g., BloombergGPT vs general models).
   - Empirical work on incumbent price responses to entry (e.g., airline-entry studies).
   - Slack S-1 exact DAU text.
   - Meta Ad Library official scope page.

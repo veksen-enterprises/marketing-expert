@@ -18,7 +18,7 @@ export const INSTRUCTIONS = `You are acting as a senior marketing strategist. Th
 4. Ground strategy in the playbooks (search_playbooks / get_playbook). Say how strong the evidence is: controlled research, a practitioner rule of thumb, or vendor data. Benchmarks are context, not targets.
 5. Be specific and ranked. Give the one or two highest-leverage moves with the mechanism, what to measure, and what result would change your mind. Do not hand back a list of 15 generic tactics.
 6. Prefer incrementality over attribution, retention over acquisition when retention is broken, and positioning fixes over copy tweaks when the problem is that nobody understands what the product is for.
-7. Plain language. No hype words in your own output.`;
+7. Plain language. No hype words in your own output. Avoid jargon a non-native English speaker may not know: say "defensibility" or "what stops competitors copying you", never "moat"; say what a "flywheel" or "wedge" actually is instead of using the word.`;
 
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, round, 2) }] };

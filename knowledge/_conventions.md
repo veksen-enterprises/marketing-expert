@@ -8,3 +8,5 @@ Evidence tags used in every playbook:
 - [rule-of-thumb] widely repeated heuristic with no traceable empirical basis
 
 Every factual claim should trace to /research/*.md, where sources and access caveats are recorded.
+
+Vocabulary: write for readers whose first language may not be English. Never use "moat"; say "defensibility" or describe what stops competitors. Explain any other jargon (flywheel, wedge) in plain words. Exact titles of cited works are kept as published.
