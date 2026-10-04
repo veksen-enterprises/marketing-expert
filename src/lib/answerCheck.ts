@@ -12,8 +12,16 @@ export interface AnswerCheck {
   overBy: number;
   bannedWords: string[];
   unexplainedTerms: string[];
+  /** Parts the server instructions ask for that weren't found by keyword. Phrasing varies, so treat these as reminders. */
+  missingParts: string[];
   problems: string[];
 }
+
+const PARTS: Array<[string, RegExp]> = [
+  ["what would prove the diagnosis wrong", /prove[sd]? (me|this|it|that) wrong|I'?m wrong if|I'?d be wrong|would change my mind|this is wrong if|disprove|falsif/i],
+  ["open questions for the founder", /open questions|questions for you|what I need from you|to confirm:/i],
+  ["the offer to save confirmed facts as a business profile", /\bprofile\b/i],
+];
 
 const BANNED = ["moat", "moats", "flywheel", "synergy", "game-changer", "game changer", "best-in-class", "world-class"];
 // Abbreviations and terms a non-native reader may not know. Explained = followed within a few words by "(" or ", meaning", or preceded by an expansion in parentheses.
@@ -40,5 +48,7 @@ export function checkAnswer(text: string, maxWords = 1200): AnswerCheck {
   if (unexplainedTerms.length) problems.push(`Explain on first use, in brackets, or replace: ${unexplainedTerms.join(", ")}.`);
   const norm = text.replace(/\s+/g, " ").trim();
   const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
-  return { fingerprint, words, maxWords, overBy, bannedWords, unexplainedTerms, problems };
+  const missingParts = PARTS.filter(([, re]) => !re.test(text)).map(([name]) => name);
+  if (missingParts.length) problems.push(`Not found (ignore if it's there in other words): ${missingParts.join("; ")}.`);
+  return { fingerprint, words, maxWords, overBy, bannedWords, missingParts, unexplainedTerms, problems };
 }

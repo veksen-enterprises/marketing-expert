@@ -337,7 +337,7 @@ export function createServer(): McpServer {
     {
       title: "Check your draft answer",
       description:
-        "Run on the exact text you will send, after your last edit; check again after any change. Returns a fingerprint of the checked text; quote it in any log of your work. Counts words against the limit (default 1,200) and lists banned words and abbreviations used without an explanation. Fix every problem it lists and run it again.",
+        "Run on the exact text you will send, after your last edit; check again after any change. Also reminds you of required parts it cannot find (falsifier, open questions, profile offer). Returns a fingerprint of the checked text; quote it in any log of your work. Counts words against the limit (default 1,200) and lists banned words and abbreviations used without an explanation. Fix every problem it lists and run it again.",
       inputSchema: { text: z.string().min(1).max(100000), maxWords: z.number().int().min(100).max(10000).optional() },
       annotations: readOnly,
     },

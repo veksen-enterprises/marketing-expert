@@ -25,7 +25,13 @@ describe("checkAnswer", () => {
     expect(a.fingerprint).not.toBe(checkAnswer("Fix the docs first. Then the price.").fingerprint);
     expect(a.fingerprint).toMatch(/^[0-9a-f]{10} "Fix the price first\. Then the…"$/);
   });
-  it("passes a clean short answer", () => {
-    expect(checkAnswer("Fix the homepage price first. It says $20; the pricing page says $16.").problems).toEqual([]);
+  it("passes a clean short answer that has the required parts", () => {
+    const t = "Fix the homepage price first. It says $20; the pricing page says $16. I'm wrong if buyers never see the pricing page. Open questions: which price is current? I can save these facts as a business profile.";
+    expect(checkAnswer(t).problems).toEqual([]);
+  });
+  it("lists required parts it can't find", () => {
+    const r = checkAnswer("Fix the homepage price first.");
+    expect(r.missingParts).toHaveLength(3);
+    expect(r.problems.join(" ")).toMatch(/ignore if it's there in other words/);
   });
 });
