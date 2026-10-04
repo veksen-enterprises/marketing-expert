@@ -4,6 +4,9 @@
 // canonical problems, link depth and hreflang errors.
 
 import { parse } from "node-html-parser";
+import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
+
+export { parseRobots, robotsAllows };
 
 export type FetchFn = (url: string, init: { redirect: "manual"; headers: Record<string, string>; signal: AbortSignal }) => Promise<Response>;
 
@@ -68,57 +71,6 @@ function normalize(href: string, base: string): string | null {
   } catch {
     return null;
   }
-}
-
-interface RobotsRules {
-  allow: string[];
-  disallow: string[];
-  sitemaps: string[];
-}
-
-export function parseRobots(txt: string): RobotsRules {
-  const rules: RobotsRules = { allow: [], disallow: [], sitemaps: [] };
-  let inStar = false;
-  let lastWasAgent = false;
-  for (const raw of txt.split(/\r?\n/)) {
-    const line = raw.replace(/#.*/, "").trim();
-    if (!line) continue;
-    const i = line.indexOf(":");
-    if (i < 0) continue;
-    const key = line.slice(0, i).trim().toLowerCase();
-    const val = line.slice(i + 1).trim();
-    if (key === "sitemap") {
-      rules.sitemaps.push(val);
-      continue;
-    }
-    if (key === "user-agent") {
-      // Consecutive user-agent lines form one group.
-      inStar = lastWasAgent ? inStar || val === "*" : val === "*";
-      lastWasAgent = true;
-      continue;
-    }
-    lastWasAgent = false;
-    if (!inStar) continue;
-    if (key === "disallow" && val) rules.disallow.push(val);
-    if (key === "allow" && val) rules.allow.push(val);
-  }
-  return rules;
-}
-
-function ruleMatches(rule: string, path: string): boolean {
-  const anchored = rule.endsWith("$");
-  const body = (anchored ? rule.slice(0, -1) : rule).replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
-  return new RegExp("^" + body + (anchored ? "$" : "")).test(path);
-}
-
-/** Longest matching rule wins; Allow wins ties (Google's documented behaviour). */
-export function robotsAllows(rules: RobotsRules, url: string): boolean {
-  const u = new URL(url);
-  const path = u.pathname + u.search;
-  let best: { len: number; allow: boolean } | null = null;
-  for (const r of rules.disallow) if (ruleMatches(r, path) && (!best || r.length > best.len)) best = { len: r.length, allow: false };
-  for (const r of rules.allow) if (ruleMatches(r, path) && (!best || r.length >= best.len)) best = { len: r.length, allow: true };
-  return best ? best.allow : true;
 }
 
 function extractLocs(xml: string): string[] {

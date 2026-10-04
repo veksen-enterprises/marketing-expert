@@ -7,6 +7,7 @@ import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit, renderAndAudit } from "./lib/pageAudit.js";
 import { crawlSite } from "./lib/crawl.js";
+import { checkAiCrawlerAccess } from "./lib/aiCrawlers.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
@@ -353,6 +354,21 @@ export function createServer(): McpServer {
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     safe((a) => crawlSite({ startUrl: a.url, maxPages: a.maxPages, useSitemap: a.useSitemap, respectRobots: a.respectRobots }))
+  );
+
+  server.registerTool(
+    "check_ai_crawler_access",
+    {
+      title: "Check AI crawler access",
+      description:
+        "Read a site's robots.txt and report which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl, ByteDance and others) are allowed or blocked, grouped by purpose: model training, AI search/answers, or user-triggered fetching. Flags blocks that keep a site out of AI answers. Also checks for llms.txt and sitemaps.",
+      inputSchema: {
+        url: z.string().describe("Site URL"),
+        paths: z.array(z.string()).optional().describe('Paths to check, default ["/"], e.g. ["/", "/blog/", "/pricing"]'),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    safe((a) => checkAiCrawlerAccess(a.url, a.paths))
   );
 
   // ── Business profiles ─────────────────────────────────────────────────────
