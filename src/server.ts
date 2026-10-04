@@ -426,7 +426,7 @@ export function createServer(): McpServer {
     {
       title: "Search marketing playbooks",
       description:
-        "Keyword search over the playbooks: marketing (positioning, messaging, customer research, landing pages, experimentation, metrics, channels, SEO, email, paid, pricing, brand, launches) and strategy (market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits). Returns the best-matching sections.",
+        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, e-commerce/DTC, marketplaces, local services, consumer apps. Channels: SEO (general, local, international, content and site structure), content, organic social and community, PR and influencers, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
       inputSchema: { query: z.string().min(2), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },

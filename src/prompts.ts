@@ -32,6 +32,33 @@ Work in this order:
   );
 
   server.registerPrompt(
+    "marketing_strategy",
+    {
+      title: "Marketing strategy",
+      description: "Propose a ranked marketing strategy for a specific business: picks the business-type playbook, checks the economics, and chooses channels with evidence.",
+      argsSchema: {
+        business: z.string().describe("What you sell, to whom, price, how people buy, stage"),
+        goal: z.string().optional().describe("e.g. first 100 customers, double pipeline, cut CAC"),
+        budget: z.string().optional().describe("Money and people available"),
+      },
+    },
+    ({ business, goal, budget }) =>
+      user(`Propose a marketing strategy for this business.${opt(goal, "\nGoal")}${opt(budget, "\nBudget / team")}
+
+Business: ${business}
+
+1. Context: call list_business_profiles / get_business_profile if one exists. Ask for anything essential that's missing (price, how they buy, current numbers) before going further; state assumptions if the user can't answer.
+2. Business type: pick the closest playbook and read it with get_playbook: b2b-saas-sales-led, self-serve-saas, ecommerce-dtc, marketplaces, local-services or consumer-apps. Say which one and why; if it's a mix, say which parts of each apply.
+3. Constraint: what limits growth right now (see the marketing_diagnosis order: positioning, reach, conversion, retention, unit economics)? Strategy targets that constraint; if retention or positioning is broken, fixing that comes before spending on acquisition.
+4. Economics: run unit_economics or paid_media_math with their numbers to show what customer acquisition cost the business can afford. This rules channels in or out.
+5. Channels: shortlist 3 using channel-strategy (Bullseye, channel-model fit) and the channel playbooks (seo-and-ai-search, content-marketing, organic-social-and-community, pr-and-influencers, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm). For each: why it fits this business, the cheapest test, the cost, the metric and the result that would make you stop.
+6. The plan: the first 90 days in order, with owners if a team was described. At most 2–3 things at once.
+7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
+8. What not to do yet, and why.
+Offer to save the confirmed facts with save_business_profile.`)
+  );
+
+  server.registerPrompt(
     "positioning_workshop",
     {
       title: "Positioning workshop",

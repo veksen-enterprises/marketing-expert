@@ -4,7 +4,7 @@ import { loadPlaybooks, searchKnowledge, getPlaybook } from "../src/lib/knowledg
 describe("knowledge base", () => {
   const books = loadPlaybooks();
   it("loads every playbook with frontmatter", () => {
-    expect(books.length).toBeGreaterThanOrEqual(19);
+    expect(books.length).toBeGreaterThanOrEqual(34);
     for (const b of books) {
       expect(b.title, b.slug).not.toBe(`${b.slug}.md`);
       expect(b.summary.length, b.slug).toBeGreaterThan(20);
@@ -38,6 +38,21 @@ describe("knowledge base", () => {
     ["startup failure base rates survival", "startup-risk-and-opportunity"],
     ["pre-mortem kill criteria", "startup-risk-and-opportunity"],
     ["win loss interviews switching costs", "competitive-analysis"],
+    ["pipeline win rate buying group mql", "b2b-saas-sales-led"],
+    ["product qualified leads activation onboarding freemium", "self-serve-saas"],
+    ["contribution margin returns repeat purchase shopify", "ecommerce-dtc"],
+    ["marketplace cold start supply liquidity take rate", "marketplaces"],
+    ["google business profile reviews local pack", "local-seo"],
+    ["dentist plumber local business rebooking", "local-services"],
+    ["app store optimization retention d30 paywall", "consumer-apps"],
+    ["hreflang cctld subdirectory", "international-seo"],
+    ["programmatic seo internal linking faceted navigation", "seo-content-and-architecture"],
+    ["newsletter original research thought leadership", "content-marketing"],
+    ["linkedin tiktok reddit community", "organic-social-and-community"],
+    ["journalist pitch influencer disclosure ftc", "pr-and-influencers"],
+    ["affiliate commission integration partner", "partnerships-and-affiliates"],
+    ["referral program double-sided incentive", "referral-programs"],
+    ["cold email sequence abm account tiers", "outbound-and-abm"],
   ])("%s → %s", (q, slug) => {
     const hits = searchKnowledge(q, 3);
     expect(hits.map((h) => h.slug)).toContain(slug);
