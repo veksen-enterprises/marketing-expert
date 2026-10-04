@@ -35,7 +35,7 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 ## Technical checklist
 
-Run audit_page on key templates.
+Run crawl_site on the whole site for site-wide problems (broken links, redirect chains, duplicates, orphan pages, sitemap conflicts, click depth, hreflang), then audit_page on key templates (render=true if the site builds content with JavaScript).
 - Indexable (no stray noindex, X-Robots-Tag), canonical correct, in the XML sitemap, internally linked.
 - Unique title (~50–60 chars visible) and meta description (~155 desktop / ~120 mobile; Google often rewrites both).
 - One clear h1; logical heading structure.

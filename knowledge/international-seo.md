@@ -87,6 +87,8 @@ Google leads in most markets, but not all. Shares below are from aggregator site
 
 ## Checklist
 
+- Run crawl_site: it checks hreflang codes, self-references and return links across crawled pages.
+
 - [ ] Decided language-only vs country versions based on real differences in offer.
 - [ ] One URL pattern (subdirectories by default) used everywhere.
 - [ ] hreflang on every page in each set: self-reference, return links, valid ISO codes, x-default.

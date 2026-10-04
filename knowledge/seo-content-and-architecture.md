@@ -8,6 +8,9 @@ This playbook covers how pages are organised, linked and written so Google can f
 
 ## Site architecture and internal linking
 
+Start with crawl_site: it reports click depth, pages with one or zero internal links (orphans), links to redirects, duplicate titles and sitemap conflicts, which is the evidence for the decisions below.
+
+
 - **Crawlable links only.** Google reliably follows only `<a>` elements with an `href`. Links created by JavaScript click handlers, buttons or `onclick` without `href` may never be found. [first-party]
 - **Every page you care about needs at least one internal link** from another page. Pages only in the sitemap ("orphan pages") are found but get little weight. [first-party; practitioner]
 - **Anchor text** (the clickable words) should be descriptive, reasonably short and relevant to both pages; the words around the link also matter. Don't stuff keywords and don't chain several links side by side. "Click here" tells Google and users nothing. [first-party]
