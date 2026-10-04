@@ -11,14 +11,14 @@ Realistic cases run through the MCP server by an agent playing the AI assistant 
 
 Scores out of 20 (rubric.md). Round 2 ran after the fixes from round 1's grades. Round-2 graders were stricter on length, evidence labels and plain language, so equal totals hide real changes; read the "Compared with round 1" section of each grade.
 
-| Case | Round 1 | Round 2 |
-|---|---|---|
-| devtool-strategy | 17 | 17 |
-| devtool-competition | 17 | 16 |
-| devtool-site | 15 | 18 |
-| companion-strategy | 17 | 17 |
-| companion-risk | 17 | 17 |
-| companion-site | 17 | 16 |
+| Case | Round 1 | Round 2 | Round 3 |
+|---|---|---|---|
+| devtool-strategy | 17 | 17 | 16 |
+| devtool-competition | 17 | 16 | 16 |
+| devtool-site | 15 | 18 | 17 |
+| companion-strategy | 17 | 17 | 18 |
+| companion-risk | 17 | 17 | 17 |
+| companion-site | 17 | 16 | 17 |
 
 Fixed by round 2: answers agree with tool verdicts, no invented CAC, competitors named, shipped vs planned marked, a stop condition on each move, redirect and sitemap-status reporting, render-mode head comparison.
 
@@ -29,3 +29,7 @@ Still failing in round 2, and the changes made after it:
 - Bundled moves and a lost falsifier. Instruction 6: one action per move; say what would prove the diagnosis wrong.
 - Data-handling claims in tooltips not checked (devtool-site). Instruction 0 and landing_page_teardown step 0.
 - Tool bugs: glued nav text, calculators treated as sign-up forms, client-rendered pages missed by crawl_site, HTML accepted as robots.txt, render mode reporting the script-rewritten URL. Fixed with tests in test/regressions3.test.ts.
+
+Round 3 ran after the round-2 instruction changes. Totals: 100, 101, 101 out of 120. One run per case, so a one-point move is within grader noise.
+- Improved: fabricated or misattributed quotes from repo files dropped to zero in the GameX Companion cases (round 2 had three); every answer says what would prove the diagnosis wrong; playbook labels and snippet caveats were mostly copied correctly; the GameX Companion public item feed was found after two misses; the round-2 tool bugs were confirmed fixed by the companion-site grader.
+- Still failing: every answer was over 1,200 words (1,323 to 1,679), so check_answer now counts words mechanically; moves still bundle several actions; wrong line numbers and status overstatements (a retired package called shipped); some findings missed in every round despite explicit instructions (GameX Companion's VITE_CALC_ONLY build flag; the DBTool pricing tooltip "Parameter values aren't included").
