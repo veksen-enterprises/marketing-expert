@@ -71,6 +71,7 @@ Business: ${business}
 
 1. Context: call list_business_profiles / get_business_profile if one exists. Ask for anything essential that's missing (price, how they buy, current numbers) before going further; state assumptions if the user can't answer.
 2. Business type: pick the closest playbook and read it with get_playbook: b2b-saas-sales-led, self-serve-saas, developer-tools, ecommerce-dtc, marketplaces, local-services, consumer-apps, community-and-hobby-products, professional-services or retail-cpg. Say which one and why; if it's a mix, say which parts of each apply.
+2b. Alternatives: name what the target users do today instead (specific competitors, adjacent tools, communities, "do nothing"), from your own knowledge if needed, labelled unverified. The strategy has to beat those, not an abstract market.
 3. Constraint: what limits growth right now (see the marketing_diagnosis order: positioning, reach, conversion, retention, unit economics)? Strategy targets that constraint; if retention or positioning is broken, fixing that comes before spending on acquisition.
 4. Economics: run unit_economics or paid_media_math with their numbers to show what customer acquisition cost the business can afford. This rules channels in or out.
 5. Channels: shortlist 3 using channel-strategy (Bullseye, channel-model fit) and the channel playbooks (seo-and-ai-search, ai-assistant-visibility, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm). If retention is the constraint, use retention-and-expansion; check budget realism with marketing-budget-and-team and legal limits with privacy-and-marketing-law.. For each: why it fits this business, the cheapest test, the cost, the metric and the result that would make you stop.
@@ -123,6 +124,7 @@ List the assumptions that most need customer validation, and the interview quest
 URL: ${url}${opt(audience, "Audience / traffic source")}${opt(goal, "Goal")}
 
 Structure:
+0. Facts check: if you have the product's docs or repo, compare the page's claims (features, "coming soon", prices, setup steps, plans) with them. Mismatches go to the top of the list: they're cheap to fix and cost trust.
 1. The 5-second read: from the lead text and h1 alone, what does a first-time visitor think this is, who it's for, and what to do next? Quote the page.
 2. Message match: does the headline continue what the traffic source promised? If the source is unknown, say what to check.
 3. Run analyze_copy on the lead text. Note vague claims, missing proof, writer-centric framing.
@@ -130,7 +132,7 @@ Structure:
 5. Proof and objections: what objections would this audience have (price, switching cost, risk, credibility), and where are they answered?
 6. Friction: forms, steps, speed, mobile. Use the audit flags.
 7. Technical/SEO flags from the audit that matter for this page's job (ignore the rest).
-Finish with the top 3 changes ranked by expected impact × confidence, each with a hypothesis in the form "Because [evidence], changing [X] for [audience] will improve [metric]", and say which deserve an A/B test versus just shipping. Use ab_test_sample_size if traffic numbers are known.`)
+Finish with at most 3 changes ranked by expected impact × confidence, each with a hypothesis in the form "Because [evidence], changing [X] for [audience] will improve [metric]", and say which deserve an A/B test versus just shipping. Use ab_test_sample_size if traffic numbers are known.`)
   );
 
   server.registerPrompt(
@@ -224,9 +226,10 @@ Launching: ${whatsLaunching}${opt(audience, "Audience")}${opt(date, "Date")}
 
 Idea: ${idea}${opt(evidence, "Evidence so far")}
 
-1. Base rates: state the relevant base rates (survival, return of capital) before any opinion. Ask the founder for their own probability estimate and compare.
+0. Goal: ask (or assume, labelled) what the founder wants: hobby, side income, lifestyle business or venture-scale. "Worth building" means something different for each; for a hobby or community tool read get_playbook "community-and-hobby-products".
+1. Base rates: state base rates that match that goal and business type (new-business survival, venture return of capital, or the thin evidence on side projects), before any opinion. Ask the founder for their own probability estimate and compare.
 2. Who wants it urgently? Name the smallest concentrated group with the problem and a budget, the evidence they exist, and the path to the next group.
-3. Market: run market_size bottom-up with sourced account counts (ask for them; say where to get them). Report SAM, capacity-bounded obtainable market, and the $100M ARR test. Say whether this is venture-scale, a strong bootstrapped business, or neither, and why.
+3. Market: run market_size bottom-up with sourced account counts (ask for them; say where to get them), including the share that would pay at all. Quote its output; don't hand-calculate the headline number. Report SAM, capacity-bounded obtainable market, and the $100M ARR test. Say whether this is venture-scale, a strong bootstrapped business, or neither, and why.
 4. Why now: the specific, dated change that makes this possible now. If none, say so.
 5. Risks, layer by layer (founder, market, competition, timing, financing, marketing/CAC, distribution, technology, product, hiring): rate each and name the cheapest evidence that would reduce it. Include platform/feature risk (get_playbook "platform-and-feature-risk") and incumbent response (get_playbook "competing-with-incumbents").
 6. Pre-mortem: it's 18 months later and this has shut down. List the most likely reasons.
@@ -250,7 +253,8 @@ Finish with a one-paragraph verdict and the single next test to run. Don't softe
 Company: ${company}
 Competitors / platforms: ${competitors}
 
-1. Alternatives from the buyer's view, including "do nothing" and suites they already pay for.
+0. Stage check: is competition actually the constraint right now? If the company is early (few users, no repeatable channel), say so and name the real constraint first (see marketing_diagnosis); answer the competition question briefly after that.
+1. Alternatives from the buyer's view, including "do nothing" and suites they already pay for. Mark each of our strengths as shipped, partial or planned, from the business's own docs.
 2. For each major incumbent: what would copying us cost them, in their own revenue or margin terms? If nothing, say they will copy us and plan for it.
 3. Is our innovation sustaining (better for their best customers) or does it start where they won't follow (low end, non-consumers, a business model they can't adopt)? Be honest.
 4. Platform and feature risk: answer the risk questions from the platform playbook (dependence share, access clauses, who owns the customer, feature vs product vs company test).

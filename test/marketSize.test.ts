@@ -35,3 +35,15 @@ describe("marketSize", () => {
     expect(r.warnings.join(" ")).toMatch(/no source/);
   });
 });
+
+describe("payingShare and churn warning", () => {
+  it("applies paying share to SAM and warns without churn", () => {
+    const r = marketSize({
+      segments: [{ name: "players", accounts: 100000, annualValue: 30, serviceableShare: 0.5, payingShare: 0.02, source: "s" }],
+      acquisitionBudget: { annualBudget: 1000, cac: 10 },
+    });
+    expect(r.serviceableAccounts).toBe(1000);
+    expect(r.sam).toBe(30000);
+    expect(r.warnings.join(" ")).toMatch(/No annualChurn given/);
+  });
+});

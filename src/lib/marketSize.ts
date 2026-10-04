@@ -9,6 +9,8 @@ export interface Segment {
   annualValue: number;
   /** 0–1: share of these accounts you can actually serve today (geo, language, integrations, compliance, product fit). Default 1. */
   serviceableShare?: number;
+  /** 0–1: share of serviceable accounts that would pay at all (freemium, community or hobby products often < 0.05). Default 1. */
+  payingShare?: number;
   /** Where the account count came from; surfaced back so unsourced numbers are obvious. */
   source?: string;
 }
@@ -52,8 +54,9 @@ export function marketSize(i: MarketSizeInput): MarketSizeResult {
   const warnings: string[] = [];
   const segs = i.segments.map((s) => {
     if (!(s.accounts > 0) || !(s.annualValue > 0)) throw new RangeError(`segment "${s.name}": accounts and annualValue must be > 0`);
-    const share = s.serviceableShare ?? 1;
-    if (share < 0 || share > 1) throw new RangeError(`segment "${s.name}": serviceableShare must be in [0,1]`);
+    const share = (s.serviceableShare ?? 1) * (s.payingShare ?? 1);
+    if ((s.serviceableShare ?? 1) < 0 || (s.serviceableShare ?? 1) > 1) throw new RangeError(`segment "${s.name}": serviceableShare must be in [0,1]`);
+    if ((s.payingShare ?? 1) < 0 || (s.payingShare ?? 1) > 1) throw new RangeError(`segment "${s.name}": payingShare must be in [0,1]`);
     if (!s.source) warnings.push(`Segment "${s.name}" has no source for its account count. Use a census count, a Sales Navigator / technographic query, or public filings, and record it.`);
     if (s.serviceableShare === undefined) warnings.push(`Segment "${s.name}" assumes you can serve 100% of accounts today. Apply geography, language, integration and compliance limits.`);
     return {
@@ -85,6 +88,9 @@ export function marketSize(i: MarketSizeInput): MarketSizeResult {
 
   const years = i.horizonYears ?? 5;
   const churn = i.annualChurn ?? 0;
+  if (i.annualChurn === undefined && (i.salesCapacity || i.acquisitionBudget)) {
+    warnings.push("No annualChurn given, so the obtainable market assumes no customer ever leaves. Add a churn estimate; even 10–20% a year changes the horizon count a lot.");
+  }
   // Customers remaining at horizon if `perYear` are won each year and `churn` are lost annually.
   const retained = (perYear: number) => {
     let c = 0;
