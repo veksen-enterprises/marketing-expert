@@ -144,6 +144,12 @@ describe("matchSmallBets", () => {
     expect(videos(["consumers", "businesses"]).ceiling).toBe("lopsided");
     expect(videos(["developers", "businesses"]).score!).toBeLessThan(videos(["consumers"]).score!);
   });
+  it("gives a two-sided local business merchant bets, and keeps them from other businesses", () => {
+    const local: SmallBetsFacts = { traction: { activeUsers: 0 }, audiences: ["consumers", "local"], surfaces: ["mobile-app"], revenue: "planned", launched: false, avoid: [] };
+    expect(ids(matchSmallBets(local).fitsNow)).toContain("merchant-visits");
+    expect(find(matchSmallBets(local).fitsLater, "in-store-signs")).toBeTruthy();
+    expect(ids(matchSmallBets(devtool).doesntFit)).toContain("merchant-visits");
+  });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);
     expect(scores).toEqual([...scores].sort((a, b) => b - a));
