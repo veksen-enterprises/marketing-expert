@@ -76,6 +76,7 @@ Before outreach, for any product that touches customer data, credentials or prod
 - A tweet burst was worth about one GitHub star [research; quasi-experimental; ICSE 2022]. A Hacker News post that got traction gave median gains of tens of stars [research; preprint; n=137; selected on success]. Newcomers who arrive in a spike rarely stay [research; matched comparison]. None of these measure signups or revenue.
 - Make it possible to try without signing up before you post (Show HN rules require it) [first-party], and fix anything that breaks for a first-time user: early failures put trial users off [research; structural model; one firm].
 - Treat launches as a series of concrete posts with measured before-and-after numbers. [practitioner]
+- For CI checks, analyzers and PR bots, placement and noise decide adoption more than launches do; see developer-tools, "Tools that comment on code".
 
 ## Coding agents as a channel
 
@@ -97,4 +98,4 @@ Before outreach, for any product that touches customer data, credentials or prod
 
 ## Sources
 
-research/early-stage-gtm.md (Schmidt & Bijmolt 2020; Morwitz et al. 2007; Cao, Koning & Nanda 2021; Lilien et al. 2002; Kumar, Petersen & Leone 2013; Delmar & Shane 2004; Stack Overflow 2025; Vomberg et al. 2026; Yoganarasimhan, Barzegary & Pani 2023; Lee, Kumar & Gupta 2017; Dubé & Misra 2023; Foubert & Gijsbrechts 2016; Fang et al. 2022; Maldeniya et al. 2020; Faghih et al. 2025; ToolTweak 2025; BiasBusters 2026; LibEvolutionEval 2025; Amplifying 2026; MCP ecosystem preprints); research/startup-risk-and-opportunity.md (Camuffo et al. 2020, 2024); research/pricing.md; research/developer-tools.md.
+research/early-stage-gtm.md and research/early-stage-gtm-devtools.md (Schmidt & Bijmolt 2020; Morwitz et al. 2007; Cao, Koning & Nanda 2021; Lilien et al. 2002; Kumar, Petersen & Leone 2013; Delmar & Shane 2004; Stack Overflow 2025; Vomberg et al. 2026; Yoganarasimhan, Barzegary & Pani 2023; Lee, Kumar & Gupta 2017; Dubé & Misra 2023; Foubert & Gijsbrechts 2016; Fang et al. 2022; Maldeniya et al. 2020; Faghih et al. 2025; ToolTweak 2025; BiasBusters 2026; LibEvolutionEval 2025; Amplifying 2026; MCP ecosystem preprints); research/startup-risk-and-opportunity.md (Camuffo et al. 2020, 2024); research/pricing.md; research/developer-tools.md.

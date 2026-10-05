@@ -76,6 +76,17 @@ Value metric and usage-based pricing details are in pricing. For devtools:
 - **Per seat** fits collaboration tools; **per project** is simple for CI and hosting but can push teams to cram work into one project.
 - Public pricing is expected; "contact us" only for enterprise.
 
+## Tools that comment on code (CI checks, analyzers, PR bots)
+
+For a tool whose value shows up as findings on code, where and how findings appear decides whether anyone acts on them. The evidence is about fixes and merges, not signups or revenue.
+
+- **Show findings in the pull request, at the moment of change.** Facebook's same analysis was fixed over 70% of the time when reported at diff time, and almost never as an offline list [first-party; Facebook, CACM 2019; snippet-only]. Google found results kept outside the developer workflow were rarely fixed [first-party; Google, CACM 2018; snippet-only].
+- **Offer the fix, not just the finding.** One-click suggested changes were applied 59.6% of the time against 0.9% for code written in comments [research; observational; GitHub suggested changes]. Explain every finding: a real problem the developer doesn't understand counts as a false positive to them [first-party; Google, Coverity].
+- **Precision is part of the product.** Nearly all developers in one study accepted a 5% false-positive rate and about half accepted 15% [research; Microsoft survey, read-full]. Google turns off noisy checks and keeps its overall rate below 5% [first-party; Software Engineering at Google, ch. 20, read-full]. Noise is the main complaint about bots, and 11.3% of projects in one study dropped Dependabot [research; observational].
+- **Defaults ship.** Most teams keep a tool's default settings [research; large observational study of open-source projects; snippet-only]. Start quiet: results only on changed code, one comment updated in place, warn before fail. These specific remedies are inference, not tested [practitioner].
+- **First installs stick.** Repositories mostly keep the first tool of a kind they install, and choose on features and ease of installation [research; large observational npm study, read-full]. Tools spread through people who commit to many repositories and through visible badges [research; observational].
+- **Don't cold-pitch through pull requests or email.** Unsolicited pull requests adding a tool were mostly ignored or rejected (2 of 52 merged) [research; field test, small n], and developers in a lab study rated email the worst way to hear about a tool [research; lab study, n=14].
+
 ## Developer trust
 
 - Honest benchmarks, public pricing, no dark patterns (hidden limits, hard-to-cancel plans), public status pages and postmortems, and early notice of breaking changes.
@@ -111,4 +122,4 @@ For the first ten customers (design partners, trust before outreach, early prici
 
 ## Sources
 
-research/developer-tools.md (StarScout 2024; HashiCorp, Redis and Elastic license records; relicensing study 2024; GitLab; Show HN guidelines; MCP Registry and spec; Anthropic tool guide; Stack Overflow 2025; GitHub and Vercel docs; sso.tax). research/landscape-2026.md §4 for llms.txt. Mostly from search snippets; see caveats there.
+research/early-stage-gtm-devtools.md (Christakis & Bird 2016; Sadowski et al. 2018; Software Engineering at Google ch. 20; Distefano et al. 2019; Kavaler et al. 2019; Lamba et al. 2020; Brown & Parnin; Wessel et al.; Mirhosseini & Parnin 2017); research/developer-tools.md (StarScout 2024; HashiCorp, Redis and Elastic license records; relicensing study 2024; GitLab; Show HN guidelines; MCP Registry and spec; Anthropic tool guide; Stack Overflow 2025; GitHub and Vercel docs; sso.tax). research/landscape-2026.md §4 for llms.txt. Mostly from search snippets; see caveats there.
