@@ -45,7 +45,8 @@ export interface MarketSizeResult {
     revenueAtHorizon: number | null;
     shareOfSam: number | null;
   };
-  target: { revenueTarget: number; customersNeeded: number; penetrationOfSam: number; penetrationOfTam: number } | null;
+  /** customersNeeded and penetrationOfSam are null when no account is serviceable. */
+  target: { revenueTarget: number; customersNeeded: number | null; penetrationOfSam: number | null; penetrationOfTam: number } | null;
   warnings: string[];
 }
 
@@ -125,7 +126,10 @@ export function marketSize(i: MarketSizeInput): MarketSizeResult {
   }
 
   let target: MarketSizeResult["target"] = null;
-  if (i.revenueTarget !== undefined) {
+  if (i.revenueTarget !== undefined && servAccounts === 0) {
+    target = { revenueTarget: i.revenueTarget, customersNeeded: null, penetrationOfSam: null, penetrationOfTam: i.revenueTarget / tam };
+    warnings.push("No serviceable accounts: serviceableShare × payingShare is 0 for every segment, so no number of customers reaches the revenue target. Check the shares.");
+  } else if (i.revenueTarget !== undefined) {
     const needed = i.revenueTarget / blended;
     target = { revenueTarget: i.revenueTarget, customersNeeded: needed, penetrationOfSam: needed / servAccounts, penetrationOfTam: i.revenueTarget / tam };
     if (needed > servAccounts) warnings.push(`The revenue target needs ${fmt(needed)} customers but only ${fmt(servAccounts)} accounts are serviceable. Expand the serviceable market, raise ACV, or lower the target.`);
@@ -155,6 +159,7 @@ export function marketSize(i: MarketSizeInput): MarketSizeResult {
 }
 
 function fmt(n: number): string {
+  if (!Number.isFinite(n)) return "unlimited";
   if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`;
   if (n >= 1e3) return `${(n / 1e3).toFixed(1)}k`;

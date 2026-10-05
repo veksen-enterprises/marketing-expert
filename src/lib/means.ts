@@ -67,6 +67,8 @@ export function tTwoSidedP(t: number, df: number): number {
 export function tCrit(alpha: number, df: number): number {
   let lo = 0;
   let hi = 1000;
+  // At df≈1 and small alpha the answer can be far above 1000 (6366 at alpha 1e-4); widen first.
+  while (tTwoSidedP(hi, df) > alpha && hi < 1e12) hi *= 2;
   for (let i = 0; i < 200; i++) {
     const mid = (lo + hi) / 2;
     if (tTwoSidedP(mid, df) > alpha) lo = mid;
@@ -123,13 +125,19 @@ export interface MeansTestResult {
 export function welchTest(controlIn: ArmInput, variantIn: ArmInput, alpha = 0.05, capPercentile?: number): MeansTestResult {
   const warnings: string[] = [];
   let cappedAt: number | null = null;
-  const raw = controlIn.values && variantIn.values;
-  let cVals = controlIn.values;
-  let vVals = variantIn.values;
+  // An empty array next to n/mean/sd means "no raw data", not "zero values".
+  const given = (v?: number[]) => (v?.length ? v : undefined);
+  let cVals = given(controlIn.values);
+  let vVals = given(variantIn.values);
+  const raw = cVals && vVals;
   if (capPercentile !== undefined) {
     if (!raw) throw new RangeError("capPercentile needs raw values for both arms");
     if (!(capPercentile > 0.5 && capPercentile < 1)) throw new RangeError("capPercentile must be in (0.5, 1), e.g. 0.99");
-    const pooled = [...cVals!, ...vVals!].sort((a, b) => a - b);
+    // Percentile of the non-zero values (the orders), not of all visitors: at low conversion the pooled
+    // 99th percentile of visitors is 0 or a typical order, which would cap away the revenue being tested.
+    const pooledAll = [...cVals!, ...vVals!];
+    const nonZero = pooledAll.filter((x) => x !== 0);
+    const pooled = (nonZero.length ? nonZero : pooledAll).sort((a, b) => a - b);
     cappedAt = quantile(pooled, capPercentile);
     cVals = cVals!.map((v) => Math.min(v, cappedAt!));
     vVals = vVals!.map((v) => Math.min(v, cappedAt!));
@@ -159,26 +167,30 @@ export function welchTest(controlIn: ArmInput, variantIn: ArmInput, alpha = 0.05
   const crit = tCrit(alpha, df);
 
   if (raw && cappedAt === null) {
-    const all = [...controlIn.values!, ...variantIn.values!].sort((a, b) => b - a);
-    const total = all.reduce((s, x) => s + Math.max(0, x), 0);
+    // Skew among the positive values only: with zeros included, the top 1% of visitors at low conversion
+    // are simply the buyers, so identical orders would look heavy-tailed.
+    const all = [...cVals!, ...vVals!].filter((x) => x > 0).sort((a, b) => b - a);
+    const total = all.reduce((s, x) => s + x, 0);
     const topN = Math.max(1, Math.ceil(all.length * 0.01));
-    const topShare = total > 0 ? all.slice(0, topN).reduce((s, x) => s + Math.max(0, x), 0) / total : 0;
-    if (topShare > 0.2) {
-      warnings.push(`Heavy tail: the top ${topN} value(s) (${topN === 1 ? "1 unit" : "top 1% of units"}) account for ${(topShare * 100).toFixed(0)}% of the total. A few outliers can decide this test; rerun with capPercentile 0.99 and report both.`);
+    const topShare = total > 0 ? all.slice(0, topN).reduce((s, x) => s + x, 0) / total : 0;
+    // Also above twice their equal share, so a handful of identical orders doesn't trigger it.
+    if (topShare > Math.max(0.2, (2 * topN) / all.length)) {
+      warnings.push(`Heavy tail: the top ${topN} positive value(s) (${topN === 1 ? "1 unit" : "top 1% of non-zero units"}) account for ${(topShare * 100).toFixed(0)}% of the total. A few outliers can decide this test; rerun with capPercentile 0.99 and report both.`);
     }
   }
   if (!raw && c.mean > 0 && c.sd / c.mean > 3) {
     warnings.push("Standard deviation is over 3× the mean: typical of revenue data with many zeros and a few large orders. Cap outliers (e.g. at the 99th percentile) using raw data if you can, and expect to need large samples.");
   }
   if (Math.min(c.n, v.n) < 30) warnings.push("Fewer than 30 units in an arm; with skewed data the t-test can be unreliable.");
-  if (p < alpha && Math.abs(diff / c.mean) > 0.3) warnings.push("Lift above 30% on a revenue metric is rare. Check for a few large orders or a tracking problem before trusting it.");
+  if (c.mean <= 0) warnings.push("The control mean is not positive, so a relative lift has no meaning here; use absoluteDiff.");
+  else if (p < alpha && Math.abs(diff / c.mean) > 0.3) warnings.push("Lift above 30% on a revenue metric is rare. Check for a few large orders or a tracking problem before trusting it.");
 
   return {
     control: c,
     variant: v,
     cappedAt,
     absoluteDiff: diff,
-    relativeLift: c.mean !== 0 ? diff / c.mean : null,
+    relativeLift: c.mean > 0 ? diff / c.mean : null,
     tStatistic: t,
     degreesOfFreedom: df,
     pValue: p,
@@ -214,6 +226,7 @@ export function sampleSizeMeans(i: MeansSampleSizeInput): { perArm: number; tota
   const variance = i.baselineSd ** 2 * (1 - vr);
   const z = normInv(1 - alpha / 2) + normInv(power);
   const perArm = Math.ceil((2 * z * z * variance) / (delta * delta));
+  if (!Number.isFinite(perArm)) throw new RangeError(`mde ${i.mde} is too small: the sample size is not finite. Use the smallest effect you would act on.`);
   const cv = i.baselineSd / i.baselineMean;
   const notes: string[] = [];
   if (cv > 3) notes.push(`Coefficient of variation is ${cv.toFixed(1)}: revenue-type metrics need far more traffic than conversion rates. Capping outliers at the 99th percentile usually cuts the SD substantially; measure the capped SD from historical data and rerun.`);

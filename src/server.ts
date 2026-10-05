@@ -100,7 +100,7 @@ export function createServer(): McpServer {
           );
         }
       }
-      notes.push("Fix this sample size in advance and evaluate once. Checking repeatedly and stopping at the first p<0.05 inflates false positives (10 looks ≈ 26% false positive rate at nominal 5%).");
+      notes.push("Fix this sample size in advance and evaluate once. Checking repeatedly and stopping at the first p<0.05 inflates false positives: at a nominal 5%, 5 looks give about 14% false positives, 10 looks ≈ 19%, 20 looks ≈ 25% (Armitage, McPherson & Rowe 1969).");
       return { ...r, estimatedDays: days, notes };
     })
   );
@@ -136,7 +136,13 @@ export function createServer(): McpServer {
       if (!a.plannedSamplePerArm) warnings.push("No pre-planned sample size given. If this test was stopped when it looked significant, the p-value is not valid.");
       if (Math.min(a.control.conversions, a.variant.conversions) < 100) warnings.push("Fewer than 100 conversions in an arm; estimates are noisy and the normal approximation is rough.");
       if (t.significant && Math.abs(t.relativeLift) > 0.3) warnings.push("Lift above 30% is rare for real changes (Twyman's law). Check for tracking bugs or a broken control before celebrating.");
-      if (t.significant && t.relativeLiftCI) warnings.push(`Plan around the low end of the interval (${(t.relativeLiftCI[0] * 100).toFixed(1)}%), not the point estimate. Significant winners' observed lifts are biased upward.`);
+      // The z-test (pooled) and the relative-lift interval (log ratio) can disagree near the threshold, so check both.
+      const ci = t.relativeLiftCI;
+      if (t.significant && ci && ci[0] > 0) warnings.push(`Plan around the low end of the interval (${(ci[0] * 100).toFixed(1)}%), not the point estimate. Significant winners' observed lifts are biased upward.`);
+      else if (t.significant && ci && ci[1] < 0)
+        warnings.push(`The variant is significantly worse: don't ship it. The true loss is probably smaller than observed; the end of the interval nearest zero is ${(ci[1] * 100).toFixed(1)}%.`);
+      else if (t.significant && ci)
+        warnings.push(`Borderline: p is below alpha, but the interval for the relative lift (${(ci[0] * 100).toFixed(1)}% to ${(ci[1] * 100).toFixed(1)}%) includes no effect. Treat it as not proven; collect more data before deciding.`);
       return { ...t, srm, warnings };
     })
   );
@@ -151,7 +157,7 @@ export function createServer(): McpServer {
         control: z.object({ visitors: z.number().int().positive(), conversions: z.number().int().min(0) }).describe("Cumulative totals so far"),
         variant: z.object({ visitors: z.number().int().positive(), conversions: z.number().int().min(0) }).describe("Cumulative totals so far"),
         alpha: rate.optional(),
-        expectedEffect: z.number().positive().optional().describe("Smallest absolute difference you care about, e.g. 0.005 for 0.5 percentage points"),
+        expectedEffect: z.number().positive().max(1).optional().describe("Smallest absolute difference you care about, e.g. 0.005 for 0.5 percentage points"),
       },
       annotations: readOnly,
     },
@@ -193,7 +199,7 @@ export function createServer(): McpServer {
         control: z.object({ values: z.array(z.number()).optional(), n: z.number().int().optional(), mean: z.number().optional(), sd: z.number().min(0).optional() }),
         variant: z.object({ values: z.array(z.number()).optional(), n: z.number().int().optional(), mean: z.number().optional(), sd: z.number().min(0).optional() }),
         alpha: rate.optional(),
-        capPercentile: z.number().gt(0.5).lt(1).optional().describe("Cap raw values at this pooled percentile before testing, e.g. 0.99"),
+        capPercentile: z.number().gt(0.5).lt(1).optional().describe("Cap raw values at this percentile of the non-zero values (both arms pooled) before testing, e.g. 0.99"),
       },
       annotations: readOnly,
     },

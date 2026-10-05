@@ -102,6 +102,7 @@ export function sampleSizeTwoProportions(input: SampleSizeInput): SampleSizeResu
   const pBar = (p1 + p2) / 2;
   const num = zA * Math.sqrt(2 * pBar * (1 - pBar)) + zB * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2));
   const perArm = Math.ceil((num * num) / ((p2 - p1) * (p2 - p1)));
+  if (!Number.isFinite(perArm)) throw new RangeError(`mde ${input.mde} is too small: the sample size is not finite. Use the smallest effect you would act on.`);
   return {
     perArm,
     total: perArm * variants,
@@ -160,8 +161,17 @@ export function twoProportionTest(control: ArmData, variant: ArmData, alpha = 0.
   const pooled = (control.conversions + variant.conversions) / (control.visitors + variant.visitors);
   const sePooled = Math.sqrt(pooled * (1 - pooled) * (1 / control.visitors + 1 / variant.visitors));
   const z = sePooled === 0 ? 0 : (p2 - p1) / sePooled;
-  const pValue = 2 * (1 - normCdf(Math.abs(z)));
-  const seUnpooled = Math.sqrt((p1 * (1 - p1)) / control.visitors + (p2 * (1 - p2)) / variant.visitors);
+  // erfc directly, not 2*(1-normCdf): the subtraction rounds to 0 once |z| > ~8.3.
+  const pValue = erfc(Math.abs(z) / Math.SQRT2);
+  let seUnpooled = Math.sqrt((p1 * (1 - p1)) / control.visitors + (p2 * (1 - p2)) / variant.visitors);
+  // Both arms at 0% or both at 100%: the Wald SE is 0, which would claim certainty of no difference.
+  // Use the Agresti-Caffo SE instead (one success and one failure added to each arm).
+  if (seUnpooled === 0) {
+    const ac = (a: ArmData) => (a.conversions + 1) / (a.visitors + 2);
+    const q1 = ac(control);
+    const q2 = ac(variant);
+    seUnpooled = Math.sqrt((q1 * (1 - q1)) / (control.visitors + 2) + (q2 * (1 - q2)) / (variant.visitors + 2));
+  }
   const zCrit = normInv(1 - alpha / 2);
   const diff = p2 - p1;
 
@@ -169,7 +179,8 @@ export function twoProportionTest(control: ArmData, variant: ArmData, alpha = 0.
   if (control.conversions > 0 && variant.conversions > 0) {
     const logRatio = Math.log(p2 / p1);
     const seLog = Math.sqrt((1 - p1) / control.conversions + (1 - p2) / variant.conversions);
-    relCI = [Math.exp(logRatio - zCrit * seLog) - 1, Math.exp(logRatio + zCrit * seLog) - 1];
+    // seLog is 0 when both arms convert 100%; a zero-width interval would be false certainty.
+    if (seLog > 0) relCI = [Math.exp(logRatio - zCrit * seLog) - 1, Math.exp(logRatio + zCrit * seLog) - 1];
   }
 
   // Beta(1+c, 1+n-c) posteriors approximated as normals.
@@ -218,10 +229,12 @@ export function sampleRatioMismatch(observed: number[], expectedWeights?: number
   const weights = expectedWeights ?? observed.map(() => 1);
   if (weights.length !== k) throw new RangeError("expectedWeights length must match observed");
   const total = observed.reduce((s, x) => s + x, 0);
-  const wSum = weights.reduce((s, x) => s + x, 0);
+  // Scale by the largest weight first so huge weights can't overflow the sum to Infinity (NaN would clear the check).
+  const wMax = Math.max(...weights);
+  const wSum = weights.reduce((s, x) => s + x / wMax, 0);
   let chi = 0;
   for (let i = 0; i < k; i++) {
-    const exp = (total * weights[i]) / wSum;
+    const exp = (total * (weights[i] / wMax)) / wSum;
     chi += (observed[i] - exp) ** 2 / exp;
   }
   const df = k - 1;
@@ -240,11 +253,12 @@ export function sampleRatioMismatch(observed: number[], expectedWeights?: number
     const z = (Math.cbrt(chi / df) - (1 - 2 / (9 * df))) / Math.sqrt(2 / (9 * df));
     pValue = 1 - normCdf(z);
   }
+  if (!Number.isFinite(chi) || Number.isNaN(pValue)) throw new RangeError("sample ratio check failed: give finite, positive expected weights");
   return {
     chiSquare: chi,
     pValue,
     mismatch: pValue < threshold,
-    expectedShares: weights.map((w) => w / wSum),
+    expectedShares: weights.map((w) => w / wMax / wSum),
     observedShares: observed.map((o) => o / total),
   };
 }

@@ -77,7 +77,8 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
   let paybackAdj: number | null = null;
   for (let t = 0; cac !== null && t < 240; t++) {
     cumulative += gp * Math.pow(1 - netDecay, t);
-    if (cumulative >= cac) {
+    // Relative tolerance: summed in floating point, 9 × 18.85 is 169.64999999999998, which would push payback a month late.
+    if (cumulative >= cac * (1 - 1e-9)) {
       paybackAdj = t + 1;
       break;
     }
@@ -235,8 +236,10 @@ export interface FunnelResult {
   overallRate: number;
   largestAbsoluteDrop: string | null;
   lowestStepRate: string | null;
-  /** Extra end-of-funnel conversions from a relative improvement of `improvement` at any single step. */
+  /** Extra end-of-funnel conversions from a relative improvement of `improvement` at any single step that has room for it (see gainByStep). */
   gainFromImprovingAnyStep: number;
+  /** Extra end conversions from the improvement at each step; capped where the step rate would pass 100%. */
+  gainByStep: Array<{ step: string; gain: number; capped: boolean }>;
   improvement: number;
   notes: string[];
 }
@@ -246,7 +249,7 @@ export function analyzeFunnel(stages: FunnelStage[], spend?: number, improvement
   const notes: string[] = [];
   const top = stages[0].count;
   if (!(top > 0)) throw new RangeError("first stage count must be > 0");
-  let maxDrop = -1;
+  let maxDrop = 0;
   let maxDropName: string | null = null;
   let minRate = Infinity;
   let minRateName: string | null = null;
@@ -275,8 +278,21 @@ export function analyzeFunnel(stages: FunnelStage[], spend?: number, improvement
     };
   });
   const final = stages[stages.length - 1].count;
+  // A step rate can't pass 100%, so a step near 100% has less room than `improvement`.
+  const gainByStep = out.slice(1).map((s, idx) => {
+    const r = s.stepRate;
+    const step = `${stages[idx].name} → ${s.name}`;
+    if (!r) return { step, gain: 0, capped: false };
+    const capped = r * (1 + improvement) > 1;
+    return { step, gain: final * (Math.min(r * (1 + improvement), 1) / r - 1), capped };
+  });
+  const capped = gainByStep.filter((g) => g.capped);
+  const pctLabel = `${Number((improvement * 100).toPrecision(3))}%`;
   notes.push(
-    `In a multiplicative funnel, a ${(improvement * 100).toFixed(0)}% relative improvement at ANY single step adds the same ${(final * improvement).toFixed(1)} end conversions. ` +
+    `In a multiplicative funnel, a ${pctLabel} relative improvement at any single step adds the same ${(final * improvement).toFixed(1)} end conversions` +
+      (capped.length
+        ? `, except where the step rate would pass 100%: ${capped.map((g) => `${g.step} can add at most ${g.gain.toFixed(1)}`).join("; ")}. `
+        : ". ") +
       "Choose the step by how cheaply and confidently it can be improved, and by how far it sits below a credible benchmark for your context, not by the size of the raw drop-off."
   );
   notes.push("The largest absolute drop is almost always at the top of the funnel; that alone doesn't make it the best place to work.");
@@ -286,6 +302,7 @@ export function analyzeFunnel(stages: FunnelStage[], spend?: number, improvement
     largestAbsoluteDrop: maxDropName,
     lowestStepRate: minRateName,
     gainFromImprovingAnyStep: final * improvement,
+    gainByStep,
     improvement,
     notes,
   };
