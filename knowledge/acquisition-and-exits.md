@@ -15,15 +15,15 @@ tags: acquisition, exit, m&a, acquihire, acqui-hire, sell the company, liquidati
 
 Sale proceeds flow through the **liquidation waterfall**: debts and costs, then preferred shareholders (investors) up to their preference, then common shareholders (usually founders and employees). If the price is below the preference stack, common stock gets nothing.
 - 1× non-participating preference (investors get their money back once, or convert to common shares, not both) is the norm; > 1× appeared in ~8% of rounds (Carta Q1 2024).
-- In trade sales, VCs gave the team "carve-outs" in **45%** of deals, averaging **9%** of deal value (Broughman & Fried) [research].
+- In 50 sales of VC-backed Silicon Valley startups, VCs gave the team a sale bonus or a "carve-out" (a slice of the investors' preference paid to common) in **45%** of deals, worth **9%** of deal value in those deals; carve-outs alone appeared in 11 of 50 (Broughman & Fried) [research].
 - **Acqui-hires** typically split consideration: a small amount buys the company (goes through the waterfall to investors) and a larger amount goes to hired people as buyer equity and bonuses.
 
 Run the waterfall at 0.5×, 1× and 2× of total preferences before any conversation. If common is underwater, your outcome depends on carve-outs and retention packages: negotiate those explicitly.
 
 ## Why acquirers buy
 
-- **Technology and talent, to save time**: Gautier & Lamesch (175 Google/Apple/Facebook/Amazon/Microsoft acquisitions 2015–2017) found acquirers mainly integrated functionality, technology, talent and IP; many acquired products stopped existing under their own brand. M&A worked as a substitute for in-house R&D. [research]
-- **Removing a competitor**: in pharma, 5.3–7.4% of acquisitions (about 46–63 a year) are "killer acquisitions": overlapping projects 23.4% less likely to be developed after purchase, clustered just below merger-review thresholds (Cunningham, Ederer & Ma 2021) [research]. In tech, evidence of burying is rare; evidence of absorbing is common.
+- **Technology and talent, to save time**: Gautier & Lamesch (175 Google/Apple/Facebook/Amazon/Microsoft acquisitions 2015–2017) found more than 60% of acquired products were discontinued under their own brand, more often for young startups and in the buyer's core business. Their data can't tell buying technology and people apart from removing a future rival. [research]
+- **Removing a competitor**: in pharma, 5.3–7.4% of acquisitions (about 46–63 a year) are "killer acquisitions": overlapping projects 23.4% less likely to be developed after purchase, clustered just below merger-review thresholds (Cunningham, Ederer & Ma 2021) [research]. In tech, most acquired products are shut down, but no study separates absorbing them from burying them.
 - **Does Big Tech buying chill investment?** Theory says it could ("kill zone", Kamepalli, Rajan & Zingales 2020); evidence found the opposite short-term: Big Tech acquisitions were followed by *more* VC investment in that sub-industry (Prado & Bauer 2022, 392 acquisitions). [research]
 - **Revenue and customers**: no study split by motive was found; most targets are early-stage with little revenue, which suggests technology and team dominate by count. [inference]
 
@@ -39,7 +39,7 @@ Small acquirers buying private targets earn positive announcement returns on ave
 ## Regulatory climate (2023–2026)
 
 - US: 2023 Merger Guidelines kept by the new FTC/DOJ leadership (Feb 2025). The expanded merger filing form (Feb 2025) was vacated by a court (Feb 2026); the FTC appeal is pending. [regulator / law-firm alerts]
-- Blocked or abandoned deals: **Adobe–Figma** abandoned Dec 2023 ($1B termination fee to Figma; Figma later IPO'd, Jul 2025). **Amazon–iRobot** abandoned Jan 2024 ($94M fee); iRobot laid off 31% the same day and filed Chapter 11 in Dec 2025. **Microsoft–Activision** closed Oct 2023 after restructuring for the UK CMA.
+- Blocked or abandoned deals: **Adobe–Figma** abandoned Dec 2023 ($1B termination fee to Figma; Figma later IPO'd, Jul 2025). **Amazon–iRobot** abandoned Jan 2024 ($94M fee); the same day iRobot announced layoffs of 31% of staff and filed Chapter 11 in Dec 2025. **Microsoft–Activision** closed Oct 2023 after restructuring for the UK CMA.
 - **AI license-and-hire deals** ("reverse acqui-hires"): Microsoft–Inflection (Mar 2024, ~$650M, mostly a licence; UK CMA treated it as a merger and cleared it), Amazon–Adept (Jun 2024; investors roughly repaid; FTC inquiry), Google–Character.AI (Aug 2024, ~$2.7B; DOJ review reported). Investors got repaid through licence fees, hired staff got buyer compensation, and **remaining employees were left with a hollowed-out company**. **Google–Windsurf** (Jul 2025): $2.4B for a licence plus the CEO and co-founder; days later Cognition bought the remaining company (~$82M ARR), paying out all remaining staff with vesting accelerated. **Meta–Scale AI** (Jun 2025): $14.3B for 49% and the CEO; OpenAI and Google pulled work, and ~200 staff (14%) were laid off on 16 Jul 2025.
 
 If the likely buyer is a dominant platform overlapping its core business, expect long reviews or a block. Negotiate a reverse break fee (money the buyer pays you if the deal fails, for example because a regulator blocks it), and ask whether you could survive a failed deal (Figma did; iRobot didn't).
@@ -86,4 +86,4 @@ Rule: build a company that works on its own, and make it **acquirable**, not dep
 
 ## Sources
 
-research/acquisition-and-exits.md (PitchBook-NVCA 2025; Carta 2022–2024; CB Insights; Ghosh; Broughman & Fried; Cunningham, Ederer & Ma 2021; Kamepalli, Rajan & Zingales 2020; Prado & Bauer 2022; Gautier & Lamesch 2021; Kim 2024; Ng & Stuart 2022; Seitz & Lehmann; Moeller, Schlingemann & Stulz 2004, 2005; Betton, Eckbo & Thorburn; FTC/DOJ 2025; CMA; KPMG 1999). All via search snippets.
+research/acquisition-and-exits.md (PitchBook-NVCA 2025; Carta 2022–2024; CB Insights; Ghosh; Broughman & Fried; Cunningham, Ederer & Ma 2021; Kamepalli, Rajan & Zingales 2020; Prado & Bauer 2022; Gautier & Lamesch 2021; Kim 2024; Ng & Stuart 2022; Seitz & Lehmann; Moeller, Schlingemann & Stulz 2004, 2005; Betton, Eckbo & Thorburn; FTC/DOJ 2025; CMA; KPMG 1999). Most figures were re-read in the primary source on 2026-10-05; the research note marks which.

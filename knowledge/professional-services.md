@@ -8,8 +8,8 @@ Use this playbook when the product is people's expertise and time: agencies, con
 
 ## How buyers choose a firm
 
-- Buying expertise is risky: the buyer can't test the work before paying. So buyers lean on other people's judgement. In Hinge's *How Buyers Buy* survey (822 buyers), buyers found a new firm by asking someone 71% of the time and by searching online 11% of the time [vendor; Hinge sells marketing to these firms; survey year not confirmed].
-- Referrals don't only come from past clients. In Hinge's referral study (523 firms), 81.5% of firms had received referrals from people who had never worked with them; firms said referrals came from their expertise (48.1%) and general reputation (46.4%) more than from client relationships (23.1%) [vendor; firm self-reports].
+- Buying expertise is risky: the buyer can't test the work before paying. So buyers lean on other people's judgement. In Hinge's *How Buyers Buy* survey (822 buyers), buyers found a new firm by asking someone 71% of the time and by searching online 11% of the time [vendor; Hinge sells marketing to these firms; published 2013].
+- Referrals don't only come from past clients. In Hinge's referral study (523 firms), 81.5% of firms had received a referral from someone who was not a former client. Of those referrals, 48.1% came from the firm's expertise and 46.4% from its general reputation. In a separate count of what drives new referrals, visible expertise (37.3%) beat client relationships (23.1%) [vendor; firm self-reports; 2015].
 - Implication: your reputation for a specific expertise is the main thing that creates leads. Marketing's job is to make that expertise **visible** to people who might refer or hire you.
 
 ## Positioning by specialization

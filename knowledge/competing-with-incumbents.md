@@ -56,7 +56,7 @@ Gladwell popularised it (David and Goliath, 2013). Caveat: "winning" in insurgen
 
 ## How incumbents actually respond
 
-- **Before you launch, and on your segment only.** When Southwest became likely to enter an airline route, incumbents cut fares on that route before Southwest flew; over half of Southwest's fare impact came before entry, mostly on routes that were concentrated beforehand (Goolsbee & Syverson 2008). [research]
+- **Before you launch, and on your segment only.** When Southwest became likely to enter an airline route, incumbents cut fares on that route before Southwest flew; over half of Southwest's fare impact came before entry, and only on the threatened routes (Goolsbee & Syverson 2008). The authors call the evidence on whether this aims to deter entry or to keep customers "mixed". [research]
 - **Bundling.** Microsoft Teams, bundled into Office 365, went from launch (2017) to 13M daily users in July 2019, passing Slack, then 145M daily users by April 2021 (Microsoft). Slack's EU complaint (2020) led to binding remedies only in September 2025, by which time Slack had been sold to Salesforce. When an incumbent bundles your category into something the buyer already pays for, your rival's effective price is zero. [first-party]
 - **Copying a format onto an existing network.** Instagram Stories (Aug 2016) followed by sharply slowing Snapchat user growth (Snap S-1; correlation, not a causal estimate). [first-party / press]
 - **Price response**: if a big player cuts price, answer first with non-price moves, not a matching cut (Rao, Bergen & Davis 2000); see competitive-analysis for the full sequence. [practitioner]
@@ -75,7 +75,7 @@ Gladwell popularised it (David and Goliath, 2013). Caveat: "winning" in insurgen
 2. If your product is "better for the incumbent's best customers," you're in a sustaining fight, which they usually win. Only enter that way with an exclusive asset or a business model they won't copy.
 3. Test the overshoot assumption with real low-end customers before betting on it.
 4. Pick a different axis than theirs. Never feature parity or a price war against deeper pockets.
-5. In concentrated markets, expect a targeted price response as soon as your entry becomes credible. Budget for it, or enter where you're not a direct substitute.
+5. Expect a targeted price response on your segment as soon as your entry becomes credible. Budget for it, or enter where you're not a direct substitute.
 6. Plan the second advantage (switching costs, network effects in your niche, brand) you'll build during takeoff, before copycats arrive.
 7. Target incumbents whose incentives block them, not just big ones.
 8. If your category can be bundled into a suite your buyers already own, serve a segment the suite serves badly, or own a channel the incumbent can't bundle (community, vertical, partners). Don't count on regulators: relief takes years.

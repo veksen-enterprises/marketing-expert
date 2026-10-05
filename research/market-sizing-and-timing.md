@@ -2,7 +2,7 @@
 
 Scope: TAM/SAM/SOM methods, classic sizing errors, "market matters most", small-markets-that-grow, timing and first-mover evidence, venture math. Researched 2026-10-04.
 
-**Access caveat.** The proxy blocked almost every primary host (pmarchive.com, abovethecrowd.com, aswathdamodaran.blogspot.com, ycombinator.com, sequoiacap.com, a16z.com, ted.com, census.gov, gtellis.net, duke.edu, sloanreview, SSRN, journals, web.archive.org). The web-search budget also ran out early in the session. Full texts were therefore read from **verbatim copies stored in public GitHub repos** (these are marked **[copy]**). Claims that rest only on a search-engine snippet are marked **[snippet-only]**. Claims taken from someone else's notes rather than the original are marked **[secondary]**. None of the academic papers (Golder & Tellis, Lieberman & Montgomery, Suarez & Lanzolla) was read in full.
+**Access caveat.** The proxy blocked almost every primary host (pmarchive.com, abovethecrowd.com, aswathdamodaran.blogspot.com, ycombinator.com, sequoiacap.com, a16z.com, ted.com, census.gov, gtellis.net, duke.edu, sloanreview, SSRN, journals, web.archive.org). The web-search budget also ran out early in the session. Full texts were therefore read from **verbatim copies stored in public GitHub repos** (these are marked **[copy]**). Claims that rest only on a search-engine snippet are marked **[snippet-only]**. Claims taken from someone else's notes rather than the original are marked **[secondary]**. None of the academic papers (Golder & Tellis, Lieberman & Montgomery, Suarez & Lanzolla) was read in full. Re-read 2026-10-05 against primary copies: Andreessen (pmarchive), the older Sequoia template (web.archive.org, 2011), Golder & Tellis 1993 (full PDF), Tellis & Golder 1996 (abstract), Lieberman & Montgomery 1998 and 2013 (full PDFs), Suarez & Lanzolla 2005 (full PDF) and 2007 (abstract), Dixon (a16z) and Levine; Lieberman & Montgomery 1988 stayed unreachable.
 
 **Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X".
 
@@ -10,25 +10,25 @@ Evidence tags: **[research]** peer-reviewed or academic · **[first-party]** the
 
 ## Sources
 
-1. Andreessen, "The only thing that matters," pmarchive, 25 Jun 2007 — [copy] excerpt (aryaniyaps/startup-idea-finder) + [snippet-only].
+1. Andreessen, "The only thing that matters," pmarchive, 25 Jun 2007 — [copy] excerpt (aryaniyaps/startup-idea-finder) + [read 2026-10-05: pmarchive.com/guide_to_startups_part4.html].
 2. Gurley, "How to Miss By a Mile…," Above the Crowd, 11 Jul 2014 — full [copy] (samnguyen80/commerce-brain).
 3. Damodaran, "A Disruptive Cab Ride to Riches: The Uber Payoff," Jun 2014 + Valuation packet Spr 2020/21 — [secondary] notes (lyndonkl/claude).
 4. Cornell & Damodaran, "The Big Market Delusion," *FAJ* 2020 (SSRN 3501688) — [secondary] quotes.
-5. Sequoia, "Writing a Business Plan" — full [copy] (SuperAce100/mobius); older TAM/SAM/SOM wording [snippet-only].
+5. Sequoia, "Writing a Business Plan" — full [copy] (SuperAce100/mobius); older TAM/SAM/SOM wording [read 2026-10-05: web.archive.org/web/20110103000730/http://www.sequoiacap.com:80/ideas].
 6. YC Library: Ralston "A Guide to Seed Fundraising"; Harris "How to build your seed round pitch deck"; Livingston "What's different about unicorns?" (2017); Seibel "The real product-market fit" — full [copy] (juliettech13/queryable-yc-library).
 7. Graham, "How to Get Startup Ideas," "Startup = Growth," "Black Swan Farming" (2012) — full [copy] (danLeBrown/what-would-paul-graham-do).
 8. Thiel & Masters, *Zero to One* (2014), ch. 5 & 7 — [copy] of book text.
 9. Christensen, *The Innovator's Dilemma* (1997) — quoted in a *Linux Journal* review [copy].
 10. Gross, "The single biggest reason why startups succeed," TED 2015 — full transcript [copy] (johnlaudun/tedtalks).
-11. Golder & Tellis, "Pioneer Advantage: Marketing Logic or Marketing Legend?" *JMR* 30(2):158–170, 1993 — [snippet-only; abstract figures verified-search: journals.sagepub.com, papers.ssrn.com, 2026-10-04].
-12. Tellis & Golder, "First to Market, First to Fail?" *SMR* Winter 1996:65–75 — [snippet-only].
-13. Lieberman & Montgomery, *SMJ* 9(S1):41–58 (1988); *SMJ* 19(12):1111–1125 (1998); *LRP* 46:312–324 (2013) — [snippet-only].
-14. Suarez & Lanzolla, *HBR* 83(4):121–127 (2005); *AMR* 32:377–392 (2007) — [snippet-only].
+11. Golder & Tellis, "Pioneer Advantage: Marketing Logic or Marketing Legend?" *JMR* 30(2):158–170, 1993 — [read 2026-10-05; corrected: full PDF, people.duke.edu/~moorman/Marketing-Strategy-Seminar-2015/Session%205/Golder%20and%20Tellis.pdf].
+12. Tellis & Golder, "First to Market, First to Fail?" *SMR* Winter 1996:65–75 — [read 2026-10-05: abstract via api.openalex.org].
+13. Lieberman & Montgomery, *SMJ* 9(S1):41–58 (1988); *SMJ* 19(12):1111–1125 (1998); *LRP* 46:312–324 (2013) — 1998 and 2013 [read 2026-10-05; 2013 corrected: marvinlieberman.com PDFs]; 1988 [snippet-only] (re-check 2026-10-05: Wiley/ProQuest paywall, no open copy found).
+14. Suarez & Lanzolla, *HBR* 83(4):121–127 (2005); *AMR* 32:377–392 (2007) — [read 2026-10-05: 2005 full PDF on Suarez's site, 2007 abstract via api.openalex.org].
 15. Airbnb 2008 seed deck — text of redesigned version [copy] (william-ragnarsson/vc-analyst).
 16. Apple Newsroom, "App Store ecosystem reaches record $1.4 trillion," 4 Jun 2026 — [copy].
 17. Uber, Q4 and FY2025 results, Feb 2026 — [copy].
-18. Dixon (a16z), "Performance Data and the 'Babe Ruth' Effect in VC," 2015 (Horsley Bridge) — [snippet-only]/[secondary].
-19. Levine, "Venture Outcomes are Even More Skewed Than You Think," 2014 (Correlation Ventures) — [snippet-only].
+18. Dixon (a16z), "Performance Data and the 'Babe Ruth' Effect in VC," 2015 (Horsley Bridge) — [read 2026-10-05: a16z.com].
+19. Levine, "Venture Outcomes are Even More Skewed Than You Think," 2014 (Correlation Ventures) — [read 2026-10-05: sethlevine.com].
 20. US Census descriptions of SUSB, CBP, NES — [copy] page captures.
 21. Valentine, "Target Big Markets," Stanford GSB 2010 — title only.
 
@@ -37,7 +37,7 @@ Evidence tags: **[research]** peer-reviewed or academic · **[first-party]** the
 ## 1. Definitions and methods (TAM / SAM / SOM)
 
 - **Terms.** TAM = total category demand; SAM = the part your product and channels can reach; SOM = what you can realistically win in a set period. No single originator found. [practitioner]
-- **Sequoia, older template.** "Calculate the TAM (top down), SAM (bottoms up) and SOM." This line comes from the older 15–20-slide version that is widely reproduced. [snippet-only, src 5]
+- **Sequoia, older template.** "Calculate the TAM (top down), SAM (bottoms up) and SOM." This line comes from the older 15–20-slide version that is widely reproduced. [read 2026-10-05, archived sequoiacap.com/ideas page, Jan 2011, src 5]
 - **Sequoia, current template.** The current page no longer prescribes TAM/SAM/SOM. The "Market potential" heading reads in full: "Identify your customer and your market. Some of the best companies invent their own markets." The order is: Company purpose → Problem → Solution → **Why now?** → **Market potential** → Competition/alternatives → Business model → Team → Financials → Vision. [first-party, copy, src 5]
   - Implication: customer first, number second; category creation explicitly allowed. [synthesis]
 - **YC, Ralston's seed guide.** Deck item 6: "The (huge) Market you are addressing — Total Available Market (TAM) >$1B if possible. Include the most persuasive evidence you have that this is real." [first-party, copy, src 6]
@@ -80,7 +80,7 @@ Evidence tags: **[research]** peer-reviewed or academic · **[first-party]** the
 ## 3. "Market matters most" [practitioner]
 
 - **Andreessen (2007).** "the size of a startup's market is the number, and growth rate, of those customers or users for that product." Note that **growth rate is part of his definition**. "In a great market — a market with lots of real potential customers — the market pulls product out of the startup." "In a terrible market, you can have the best product in the world and an absolutely killer team, and it doesn't matter — you're going to fail." [copy, src 1]
-- **Rachleff's Law,** credited by Andreessen to Andy Rachleff (Benchmark): "The #1 company-killer is lack of market." "When a great team meets a lousy market, market wins. When a lousy team meets a great market, market wins. When a great team meets a great market, something special happens." [copy and snippet, src 1]
+- **Rachleff's Law,** credited by Andreessen to Andy Rachleff (Benchmark): "The #1 company-killer is lack of market." "When a great team meets a lousy market, market wins. When a lousy team meets a great market, market wins. When a great team meets a great market, something special happens." [copy; read 2026-10-05, src 1]
 - **Rachleff's Corollary.** "The only thing that matters is getting to product/market fit," defined as "being in a good market with a product that can satisfy that market." [copy, src 1]
 - **Seibel (YC)** connects this to urgency: "At Sequoia, they talk about finding customers who 'have their hair on fire'… You need to find problems so dire that users are willing to try half-baked, v1, imperfect solutions." [first-party, copy, src 6]
 - **Don Valentine.** His 2010 Stanford talk is titled "Target Big Markets." The often-quoted line "We choose markets, not people" appears only in a third-party tweet paraphrase. **[unverified attribution]**
@@ -105,11 +105,11 @@ Evidence tags: **[research]** peer-reviewed or academic · **[first-party]** the
 - **Weaknesses of the 42% figure. [synthesis]** (1) single rater scoring retrospectively with outcomes known (hindsight bias); (2) external companies picked as extremes (selection bias); (3) no statistical method disclosed, so "42 percent of the difference" is undefined; (4) secondary sources give the other factors as 32/28/24/14% [secondary], and the five sum to 140%, so they cannot be variance shares; (5) not replicated or peer-reviewed. Treat it as **[anecdote/practitioner]**: a useful prompt, not a measured effect size.
 - **Enabling conditions to test for "why now":** technology cost or capability thresholds (broadband >50%, Flash), new platforms (App Store, smartphone GPS), regulatory change, and behaviour shifts (recession supply, declining youth car ownership in Gurley's essay). [first-party examples, src 2, 10; synthesis]
 - **First-mover evidence.**
-  - *Golder & Tellis (1993).* A historical analysis of about **500 brands in 50 product categories**. Earlier studies relied on survivor-only data (PIMS/ASSESSOR). Findings: "almost half of market pioneers fail" (**47%**); pioneers' mean market share is about **10%**, "much lower than that found in other studies"; pioneers are current leaders in about **11%** of categories (a secondary relay says 11% of 36 categories); "early market leaders… enter an average of 13 years after pioneers" and have "much greater long-term success." [research; ~500 brands / 50 categories / 47% / ~10% (vs ~30% in earlier studies) / 13 years verified-search: journals.sagepub.com, papers.ssrn.com abstract, 2026-10-04; 11% secondary only] Figures for early leaders (about 8% failure, about 28% share) appear only in secondary sources. [secondary]
-  - *Tellis & Golder (1996).* Enduring leaders share five traits: vision, persistence, commitment, innovation, asset leverage. [research, snippet-only, src 12]
-  - *Lieberman & Montgomery (1988).* Advantages come from (1) technological leadership (learning curve, patent/R&D races), (2) pre-emption of scarce assets, (3) buyer switching costs. Disadvantages: follower free-riding, uncertainty resolved for followers, technological discontinuities, incumbent inertia. [research, snippet-only, src 13] The 1998 retrospective links these to the resource-based view; the 2013 review concludes that first-mover advantages "often exist even though they are by no means inevitable" and flags "persistent weaknesses" in theory and measurement. [research, snippet-only, src 13]
+  - *Golder & Tellis (1993).* A historical analysis of about **500 brands in 50 product categories**; the pioneer failure, share and leadership figures come from the **36 categories** with full data (samples 1–3). Earlier studies relied on survivor-only data (PIMS/ASSESSOR). Findings: "almost half of market pioneers fail" (**47%**); pioneers' mean market share is about **10%**, against 30% in PIMS and ASSESSOR studies; pioneers are current leaders in **11% of the 36 categories**; "early market leaders… enter an average of 13 years after pioneers" and have "much greater long-term success." Early leaders lead in more than half the categories, with an **8%** failure rate and **28%** mean share. [research; read 2026-10-05; corrected: sample qualifier added, src 11]
+  - *Tellis & Golder (1996).* Enduring leaders share five traits: vision, persistence, commitment, innovation, asset leverage. [research, read 2026-10-05 (abstract), src 12]
+  - *Lieberman & Montgomery (1988).* Advantages come from (1) technological leadership (learning curve, patent/R&D races), (2) pre-emption of scarce assets, (3) buyer switching costs. Disadvantages: follower free-riding, uncertainty resolved for followers, technological discontinuities, incumbent inertia. [research, snippet-only, src 13 (re-check 2026-10-05: 1988 paper paywalled; the 1998 retrospective confirms preemption of resources and buyer switching costs)] The 1998 retrospective links these to the resource-based view. The 2013 review's "General Finding 1" is that "Advantages to early movers often exist, but are by no mean[s] inevitable"; it finds them more often for market share than for profit, survival or risk, says entry-order effects diminish over time, and calls many measurement problems "deeply rooted." [research, read 2026-10-05; corrected: was "often exist even though they are by no means inevitable" and "persistent weaknesses", src 13]
   - *Measurement artefact.* A VanderWerf & Mahon meta-analysis (66 tests) reportedly found that studies measuring market share are more likely to find pioneer advantage than studies measuring profit or survival. [secondary, unverified]
-  - *Suarez & Lanzolla (2005 HBR; 2007 AMR).* They studied 30+ cases. Two drivers: **pace of technology evolution** and **pace of market evolution**. Four regimes: *calm waters* (both slow; best for durable advantage, e.g. Hoover), *market leads*, *technology leads*, *rough waters* (both fast; least advantage, e.g. Netscape, AT&T cellular). In short, fast technology and market change tend to *disable* early-entry advantage. [research, snippet-only, src 14]
+  - *Suarez & Lanzolla (2005 HBR; 2007 AMR).* They studied 30+ cases. Two drivers: **pace of technology evolution** and **pace of market evolution**. Four regimes: *calm waters* (both slow; best for durable advantage, e.g. Hoover), *market leads*, *technology leads*, *rough waters* (both fast; least advantage, e.g. Netscape, AT&T cellular). In short, fast technology and market change tend to *disable* early-entry advantage. [research, read 2026-10-05, src 14]
   - *Takeaway.* Being early is not the asset. The assets are a durable mechanism (network density, switching costs, scarce inputs) plus the resources to survive until the market forms. [synthesis]
 
 ## 6. Growth vs size; urgency; structure
@@ -159,8 +159,8 @@ Reading the example: this is a strong bootstrapped business (about $11M ARR at 1
 ## 8. Venture math: why VCs need large markets
 
 - **Return concentration.**
-  - *Horsley Bridge (via a16z, Dixon 2015).* About **6% of investments, representing 4.5% of dollars invested, generated about 60% of total returns** (deals across the hundreds of VC funds Horsley Bridge invested in **since 1985**; one relay gives 1985–2014). [snippet-only and secondary, src 18; verified-search: a16z.com, cdixon.org, 2026-10-04]
-  - *Correlation Ventures (via Seth Levine, 2014).* Across 21,000+ financings in 2004–2013, **65% failed to return 1×; 10% returned ≥5×; 4% returned ≥10×**. Counts are financings, not companies. [snippet-only, src 19; verified-search: sethlevine.com, 2026-10-04]
+  - *Horsley Bridge (via a16z, Dixon 2015).* About **6% of investments, representing 4.5% of dollars invested, generated about 60% of total returns** (deals across the hundreds of VC funds Horsley Bridge invested in **since 1985**; one relay gives 1985–2014). [read 2026-10-05: a16z.com, src 18]
+  - *Correlation Ventures (via Seth Levine, 2014).* Across 21,000+ financings in 2004–2013, **65% failed to return 1×; 10% returned ≥5×; 4% returned ≥10×**. Counts are financings, not companies. [read 2026-10-05: sethlevine.com, src 19]
 - **Graham, YC's own portfolio.** "The total value of the companies we've funded is around 10 billion… just two companies, Dropbox and Airbnb, account for about three quarters of it." "There is probably at most one company in each YC batch that will have a significant effect on our returns." "The big winners could generate 10,000x returns." [first-party, copy, src 7]
 - **Thiel, Founders Fund.** "Facebook, the best investment in our 2005 fund, returned more than all the others combined." His rule: "only invest in companies that have the potential to return the value of the entire fund." [first-party, copy, src 8]
 - **Fund-returner arithmetic. [synthesis]** $300M fund × ~10% ownership at exit → needs a **$3B exit** to return the fund; at 5–10× revenue that is **$300–600M revenue**; at 10–20% SAM share, SAM ≈ **$1.5–6B**. Hence the YC guide's "TAM >$1B" floor and Sequoia's "invent their own markets": the market must plausibly *reach* billions, even if it starts small.
@@ -186,12 +186,12 @@ Reading the example: this is a strong bootstrapped business (about $11M ARR at 1
 
 ## Open questions / could not verify
 
-- Andreessen's essay read only as a structured excerpt; check quote wording against pmarchive.com.
+- Andreessen's essay: quote wording checked against pmarchive.com 2026-10-05.
 - Damodaran's June 2014 blog post and his later reply to Gurley were not read directly. The model details come from third-party notes on his lecture packet.
-- Golder & Tellis (1993): the abstract-level figures (~500 brands, 50 categories, 47%, ~10%, 13 years) are search-verified 2026-10-04. Still unconfirmed: the definitions of pioneer and early leader, the 8% / 28% early-leader figures (secondary only; consistent across relays), "11% of 36 categories", and "4 of 50 categories". A "66 markets" figure in some relays probably comes from Tellis & Golder's later book *Will and Vision* (2002), not the 1993 paper.
-- Lieberman & Montgomery and Suarez & Lanzolla: abstract-level only. VanderWerf & Mahon meta-analysis unverified.
+- Golder & Tellis (1993): read in full 2026-10-05. The 47%, 10%, 11%-of-36, 8% and 28% figures and the early-leader definition (share leader during the early growth phase) are confirmed; "4 of 50 categories" was not checked. A "66 markets" figure in some relays probably comes from Tellis & Golder's later book *Will and Vision* (2002), not the 1993 paper.
+- Lieberman & Montgomery 1988 still unread (paywalled); 1998, 2013 and Suarez & Lanzolla 2005 read in full 2026-10-05, Suarez & Lanzolla 2007 abstract only. VanderWerf & Mahon meta-analysis unverified.
 - Bill Gross's secondary factor percentages (32/28/24/14) were not verified against his slide. The transcript gives only 42% and the rank order.
 - Horsley Bridge and Correlation Ventures: resolved 2026-10-04. Dixon's post says "since 1985" (one relay gives 1985–2014; no source found for "2000–2014"); Correlation covers 2004–2013 financings. Neither original chart was read.
-- Not verified: Valentine's exact wording; Kawasaki's 2006 "1% of the market" lie; older Sequoia template text; Gurley's second-hand McKinsey/AT&T 1980 cellular forecast; a16z-specific sizing guidance; YC Kevin Hale criteria (secondary only); Kerr–Nanda–Rhodes-Kropf return statistics; Benedict Evans essays (blocked).
+- Not verified: Valentine's exact wording; Kawasaki's 2006 "1% of the market" lie; Gurley's second-hand McKinsey/AT&T 1980 cellular forecast; a16z-specific sizing guidance; YC Kevin Hale criteria (secondary only); Kerr–Nanda–Rhodes-Kropf return statistics; Benedict Evans essays (blocked).
 - The Airbnb deck text comes from a redesigned version (Slidebean); the numbers match widely circulated copies but were not compared with the original PDF.
 - Census figures (counts by NAICS) were not pulled. The worked example uses invented numbers by design.

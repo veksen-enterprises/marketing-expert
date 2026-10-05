@@ -6,7 +6,7 @@ tags: risk, opportunity, startup failure, base rates, survival, onion of risk, l
 
 ## Base rates (use these before your own estimate)
 
-- **All new US business establishments** (BLS Business Employment Dynamics): 77.9% of establishments opened in the year to March 2024 survived 1 year; 51.4% of the 2020 cohort survived 5 years; 34.7% of the 2015 cohort survived 10 years (March 2025 release; each figure is a different cohort). Stable for decades. Most closures happen in years 1–5. [government data, via secondary]
+- **All new US business establishments** (BLS Business Employment Dynamics): 77.9% of establishments opened in the year to March 2024 survived 1 year; 51.4% of the 2020 cohort survived 5 years; 34.7% of the 2015 cohort survived 10 years (March 2025 release; each figure is a different cohort). Stable for decades. Most closures happen in years 1–5. [government data]
 - **VC-backed companies**: survival is the wrong measure; returning capital is. ~75% never return investors' money (Ghosh, ~2,000 companies); ~65% of financings return < 1×, 10% return ≥ 5× and 4% return ≥ 10× (Correlation Ventures, ~21,000 financings, 2004–2013); ~6% of deals (4.5% of dollars invested) produce ~60% of returns (Horsley Bridge funds since 1985, via Chris Dixon). [research / investor data]
 - Implication: the median VC-backed company loses money. Personal risk should be planned on the median; the investor case rests on the tail.
 
@@ -38,7 +38,7 @@ Other frameworks: Porter's Five Forces (can anyone earn margins in this industry
 
 ## What the controlled evidence says
 
-- **Hypothesis-driven founding works mainly by killing bad ideas sooner.** Randomised controlled trial (RCT) with 116 Italian startups (Camuffo et al. 2020): founders trained to state hypotheses and test them rigorously were more likely to abandon or pivot (change direction) and earned more revenue. Replicated across 759 firms in four RCTs (2024): earlier termination of ideas that weren't valuable and fewer, more deliberate pivots, but **no clear revenue effect** in the replication. The robust benefit is stopping sooner. [research]
+- **Hypothesis-driven founding works mainly by killing bad ideas sooner.** Randomised controlled trial (RCT) with 116 Italian startups (Camuffo et al. 2020): founders trained to state hypotheses and test them rigorously were more likely to pivot (change direction) and earned more revenue; that trial had too few shutdowns to show an effect on abandoning ideas. Replicated across 759 firms in four RCTs (2024): earlier termination of ideas that weren't valuable and fewer, more deliberate pivots, and a **small revenue effect** in the replication (about €7,000 more across the pooled 759 firms, p = .03; only one of the four trials was significant on its own). The robust benefit is stopping sooner. [research]
 - **Experimentation fattens both tails.** ~35,000 startups: those adopting A/B testing grew page visits 30–100% after a year (HBS's summary: ~10% more weekly visits on average, 9–18% more product launches, 5% more likely to raise VC) and launched products more often, and also failed faster (Koning, Hasan & Chatterji 2022). [research]
 - **Effectuation** (Sarasvathy 2001): start from your means (who you are, what you know, whom you know); commit only an **affordable loss**; let committed partners shape the venture. A 2009 meta-analysis found positive associations with performance for several principles. [research; not re-verified]
 
@@ -50,7 +50,7 @@ Other frameworks: Porter's Five Forces (can anyone earn margins in this industry
 
 ## Pre-mortems and kill criteria
 
-- **Pre-mortem** (Gary Klein, HBR 2007): before committing, imagine the project has already failed; each person writes the reasons independently; then address them. Mitchell, Russo & Pennington (1989) found people generated ~30% more reasons when they imagined an outcome as having already happened (Klein's "correctly identify reasons" overstates this). [research]
+- **Pre-mortem** (Gary Klein, HBR 2007): before committing, imagine the project has already failed; each person writes the reasons independently; then address them. Klein credits Mitchell, Russo & Pennington (1989) with a 30% improvement, but the paper's abstract gives no 30% figure: placing an event in the past made little difference, while treating the outcome as certain led to longer, more concrete explanations. Treat the 30% as unverified. [research]
 - **Kill criteria**: write metrics and dates that trigger a pivot or shutdown *before* you start. The RCT benefit above is largely this.
 - Andreessen: if five to eight VCs all say no, something is wrong with the plan; stop pitching and fix it.
 
@@ -77,4 +77,4 @@ Absence of fit (Andreessen): word of mouth isn't spreading, usage isn't growing 
 
 ## Sources
 
-research/startup-risk-and-opportunity.md (BLS BED; Ghosh; Correlation Ventures; Horsley Bridge; CB Insights 2016; Eisenmann 2021; Wasserman 2012; Gompers et al. 2010; Andreessen 2007; Graham 2012, 2015; Camuffo et al. 2020, 2024; Koning et al. 2022; Sarasvathy 2001; Cooper et al. 1988; Camerer & Lovallo 1999; Hamilton 2000; Klein 2007). Read in full: Graham, Andreessen, CB Insights 2016; rest via snippets or background.
+research/startup-risk-and-opportunity.md (BLS BED; Ghosh; Correlation Ventures; Horsley Bridge; CB Insights 2016; Eisenmann 2021; Wasserman 2012; Gompers et al. 2010; Andreessen 2007; Graham 2012, 2015; Camuffo et al. 2020, 2024; Koning et al. 2022; Sarasvathy 2001; Cooper et al. 1988; Camerer & Lovallo 1999; Hamilton 2000; Klein 2007). Read in full: Graham, Andreessen, CB Insights 2016. Primary text or abstract re-read 2026-10-05: BLS Table 7, Ghosh (WSJ text), Correlation, Dixon, Eisenmann's slides, Wasserman (HBR 2008), Gompers et al. (NBER), Camuffo et al. 2020 (abstract) and 2024 (full), Koning et al., Hamilton (abstract), Klein and Mitchell et al. (abstract). Cooper et al. and Camerer & Lovallo are paywalled; still from snippets.

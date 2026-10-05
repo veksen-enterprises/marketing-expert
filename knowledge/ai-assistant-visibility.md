@@ -31,8 +31,8 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 - **Apple:** Applebot-Extended controls use for training Apple's foundation models; pages that block it can still appear in Apple search. Applebot (Spotlight, Siri, Safari search) is separate. [first-party]
 - **Microsoft:** no separate Copilot crawler is listed; Copilot uses Bing's index (Bingbot). Bing says `noindex` keeps a URL out of Bing search, Copilot and grounding results. [first-party]
 - **Meta:** Meta-ExternalAgent = training and product indexing; Meta-ExternalFetcher = user-requested fetches and may bypass robots.txt. [first-party]
-- **Amazon:** Amazonbot = product improvement and possible AI training; Amzn-SearchBot = search experiences such as Alexa (not training); Amzn-User = live fetches for user questions. [first-party]
-- **Others:** DuckAssistBot = DuckDuckGo AI answers, not training, blocking doesn't affect organic results; MistralAI-User = user fetches, MistralAI-Training = training. [first-party]
+- **Amazon:** Amazonbot = product improvement and possible AI training; Amzn-SearchBot = search experiences such as Alexa (not training); Amzn-User = live fetches for user questions, and Amazon says it "may not follow all robots.txt directives" because a user started it. [first-party]
+- **Others:** DuckAssistBot = DuckDuckGo AI answers, not training, blocking doesn't affect organic results; MistralAI-User = user fetches, MistralAI-Index = search index (not training), MistralAI-Training = training. [first-party]
 - **Ads and agent bots:** advertisers in ChatGPT ads must allow OAI-AdsBot (landing-page review, not training). Google-CloudVertexBot only crawls when a site owner builds a Vertex AI Agent; no effect on Search. [first-party]
 - **Common default for a business that wants to be recommended:** allow the search and user bots (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User, Googlebot, Bingbot, Applebot, Amzn-SearchBot, DuckAssistBot). Training bots are a business choice: blocking them protects content but may reduce how well future models know your brand (no study measures this). [practitioner]
 - **Check the CDN/WAF too** (content delivery network and web application firewall, the services in front of your site). Bot-protection settings (for example Cloudflare's AI-bot blocking) can block AI crawlers even when robots.txt allows them. [practitioner]
@@ -101,4 +101,4 @@ For developer tools the assistant that matters is often a coding agent (Claude C
 
 ## Sources
 
-research/ai-assistant-visibility.md (OpenAI, Anthropic, Perplexity, Google, Apple and Microsoft documentation; Vercel/MERJ 2024; Profound 2025; Semrush; Ahrefs 2025; SparkToro 2026; Cloudflare 2025; reporting on OpenAI commerce changes 2025–2026). research/landscape-2026.md §4 for the GEO and llms.txt items. Most items came from search snippets; see the access caveats there.
+research/ai-assistant-visibility.md (OpenAI, Anthropic, Perplexity, Google, Apple and Microsoft documentation; Vercel/MERJ 2024; Profound 2025; Semrush; Ahrefs 2025; SparkToro 2026; Cloudflare 2025; reporting on OpenAI commerce changes 2025–2026). research/landscape-2026.md §4 for the GEO and llms.txt items. Most crawler documentation and the vendor studies were re-read at the source on 2026-10-05; see the access caveats there.

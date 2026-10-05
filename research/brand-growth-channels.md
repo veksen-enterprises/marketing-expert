@@ -1,6 +1,6 @@
 # Brand vs Performance, How Brands Grow, Channel Strategy
 
-Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every primary domain tried (ipa.co.uk, business.linkedin.com, LinkedIn's PDF host, brianbalfour.com, andrewchen.com/substack, marketingscience.info, thinkbox/screenforce/thinktv mirrors, bbh-labs.com). Every claim below therefore comes from search-result snippets that point at the named primary URL. Tags: **[snippet-only]** means the snippet came from, or quotes, the primary source. **[secondary]** means only a third-party write-up said it. Nothing here was read in full.
+Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every primary domain tried (ipa.co.uk, business.linkedin.com, LinkedIn's PDF host, brianbalfour.com, andrewchen.com/substack, marketingscience.info, thinkbox/screenforce/thinktv mirrors, bbh-labs.com). Every claim below therefore comes from search-result snippets that point at the named primary URL. Tags: **[snippet-only]** means the snippet came from, or quotes, the primary source. **[secondary]** means only a third-party write-up said it. Nothing here was read in full. Re-read on 2026-10-05: the IPA *Long and Short of It* deck, Field's *Effectiveness in Context* deck (thinktv.ca), the full *5 Principles of Growth in B2B Marketing* report PDF and LinkedIn's landing page, the Dawes 95-5 PDF, the Double Jeopardy abstract, the mi-3 and Contagious Thomaz articles, Balfour's 2017 Four Fits essays, Chen's andrewchen.com post, the Sacra Bartlett interview, and the NetLine post.
 
 ## Sources
 
@@ -29,16 +29,16 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 ## 1. Binet & Field: brand vs activation
 
 **Core model (2013) [1]**
-- Data: IPA Databank, **996 campaigns** entered in the IPA Effectiveness Awards, **1980–2010** [1] [snippet-only].
-- There are two effects. **Sales activation** gives a sharp short-term uplift that decays within weeks. **Brand building** gives a slow, compounding lift in baseline sales, pricing power and profit [1] [snippet-only].
-- The optimal average split is **~60% brand / 40% activation**. It is the middle of a distribution of the most effective cases, not a law. The authors call it a benchmark [1][3] [snippet-only].
-- Emotional campaigns produce more brand and business effects than rational ones. They show weaker immediate response but pull ahead after **~6 months** of cumulative exposure [1] [snippet-only]. One snippet says emotional campaigns are "almost twice as likely" to produce top-box profit growth over the long term [secondary].
-- Pricing and elasticity effects take at least 6 months to appear and are still growing after 3 years [1] [snippet-only].
+- Data: IPA Databank, **996 campaigns** (700 brands, 83 categories) entered in the IPA Effectiveness Awards, **1980–2010** [1] [read 2026-10-05: IPA deck].
+- There are two effects. **Sales activation** gives a sharp short-term uplift that decays within weeks. **Brand building** gives a slow, compounding lift in baseline sales, pricing power and profit [1] [read 2026-10-05: IPA deck, "Rational messaging: big direct effect, but decays quickly. Emotional priming: smaller effect on sales. Decays slowly"].
+- The optimal average split is **~60% brand / 40% activation**. It is the middle of a distribution of the most effective cases, not a law. The authors call it a benchmark [1][3] [read 2026-10-05: the 2013 deck's "60:40 rule" chart puts the optimum at ~40% activation; the 2018 deck says the rule "is shifting further to brand"].
+- Emotional campaigns produce more brand and business effects than rational ones. They show weaker immediate response but pull ahead after **~6 months** of cumulative exposure [1] [snippet-only] (re-check 2026-10-05: the 2013 deck shows emotional campaigns' very large profit effects rising over 1, 2 and 3+ years but gives no 6-month crossover point). One snippet says emotional campaigns are "almost twice as likely" to produce top-box profit growth over the long term [secondary].
+- Pricing and elasticity effects take at least 6 months to appear and are still growing after 3 years [1] [read 2026-10-05: deck chart "But price effects take time" across campaign periods of 3 months to 3 years].
 - Operational: do not judge brand campaigns on short-term ROI windows (6 months or less). Fund both modes at once, because activation converts the demand that brand building creates.
 
 **Share of voice (ESOV)**
 - Brands whose share of voice exceeds their share of market tend to grow. Rule of thumb: **+10 pts ESOV ≈ +0.5 pt annual market-share growth** on average — Binet & Field analysis of IPA cases (search relay: 171 campaigns, 1980–2010); leaders gain more per point than challengers (~1.4 vs ~0.4 per 10 pts, same relay) [verified-search: ipa.co.uk, 2026-10-04 — snippet drawn from an IPA-hosted document, primary deck not opened; the Jones 1990 lineage remains unverified].
-- B2B: the LinkedIn B2B Institute / Binet & Field B2B work reports 10 pts ESOV ≈ +0.7%/yr market-share growth in B2B vs 0.6% in B2C [verified-search: linkedin.com (B2B Institute posts), 2026-10-04]. Note the B2C 0.6 here differs from the classic 0.5 rule of thumb (different dataset/cut). Principle #1 of the B2B report is "invest in share of voice" [4] [snippet-only].
+- B2B: the LinkedIn B2B Institute / Binet & Field B2B work reports 10 pts ESOV ≈ +0.7%/yr market-share growth in B2B vs 0.6% in B2C [read 2026-10-05: report PDF, "For consumer brands, 10% extra share of voice causes market share to rise by 0.6 % points per annum... For B2B, the corresponding figure is 0.7%"]. Note the B2C 0.6 here differs from the classic 0.5 rule of thumb (different dataset/cut). Principle #1 of the B2B report is "invest in share of voice" [4] [read 2026-10-05].
 - Operational: compute ESOV = SOV − SOM. Use it to set budget against competitors, not as a precise forecast.
 
 **Media in Focus (2017) [2]**
@@ -46,15 +46,15 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 - Video, both TV and online, is the strongest brand-building format. TV works best, and online video makes it work harder [2] [snippet-only].
 
 **Effectiveness in Context (2018) [3]**
-- Optimal split depends on sector, purchase model, innovation, category life-stage and brand size [3] [snippet-only].
-- Optimal brand share **peaks in financial services** and is **lowest in perishable services (e.g. travel)**. Optimal brand share reaches up to ~80%, and recommended activation never exceeds ~56% [snippet-only, System1 blog summarising [3]].
-- Other figures circulate: "online/heavily-researched categories → ~50/50", "new entrants → ~70:30" [secondary only, deepmarketing.it]. Do not quote these as Binet & Field numbers without the report.
+- Optimal split depends on sector, purchase model, innovation, category life-stage and brand size [3] [read 2026-10-05: Field deck, IPA Databank 1998–2016 for-profit cases; overall peak at 62% brand].
+- Optimal brand share **peaks in financial services (~80% brand)** and is **lowest in "other services" (~51% brand)** among the five for-profit sectors shown; the other sectors sit at roughly 58–64% brand. Not-for-profit cases run about 43–44% brand / 56–57% activation [read 2026-10-05: Field deck charts; corrected: was "lowest in perishable services (e.g. travel)" and "activation never exceeds ~56%", which came from a System1 summary; chart labels in the PDF text are hard to align, so check the slide images before quoting single sector values].
+- Other figures circulate: "online/heavily-researched categories → ~50/50", "new entrants → ~70:30" [secondary only, deepmarketing.it]. Do not quote these as Binet & Field numbers. The Field deck's own charts (read 2026-10-05) show about 55/45 brand/activation for high-research categories and about 63/37 for new brands vs 56/44 for established ones.
 
 **B2B (2019, LinkedIn B2B Institute) [4]**
-- Data: IPA Databank B2B cases, **1998–2018**. LinkedIn calls it the first B2B cut of the IPA data [4] [snippet-only].
-- Five principles: (1) invest in share of voice; (2) balance brand and activation; (3) expand the customer base, because acquisition beats loyalty; (4) maximise mental availability, since fame and share of mind campaigns are most effective; (5) harness emotion, which wins long term while rational messaging wins short term [4] [snippet-only].
-- Ratio: **46% brand / 54% activation** for B2B, stated on the LinkedIn B2B Institute page for *The 5 Principles of Growth in B2B Marketing* [verified-search: business.linkedin.com, 2026-10-04]. "50/50" summaries are rounding or misreports; do not use them. Reported rationale: longer purchase cycles and buying groups give activation more time to convert, and narrower targetable markets help [secondary].
-- Broad reach across all category buyers outperformed loyalty-only or acquisition-only targeting [4] [snippet-only].
+- Data: IPA Databank B2B cases, **1998–2018**. LinkedIn calls it the first B2B cut of the IPA data [4] [read 2026-10-05: report PDF, which says the B2B sample is "less than 50 cases" and biased toward effective campaigns].
+- Five principles: (1) invest in share of voice; (2) balance brand and activation; (3) expand the customer base, because acquisition beats loyalty; (4) maximise mental availability, since fame and share of mind campaigns are most effective; (5) harness emotion, which wins long term while rational messaging wins short term [4] [read 2026-10-05].
+- Ratio: **46% brand / 54% activation** for B2B, stated in the report itself: "around 46% of the budget is allocated to brand, with around 54% allocated to activation", which it calls a rough estimate from a small sample [read 2026-10-05: report PDF]. LinkedIn's own landing page rounds this to "a 50/50 split" (corrected 2026-10-05: the 46/54 figure is in the report, not on the landing page). Quote 46/54 and cite the report. Reported rationale: longer purchase cycles and buying groups give activation more time to convert, and narrower targetable markets help [secondary].
+- Broad reach across all category buyers outperformed loyalty-only or acquisition-only targeting [4] [snippet-only] (re-check 2026-10-05: the B2B report argues for reach and acquisition over loyalty, but this exact comparison was not found in its text; it matches the 2013 B2C deck's "Target whole market" chart).
 
 **Evidence quality: Binet & Field**
 - **Selection / survivorship bias.** Every case is an awards entry and therefore self-selected as a success. The data cannot show how the average or failed campaign behaves [18] [snippet-only].
@@ -66,9 +66,9 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 ## 2. Ehrenberg-Bass: How Brands Grow
 
 **Laws and mechanisms [6][7][9][10]**
-- **Double jeopardy**: smaller brands have far fewer buyers, and those buyers buy slightly less often. Loyalty metrics vary mostly with brand size [9] [snippet-only]. Peer-reviewed since Ehrenberg et al. 1990 and replicated widely, it is the strongest-evidenced claim in this file.
+- **Double jeopardy**: smaller brands have far fewer buyers, and those buyers buy slightly less often. Loyalty metrics vary mostly with brand size [9] [read 2026-10-05: abstract]. Peer-reviewed since Ehrenberg et al. 1990 and replicated widely, it is the strongest-evidenced claim in this file.
 - Implication: growth comes mainly from **penetration** (more buyers, especially light and non-buyers), not from deepening loyalty. Loyalty rises as a consequence of growth [6] [secondary summary].
-- **60/20 Pareto**: the heaviest 20% of buyers give only about 50–60% of sales, not 80%. Heavy buyers regress next period (buyer moderation) [10] [snippet-only, SSRN abstract].
+- **60/20 Pareto**: the heaviest 20% of buyers give only about 50–60% of sales, not 80%. Heavy buyers regress next period (buyer moderation) [10] [snippet-only, SSRN abstract] (re-check 2026-10-05: SSRN and ResearchGate returned 403; OpenAlex has no abstract).
 - **Mental availability**: how likely a brand is to be thought of or noticed in buying situations. It is broader than awareness [6] [snippet-only].
 - **Physical availability**: how easy the brand is to find and buy. Part 2 splits it into Presence, Prominence and Portfolio [7] [secondary].
 - **Category entry points (CEPs)** (Romaniuk): the buyer-side cues, needs and situations that lead to a category purchase, such as chocolate "as a treat" or "to thank someone". They are the building blocks of mental availability. Brand messages should link the brand to many CEPs [7][8] [snippet-only via Marketing Week/Ehrenberg-Bass].
@@ -77,9 +77,9 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 - Part 2 extends the laws to emerging markets, services, durables, B2B, new brands and luxury [7] [snippet-only].
 
 **Critiques**
-- **Ritson, "and not or"**: run both mass brand building for the 95% and targeted activation for in-market buyers. "It's not gin vs tonic, it's gin and tonic. Professor Sharp is just tonic" [11] [snippet-only].
+- **Ritson, "and not or"**: run both mass brand building for the 95% and targeted activation for in-market buyers. "It's not gin vs tonic, it's gin and tonic. Professor Sharp is just tonic" [11] [snippet-only] (re-check 2026-10-05: Marketing Week page loads but the quote sits behind the paywall).
 - **Distinctiveness vs differentiation**: Sharp de-emphasises meaningful differentiation. Ritson and others argue for "bothism" [Marketing Week, snippet-only].
-- **Thomaz (Oxford)**: argues HBG describes how big brands *keep* share, not how they grew. It rests on static-market assumptions. Differentiation drives growth, and "all reach is not equal". Based on ~1,000 campaigns and ~1M customer journeys (Kantar/Wavemaker), with ~1% of campaigns getting exceptional results [12] [snippet-only; the peer-reviewed paper itself was not located].
+- **Thomaz (Oxford)**: argues HBG describes how big brands *keep* share, not how they grew. It rests on static-market assumptions. Differentiation drives growth, and "all reach is not equal". Based on ~1,000 campaigns and ~1M customer journeys (Kantar/Wavemaker), with ~1% of campaigns getting exceptional results [12] [read 2026-10-05: mi-3 (15 Oct 2024) and Contagious; the peer-reviewed paper itself was not located].
 - **Startup applicability**: the evidence comes mostly from established FMCG panel data in stable categories. Startups face ceilings on physical availability and budget that make broad reach unaffordable at first. Practical reading: build distinctive assets and own a few CEPs from day one, and expand reach as budget allows. This is our inference, not the source's.
 
 **Evidence quality: Ehrenberg-Bass**
@@ -89,11 +89,11 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 
 - Title: "Advertising effectiveness and the 95-5 rule: most B2B buyers are not in the market right now" (LinkedIn B2B Institute, 2021) [verified-search: marketingscience.info, 2026-10-04].
 
-- Derivation: firms switch providers like their main bank or law firm "around once every five years", so ~20% are in-market per year and "something like 5% in a quarter". So 95% are not in-market in a given quarter [5] [snippet-only, quote via CustomerThink/marketingscience.info].
+- Derivation: firms switch providers like their main bank or law firm "around once every five years", so ~20% are in-market per year and "something like 5% in a quarter". So 95% are not in-market in a given quarter [5] [read 2026-10-05: Dawes PDF on business.linkedin.com; Dawes adds "The 95% figure is not meant to be a precise rule. We're using it as a heuristic"].
 - It is an **illustrative arithmetic** from purchase-cycle length, not a measured universal constant. The percentage scales with each category's repurchase interval.
-- Implication: "advertise to people who aren't in the market now", building memory links to the brand and to the buying situations (CEPs) that will bring them into the market [5] [snippet-only].
+- Implication: "advertise to people who aren't in the market now", building memory links to the brand and to the buying situations (CEPs) that will bring them into the market [5] [read 2026-10-05].
 - Pairs with Ritson: brand for the 95%, activation for the 5% [11].
-- **Counter-evidence (vendor, interested parties):** 6sense reports ~40% of accounts showing buying activity, from 594 companies. NetLine reports that 7.6% of its content users expect to buy within 3 months [19] [snippet-only]. Both are intent-data vendors with commercial motive. 6sense itself has called much intent data "a spike of interest signal".
+- **Counter-evidence (vendor, interested parties):** 6sense reports ~40% of accounts showing buying activity, from 594 companies. NetLine reports that 7.6% of its content users expect to buy within the next quarter, plus another 7.6% within three to six months [19] [NetLine read 2026-10-05; 6sense figures snippet-only (re-check 2026-10-05: 6sense page returned 403)]. Both are intent-data vendors with commercial motive. 6sense itself has called much intent data "a spike of interest signal".
 - Operational: estimate your own in-market % as quarter ÷ average purchase cycle. Size the audience for brand reach to the whole category, and the audience for demand capture to the in-market slice.
 
 ## 4. Channel selection for startups
@@ -105,22 +105,22 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 - Evidence: practitioner synthesis from founder interviews. No quantitative validation.
 
 **Four Fits (Balfour, ~2017; rewritten for AI 2025) [14]**
-- Four fits that must align to reach $100M+ in a venture timeframe: **Market-Product, Product-Channel, Channel-Model, Model-Market**. Changing one changes the others [14] [snippet-only].
-- **Product-Channel fit**: "Products are built to fit with channels. Channels do not mold to products." You control the product; the channel sets the rules [14] [snippet-only].
-- **Channel-Model fit**: every business sits on an **ARPU ↔ CAC spectrum**. Low ARPU needs low-CAC channels (virality, SEO, UGC). High ARPU can afford high-CAC channels such as outbound sales. "The friction of the model needs to align with the 'touch factor'" of the channel, otherwise CAC:LTV breaks [14] [snippet-only].
-- Avoid the "middle" of the spectrum: ARPU too high for pure self-serve volume and too low to fund sales. This is Balfour's well-known point but was not verified in the snippets.
+- Four fits that must align to reach $100M+ in a venture timeframe: **Market-Product, Product-Channel, Channel-Model, Model-Market**. Changing one changes the others [14] [read 2026-10-05: Balfour, June 28, 2017].
+- **Product-Channel fit**: "Products are built to fit with channels. Channels do not mold to products." You control the product; the channel sets the rules [14] [read 2026-10-05: Balfour, July 12, 2017].
+- **Channel-Model fit**: every business sits on an **ARPU ↔ CAC spectrum**. Low ARPU needs low-CAC channels (virality, SEO, UGC). High ARPU can afford high-CAC channels such as outbound sales. Balfour's July 18, 2017 essay names the middle of the spectrum the "ARPU-CAC Danger Zone": ARPU too high for the friction low-CAC channels tolerate, too low to pay for sales [14] [read 2026-10-05]. The "touch factor" sentence was not found in the 2017 essays (it may come from the 2025 rewrite, not opened).
+- Avoid the "middle" of the spectrum: ARPU too high for pure self-serve volume and too low to fund sales. Confirmed 2026-10-05 in Balfour's "Danger Zone" essay (2017).
 - **Model-Market fit**: ARPU × number of customers must be able to reach the revenue target [14] [secondary].
 - Evidence: practitioner framework (HubSpot, Reforge experience). Logically strong. Not empirically tested.
 
 **Law of Shitty Clickthroughs (Chen, ~2012) [15]**
-- "Over time, all marketing strategies result in shitty clickthrough rates" [15] [snippet-only]. Example: the first banner ad (HotWired, 1994) had a CTR above 70%, versus ~0.05% today [15] [snippet-only; the exact first CTR varies by retelling, and the 78% figure was not verified].
-- Mechanisms: novelty fades and users learn to ignore the format; competitors copy winning tactics and crowd the channel [15] [snippet-only].
+- "Over time, all marketing strategies result in shitty clickthrough rates" [15] [read 2026-10-05]. Example: the first banner ad (HotWired, 1994) had a 78% CTR, versus 0.05% for Facebook ads in 2011 [15] [read 2026-10-05; corrected: was "above 70%" vs "~0.05% today"].
+- Mechanisms, in Chen's list: "Customers respond to novelty, which inevitably fades"; "First-to-market never lasts" (competitors copy); "More scale means less qualified customers" [15] [read 2026-10-05; corrected: the third driver was missing].
 - Operational: assume every channel decays. Keep a pipeline of new channel experiments ("fresh powder"). Chen notes channels often decline within 6–12 months of scaling (X post) [snippet-only].
 - Evidence: an observation, not a measured law. Directionally supported by long-run CTR trends.
 
 ## 5. PLG vs sales-led
 
-- **Definition**: PLG is a go-to-market strategy in which the **product itself is the primary driver of acquisition, conversion/activation, retention and expansion**. Term coined by **Blake Bartlett, OpenView, 2016** [17] [snippet-only]. In sales-led growth, people in sales and marketing drive growth through demos, outbound and negotiated contracts [17].
+- **Definition**: PLG is a go-to-market strategy in which the **product itself is the primary driver of customer acquisition, conversion, and expansion**. Term coined at OpenView in 2016, per **Blake Bartlett** [17] [read 2026-10-05: Sacra interview; corrected: the definition does not list activation or retention]. In sales-led growth, people in sales and marketing drive growth through demos, outbound and negotiated contracts [17].
 - PLG brings a consumer-like journey into B2B: end users sign up, reach value, and buy or expand later. It targets end users with daily pain, not ROI-focused executives [17] [snippet-only].
 - **Bush, MOAT framework** [16] [secondary]:
   - **Market strategy**: dominant, disruptive or differentiated.
@@ -141,11 +141,11 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked every pri
 ## Open questions / could not verify
 
 - No primary PDF could be opened (proxy). Resolved 2026-10-04 via domain-scoped search: B2B 46:54, ESOV 10:0.5 (IPA) and B2B 0.7 vs B2C 0.6 (LinkedIn), Dawes 2021 title.
-- Effectiveness in Context category ratios (financial services ~80% brand max, online ~50/50, new launch ~70:30) were not verified. Only the "brand peaks in financial services / lowest in travel; activation ≤56%" claim came via a single summary.
+- Effectiveness in Context category ratios: partly resolved 2026-10-05 from Field's deck (financial services ~80% brand confirmed; lowest is "other services", not travel; high-research ~55/45; new brands ~63/37). The full 2018 report was not opened.
 - Field's attribution vs Jones (1990) for the ESOV rule is unconfirmed; the 171-campaign / 1980–2010 base comes from one search relay.
 - Thomaz's peer-reviewed paper (journal, year) was not located. Only press coverage was seen.
-- The year of Chen's post (believed 2012) and the exact HotWired CTR are unconfirmed.
-- The date of Balfour's original Four Fits essay (believed 2017) and the "avoid the middle" claim were not confirmed from primary text.
-- The Dawes 2021 PDF was not opened; the 5-year/20%/5% derivation quote still comes via secondary reproduction.
+- HotWired CTR resolved 2026-10-05 (78%, per Chen's post). The post's year is still unconfirmed; it cites Facebook 2011 data.
+- Balfour resolved 2026-10-05: series posted June–July 2017; the "avoid the middle" point is his "ARPU-CAC Danger Zone".
+- Dawes 2021 PDF read 2026-10-05; the 5-year / 20% / 5% derivation is in it verbatim.
 - PLG ACV thresholds have no primary research source. Treat them as heuristics.
 - No independent (non-awards) replication of 60:40 was found.

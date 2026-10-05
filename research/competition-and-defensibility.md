@@ -2,7 +2,7 @@
 
 Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly every primary domain tried (a16z.com, aeaweb.org, hbs.edu, hbr.org, justice.gov, nuff.ox.ac.uk, eml.berkeley.edu, bcg.com, stern.nyu.edu, carlsonschool.umn.edu, clozd.com, scip.org, aprildunford.com, congress.gov, sec.gov, ec.europa.eu, researchgate, semanticscholar, arxiv, web.archive.org, medium). GitHub code search was also refused. **The only primary source read in full was Microsoft's FY24 Q1 earnings-call transcript (microsoft.com).** Everything else comes from search-result snippets that quote or point at the named primary URL. The session's web-search budget ran out after about 45 queries, so some planned checks were never run (listed at the end). Tags: **[research]** = peer-reviewed or working paper; **[first-party]** = company filing or statement; **[practitioner]** = essay or book by an operator or investor; **[vendor]** = seller of the service in question; **[anecdote]**; **[snippet-only]** = only seen through a search snippet; **[synthesis]** = my inference.
 
-**Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X".
+**Verification pass (2026-10-04).** A later session re-checked priority numbers with targeted web searches; primary pages were still mostly blocked. Items it confirmed carry **[verified-search: <domain>, 2026-10-04]**, meaning the figure matched search-engine text from that domain, not a full read. Corrections are marked "corrected 2026-10-04: was X". On 2026-10-05 a further pass read the primary text (abstracts at minimum) for Rysman, McIntyre & Srinivasan, Cennamo & Santaló, Tucker, Klemperer, Farrell & Klemperer, Henderson (BCG), Lieberman, Casado & Lauten, the U.S. v. Microsoft findings of fact, Bakos & Brynjolfsson, Wiggins & Ruefli (both), the DTSA text, Google's Ads Transparency post and Clozd's guide; those items are tagged [read 2026-10-05].
 
 ## Sources
 
@@ -45,11 +45,11 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 **Define competitors the way the buyer does**
 - Dunford's core question is "what would customers do if your product didn't exist?" The answers include a direct rival, Excel, pen and paper, hiring an intern, or doing nothing. Her positioning canvas starts from these competitive alternatives, then moves to unique attributes, value, best-fit customers and finally market category (27) [practitioner][snippet-only].
-- Losing to "no decision" is the biggest competitor in B2B. Dixon & McKenna analysed more than 2.5M sales conversations and found that **40–60% of qualified deals end in no decision**. About 56% of those buyers wanted to change but froze, and about 44% preferred the status quo (28) [practitioner; proprietary dataset][snippet-only, via secondary summaries]. **Operational point:** the competitor matrix needs a "do nothing / keep the spreadsheet" column. Fear of choosing wrong is a separate fight from beating a rival.
+- Losing to "no decision" is the biggest competitor in B2B. Dixon & McKenna analysed more than 2.5M sales conversations and found that **40–60% of qualified deals end in no decision**. About 56% of those buyers wanted to change but froze, and about 44% preferred the status quo (28) [practitioner; proprietary dataset][snippet-only, via secondary summaries] (re-check 2026-10-05: no publisher or author page with the figures was reachable; still secondary only). **Operational point:** the competitor matrix needs a "do nothing / keep the spreadsheet" column. Fear of choosing wrong is a separate fight from beating a rival.
 
 **Win/loss analysis**
-- Primary Intelligence reports more than 50,000 buyer interviews. Reps blame price for **48%** of losses, but buyers name price as the main factor only **23%** of the time. It also claims vendors win about half the time while being the higher-priced option [vendor][snippet-only, quoted through third-party blogs].
-- Clozd claims buyer and seller loss reasons agree only **15%** of the time ("85% of closed-lost data is inaccurate"). It says a neutral third party typically gets 20–30% of buyers to give feedback, and that price decides fewer than 15% of non-commodity deals [vendor][snippet-only]. These are vendor numbers with no published methodology. Treat them as directional evidence that CRM loss codes are unreliable.
+- Primary Intelligence reports more than 50,000 buyer interviews. Reps blame price for **48%** of losses, but buyers name price as the main factor only **23%** of the time. It also claims vendors win about half the time while being the higher-priced option [vendor][snippet-only, quoted through third-party blogs] (re-check 2026-10-05: no Primary Intelligence page with the figures was found).
+- Clozd claims buyer and seller loss reasons agree only **15%** of the time ("85% of closed-lost data is inaccurate"). It says a neutral third party typically gets 20–30% of buyers to give feedback, and that price decides fewer than 15% of non-commodity deals [vendor; 15% agreement read 2026-10-05 on clozd.com/guides/win-loss-analysis; the 20–30% and <15% price figures are not on that page and stay snippet-only]. These are vendor numbers with no published methodology. Treat them as directional evidence that CRM loss codes are unreliable.
 - Practice ([synthesis] from the above): interview the buyer, not the rep. Use a third party or a non-sales interviewer. Include wins, losses and no-decisions. Ask about the alternatives the buyer considered (including the status quo), the decision criteria, and the moment they decided.
 
 **The feature-matrix trap** [synthesis]
@@ -57,7 +57,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 - Matrices push teams toward parity-building, which works against the differentiation that Cennamo & Santaló found pays off only when a player is *highly* distinctive (5, see §2).
 
 **Monitoring competitor signals (all legitimate public sources)**
-- **Ad libraries.** Meta Ad Library shows all currently active ads on Facebook and Instagram for any advertiser, including creative and copy. Spend and demographic data appears only for political/social-issue ads (and, under the DSA, for EU ads) [practitioner guides][snippet-only]. Google Ads Transparency Center launched on **29 Mar 2023**. It is a searchable archive of ads from verified advertisers across Search, YouTube and Display, filterable by region and last-shown date (32) [first-party][snippet-only].
+- **Ad libraries.** Meta Ad Library shows all currently active ads on Facebook and Instagram for any advertiser, including creative and copy. Spend and demographic data appears only for political/social-issue ads (and, under the DSA, for EU ads) [practitioner guides][snippet-only]. Google Ads Transparency Center launched on **29 Mar 2023**. It is a searchable archive of ads from verified advertisers across Search, YouTube and Display, filterable by region and last-shown date (32) [first-party][read 2026-10-05: launch date, "searchable hub of all ads served from verified advertisers", Search/YouTube/Display].
 - **Other signals** [synthesis; standard CI practice]:
   - Pricing pages: track packaging changes with page-diff tools.
   - Job postings: new functions, geographies or technology stack hint at direction.
@@ -67,24 +67,24 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
   - Filings, earnings calls and conference talks.
 
 **Ethical and legal limits**
-- Under the DTSA, "improper means" include **theft, bribery, misrepresentation**, breach or inducement of a breach of a duty of secrecy, and espionage. **Reverse engineering, independent derivation, and other lawful means are not improper** (31, 18 U.S.C. §1839(6)) [first-party statute][snippet-only].
+- Under the DTSA, "improper means" include **theft, bribery, misrepresentation**, breach or inducement of a breach of a duty of secrecy, and espionage. **Reverse engineering, independent derivation, and other lawful means are not improper** (31, 18 U.S.C. §1839(6)) [first-party statute][read 2026-10-05].
 - SCIP Code of Ethics: practitioners must "accurately disclose all relevant information, including one's identity and organization, prior to all interviews" (30) [practitioner][snippet-only].
 - Hard no's: posing as a prospect, student or job candidate to extract information; hiring a rival's staff to obtain confidential documents. Fine: buying the product, reading public documents, using ad libraries, talking to *your own* prospects about rivals [synthesis].
 
 ## 2. Network effects: what the evidence says
 
-- **Definition.** Rysman: a two-sided market is one where "(1) two sets of agents interact through an intermediary or platform, and (2) the decisions of each set of agents affects the outcomes of the other set, typically through an externality" (1) [research][snippet-only].
-- **Multi-homing.** Markets tend toward one side single-homing and the other multi-homing. Platforms compete hard on the single-homing side and act like monopolists toward the multi-homing side (the "competitive bottleneck") (1) [research][snippet-only]. Operational point: the side that single-homes is where the fight happens and where prices are low.
-- **Platform quality matters too.** McIntyre & Srinivasan's agenda centres on "the relative influence of network effects and platform quality in competitive outcomes" and on complementors (2) [research][snippet-only]. Network size alone is not destiny.
-- **Winner-take-all is conditional.** In US video-game consoles, a WTA expansion strategy was not universally successful. Differentiation improved performance *only when* the platform was highly distinctive relative to rivals (5) [research][snippet-only].
+- **Definition.** Rysman: a two-sided market is one where "(1) two sets of agents interact through an intermediary or platform, and (2) the decisions of each set of agents affects the outcomes of the other set, typically through an externality" (1) [research][read 2026-10-05: abstract].
+- **Multi-homing.** Markets tend toward one side single-homing and the other multi-homing. Platforms compete hard on the single-homing side and act like monopolists toward the multi-homing side (the "competitive bottleneck") (1) [research][snippet-only] (re-check 2026-10-05: aeaweb.org PDF returns 403; not in the abstract). Operational point: the side that single-homes is where the fight happens and where prices are low.
+- **Platform quality matters too.** McIntyre & Srinivasan's agenda centres on "the relative influence of network effects and platform quality in competitive outcomes" and on complementors (2) [research][read 2026-10-05: abstract]. Network size alone is not destiny.
+- **Winner-take-all is conditional.** In US video-game consoles, a WTA expansion strategy was not universally successful. Differentiation improved performance *only when* the platform was highly distinctive relative to rivals (5) [research][read 2026-10-05: abstract].
 - **Clustering, multi-homing and disintermediation** (Zhu & Iansiti 2019). Five properties decide platform strength: strength of network effects, clustering, disintermediation risk, multi-homing, and bridging across networks (3) [research-adjacent HBR][snippet-only].
   - *Clustering:* Uber's drivers and riders form city-level clusters, so a rival can enter one city at a time. Airbnb's travellers draw on a global host network, which makes entry hard.
   - *Multi-homing:* drivers and riders use both Uber and Lyft.
   - *Disintermediation:* parties meet on the platform and then transact off it.
   - *China:* Didi merged with Kuaidi in 2015 and pushed Uber out of China (3) [snippet-only].
 - **Social networks are clustered.** Facebook-like networks are made of many small, largely separate local clusters, so network effects are weaker than total user counts imply. Tighter, more segregated clusters let entrants win with focused products (4) [research WP][snippet-only].
-- **Uber's own filing** lists "low switching costs between competitor platforms or services" as a risk to driver and restaurant supply (7) [first-party][snippet-only].
-- **Influence is local and structural.** When an investment bank introduced video messaging, adoption by managers and "boundary spanners" strongly drove colleagues' adoption. Adoption by ordinary workers had negligible effect (6) [research][snippet-only]. For a B2B product with collaboration effects, seed the boundary spanners, not head count.
+- **Uber's own filing** lists "low switching costs between competitor platforms or services" as a risk to driver and restaurant supply (7) [first-party][snippet-only] (re-check 2026-10-05: site requires a contact header).
+- **Influence is local and structural.** When an investment bank introduced video messaging, adoption by managers and "boundary spanners" strongly drove colleagues' adoption. Adoption by ordinary workers had negligible effect (6) [research][read 2026-10-05: abstract; 2,118 employees]. For a B2B product with collaboration effects, seed the boundary spanners, not head count.
 - **Cold start** (Chen 2021):
   - *Atomic network:* the smallest network that is useful on its own.
   - *Hard side:* the minority who create most of the value. Chen's examples are Wikipedia's few thousand core editors, Uber "power drivers" (cited as doing about 60% of trips) and desirable dating-app users.
@@ -93,8 +93,8 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 3. Switching costs and lock-in
 
-- **Theory.** Klemperer: with switching costs, "a firm's current market share is an important determinant of its future profitability." The review explains introductory offers and price wars, effects on industry profits, product choice, and multi-product competition (9) [research][snippet-only].
-- **"Bargain-then-ripoff."** Farrell & Klemperer: firms price low to attract customers (bargain) and high once they are locked in (ripoff). The pattern is clearest when new and locked-in buyers can be charged separately, for example through negotiated prices or aftermarket parts and service. Switching costs "typically raise oligopoly profits", but competition to win customers up front can dissipate those rents "in unproductive ways such as through socially inefficient marketing" (10) [research][snippet-only].
+- **Theory.** Klemperer: with switching costs, "a firm's current market share is an important determinant of its future profitability." The review explains introductory offers and price wars, effects on industry profits, product choice, and multi-product competition (9) [research][read 2026-10-05: abstract].
+- **"Bargain-then-ripoff."** Farrell & Klemperer: firms price low to attract customers (bargain) and high once they are locked in (ripoff). The pattern is clearest when new and locked-in buyers can be charged separately, for example through negotiated prices or aftermarket parts and service. Switching costs "typically raise oligopoly profits", but competition to win customers up front can dissipate those rents "in unproductive ways such as through socially inefficient marketing" (10) [research][read 2026-10-05: working-paper PDF].
 - **Lock-in cycle** (Shapiro & Varian): brand selection → sampling → entrenchment → lock-in. During entrenchment, customers make complementary investments and the supplier "tries to drag out this phase and delay active consideration of other brands, hoping that the customers' switching costs will go up." Lock-in exists when switching costs are substantial (11) [research-adjacent book][snippet-only via HBSWK excerpt].
 - **SaaS reality** [synthesis]: switching costs show up as data migration, integrations and APIs, retraining and workflow habits, contract terms, and accumulated configuration. Two consequences follow:
   - *Attacking an incumbent:* subsidise the switch. Offer migration services, importers, overlap periods and contract buy-outs. Target accounts at contract renewal, the "brand selection" point.
@@ -102,22 +102,22 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 4. Scale economies, learning curves, process power, brand
 
-- **Experience curve.** Henderson (BCG 1968): costs decline "by some characteristic amount each time accumulated experience is doubled", typically **20–30%** in real terms. The decline is "not necessarily automatic" and needs management that forces costs down (12) [first-party BCG][snippet-only].
+- **Experience curve.** Henderson (BCG 1968): costs decline "by some characteristic amount each time accumulated experience is doubled", typically **20–30%** in real terms. The decline is "not necessarily automatic" and needs management that forces costs down (12) [first-party BCG][read 2026-10-05; the PDF says "20-30%" in constant dollars].
 - **Decline of the doctrine:**
   - Ghemawat (1985) notes that "many managers see the experience curve as out of date". The curve helps only in defined situations, depending on industry structure, competitor positions and government (13) [research-adjacent][snippet-only].
   - Earlier critiques: Abernathy & Wayne, "Limits of the Learning Curve" (HBR 1974); Kiechel, "The Decline of the Experience Curve" (Fortune 1981) [snippet-only].
-  - Lieberman (1987) models how *learning diffusion* (spillovers to rivals) changes entry barriers and profits (14) [research][snippet-only]. When learning leaks to rivals, a cumulative-volume lead protects less [synthesis].
+  - Lieberman (1987) models how *learning diffusion* (spillovers to rivals) changes entry barriers and profits (14) [research][read 2026-10-05: abstract]. When learning leaks to rivals, a cumulative-volume lead protects less [synthesis].
 - **Small-firm reading** [synthesis]: in software, marginal cost is near zero, so production-cost experience curves rarely decide outcomes. Scale shows up instead in distribution, R&D amortisation and data (see §5–6). Do not compete on unit cost against a larger rival.
 - **Brand as a lasting advantage (Helmer).** Helmer defines Branding as "the durable attribution of higher value to an objectively identical offering that arises from historical information about the seller". The barrier is **hysteresis**: a brand takes a long period of reinforcing actions to build (15) [practitioner][snippet-only]. Test: can you charge more for an objectively identical offering? If not, you have reputation, not brand power.
 - **Process Power** is one of Helmer's 7 Powers (alongside Scale Economies, Network Economies, Counter-Positioning, Switching Costs, Branding and Cornered Resource). Helmer's exact definition was not verified this session.
 
 ## 5. Proprietary data as an advantage
 
-- **Casado & Lauten** (a16z, 9 May 2019) (16) [practitioner][snippet-only]:
+- **Casado & Lauten** (a16z, 9 May 2019) (16) [practitioner][read 2026-10-05]:
   - Most claimed "data network effects" are really **data scale effects**.
   - "The exact opposite dynamic often plays out with data scale effects: the cost of adding unique data to your corpus may actually go up, while the value of incremental data goes down."
   - Value curve: a "minimum viable corpus" is needed (e.g., Netflix recommendations at launch). After that, new data adds diminishing value.
-  - Chatbot example (via snippet): beyond roughly **40%** of queries collected, extra data gave little advantage, because the long tail is made of one-off questions that are costly to capture and clean.
+  - Chatbot example: in one study by Eloquent Labs, after **40%** of queries had been collected there was "no advantage" to collecting more, because the long tail is made of one-off questions that are costly to capture and clean.
   - Advice: be careful leaping from "we have lots of data" to "therefore we have long-term defensibility". Build defensibility elsewhere.
 - **AI era (2023–2026):**
   - Leaked Google memo (2023): open-source groups were matching proprietary models cheaply. Low-rank adaptation (LoRA) makes fine-tuning cheap ("Directly competing with open source is a losing proposition") (17) [practitioner/anecdote][snippet-only]. Implication: a fine-tune on modest proprietary data is easy to copy.
@@ -131,7 +131,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 6. Distribution as an advantage ("the best product doesn't always win")
 
-- **Browser war findings of fact (U.S. v. Microsoft, 1999)** (20) [first-party court finding][snippet-only]:
+- **Browser war findings of fact (U.S. v. Microsoft, 1999)** (20) [first-party court finding][read 2026-10-05: ¶360, full text at https://www.justice.gov/atr/us-v-microsoft-courts-findings-fact]:
   - Navigator's usage share fell from **above 80% in January 1996 to 55% in November 1997**. Internet Explorer rose from **about 5% to 36%** over the same period (estimates Microsoft executives cited).
   - By April 1998, Microsoft's internal measurements put IE above 45%.
   - AOL measured Navigator in the "mid 50% range" by July 1998 and IE at **45–50%** of the domestic market by late 1998.
@@ -146,7 +146,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 7. Price wars and a big competitor's entry
 
-- **Rao, Bergen & Davis** (HBR 2000) (22) [research-adjacent][snippet-only]:
+- **Rao, Bergen & Davis** (HBR 2000) (22) [research-adjacent][snippet-only] (re-check 2026-10-05: hbr.org shows no article text without a subscription):
   - "The best counterattack does not involve a retaliatory price."
   - Sequence: understand the causes and players → try to prevent the war (signal intent, for example price-matching guarantees) → respond with **non-price** actions (quality, signals about customer price sensitivity, highlighting the risks of cheap offers) → use **selective** price moves (fighter brands, targeted segments) → **retreat** and cede share where fighting costs more than it returns.
 - **Switching-cost theory** predicts aggressive introductory pricing from entrants and "bargain-then-ripoff" structures (9, 10). An incumbent with a locked-in base faces a trade-off when cutting price: it hands margin to every existing customer. A small player can exploit this by targeting new and switching buyers only [synthesis].
@@ -161,7 +161,7 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 8. Specialisation vs bundling
 
-- **Bakos & Brynjolfsson (1999)** (23) [research][snippet-only abstract]: for information goods with near-zero marginal cost, the "predictive value of bundling" (aggregate valuations of a large bundle are more predictable) yields "greater sales, greater economic efficiency, and greater profits per good" than selling separately. A menu of bundles strengthens price discrimination. **Implication:** a large bundler can price point solutions out, as in the Teams case. Bundling's advantage shrinks when marginal costs are significant. That condition comes from the paper's model setup, recalled and not re-verified this session, so treat it as [unverified detail].
+- **Bakos & Brynjolfsson (1999)** (23) [research][read 2026-10-05: abstract]: for information goods with near-zero marginal cost, the "predictive value of bundling" (aggregate valuations of a large bundle are more predictable) yields "greater sales, greater economic efficiency, and greater profits per good" than selling separately. A menu of bundles strengthens price discrimination. **Implication:** a large bundler can price point solutions out, as in the Teams case. Bundling's advantage shrinks when marginal costs are significant: the abstract says the main results "do not extend to most physical goods" because marginal costs negate the predictive value of large bundles. It also says simple bundling stops being optimal when segments differ systematically in valuations.
 - **When unbundling works** [synthesis]:
   - A segment's valuation of one component far exceeds what the bundle delivers (depth beats breadth).
   - The bundle's component is visibly worse for a definable job.
@@ -170,8 +170,8 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## 9. Sustainability of advantage
 
-- **Wiggins & Ruefli (2002)** studied 6,772 firms in 40 industries over about 25 years. Superior economic performance is achieved by "only a very small minority" and "very rarely persists for long time frames" (24) [research][snippet-only].
-- **Wiggins & Ruefli (2005)** (25) [research][snippet-only]:
+- **Wiggins & Ruefli (2002)** studied 6,772 firms in 40 industries over about 25 years. Superior economic performance is achieved by "only a very small minority" and "very rarely persists for long time frames" (24) [research][read 2026-10-05: abstract].
+- **Wiggins & Ruefli (2005)** (25) [research][read 2026-10-05: abstract; the percentage figures below are not in either abstract]:
   - Competitive advantage "has become significantly harder to sustain", across a broad range of industries.
   - Sustained advantage is "increasingly a matter of concatenating a sequence of advantages over time rather than maintaining a single advantage".
   - Snippet-level figures, with uncertain attribution between the 2002 and 2005 papers: only 0.35%–2.9% of firms show persistent superior performance for long horizons (0.35% in computing; 1.72% in auto parts for 20 years); about 20–25% reach significant superior performance over at least two overlapping five-year windows.
@@ -199,11 +199,11 @@ Research date: 2026-10-04. **Access caveat:** the egress proxy blocked nearly ev
 
 ## Open questions / could not verify
 
-- **Nothing read in full except Microsoft FY24 Q1.** Every journal paper, HBR article, a16z essay, court finding, statute and vendor stat above is [snippet-only]. Exact wording and page numbers should be checked before quoting.
-- **a16z essay on proprietary data (Casado & Lauten):** the "40%" chatbot figure and the full list of recommendations are known only through snippets.
+- **Nothing read in full except Microsoft FY24 Q1** in the first session. Items tagged [read 2026-10-05] were later read in the primary text (journal papers mostly at abstract level); everything still tagged [snippet-only] should be checked before quoting.
+- **a16z essay on proprietary data (Casado & Lauten):** read 2026-10-05; the "40%" figure comes from a single Eloquent Labs study shown in the essay.
 - **Wiggins & Ruefli:** which percentages belong to the 2002 paper and which to the 2005 paper is unconfirmed, and the sample details of the 2005 paper are unknown.
 - **McGrath growth-outlier screen:** whether the bar was revenue or net income growth, and the sample years, are unconfirmed.
-- **Bakos & Brynjolfsson:** marginal-cost and competition/entry results (including their later 2000 *Marketing Science* paper on bundling and competition) were not verified.
+- **Bakos & Brynjolfsson:** the marginal-cost condition is confirmed in the 1999 abstract (2026-10-05); their later 2000 *Marketing Science* paper on bundling and competition was not checked.
 - **Barksdale quote:** no primary source found.
 - **Helmer's Process Power and Counter-Positioning:** exact definitions not verified.
 - **Search budget ran out before checking:**

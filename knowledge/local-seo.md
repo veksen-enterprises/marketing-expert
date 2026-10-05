@@ -8,16 +8,16 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## How Google ranks local results
 
-- Google names three factors: **relevance** (how well your profile matches the search), **distance** (how far you are from the searcher, or from the place named in the search) and **prominence** (how well-known you are: links to your site, number of reviews and rating, and other information across the web). More reviews and positive ratings "can help". [first-party] (A 2026 snippet of the same help page used the word "popularity" in its summary; the meaning is the same.)
+- Google names three factors: **relevance** (how well your profile matches the search), **distance** (how far you are from the searcher, or Google's estimate of where they are) and **prominence** (how well-known you are: how many websites link to you and how many reviews you have). More reviews and positive ratings "can help". [first-party] (The page's summary sentence now says "popularity" instead of "prominence"; the meaning is the same.)
 - You cannot change **distance**. Searchers far from your address will rarely see you in the pack, however good your profile. Do not promise a client rankings across a whole city from one address. [first-party]
 - Google says paying for ads does not improve local ranking. [first-party] [not re-verified]
-- Practitioner surveys (Whitespark, expert opinion, not measurement) put GBP signals first (~32% of local pack weight), then on-page signals, reviews and links; citations ~7%. The **primary category** is rated the single strongest factor. [practitioner]
+- Practitioner surveys (Whitespark, expert opinion, not measurement) rate the **primary category** the single strongest local pack factor (2026 edition). Earlier editions, as relayed by third parties, put GBP signals first (~32% of local pack weight), then on-page signals, reviews and links, with citations ~7%. [practitioner]
 
 ## Google Business Profile setup
 
 - **Verification** comes first; unverified profiles get no performance data and limited edits. Google chooses which methods you are offered. Video verification needs a live, unedited, continuous mobile recording of at least 30 seconds showing: where you are (street signs, landmarks), that the business exists (signage, equipment, products) and that you manage it (opening the till, back room, branded van, a permit or utility bill in the business name). Plan the shot before you press record. [first-party]
 - **Name**: use your real-world name exactly as on the sign and website. Google prohibits taglines, product/service words, location words, phone numbers or URLs in the name, and can suspend profiles for it. Some survey respondents rate keywords in the name highly; doing it risks suspension and competitors reporting you. Don't. [first-party; practitioner]
-- **Categories**: one primary category (the one that best describes the core business) and up to 9 additional ones. Do not add a category for every service. Check which primary category the top 3 competitors use (visible in Maps). [first-party; practitioner]
+- **Categories**: one primary category (the one that best describes the core business) and a few additional ones (practitioner guides give a limit of 9; Google's page states no number). Do not add a category for every service. Check which primary category the top 3 competitors use (visible in Maps). [first-party; practitioner]
 - **Attributes**: factual tags such as "wheelchair accessible", "outdoor seating", "women-owned", "online appointments". Availability varies by country and category. Fill every one that is true. [first-party]
 - **Services, products, description, hours, holiday hours**: complete everything; Google says complete, accurate information helps relevance. Wrong hours create bad reviews. [first-party]
 - **Photos**: JPG/PNG, 10 KB–5 MB, recommended 720×720 px; in focus, well lit, no heavy filters. Add exterior (helps people find the door), interior, team, work examples. No controlled evidence that photo count affects ranking; it does affect whether people choose you. [first-party; practitioner]
@@ -92,4 +92,4 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Sources
 
-research/seo-advanced.md §A (Google Business Profile Help; Maps User Generated Content policy; Local Services Help; Google Search Central LocalBusiness docs; FTC 2024 rule and Q&A; Whitespark survey; agency reports on Q&A removal). Google pages were read from search snippets only; see the access caveat there.
+research/seo-advanced.md §A (Google Business Profile Help; Maps User Generated Content policy; Local Services Help; Google Search Central LocalBusiness docs; FTC 2024 rule and Q&A; Whitespark survey; agency reports on Q&A removal). Google pages were re-read directly on 2026-10-05; see the access caveat there.

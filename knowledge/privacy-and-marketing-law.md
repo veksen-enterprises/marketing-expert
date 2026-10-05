@@ -65,8 +65,9 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## "Made in USA"
 
-- **Made in USA Labeling Rule (2021)** [first-party]: an unqualified "Made in USA" claim on labels, including online and catalogue listings, requires that **all or virtually all** of the product is made in the US. That means final assembly, all significant processing, and nearly all components are US-made.
+- **Made in USA Labeling Rule (2021)** [first-party]: an unqualified "Made in USA" claim on a label, or as a seal, mark, tag or stamp in a print or online mail-order catalogue, requires that **all or virtually all** of the product is made in the US. That means final assembly, all significant processing, and nearly all components are US-made.
 - Williams-Sonoma paid a record $3.17M civil penalty (April 2024) for breaking an earlier FTC Made in USA order [first-party].
+- Origin claims in other ads fall outside the rule but are still judged under the FTC Act, so hold them to the same standard.
 - Use qualified claims ("Assembled in USA from imported parts") when not all or virtually all is US-made.
 
 ## Price claims and fake discounts
@@ -86,7 +87,7 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Accessibility of marketing sites
 
-- **European Accessibility Act** [first-party; verified-search: ec.europa.eu, 2026-10-04]: applies from **28 June 2025** to covered products and services newly placed on the market, including e-commerce services. Microenterprises providing services (fewer than 10 staff and turnover or balance sheet up to €2M) are exempt.
+- **European Accessibility Act** [first-party; read 2026-10-05, Directive (EU) 2019/882]: applies to covered products placed on the market after **28 June 2025**, and to covered services provided to consumers after that date, including e-commerce services. Existing online shops are covered, not only new ones; the transition period to 28 June 2030 is only for products already used to deliver a service. Microenterprises providing services (fewer than 10 staff and turnover or balance sheet up to €2M) are exempt.
 - **US (ADA Title III)** [secondary, Seyfarth Shaw data via search]: 3,117 federal website-accessibility lawsuits in 2025, up 27% from 2,452 in 2024. State-court filings push the total above 5,000 (vendor-relayed estimate).
 - **Standard**: build to **WCAG 2.2 level AA** [first-party, W3C; not re-verified]. Common failures: low contrast, missing text alternatives, uncaptioned video, keyboard traps in pop-ups and cookie banners. Scanners find only part of the problems; test with a keyboard and a screen reader. "Overlay" widgets do not make a site compliant [practitioner].
 

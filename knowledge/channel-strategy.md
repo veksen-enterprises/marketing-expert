@@ -25,7 +25,7 @@ Their "50% rule": spend half your time on traction while building product, not a
 
 ## Channel decay (Andrew Chen's "law of shitty clickthroughs") [practitioner]
 
-Every channel's performance decays as novelty wears off and competitors pile in (banner CTRs went from very high in 1994 to ~0.05% today). Implications: keep testing new channels and formats continuously; expect a scaled channel's CAC to rise; don't extrapolate early test CAC linearly to 10× spend.
+Every channel's performance decays as novelty wears off and competitors pile in (Chen's example: the first banner ad, on HotWired in 1994, had a 78% click-through rate; Facebook ads in 2011 averaged 0.05%). Implications: keep testing new channels and formats continuously; expect a scaled channel's CAC to rise; don't extrapolate early test CAC linearly to 10× spend.
 
 ## Picking channels: questions that narrow it fast
 
@@ -38,7 +38,7 @@ Every channel's performance decays as novelty wears off and competitors pile in 
 
 ## PLG vs sales-led [practitioner / vendor]
 
-- **Product-led growth** (term coined by Blake Bartlett, OpenView, 2016): the product drives acquisition, activation, retention and expansion; end users adopt before buyers approve. Fits: bottom-up adoption, fast time-to-value, low marginal cost, an individual user with daily pain.
+- **Product-led growth** (term coined by Blake Bartlett, OpenView, 2016): the product is the main driver of customer acquisition, conversion and expansion (OpenView's definition); end users adopt before buyers approve. Fits: bottom-up adoption, fast time-to-value, low marginal cost, an individual user with daily pain.
 - **Sales-led**: people drive growth via demos and negotiation. Fits: high ACV, complex buying committees, products that need configuration or change management, new categories that need education.
 - Most B2B SaaS ends up hybrid: self-serve acquisition, sales-assisted expansion into larger accounts ("product-led sales").
 - Evidence: VC and vendor content; no peer-reviewed comparisons.

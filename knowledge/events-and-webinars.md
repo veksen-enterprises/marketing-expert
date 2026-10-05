@@ -9,7 +9,7 @@ This playbook covers events you run, attend or sponsor, and webinars. How events
 ## When events pay off
 
 - **Best fit**: B2B with high annual contract value (roughly $25–50k and up; a heuristic, see channel-strategy), long sales cycles and buying groups. One won deal can pay for a whole event program. For low-price self-serve products, events rarely pay back as acquisition; use them for community, recruiting or partnerships instead [practitioner].
-- **Why they work in B2B**: deals involve many people. Forrester's 2025 Buyers' Journey Survey reports an average of 13 people inside the buying organisation and 9 outside it, and that 86% of purchases stall at some point [vendor: analyst survey]. A dinner or a meeting at a show can reach several of these people at once, and can restart a stalled deal.
+- **Why they work in B2B**: deals involve many people. Forrester's 2025 Buyers' Journey Survey reports an average of 13 people inside the buying organisation and 9 outside it, and its 2024 State of Business Buying found that 86% of purchases stall at some point [vendor: analyst survey]. A dinner or a meeting at a show can reach several of these people at once, and can restart a stalled deal.
 - **Trend**: in Forrester's 2024 B2B Event Trends Survey, 58% of marketers planned more small hosted in-person events (the fastest-growing type), and 92% planned to improve post-event follow-up [vendor: analyst survey]. Bizzabo's 2025 survey of 1,500+ organisers and attendees found 78% of organisers say in-person events have unmatched impact on their goals [vendor: Bizzabo sells event software; opinion, not measured outcomes].
 - **Bad fit signs**: no clear ICP (ideal customer profile, see b2b-saas-sales-led), no sales team to follow up, or a goal of "awareness" with no way to check it.
 
@@ -59,9 +59,9 @@ Decide the one goal before you book anything: new pipeline, moving open deals fo
 ## Webinars
 
 **Benchmarks** (vendor data from platform customers; definitions differ, so compare only with the same definition):
-- ON24's 2025 Webinar Benchmarks Report (2024 data) puts registrant-to-attendee conversion at about 57–60% and on-demand viewers at roughly 43–50% of all attendees, depending on which ON24 page and year you read [vendor: ON24 sells webinar software; ON24 counts on-demand viewers as attendees].
+- ON24's Webinar Benchmarks Reports put registrant-to-attendee conversion at 57% (2025 report, 2024 data) and 60% (2026 report, 2025 data), and on-demand viewers at roughly 43–50% of all attendees, depending on which figure in the report you read [vendor: ON24 sells webinar software; ON24 counts on-demand viewers as attendees].
 - Goldcast's 2025 B2B Webinar Benchmark Report (19,531 webinars, 418 brands, 2024) found average attendance of 33% of registrants, an average of 238 registrants, average watch time of 29 minutes for mostly 45–60 minute sessions, and nearly 80% of webinars made available on demand [vendor: Goldcast sells webinar software].
-- ON24 also reports that 54% of registrants sign up eight or more days before the event [vendor]. Goldcast found Monday and Tuesday sessions drew more attendees than the more common Wednesday and Thursday slots [vendor].
+- ON24's older 2019 report (2018 data) found that 54% of registrants sign up eight or more days before the event [vendor]. Goldcast found Monday and Tuesday sessions drew more attendees than the more common Wednesday and Thursday slots [vendor].
 - **What this means**: expect roughly one-third of registrants live, and up to about half to 60% if you count on-demand views. Plan promotion over at least two weeks, and treat the recording as a main product, not an afterthought.
 
 **How to run them** [practitioner]:

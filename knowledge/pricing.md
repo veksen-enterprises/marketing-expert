@@ -30,7 +30,7 @@ Most teams start at step 4 and copy a competitor's number.
 | Tier design, feature-level WTP, competitive context | Choice-based conjoint (larger sample, expert design) |
 
 - **Van Westendorp** (1976): too cheap / cheap / expensive / too expensive; read the acceptable range off curve intersections. Measures price perception, not purchase; assumes the respondent knows the category's prices. Add Newton–Miller–Smith purchase-likelihood questions to get a demand curve.
-- **Gabor-Granger** (1966) overstates price sensitivity because it focuses respondents on price.
+- **Gabor-Granger** (1966) is so obviously a pricing game to respondents that answers may not predict real purchases, and it says nothing about which features drive value (Sawtooth) [vendor].
 - All survey WTP is hypothetical. Validate in market (test price on new signups, by segment or region, with a holdout).
 
 ## Price psychology: what holds up
@@ -38,7 +38,7 @@ Most teams start at step 4 and copy a competitor's number.
 - **Left-digit effect** [research]: $2.99 is perceived as meaningfully smaller than $3.00 only when the left digit changes (Thomas & Morwitz 2005). Field: Anderson & Simester (2003) catalog experiments; $9 endings raised demand, including $39 outselling $34; stronger for new items. A 2022 online experiment (Fenneman et al., n=266) found no effect. Expect small effects in considered B2B purchases; round prices are often used to signal premium (practitioner).
 - **Fairness** [research]: raising prices to pass on costs is accepted; exploiting demand spikes is seen as unfair (Kahneman, Knetsch & Thaler 1986: 82% rated a post-storm snow shovel price rise unfair). Tie increases to added value or cost.
 - **Reference prices** [research]: frequent and deep promotions lower the price buyers expect (Kalwani & Yim 1992). Sale signs lose effect as more products carry them (Anderson & Simester 2001).
-- **Discounts can drive away recent buyers** [research, replicated across 2 firms]: in a 28-month field experiment with 50,000+ customers, customers who saw a lower price than they'd recently paid bought less across the whole firm, more than $90 lower revenue per affected customer, strongest among the best customers (Anderson & Simester 2010).
+- **Discounts can drive away recent buyers** [research, replicated across 2 firms]: in a 28-month field experiment with 50,000+ customers, customers who saw a lower price than they'd recently paid bought less across the whole firm, strongest among the best customers. Among customers who had paid a high price for a discounted item in the previous 3 months, orders fell about 15% and revenue by more than $90 per customer over 28 months; the effect lasted more than a year but faded (Anderson & Simester 2010).
 
 ## Usage-based pricing [vendor data]
 
@@ -48,7 +48,7 @@ OpenView surveys: companies using some usage-based pricing rose from 34% (2020) 
 
 - **Card-required trials** convert more trials to paid (Totango 2012 via Chargebee: ~50% vs ~15%) but draw far fewer signups; end-to-end visitor-to-paid was reportedly ~2× higher for no-card trials. The original report could not be located; treat as directional. Optimise for paid customers per visitor, not trial conversion rate.
 - **Freemium**: OpenView 2022 benchmarks: median ~3 paid per 1,000 visitors for freemium vs ~7 for free trial, with freemium generating more signups and virality. Freemium is an acquisition model; it fits low marginal cost and collaborative/viral products.
-- **Reverse trial** (Elena Verna): full paid tier for a limited time, then drop to a free tier instead of locking out. Claimed 10–40% conversion lift; no published dataset.
+- **Reverse trial** (popularised by Elena Verna): full paid tier for a limited time, then drop to a free tier instead of locking out. Verna says it "usually" lifts conversion about 20%, if users make heavy use of paid features during the trial; no published dataset.
 
 ## Price increases
 

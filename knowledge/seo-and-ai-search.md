@@ -25,7 +25,7 @@ For the practical side (which bots to allow, what assistants cite, AI shopping f
 
 - **Evidence**: Aggarwal et al. (KDD 2024) found adding quotations, statistics and source citations raised visibility in generative engine answers by up to ~40% on their benchmark; keyword stuffing didn't help. A lab benchmark; generalisation is contested. [research]
 - **Speculation**: most "AI visibility" playbooks and scores, and claims that schema markup or llms.txt drive LLM citations, have no controlled evidence.
-- **llms.txt**: Google said it doesn't use it (Jul 2025); no major LLM provider had publicly committed to it as of Q1 2026; Ahrefs (137k sites, May 2026): 28% publish an llms.txt and 97% of those files got zero requests. Cheap to add, but don't expect results from it.
+- **llms.txt**: Google's own guide to generative AI features (Search Central, updated Jul 2026) says Google Search doesn't use llms.txt or other special AI files; no major LLM provider had publicly committed to it as of Q1 2026; Ahrefs (137k sites, May 2026): 28% publish an llms.txt and 97% of those files got zero requests. Cheap to add, but don't expect results from it.
 - Practical stance: the things that make content citable by LLMs (clear claims, data, named sources, being mentioned across the web and in communities) are the same things that make it useful to people and to Google. Track branded search and referral traffic from AI assistants rather than buying "AI rank" scores.
 
 ## Keyword and topic research
@@ -39,7 +39,7 @@ For the practical side (which bots to allow, what assistants cite, AI shopping f
 
 Run crawl_site on the whole site for site-wide problems (broken links, redirect chains, duplicates, orphan pages, sitemap conflicts, click depth, hreflang), then audit_page on key templates (render=true if the site builds content with JavaScript).
 - Indexable (no stray noindex, X-Robots-Tag), canonical correct, in the XML sitemap, internally linked.
-- Unique title (~50–60 chars visible) and meta description (~155 desktop / ~120 mobile; Google often rewrites both).
+- Unique title (~50–60 chars visible) and meta description (~155 desktop / ~120 mobile). These counts are practitioner approximations: Google sets no length limit, truncates to fit the device width, and often rewrites both.
 - One clear h1; logical heading structure.
 - Server-rendered main content (crawlers and LLM fetchers see less of client-rendered pages).
 - Core Web Vitals good: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1.

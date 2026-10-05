@@ -30,7 +30,7 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 
 ## Where attribution lies most
 
-- **Brand search**: often captures people who'd have arrived anyway. eBay saw ~99.5% of lost paid clicks return via organic when it paused brand ads. Test with a geo or time holdout, especially if no competitor bids on your brand.
+- **Brand search**: often captures people who'd have arrived anyway. When eBay paused brand ads, total clicks fell only ~0.5% because organic results picked up nearly all the lost paid clicks. Test with a geo or time holdout, especially if no competitor bids on your brand.
 - **Retargeting**: reaches people already likely to convert. Measure with a holdout before treating its ROAS as real.
 - **View-through conversions**: credit for ads that may never have been noticed. Check the attribution window settings.
 

@@ -20,7 +20,7 @@ What isn't built yet, what's weak in what is built, and what can't be measured o
 ## Not yet measured or fully trusted
 
 7. **Breadth is untested.** Every evaluation case so far is a developer tool or a gaming hobby product. The ecommerce, local-services, consumer-app, marketplace, professional-services and retail playbooks have never been scored. New cases are needed for those business types.
-8. **Most research figures come from search snippets.** The research ran behind a network policy that blocked most publishers, so most figures need checking against the full source. Opening network access to journal and publisher sites would allow a re-verification pass.
+8. **Some research figures still come from search snippets.** On 2026-10-05 a re-verification pass read the primary sources behind the snippet-only citations in all research notes: about 525 confirmed and about 150 corrected, and the playbooks were updated to match. About 100 citations stay marked "re-check" because the source is paywalled, behind a bot check, or needs a contact header (SSRN, ScienceDirect, Wiley, sec.gov, Reddit). Those need a library login or another route.
 9. **The agent-channel evidence is a simulation.** The test of how coding agents choose between MCP tools used a text list of tools, not a live agent session. The next test is a live agent loop in a small repo, scoring whether a tool is called at any step.
 
 ## Not planned

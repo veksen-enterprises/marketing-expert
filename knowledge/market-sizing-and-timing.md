@@ -51,8 +51,8 @@ So: customer first, number second, evidence that it's real, and growth.
 
 ## First-mover evidence
 
-- **Golder & Tellis (1993)**, ~500 brands in 50 categories, correcting earlier studies that only looked at survivors: almost half of market pioneers failed (**47%**); pioneers' mean market share ~**10%**; pioneers led in only ~11% of categories; enduring early leaders entered on average **13 years** after pioneers. [research, snippet-only]
-- **Lieberman & Montgomery** (1988, review 2013): first-mover advantages come from technology leadership, pre-empting scarce assets and buyer switching costs; disadvantages from followers free-riding, uncertainty resolving for followers, technology shifts and incumbent inertia. Advantages "often exist even though they are by no means inevitable." [research]
+- **Golder & Tellis (1993)**, ~500 brands in 50 categories, correcting earlier studies that only looked at survivors. In the 36 categories with full data: almost half of market pioneers failed (**47%**); pioneers' mean market share ~**10%** (earlier survivor-only studies found ~30%); pioneers led in only 11% of categories. Early leaders entered on average **13 years** after pioneers, failed only 8% of the time and held ~28% share. [research, read in full]
+- **Lieberman & Montgomery** (1988, review 2013): first-mover advantages come from technology leadership, pre-empting scarce assets and buyer switching costs; disadvantages from followers free-riding, uncertainty resolving for followers, technology shifts and incumbent inertia. The 2013 review: advantages to early movers "often exist, but are by no mean[s] inevitable", show up more for market share than for profit or survival, and fade over time. [research]
 - **Suarez & Lanzolla** (2005, 2007): early-entry advantage depends on the pace of technology change and of market growth. Both slow ("calm waters") favours pioneers; both fast ("rough waters", e.g. Netscape) disables early-entry advantage. [research]
 
 **Takeaway**: being early isn't the advantage. Name what would make early entry last (switching costs, scarce inputs, network density) and the resources to survive until the market forms.

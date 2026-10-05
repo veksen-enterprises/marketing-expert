@@ -57,7 +57,7 @@ General research on reference prices and discount effects is in pricing.
 
 ## Velocity: the number retailers watch
 
-- **Velocity** = units (or dollars) sold per store per week in stores that carry the item (UPSPW). Data providers also report it per point of distribution or per $ million ACV, which adjusts for store size [vendor: SPINS definitions].
+- **Velocity** = units (or dollars) sold per store per week in stores that carry the item (UPSPW). Data providers also divide by total distribution points (which counts how many of your items each store carries) or by % ACV (all-commodity volume, which weights stores by their total sales) [vendor: SPINS definitions].
 - Velocity decides whether you keep your shelf space. Low velocity is the most common reason items are cut at a reset [practitioner].
 - There is no universal "good" number; compare with the item you replaced, the category average, and the retailer's threshold. Broker blogs quote 8–12 units per store per week as healthy for natural snacks and beverages [rule-of-thumb; category-specific].
 - Get the data: retailer portals, distributor reports, or syndicated data (SPINS for natural and specialty, NielsenIQ or Circana for large chains) [vendor].

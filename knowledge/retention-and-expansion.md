@@ -10,10 +10,10 @@ Use this playbook when growth is leaking out of the bottom of the funnel, or whe
 
 ## Why retention compounds, and how far to trust the famous numbers
 
-- **"5% more retention → 25–95% more profit."** Trace: Reichheld & Sasser (1990, HBR, "Zero Defections") reported that reducing the defection rate by 5% raised profits by 25–85% in the businesses they studied (for example 85% in one bank branch system, 50% in an insurance brokerage, 30% in an auto-service chain). The "25–95%" version is a later Bain restatement, widely spread by an HBR article (Gallo 2014). [practitioner: consulting case data, not a controlled or replicated study; snippet-only]
+- **"5% more retention → 25–95% more profit."** Trace: Reichheld & Sasser (1990, HBR, "Zero Defections") reported that reducing the defection rate by 5% raised profits by 25–85% in the businesses they studied (for example 85% in one bank branch system, 50% in an insurance brokerage, 30% in an auto-service chain). The "25–95%" version is a later Bain restatement, widely spread by an HBR article (Gallo 2014). [practitioner: consulting case data, not a controlled or replicated study; read 2026-10-05]
   - Use it as a reason to look, not as a forecast. The effect depends on margin, acquisition cost and how long customers already stay.
-- **Better evidence on the direction:** Gupta, Lehmann & Stuart (2004, JMR) modelled customer value for public firms and found a 1% improvement in retention raised firm value by about 5%, versus about 1% for a 1% margin gain and about 0.1% for a 1% cut in acquisition cost. [research; snippet-only]
-- **The caveat:** Reinartz & Kumar (2002, HBR, from multi-company customer data) found that loyal customers are not reliably cheaper to serve, less price-sensitive or better at referrals, and many long-term customers were barely profitable. [research; snippet-only] Retain *profitable* customers; do not buy retention at any price.
+- **Better evidence on the direction:** Gupta, Lehmann & Stuart (2004, JMR) modelled customer value for five public firms (Capital One, Amazon, eBay, Ameritrade, E*Trade) and found a 1% improvement in retention raised value by about 5% (2.5–7% across the five), versus about 1% for a 1% margin gain and about 0.1% for a 1% cut in acquisition cost. [research; read 2026-10-05]
+- **The caveat:** Reinartz & Kumar (2002, HBR, 16,000 customers in four companies) found that loyal customers are not reliably cheaper to serve, less price-sensitive or better at referrals, and many long-term customers were barely profitable. [research; read 2026-10-05] Retain *profitable* customers; do not buy retention at any price.
 - "Acquiring a customer costs 5–25× more than keeping one" is repeated everywhere with no traceable study. [rule-of-thumb] Compute your own CAC vs cost-to-retain.
 
 ## Diagnose churn before treating it
@@ -47,18 +47,18 @@ Use this playbook when growth is leaking out of the bottom of the funnel, or whe
 - **Cross-sell timing**: offer a second product after the first has delivered value (after activation and a successful first period), not during onboarding. In e-commerce, cross-sell in post-purchase and replenishment emails. [practitioner]
 - **Plan upgrades**: put the features larger customers need (security, reporting, support levels) in higher tiers; give CS or product-led sales a list of accounts hitting limits (see self-serve-saas, PQLs).
 - **NRR drivers**: NRR = start revenue + expansion − contraction − churn, over start revenue (see metrics-and-measurement). It rises with (1) low gross churn, (2) a pricing unit that grows with use, (3) land in one team then spread, and (4) price increases on renewal. Report GRR beside NRR so expansion does not hide churn.
-- Benchmarks: SaaS Capital reports a median NRR of about 102% (top quartile about 111%) for private SaaS with $25–50k ACV; Benchmarkit reports about 101% median for private B2B SaaS in 2025. [vendor; snippet-only] Lower-ACV and SMB businesses usually sit lower; benchmark by ACV.
+- Benchmarks: SaaS Capital reports a median NRR of about 102% (top quartile about 111%) for private SaaS with $25–50k ACV; Benchmarkit reports about 101% median for private B2B SaaS in 2025. [vendor; read 2026-10-05] Lower-ACV and SMB businesses usually sit lower; benchmark by ACV.
 
 ## Win-back
 
-- Kumar, Bhagwat & Zhang (2015, Journal of Marketing; press coverage indicates telecom data) found the strength of the first relationship predicts whether a lost customer accepts a win-back offer, and that the reason for leaving and the type of offer change both the return rate and the profitability of the "second lifetime". [research; snippet-only] Segment win-back by why and how customers left.
+- Kumar, Bhagwat & Zhang (2015, Journal of Marketing; US telecom data, 2006–2014) found the strength of the first relationship predicts whether a lost customer accepts a win-back offer, and that the reason for leaving and the type of offer change both the return rate and the profitability of the "second lifetime". [research; read 2026-10-05] Segment win-back by why and how customers left.
 - Consumer subscription apps: annual subscribers who cancel rarely return (see consumer-apps). [vendor]
 - Practice: win back at natural moments (new feature that fixes the stated reason, new season, contract renewal at a competitor); measure with a holdout. [practitioner]
 
 ## Loyalty programs: weak evidence for creating loyalty
 
-- Sharp & Sharp (1997, International Journal of Research in Marketing) tested an Australian multi-brand program (Fly Buys) against the Dirichlet model (a statistical benchmark of normal repeat buying for a brand of a given size) and found little "excess loyalty"; buyers kept buying from a repertoire of brands. [research; snippet-only]
-- Dowling & Uncles (1997, Sloan Management Review) reviewed the evidence and concluded most programs add cost without changing market structure; the ones that work raise the product's value and are fully costed. [research review; snippet-only]
+- Sharp & Sharp (1997, International Journal of Research in Marketing) tested an Australian multi-brand program (Fly Buys) against the Dirichlet model (a statistical benchmark of normal repeat buying for a brand of a given size) and found little "excess loyalty"; buyers kept buying from a repertoire of brands. [research; read 2026-10-05; program name not re-verified]
+- Dowling & Uncles (1997, Sloan Management Review) reviewed the evidence and concluded most programs add cost without changing market structure; the ones that work raise the product's value and are fully costed. [research review; read 2026-10-05]
 - Use: programs can still help with data collection, retaining heavy buyers, or matching competitors. Model the cost (discounts, liability for unredeemed points, operations) and test against a control group, not "members spend more" (members were heavy buyers already).
 
 ## Customer marketing and advocacy
@@ -72,7 +72,7 @@ Use this playbook when growth is leaking out of the bottom of the funnel, or whe
 
 - **Annual plans** lock in 12 months and remove 11 monthly decisions to leave; offer a discount (often ~15–20% [rule-of-thumb]) and check whether annual cohorts simply had more motivated buyers.
 - **Downgrade path**: a cheaper plan keeps the customer and their data; a missing downgrade forces a full cancel. [practitioner]
-- **Pause**: good for seasonal or life-event churn (gyms, meal kits, consumer subscriptions). Recurly reports a meaningful share of would-be cancellers choose pause when offered. [vendor; snippet-only] Set an automatic end date.
+- **Pause**: good for seasonal or life-event churn (gyms, meal kits, consumer subscriptions). Recurly reports pause use grew 66% year over year in 2024, and one of its customers (Userlike) kept 20% of at-risk subscribers by offering a pause; there is no cross-company figure for how many would-be cancellers choose pause. [vendor; read 2026-10-05] Set an automatic end date.
 - **Price rises**: give notice, explain new value, and protect long-term or at-risk customers; watch churn by cohort after the change.
 
 ## Cancellation flows and the law (checked October 2026)

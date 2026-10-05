@@ -27,7 +27,7 @@ Only raw.githubusercontent.com, github.com and microsoft.com could be reached re
 
 **Read at abstract level:** Imtiaz et al. 2019, from the author-hosted PDF.
 
-Everything else rests on search-engine snippets, secondary summaries or memory. Nothing in sections 3, 4 or 5 was read in full. Do not quote a figure marked snippet-only or unverified until someone has checked it against the full text.
+Everything else rests on search-engine snippets, secondary summaries or memory. Nothing in sections 3, 4 or 5 was read in full. Do not quote a figure marked snippet-only or unverified until someone has checked it against the full text. On 2026-10-05 sources [78]–[134] were re-checked against primary sources where reachable; each re-read item is tagged "read 2026-10-05", and items still unreachable carry a "re-check 2026-10-05" note.
 
 **How to read the marks.** This note uses the same marks as the main note. Each finding was checked against search text or the source. Where the verification pass changed a claim, the corrected version appears here, marked "(Corrected: …)". Numbering continues from the main note. **[1]–[76] are the main note's sources.** This addendum's sources start at [77].
 
@@ -63,63 +63,63 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
 ## Sources
 
 77. Christakis, M. & Bird, C. (2016). "What Developers Want and Need from Program Analysis: An Empirical Study." ASE 2016, pp. 332–343. doi:10.1145/2970276.2970347. https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/What-Developers-Want-and-Need-from-Program-Analysis-An-Empirical-Study.pdf [read-full]
-78. Sadowski, C., Aftandilian, E., Eagle, A., Miller-Cushon, L. & Jaspan, C. (2018). "Lessons from Building Static Analysis Tools at Google." *Communications of the ACM* 61(4):58–66. doi:10.1145/3188720. https://cacm.acm.org/research/lessons-from-building-static-analysis-tools-at-google/ . Also Sadowski, C., van Gogh, J., Jaspan, C., Söderberg, E. & Winter, C. (2015). "Tricorder: Building a Program Analysis Ecosystem." ICSE 2015, pp. 598–608. [first-party; snippet-only]
+78. Sadowski, C., Aftandilian, E., Eagle, A., Miller-Cushon, L. & Jaspan, C. (2018). "Lessons from Building Static Analysis Tools at Google." *Communications of the ACM* 61(4):58–66. doi:10.1145/3188720. https://cacm.acm.org/research/lessons-from-building-static-analysis-tools-at-google/ . Also Sadowski, C., van Gogh, J., Jaspan, C., Söderberg, E. & Winter, C. (2015). "Tricorder: Building a Program Analysis Ecosystem." ICSE 2015, pp. 598–608. [first-party; 2018 article read 2026-10-05 (Google-hosted PDF https://storage.googleapis.com/gweb-research2023-media/pubtools/4365.pdf); 2015 paper snippet-only]
 79. Sadowski, C. (2020). "Static Analysis." Chapter 20 in Winters, T., Manshreck, T. & Wright, H. (eds.), *Software Engineering at Google*. O'Reilly. Chapter edited by Lisa Carey. https://raw.githubusercontent.com/abseil/abseil.github.io/master/resources/swe-book/html/ch20.html [first-party; read-full]
-80. Distefano, D., Fähndrich, M., Logozzo, F. & O'Hearn, P.W. (2019). "Scaling Static Analyses at Facebook." *Communications of the ACM* 62(8):62–70. doi:10.1145/3338112. https://cacm.acm.org/research/scaling-static-analyses-at-facebook/ . Also Calcagno, C., Distefano, D. & O'Hearn, P. (11 Jun 2015). "Open-sourcing Facebook Infer: Identify bugs before you ship." Facebook Engineering blog. [first-party; snippet-only]
+80. Distefano, D., Fähndrich, M., Logozzo, F. & O'Hearn, P.W. (2019). "Scaling Static Analyses at Facebook." *Communications of the ACM* 62(8):62–70. doi:10.1145/3338112. https://cacm.acm.org/research/scaling-static-analyses-at-facebook/ . Also Calcagno, C., Distefano, D. & O'Hearn, P. (11 Jun 2015). "Open-sourcing Facebook Infer: Identify bugs before you ship." Facebook Engineering blog. [first-party; read 2026-10-05; corrected] (author copy https://cseweb.ucsd.edu/~dstefan/cse227-spring20/papers/distefano:scaling.pdf ; blog at engineering.fb.com)
 81. Kavaler, D., Trockman, A., Vasilescu, B. & Filkov, V. (2019). "Tool Choice Matters: JavaScript Quality Assurance Tools and Usage Outcomes in GitHub Projects." ICSE 2019, pp. 476–487. https://raw.githubusercontent.com/CMUSTRUDEL/cmustrudel.github.io/master/papers/kavaler2019tools.pdf [read-full]
 82. Imtiaz, N., Murphy, B. & Williams, L. (2019). "How Do Developers Act on Static Analysis Alerts? An Empirical Study of Coverity Usage." ISSRE 2019. https://raw.githubusercontent.com/nasifimtiazohi/nasifimtiazohi.github.io/master/assets/pdf/issre19.pdf [abstract read]
 83. Marcilio, D., Bonifácio, R., Monteiro, E., Canedo, E., Luz, W. & Pinto, G. (2019). "Are Static Analysis Violations Really Fixed? A Closer Look at Realistic Usage of SonarQube." ICPC 2019. doi:10.1109/ICPC.2019.00040. https://raw.githubusercontent.com/dvmarcilio/dvmarcilio.github.io/master/papers/icpc2019.pdf [read-full]
-84. Johnson, B., Song, Y., Murphy-Hill, E. & Bowdidge, R. (2013). "Why Don't Software Developers Use Static Analysis Tools to Find Bugs?" ICSE 2013, pp. 672–681. https://cs.gmu.edu/~johnsonb/docs/icse2013.pdf [snippet-only; DOI 10.1109/ICSE.2013.6606613 unverified]
-85. Bessey, A., Block, K., Chelf, B., Chou, A., Fulton, B., Hallem, S., Henri-Gros, C., Kamsky, A., McPeak, S. & Engler, D. (2010). "A Few Billion Lines of Code Later: Using Static Analysis to Find Bugs in the Real World." *Communications of the ACM* 53(2):66–75. doi:10.1145/1646353.1646374. https://cacm.acm.org/research/a-few-billion-lines-of-code-later/ [first-party; snippet-only]
-86. Beller, M., Bholanath, R., McIntosh, S. & Zaidman, A. (2016). "Analyzing the State of Static Analysis: A Large-Scale Evaluation in Open Source Software." SANER 2016, pp. 470–481. doi:10.1109/SANER.2016.105. https://rebels.cs.uwaterloo.ca/papers/saner2016_beller.pdf [snippet-only]
-87. Zampetti, F., Scalabrino, S., Oliveto, R., Canfora, G. & Di Penta, M. (2017). "How Open Source Projects Use Static Code Analysis Tools in Continuous Integration Pipelines." MSR 2017. doi:10.1109/MSR.2017.2 [snippet-only]
-88. Vassallo, C., Panichella, S., Palomba, F., Proksch, S., Gall, H.C. & Zaidman, A. (2020). "How Developers Engage with Static Analysis Tools in Different Contexts." *Empirical Software Engineering* 25(2):1419–1457. https://www.ifi.uzh.ch/seal/people/vassallo/VassalloASATsEMSE2019.pdf [snippet-only]
-89. Cihan, U., Haratian, V., İçöz, A., Gül, M.K., Devran, Ö., Bayendur, E.F. et al. (2025). "Automated Code Review In Practice." ICSE-SEIP 2025. arXiv:2412.18531. https://arxiv.org/pdf/2412.18531 [snippet-only]
+84. Johnson, B., Song, Y., Murphy-Hill, E. & Bowdidge, R. (2013). "Why Don't Software Developers Use Static Analysis Tools to Find Bugs?" ICSE 2013, pp. 672–681. https://cs.gmu.edu/~johnsonb/docs/icse2013.pdf [snippet-only (re-check 2026-10-05: abstract read via OpenAlex, which confirms the DOI 10.1109/ICSE.2013.6606613 and pp. 672–681; no copy of the full text found, the gmu.edu link no longer serves the PDF)]
+85. Bessey, A., Block, K., Chelf, B., Chou, A., Fulton, B., Hallem, S., Henri-Gros, C., Kamsky, A., McPeak, S. & Engler, D. (2010). "A Few Billion Lines of Code Later: Using Static Analysis to Find Bugs in the Real World." *Communications of the ACM* 53(2):66–75. doi:10.1145/1646353.1646374. https://cacm.acm.org/research/a-few-billion-lines-of-code-later/ [first-party; read 2026-10-05] (copy at https://web.stanford.edu/~engler/BLOC-coverity.pdf)
+86. Beller, M., Bholanath, R., McIntosh, S. & Zaidman, A. (2016). "Analyzing the State of Static Analysis: A Large-Scale Evaluation in Open Source Software." SANER 2016, pp. 470–481. doi:10.1109/SANER.2016.105. https://rebels.cs.uwaterloo.ca/papers/saner2016_beller.pdf [read 2026-10-05; corrected]
+87. Zampetti, F., Scalabrino, S., Oliveto, R., Canfora, G. & Di Penta, M. (2017). "How Open Source Projects Use Static Code Analysis Tools in Continuous Integration Pipelines." MSR 2017, pp. 334–344. doi:10.1109/MSR.2017.2 [read 2026-10-05 (abstract, via OpenAlex)]
+88. Vassallo, C., Panichella, S., Palomba, F., Proksch, S., Gall, H.C. & Zaidman, A. (2020). "How Developers Engage with Static Analysis Tools in Different Contexts." *Empirical Software Engineering* 25(2):1419–1457. https://www.ifi.uzh.ch/seal/people/vassallo/VassalloASATsEMSE2019.pdf [read 2026-10-05; corrected]
+89. Cihan, U., Haratian, V., İçöz, A., Gül, M.K., Devran, Ö., Bayendur, E.F. et al. (2025). "Automated Code Review In Practice." ICSE-SEIP 2025. arXiv:2412.18531. https://arxiv.org/pdf/2412.18531 [read 2026-10-05 (abstract)]
 90. Brown, C. & Parnin, C. (2020). "Understanding the Impact of GitHub Suggested Changes on Recommendations between Developers." ESEC/FSE 2020, pp. 1065–1076. doi:10.1145/3368089.3409722. https://raw.githubusercontent.com/chbrown13/chbrown13.github.io/master/papers/suggestions.pdf [read-full]
-91. Wessel, M., Serebrenik, A., Wiese, I., Steinmacher, I. & Gerosa, M.A. (2020). "Effects of Adopting Code Review Bots on Pull Requests to OSS Projects." ICSME 2020. doi:10.1109/ICSME46990.2020.00011 (suffix unverified). https://research.tue.nl/en/publications/effects-of-adopting-code-review-bots-on-pull-requests-to-oss-proj/ . Extended as "Quality gatekeepers: investigating the effects of code review bots on pull request activities." *Empirical Software Engineering* 27(5) (2022). doi:10.1007/s10664-022-10130-9 [snippet-only]
-92. Wessel, M., Vargovich, J., Gerosa, M.A. & Treude, C. (2023). "GitHub Actions: The Impact on the Pull Request Process." *Empirical Software Engineering* 28(6). doi:10.1007/s10664-023-10369-w [snippet-only]
+91. Wessel, M., Serebrenik, A., Wiese, I., Steinmacher, I. & Gerosa, M.A. (2020). "Effects of Adopting Code Review Bots on Pull Requests to OSS Projects." ICSME 2020. doi:10.1109/ICSME46990.2020.00011 (confirmed via OpenAlex). https://research.tue.nl/en/publications/effects-of-adopting-code-review-bots-on-pull-requests-to-oss-proj/ . Extended as "Quality gatekeepers: investigating the effects of code review bots on pull request activities." *Empirical Software Engineering* 27(5) (2022). doi:10.1007/s10664-022-10130-9. arXiv:2103.13547 [read 2026-10-05; corrected]
+92. Wessel, M., Vargovich, J., Gerosa, M.A. & Treude, C. (2023). "GitHub Actions: The Impact on the Pull Request Process." *Empirical Software Engineering* 28(6). doi:10.1007/s10664-023-10369-w. arXiv:2206.14118 [read 2026-10-05]
 93. Brown, C. & Parnin, C. (2019). "Sorry to Bother You: Designing Bots for Effective Recommendations." 1st International Workshop on Bots in Software Engineering (BotSE 2019), pp. 54–58. doi:10.1109/BotSE.2019.00021. https://raw.githubusercontent.com/chbrown13/chbrown13.github.io/master/papers/sorry.pdf [read-full]
 94. Brown, C. & Parnin, C. (2020). "Comparing Different Developer Behavior Recommendation Styles." ICSE Workshops 2020, pp. 78–85. doi:10.1145/3387940.3391481. https://raw.githubusercontent.com/chbrown13/chbrown13.github.io/master/papers/recommendation_styles.pdf . Also Brown, C. & Parnin, C. (2020). "Sorry to Bother You Again: Developer Recommendation Choice Architectures for Designing Effective Bots." ICSE Workshops 2020, pp. 56–60. doi:10.1145/3387940.3391506 [read-full]
-95. Mirhosseini, S. & Parnin, C. (2017). "Can automated pull requests encourage software developers to upgrade out-of-date dependencies?" ASE 2017, pp. 84–94. https://par.nsf.gov/biblio/10057926-can-automated-pull-requests-encourage-software-developers-upgrade-out-date-dependencies [snippet-only; DOI 10.1109/ASE.2017.8115621 unverified]
-96. He, R., He, H., Zhang, Y. & Zhou, M. (2023). "Automating Dependency Updates in Practice: An Exploratory Study on GitHub Dependabot." *IEEE Transactions on Software Engineering* 49(8). doi:10.1109/TSE.2023.3278129. arXiv:2206.07230. https://arxiv.org/abs/2206.07230 [snippet-only]
-97. Wyrich, M., Ghit, R., Haller, T. & Müller, C. (2021). "Bots Don't Mind Waiting, Do They? Comparing the Interaction With Automatically and Manually Created Pull Requests." BotSE 2021. arXiv:2103.03591. https://ieeexplore.ieee.org/document/9474402/ [snippet-only]
-98. Rombaut, B., Cogo, F.R., Adams, B. & Hassan, A.E. (2023). "There's no Such Thing as a Free Lunch: Lessons Learned from Exploring the Overhead Introduced by the Greenkeeper Dependency Bot in Npm." *ACM Transactions on Software Engineering and Methodology* 32(1). doi:10.1145/3522587 [snippet-only]
-99. Wessel, M., Wiese, I., Steinmacher, I. & Gerosa, M.A. (2021). "Don't Disturb Me: Challenges of Interacting with Software Bots on Open Source Software Projects." *Proc. ACM Hum.-Comput. Interact.* 5(CSCW2). doi:10.1145/3476042. arXiv:2103.13950. https://dl.acm.org/doi/10.1145/3476042 . Also Wessel, M., Abdellatif, A., Wiese, I., Conte, T., Shihab, E., Gerosa, M.A. & Steinmacher, I. (2022). "Bots for Pull Requests: The Good, the Bad, and the Promising." ICSE 2022. doi:10.1145/3510003.3512765 [snippet-only; article number 301 unverified]
-100. Murphy-Hill, E., Smith, E.K., Sadowski, C., Jaspan, C., Winter, C., Jorde, M., Knight, A., Trenk, A. & Gross, S. (2019). "Do Developers Discover New Tools On The Toilet?" ICSE 2019, pp. 465–475. doi:10.1109/ICSE.2019.00059. https://research.google/pubs/pub47861 [snippet-only; page range and author list not re-checked]
-101. Murphy-Hill, E. & Murphy, G.C. (2011). "Peer Interaction Effectively, Yet Infrequently, Enables Programmers to Discover New Tools." CSCW 2011, pp. 405–414. doi:10.1145/1958824.1958888. Also Murphy-Hill, E., Lee, D.Y., Murphy, G.C. & McGrenere, J. (2015). "How Do Users Discover New Tools in Software Development and Beyond?" *Computer Supported Cooperative Work* 24(5):389–422. doi:10.1007/s10606-015-9230-9 [snippet-only]
+95. Mirhosseini, S. & Parnin, C. (2017). "Can automated pull requests encourage software developers to upgrade out-of-date dependencies?" ASE 2017, pp. 84–94. https://par.nsf.gov/biblio/10057926-can-automated-pull-requests-encourage-software-developers-upgrade-out-date-dependencies [read 2026-10-05; DOI 10.1109/ASE.2017.8115621 confirmed via OpenAlex]
+96. He, R., He, H., Zhang, Y. & Zhou, M. (2023). "Automating Dependency Updates in Practice: An Exploratory Study on GitHub Dependabot." *IEEE Transactions on Software Engineering* 49(8). doi:10.1109/TSE.2023.3278129. arXiv:2206.07230. https://arxiv.org/abs/2206.07230 [read 2026-10-05]
+97. Wyrich, M., Ghit, R., Haller, T. & Müller, C. (2021). "Bots Don't Mind Waiting, Do They? Comparing the Interaction With Automatically and Manually Created Pull Requests." BotSE 2021. arXiv:2103.03591. https://ieeexplore.ieee.org/document/9474402/ [read 2026-10-05 (abstract)]
+98. Rombaut, B., Cogo, F.R., Adams, B. & Hassan, A.E. (2023). "There's no Such Thing as a Free Lunch: Lessons Learned from Exploring the Overhead Introduced by the Greenkeeper Dependency Bot in Npm." *ACM Transactions on Software Engineering and Methodology* 32(1). doi:10.1145/3522587. Vol. 32(1), Article 11 (Feb 2023). https://sailresearch.github.io/sail-website/data/pdfs/2023_Theres_no_Such_Thing_as_a_Free_Lunch_Lessons_Learned_from_Exploring_the_Overhead_Introduced_by_the_Greenkeeper_Dependency_Bot_in_Npm.pdf [read 2026-10-05]
+99. Wessel, M., Wiese, I., Steinmacher, I. & Gerosa, M.A. (2021). "Don't Disturb Me: Challenges of Interacting with Software Bots on Open Source Software Projects." *Proc. ACM Hum.-Comput. Interact.* 5(CSCW2). doi:10.1145/3476042. arXiv:2103.13950. https://dl.acm.org/doi/10.1145/3476042 . Also Wessel, M., Abdellatif, A., Wiese, I., Conte, T., Shihab, E., Gerosa, M.A. & Steinmacher, I. (2022). "Bots for Pull Requests: The Good, the Bad, and the Promising." ICSE 2022. doi:10.1145/3510003.3512765 [read 2026-10-05 (2021: arXiv full text; 2022: abstract); article number 301 unverified]
+100. Murphy-Hill, E., Smith, E.K., Sadowski, C., Jaspan, C., Winter, C., Jorde, M., Knight, A., Trenk, A. & Gross, S. (2019). "Do Developers Discover New Tools On The Toilet?" ICSE 2019, pp. 465–475. doi:10.1109/ICSE.2019.00059. https://research.google/pubs/pub47861 [read 2026-10-05 (abstract, via OpenAlex; pp. 465–475 confirmed); author list not re-checked]
+101. Murphy-Hill, E. & Murphy, G.C. (2011). "Peer Interaction Effectively, Yet Infrequently, Enables Programmers to Discover New Tools." CSCW 2011, pp. 405–414. doi:10.1145/1958824.1958888. Also Murphy-Hill, E., Lee, D.Y., Murphy, G.C. & McGrenere, J. (2015). "How Do Users Discover New Tools in Software Development and Beyond?" *Computer Supported Cooperative Work* 24(5):389–422. doi:10.1007/s10606-015-9230-9 [2011 abstract read 2026-10-05; 2015 paper snippet-only (re-check 2026-10-05: Springer redirects to a login page and no open copy was found)]
 102. Brown, C., Middleton, J., Sharma, E. & Murphy-Hill, E. (2017). "How Software Users Recommend Tools to Each Other." VL/HCC 2017, pp. 129–137. https://raw.githubusercontent.com/chbrown13/chbrown13.github.io/master/papers/peer_interactions.pdf [read-full]
-103. Cao, J., Chintagunta, P.K. & Li, S. (2023). "From Free to Paid: Monetizing a Non-Advertising-Based App." *Journal of Marketing Research* 60(4):707–727. doi:10.1177/00222437221131562. https://journals.sagepub.com/doi/10.1177/00222437221131562 . Summary: Chicago Booth Review, "How Do You Get People to Pay to Use a Mobile App?" [snippet-only + secondary]
-104. Runge, J., Levav, J. & Nair, H.S. (2022). "Price promotions and 'freemium' app monetization." *Quantitative Marketing and Economics* 20(2):101–139. doi:10.1007/s11129-022-09248-3. SSRN 3357275. https://link.springer.com/article/10.1007/s11129-022-09248-3 [snippet-only]
-105. Aral, S. & Dhillon, P. (2021; online Aug 2020). "Digital Paywall Design: Implications for Content Demand and Subscriptions." *Management Science*. doi:10.1287/mnsc.2020.3650. SSRN 2906530. https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3650 [snippet-only; volume and pages unverified]
-106. Pauwels, K. & Weiss, A. (2008). "Moving from Free to Fee: How Online Firms Market to Change Their Business Model Successfully." *Journal of Marketing* 72(3):14–31. doi:10.1509/jmkg.72.3.014. https://journals.sagepub.com/doi/10.1509/JMKG.72.3.014 [snippet-only]
-107. Shampanier, K., Mazar, N. & Ariely, D. (2007). "Zero as a Special Price: The True Value of Free Products." *Marketing Science* 26(6):742–757. https://people.duke.edu/~dandan/webfiles/PapersPI/Zero%20as%20a%20Special%20Price.pdf . Also Hossain, M.T. & Saini, R. (2015). "Free indulgences: Enhanced zero-price effect for hedonic options." *International Journal of Research in Marketing* 32(4):457–460. doi:10.1016/j.ijresmar.2015.10.001 [snippet-only + secondary]
-108. Deng, Y., Lambrecht, A. & Liu, Y. (2023). "Spillover Effects and Freemium Strategy in the Mobile App Market." *Management Science*. doi:10.1287/mnsc.2022.4619. SSRN 3149550. https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4619 [snippet-only]
-109. Lambrecht, A. & Misra, K. (2017). "Fee or Free: When Should Firms Charge for Online Content?" *Management Science* 63(4):1150–1165. doi:10.1287/mnsc.2015.2383. SSRN 2307961. https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2383 [snippet-only]
-110. Miller, K.M., Hofstetter, R., Krohmer, H. & Zhang, Z.J. (2011). "How Should Consumers' Willingness to Pay Be Measured? An Empirical Comparison of State-of-the-Art Approaches." *Journal of Marketing Research* 48(1):172–184. SSRN 1520927. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1520927 [snippet-only]
-111. Ding, M., Grewal, R. & Liechty, J. (2005). "Incentive-Aligned Conjoint Analysis." *Journal of Marketing Research* 42(1):67–82. doi:10.1509/jmkr.42.1.67.56890. Also Ding, M. (2007). "An Incentive-Aligned Mechanism for Conjoint Analysis." *Journal of Marketing Research* 44(2):214–223. doi:10.1509/jmkr.44.2.214. https://journals.sagepub.com/doi/10.1509/jmkr.44.2.214 [snippet-only; 2007 pages not re-checked]
-112. Wertenbroch, K. & Skiera, B. (2002). "Measuring Consumers' Willingness to Pay at the Point of Purchase." *Journal of Marketing Research* 39(2):228–241. SSRN 285452. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=285452 [snippet-only]
-113. Hofstetter, R., Miller, K.M., Krohmer, H. & Zhang, Z.J. (2021). "A de-biased direct question approach to measuring consumers' willingness to pay." *International Journal of Research in Marketing* 38(1):70–84. doi:10.1016/j.ijresmar.2020.04.006. arXiv:2005.11318. https://ideas.repec.org/a/eee/ijrema/v38y2021i1p70-84.html [snippet-only]
-114. Misra, K., Schwartz, E.M. & Abernethy, J. (2019). "Dynamic Online Pricing with Incomplete Information Using Multiarmed Bandit Experiments." *Marketing Science* 38(2):226–252. doi:10.1287/mksc.2018.1129. https://pubsonline.informs.org/doi/10.1287/mksc.2018.1129 [snippet-only]
-115. Hoffmann, M., Nagle, F. & Zhou, Y. (2024). "The Value of Open Source Software." Harvard Business School Strategy Unit Working Paper No. 24-038. SSRN 4693148. https://www.hbs.edu/ris/Publication%20Files/24-038_51f8444f-502c-4139-8bf2-56eb4b65c58a.pdf . Critique: Open Path (2024). "Questioning 'The Value of Open Source Software'." https://openpath.quest/2024/questioning-the-value-of-open-source-software/ [working paper; snippet-only; critique not read]
-116. Fosfuri, A., Giarratana, M.S. & Luzzi, A. (2008). "The Penguin Has Entered the Building: The Commercialization of Open Source Software Products." *Organization Science* 19(2):292–305. doi:10.1287/orsc.1070.0321. https://ideas.repec.org/a/inm/ororsc/v19y2008i2p292-305.html [snippet-only]
-117. Bonaccorsi, A., Giannangeli, S. & Rossi, C. (2006). "Entry Strategies Under Competing Standards: Hybrid Business Models in the Open Source Software Industry." *Management Science* 52(7):1085–1098. doi:10.1287/mnsc.1060.0547. https://pubsonline.informs.org/doi/10.1287/mnsc.1060.0547 [snippet-only; n = 146 unverified]
-118. Riehle, D. (2012; online 2010). "The single-vendor commercial open source business model." *Information Systems and e-Business Management* 10(1):5–17. doi:10.1007/s10257-010-0149-x. https://link.springer.com/article/10.1007/s10257-010-0149-x . Earlier version: Riehle, D. (2009). "The Commercial Open Source Business Model." AMCIS 2009. [snippet-only]
-119. Stewart, K.J., Ammeter, A.P. & Maruping, L.M. (2006). "Impacts of License Choice and Organizational Sponsorship on User Interest and Development Activity in Open Source Software Projects." *Information Systems Research* 17(2):126–144. doi:10.1287/isre.1060.0082. https://pubsonline.informs.org/doi/10.1287/isre.1060.0082 . Also Colazo, J. & Fang, Y. (2009). "Impact of license choice on Open Source Software development activity." *Journal of the American Society for Information Science and Technology* 60(5):997–1011. doi:10.1002/asi.21039 [snippet-only]
-120. Foster, D. (2024). "The New Dynamics of Open Source: Relicensing, Forks, & Community Impact." arXiv:2411.04739. Also Foster, D. & Germonprez, M. (2026). "Freeriding and Rebellion: An Investigation of Open Source Vendor Relicensing and Member Hard Forking Events." *Information Systems Journal*, online 8 Sep 2026. doi:10.1111/isj.70060. https://onlinelibrary.wiley.com/doi/10.1111/isj.70060 [preprint + peer-reviewed; snippet-only; any arXiv co-authors not confirmed]
-121. Dmitrenko, D. (2026). "Why Memory Components Fail: Eight Years of License and Sustainability Events in Open-Source Data Infrastructure." arXiv:2606.24896. https://arxiv.org/abs/2606.24896 [preprint; snippet-only]
-122. Percona (12 Sep 2024). "Valkey Emerges as Leading Open Source Alternative to Redis After Relicensing Row." Press release for the report "Key Value Stores: Adoption Trends Through a Valkey Lens." https://www.businesswire.com/news/home/20240912258232/en/Valkey-Emerges-as-Leading-Open-Source-Alternative-to-Redis-After-Relicensing-Row [vendor; snippet-only]
-123. Elastic (29 Aug 2024). "Elastic Announces Open Source License for Elasticsearch and Kibana Source Code." Press release. https://www.businesswire.com/news/home/20240829537786/en/Elastic-Announces-Open-Source-License-for-Elasticsearch-and-Kibana-Source-Code . Also Banon, S. (2024). "Elasticsearch Is Open Source. Again!" Elastic blog. Redis 8 AGPL coverage: InfoQ (May 2025); The Stack, "Redis reverts to open-source." [first-party; unverified this session]
-124. HashiCorp, Inc. Form S-1 (Nov 2021). https://www.sec.gov/Archives/edgar/data/1720671/000119312521319849/d205906ds1.htm . GitLab Inc. Form S-1 (Sep 2021). https://www.sec.gov/Archives/edgar/data/1653482/000162828021018818/gitlab-sx1.htm [first-party; snippet-only]
-125. Monetizely (n.d.). "What's the Optimal Conversion Rate from Free to Paid in Open Source SaaS?" https://www.getmonetizely.com/articles/whats-the-optimal-conversion-rate-from-free-to-paid-in-open-source-saas [vendor; secondary; snippet-only]
+103. Cao, J., Chintagunta, P.K. & Li, S. (2023). "From Free to Paid: Monetizing a Non-Advertising-Based App." *Journal of Marketing Research* 60(4):707–727. doi:10.1177/00222437221131562. https://journals.sagepub.com/doi/10.1177/00222437221131562 . Summary: Chicago Booth Review, "How Do You Get People to Pay to Use a Mobile App?" https://www.chicagobooth.edu/review/how-do-you-get-people-pay-use-mobile-app [abstract read 2026-10-05 (OpenAlex) + secondary; corrected (re-check 2026-10-05: SAGE full text returned 403)]
+104. Runge, J., Levav, J. & Nair, H.S. (2022). "Price promotions and 'freemium' app monetization." *Quantitative Marketing and Economics* 20(2):101–139. doi:10.1007/s11129-022-09248-3. SSRN 3357275. https://link.springer.com/article/10.1007/s11129-022-09248-3 [snippet-only (re-check 2026-10-05: abstract read at https://ideas.repec.org/a/kap/qmktec/v20y2022i2d10.1007_s11129-022-09248-3.html; SSRN and Springer blocked; 37%/24% only in Stanford GSB Insights)]
+105. Aral, S. & Dhillon, P. (2021; online Aug 2020). "Digital Paywall Design: Implications for Content Demand and Subscriptions." *Management Science*. doi:10.1287/mnsc.2020.3650. SSRN 2906530. *Management Science* 67(4):2381–2402. https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3650 [read 2026-10-05 (abstract, via OpenAlex; volume and pages via Crossref)]
+106. Pauwels, K. & Weiss, A. (2008). "Moving from Free to Fee: How Online Firms Market to Change Their Business Model Successfully." *Journal of Marketing* 72(3):14–31. doi:10.1509/jmkg.72.3.014. https://journals.sagepub.com/doi/10.1509/JMKG.72.3.014 . Copy read: https://marketingandmetrics.com/wp-content/uploads/2020/06/12.-Free-to-fee.pdf [read 2026-10-05; corrected]
+107. Shampanier, K., Mazar, N. & Ariely, D. (2007). "Zero as a Special Price: The True Value of Free Products." *Marketing Science* 26(6):742–757. https://people.duke.edu/~dandan/webfiles/PapersPI/Zero%20as%20a%20Special%20Price.pdf . Also Hossain, M.T. & Saini, R. (2015). "Free indulgences: Enhanced zero-price effect for hedonic options." *International Journal of Research in Marketing* 32(4):457–460. doi:10.1016/j.ijresmar.2015.10.001. Shampanier et al. doi:10.1287/mksc.1060.0254 [read 2026-10-05 (Shampanier full PDF; Hossain & Saini abstract); corrected]
+108. Deng, Y., Lambrecht, A. & Liu, Y. (2023). "Spillover Effects and Freemium Strategy in the Mobile App Market." *Management Science*. doi:10.1287/mnsc.2022.4619. 69(9):5018–5041. SSRN 3149550. https://pubsonline.informs.org/doi/10.1287/mnsc.2022.4619 [read 2026-10-05 (abstract); corrected]
+109. Lambrecht, A. & Misra, K. (2017). "Fee or Free: When Should Firms Charge for Online Content?" *Management Science* 63(4):1150–1165. doi:10.1287/mnsc.2015.2383. SSRN 2307961. https://pubsonline.informs.org/doi/abs/10.1287/mnsc.2015.2383 [read 2026-10-05 (abstract)]
+110. Miller, K.M., Hofstetter, R., Krohmer, H. & Zhang, Z.J. (2011). "How Should Consumers' Willingness to Pay Be Measured? An Empirical Comparison of State-of-the-Art Approaches." *Journal of Marketing Research* 48(1):172–184. doi:10.1509/jmkr.48.1.172. SSRN 1520927. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1520927 [read 2026-10-05 (abstract)]
+111. Ding, M., Grewal, R. & Liechty, J. (2005). "Incentive-Aligned Conjoint Analysis." *Journal of Marketing Research* 42(1):67–82. doi:10.1509/jmkr.42.1.67.56890. Also Ding, M. (2007). "An Incentive-Aligned Mechanism for Conjoint Analysis." *Journal of Marketing Research* 44(2):214–223. doi:10.1509/jmkr.44.2.214. https://journals.sagepub.com/doi/10.1509/jmkr.44.2.214 [read 2026-10-05 (abstracts; 2007 pages 214–223 confirmed via Crossref)]
+112. Wertenbroch, K. & Skiera, B. (2002). "Measuring Consumers' Willingness to Pay at the Point of Purchase." *Journal of Marketing Research* 39(2):228–241. SSRN 285452. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=285452 . Copy read: https://faculty.wharton.upenn.edu/wp-content/uploads/2012/05/Wertenbroch-and-Skiera-2002.pdf [read 2026-10-05]
+113. Hofstetter, R., Miller, K.M., Krohmer, H. & Zhang, Z.J. (2021). "A de-biased direct question approach to measuring consumers' willingness to pay." *International Journal of Research in Marketing* 38(1):70–84. doi:10.1016/j.ijresmar.2020.04.006. arXiv:2005.11318. https://ideas.repec.org/a/eee/ijrema/v38y2021i1p70-84.html [read 2026-10-05 (abstract)]
+114. Misra, K., Schwartz, E.M. & Abernethy, J. (2019). "Dynamic Online Pricing with Incomplete Information Using Multiarmed Bandit Experiments." *Marketing Science* 38(2):226–252. doi:10.1287/mksc.2018.1129. https://pubsonline.informs.org/doi/10.1287/mksc.2018.1129 [read 2026-10-05 (abstract, RePEc); baseline for the 43% not stated]
+115. Hoffmann, M., Nagle, F. & Zhou, Y. (2024). "The Value of Open Source Software." Harvard Business School Strategy Unit Working Paper No. 24-038. SSRN 4693148. https://www.hbs.edu/ris/Publication%20Files/24-038_51f8444f-502c-4139-8bf2-56eb4b65c58a.pdf . Critique: Open Path (2024). "Questioning 'The Value of Open Source Software'." https://openpath.quest/2024/questioning-the-value-of-open-source-software/ [working paper; read 2026-10-05; critique not read]
+116. Fosfuri, A., Giarratana, M.S. & Luzzi, A. (2008). "The Penguin Has Entered the Building: The Commercialization of Open Source Software Products." *Organization Science* 19(2):292–305. doi:10.1287/orsc.1070.0321. https://ideas.repec.org/a/inm/ororsc/v19y2008i2p292-305.html . Copy read: https://e-archivo.uc3m.es/bitstreams/7348e20f-0ccd-4255-98fe-faba5bd56390/download [read 2026-10-05]
+117. Bonaccorsi, A., Giannangeli, S. & Rossi, C. (2006). "Entry Strategies Under Competing Standards: Hybrid Business Models in the Open Source Software Industry." *Management Science* 52(7):1085–1098. doi:10.1287/mnsc.1060.0547. https://pubsonline.informs.org/doi/10.1287/mnsc.1060.0547 [read 2026-10-05 (abstract, OpenAlex; n = 146 confirmed)]
+118. Riehle, D. (2012; online 2010). "The single-vendor commercial open source business model." *Information Systems and e-Business Management* 10(1):5–17. doi:10.1007/s10257-010-0149-x. https://link.springer.com/article/10.1007/s10257-010-0149-x . Earlier version: Riehle, D. (2009). "The Commercial Open Source Business Model." AMCIS 2009. Read: https://www.state-machine.com/doc/Riehle-Open-Source_Commercial.pdf and https://dirkriehle.com/wp-content/uploads/2009/04/commercial_v9_revision.pdf [read 2026-10-05; corrected; Springer version not read]
+119. Stewart, K.J., Ammeter, A.P. & Maruping, L.M. (2006). "Impacts of License Choice and Organizational Sponsorship on User Interest and Development Activity in Open Source Software Projects." *Information Systems Research* 17(2):126–144. doi:10.1287/isre.1060.0082. https://pubsonline.informs.org/doi/10.1287/isre.1060.0082 . Also Colazo, J. & Fang, Y. (2009). "Impact of license choice on Open Source Software development activity." *Journal of the American Society for Information Science and Technology* 60(5):997–1011. doi:10.1002/asi.21039 [Stewart read 2026-10-05 (abstract); Colazo & Fang snippet-only (re-check 2026-10-05: full text paywalled)]
+120. Foster, D. (2024). "The New Dynamics of Open Source: Relicensing, Forks, & Community Impact." arXiv:2411.04739. Also Foster, D. & Germonprez, M. (2026). "Freeriding and Rebellion: An Investigation of Open Source Vendor Relicensing and Member Hard Forking Events." *Information Systems Journal*, online 8 Sep 2026. doi:10.1111/isj.70060. https://onlinelibrary.wiley.com/doi/10.1111/isj.70060 [preprint + peer-reviewed; read 2026-10-05 (arXiv full text, single author; ISJ abstract); corrected]
+121. Dmitrenko, D. (2026). "Why Memory Components Fail: Eight Years of License and Sustainability Events in Open-Source Data Infrastructure." arXiv:2606.24896. https://arxiv.org/abs/2606.24896 [preprint; read 2026-10-05; corrected]
+122. Percona (12 Sep 2024). "Valkey Emerges as Leading Open Source Alternative to Redis After Relicensing Row." Press release for the report "Key Value Stores: Adoption Trends Through a Valkey Lens." https://www.businesswire.com/news/home/20240912258232/en/Valkey-Emerges-as-Leading-Open-Source-Alternative-to-Redis-After-Relicensing-Row . Read: https://www.percona.com/press/valkey-emerges-as-leading-open-source-alternative-to-redis-after-relicensing-row/ and https://learn.percona.com/hubfs/Collateral/Whitepapers/Adoption-Trends-Through-a-Valkey-Lens-WhitePaper.pdf [vendor; read 2026-10-05; corrected]
+123. Elastic (29 Aug 2024). "Elastic Announces Open Source License for Elasticsearch and Kibana Source Code." Press release. https://www.businesswire.com/news/home/20240829537786/en/Elastic-Announces-Open-Source-License-for-Elasticsearch-and-Kibana-Source-Code . Also Banon, S. (2024). "Elasticsearch Is Open Source. Again!" Elastic blog. Redis 8 AGPL coverage: InfoQ (May 2025); The Stack, "Redis reverts to open-source." Read: https://www.elastic.co/blog/elasticsearch-is-open-source-again and https://redis.io/blog/agplv3/ [first-party; blogs read 2026-10-05; press release and trade press not read]
+124. HashiCorp, Inc. Form S-1 (Nov 2021). https://www.sec.gov/Archives/edgar/data/1720671/000119312521319849/d205906ds1.htm . GitLab Inc. Form S-1 (Sep 2021). https://www.sec.gov/Archives/edgar/data/1653482/000162828021018818/gitlab-sx1.htm [first-party; snippet-only (re-check 2026-10-05: site requires a contact header)]
+125. Monetizely (7 Nov 2025). "What's the Optimal Conversion Rate from Free to Paid in Open Source SaaS?" https://www.getmonetizely.com/articles/whats-the-optimal-conversion-rate-from-free-to-paid-in-open-source-saas [vendor; secondary; read 2026-10-05; corrected]
 126. Dahlander, L. & Magnusson, M.G. (2005). "Relationships between open source software companies and communities: Observations from Nordic firms." *Research Policy* 34(4):481–493. https://www.sciencedirect.com/science/article/abs/pii/S0048733305000405 [unverified; DOI 10.1016/j.respol.2005.02.003 from memory]
-127. Camuffo, A., Cordova, A., Gambardella, A. & Spina, C. (2020). "A Scientific Approach to Entrepreneurial Decision Making: Evidence from a Randomized Control Trial." *Management Science* 66(2):564–586. doi:10.1287/mnsc.2018.3249. Also Camuffo, A., Gambardella, A., Messinese, D., Novelli, E., Paolucci, E. & Spina, C. (2024). "A scientific approach to entrepreneurial decision-making: Large-scale replication and extension." *Strategic Management Journal* 45(6):1209–1237. doi:10.1002/smj.3580. https://sms.onlinelibrary.wiley.com/doi/full/10.1002/smj.3580 [snippet-only]
-128. Gruber, M., MacMillan, I.C. & Thompson, J.D. (2008). "Look Before You Leap: Market Opportunity Identification in Emerging Technology Firms." *Management Science* 54(9):1652–1665. doi:10.1287/mnsc.1080.0877. https://pubsonline.informs.org/doi/10.1287/mnsc.1080.0877 [snippet-only]
-129. Gruber, M., MacMillan, I.C. & Thompson, J.D. (2013). "Escaping the Prior Knowledge Corridor: What Shapes the Number and Variety of Market Opportunities Identified Before Market Entry of Technology Start-ups?" *Organization Science* 24(1):280–300. doi:10.1287/orsc.1110.0721. https://pubsonline.informs.org/doi/abs/10.1287/orsc.1110.0721 [snippet-only]
-130. Franke, N., von Hippel, E. & Schreier, M. (2006). "Finding Commercially Attractive User Innovations: A Test of Lead-User Theory." *Journal of Product Innovation Management* 23(4):301–315. doi:10.1111/j.1540-5885.2006.00203.x. https://onlinelibrary.wiley.com/doi/10.1111/j.1540-5885.2006.00203.x [snippet-only]
-131. Molner, S., Prabhu, J.C. & Yadav, M.S. (2019). "Lost in a Universe of Markets: Toward a Theory of Market Scoping for Early-Stage Technologies." *Journal of Marketing* 83(2):37–61. doi:10.1177/0022242918813308. https://journals.sagepub.com/doi/abs/10.1177/0022242918813308 [snippet-only]
-132. Brown, B.P., Zablah, A.R., Bellenger, D.N. & Johnston, W.J. (2011). "When do B2B brands influence the decision making of organizational buyers? An examination of the relationship between purchase risk and brand sensitivity." *International Journal of Research in Marketing* 28(3):194–204. SSRN 1764132. https://www.ssrn.com/abstract=1764132 . Also Brown, B.P., Zablah, A.R., Bellenger, D.N. & Donthu, N. (2012). "What factors influence buying center brand sensitivity?" *Industrial Marketing Management* 41:508–520. SSRN 1831686 [snippet-only]
-133. Vissa, B. (2012). "Agency in Action: Entrepreneurs' Networking Style and Initiation of Economic Exchange." *Organization Science* 23(2):492–510. doi:10.1287/orsc.1100.0567. SSRN 1262285. https://pubsonline.informs.org/doi/10.1287/orsc.1100.0567 [snippet-only]
-134. Morris, M.H., Schindehutte, M. & LaForge, R.W. (2002). "Entrepreneurial Marketing: A Construct for Integrating Emerging Entrepreneurship and Marketing Perspectives." *Journal of Marketing Theory and Practice* 10(4):1–19. The definition was seen quoted in "Re-evaluating Entrepreneurial Marketing," *Journal of Business Strategies* 38(1). https://jbs-ojs-shsu.tdl.org/jbs/article/download/15/5 [secondary; snippet-only; pages unverified]
+127. Camuffo, A., Cordova, A., Gambardella, A. & Spina, C. (2020). "A Scientific Approach to Entrepreneurial Decision Making: Evidence from a Randomized Control Trial." *Management Science* 66(2):564–586. doi:10.1287/mnsc.2018.3249. Also Camuffo, A., Gambardella, A., Messinese, D., Novelli, E., Paolucci, E. & Spina, C. (2024). "A scientific approach to entrepreneurial decision-making: Large-scale replication and extension." *Strategic Management Journal* 45(6):1209–1237. doi:10.1002/smj.3580. https://sms.onlinelibrary.wiley.com/doi/full/10.1002/smj.3580 [read 2026-10-05 (2024 full text, City, University of London open-access copy; 2020 abstract); corrected]
+128. Gruber, M., MacMillan, I.C. & Thompson, J.D. (2008). "Look Before You Leap: Market Opportunity Identification in Emerging Technology Firms." *Management Science* 54(9):1652–1665. doi:10.1287/mnsc.1080.0877. https://pubsonline.informs.org/doi/10.1287/mnsc.1080.0877 [read 2026-10-05 (unofficial mirror of the published PDF); corrected]
+129. Gruber, M., MacMillan, I.C. & Thompson, J.D. (2013). "Escaping the Prior Knowledge Corridor: What Shapes the Number and Variety of Market Opportunities Identified Before Market Entry of Technology Start-ups?" *Organization Science* 24(1):280–300. doi:10.1287/orsc.1110.0721. https://pubsonline.informs.org/doi/abs/10.1287/orsc.1110.0721 [read 2026-10-05 (abstract)]
+130. Franke, N., von Hippel, E. & Schreier, M. (2006). "Finding Commercially Attractive User Innovations: A Test of Lead-User Theory." *Journal of Product Innovation Management* 23(4):301–315. doi:10.1111/j.1540-5885.2006.00203.x. https://onlinelibrary.wiley.com/doi/10.1111/j.1540-5885.2006.00203.x . Copy read: https://www.wu.ac.at/fileadmin/wu/d/i/entrep/4_forschung/full-text-papers/franke_von_hippel_schreier_2006_finding_attractive_user_innovations_test_lead-user_theory.pdf [read 2026-10-05; corrected]
+131. Molner, S., Prabhu, J.C. & Yadav, M.S. (2019). "Lost in a Universe of Markets: Toward a Theory of Market Scoping for Early-Stage Technologies." *Journal of Marketing* 83(2):37–61. doi:10.1177/0022242918813308. https://journals.sagepub.com/doi/abs/10.1177/0022242918813308 . Accepted manuscript read: https://research.gold.ac.uk/id/eprint/25048/1/JM.17.0378.pdf [read 2026-10-05]
+132. Brown, B.P., Zablah, A.R., Bellenger, D.N. & Johnston, W.J. (2011). "When do B2B brands influence the decision making of organizational buyers? An examination of the relationship between purchase risk and brand sensitivity." *International Journal of Research in Marketing* 28(3):194–204. SSRN 1764132. https://www.ssrn.com/abstract=1764132 . Also Brown, B.P., Zablah, A.R., Bellenger, D.N. & Donthu, N. (2012). "What factors influence buying center brand sensitivity?" *Industrial Marketing Management* 41(3):508–520. SSRN 1831686 [2011 read 2026-10-05 (abstract); 2012 snippet-only (re-check 2026-10-05: SSRN and ScienceDirect blocked)]
+133. Vissa, B. (2012). "Agency in Action: Entrepreneurs' Networking Style and Initiation of Economic Exchange." *Organization Science* 23(2):492–510. doi:10.1287/orsc.1100.0567. SSRN 1262285. https://pubsonline.informs.org/doi/10.1287/orsc.1100.0567 . Working-paper version read: https://flora.insead.edu/fichiersti_wp/inseadwp2010/2010-24.pdf [read 2026-10-05]
+134. Morris, M.H., Schindehutte, M. & LaForge, R.W. (2002). "Entrepreneurial Marketing: A Construct for Integrating Emerging Entrepreneurship and Marketing Perspectives." *Journal of Marketing Theory and Practice* 10(4):1–19. The definition was seen quoted in "Re-evaluating Entrepreneurial Marketing," *Journal of Business Strategies* 38(1). https://jbs-ojs-shsu.tdl.org/jbs/article/download/15/5 [secondary; snippet-only (re-check 2026-10-05: tandfonline behind a bot check; pp. 1–19 confirmed via OpenAlex)]
 135. Schreier, M. & Prügl, R. (2008). "Extending Lead-User Theory: Antecedents and Consequences of Consumers' Lead Userness." *Journal of Product Innovation Management* 25(4):331–346. doi:10.1111/j.1540-5885.2008.00305.x. Also Schreier, M., Oberhauser, S. & Prügl, R. (2007). "Lead users and the adoption and diffusion of new products: Insights from two extreme sports communities." *Marketing Letters* 18(1–2):15–30. doi:10.1007/s11002-006-9009-3 [unverified]
 136. Vissa, B. (2011). "A Matching Theory of Entrepreneurs' Tie Formation Intentions and Initiation of Economic Exchange." *Academy of Management Journal* 54(1):137–158. doi:10.5465/AMJ.2011.59215084 [secondary; unverified]
 137. Gans, J.S., Stern, S. & Wu, J. (2019). "Foundations of entrepreneurial strategy." *Strategic Management Journal* 40(5):736–756. doi:10.1002/smj.3010. SSRN 2844843 [unverified]
@@ -159,7 +159,7 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - 3,954 were reviewed (42%), and 1,746 bug reports were filed (44% of those reviewed).
   - 640 were fixed. That is 16% of reviewed warnings and about 7% of all warnings.
   - Google then moved analysis into code review.
-  - The claim that a separate bug dashboard "saw little use" was not seen. [78] [first-party; one firm; practitioner article; snippet-only]
+  - FindBugs first ran nightly into a dashboard (2006). The dashboard "saw little use" because it sat outside developers' usual workflow. [78] [first-party; one firm; practitioner article; read 2026-10-05]
 - **Google's bar is under 10% "effective false positives".**
   - An effective false positive is any finding the developer takes no positive action on. That includes real bugs the developer did not understand.
   - Reviewers can click "Please fix" and authors can click "Not useful".
@@ -169,12 +169,12 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - Tricorder, Google's code-review analysis platform, followed several failed attempts. The chapter credits a "relentless focus" on delivering only valuable results.
   - For Java and C++, Google aims never to issue compiler warnings, because developers ignore them. Checks that cannot break the build are either suppressed or shown in code review.
   - In one case, rewriting a confusing message was enough to stop the bug reports filed against a check.
-  - (Corrected: the chapter was written by Sadowski alone and edited by Carey. It does not say that every check either breaks the build or stays hidden.) [78][79] [first-party; one firm; mandatory code review; chapter read-full; papers snippet-only]
+  - (Corrected: the chapter was written by Sadowski alone and edited by Carey. It does not say that every check either breaks the build or stays hidden.) [78][79] [first-party; one firm; mandatory code review; chapter read-full; 2018 article read 2026-10-05; 2015 paper snippet-only]
 - **At Facebook, the same analysis was fixed far more often at diff time.**
   - When Infer posted findings as code-review comments on a diff, the fix rate rose to over 70%.
-  - The same analysis, with the same false-positive rate, run offline as bug lists outside the workflow, had a fix rate near 0%.
-  - A 2015 company blog post put Infer's fix rate at about 80% over several months.
-  - This is one firm comparing its own two deployment modes. It is not a controlled trial. [80] [first-party; one firm; not controlled; snippet-only]
+  - The same analysis, with the same false-positive rate (which the team believed was under 20%), run offline as bug lists outside the workflow, had a fix rate near 0%. That offline trial was small: 20–30 issues assigned to developers by hand.
+  - A 2015 company blog post put Infer's fix rate at about 80% "in recent months".
+  - This is one firm comparing its own two deployment modes. It is not a controlled trial. [80] [first-party; one firm; not controlled; read 2026-10-05; corrected: added the 20–30-issue size of the offline trial]
 - **Alerts that sit in a backlog get fixed late, or rarely.**
   - **Imtiaz et al.:** five long-running open-source projects that had used Coverity for at least five years.
     - 27.4–49.5% of alerts were fixed through code changes (median 36.7%).
@@ -195,11 +195,11 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - Switches ran one way, for example JSHint to ESLint and coveralls to codecov. Codecov was preferred for direct GitHub integration and a better user experience.
   - Every tool with a significant effect showed an immediate jump in monthly issues after adoption. All but ESLint then showed a declining trend.
   - "Churn" in this paper means code churn, not lost customers. [81] [research; peer-reviewed (ICSE 2019); observational; open source only; read-full]
-- **Most projects run analyzers on their default settings.**
+- **Most projects barely change an analyzer's default settings.**
   - Beller et al. studied nine analyzers across Java, JavaScript, Ruby and Python. They looked at 122 projects in depth and 168,214 more broadly.
   - Use was widespread but not universal. Projects rarely enforced a strict policy.
-  - Configurations stayed close to the defaults, and few projects added custom checks. Configurations rarely changed. When they did, the changes were small and usually came within a day of setup.
-  - The configuration findings match the abstract as remembered, but were not seen this session. [86] [research; peer-reviewed; large n; observational; snippet-only; configuration details unverified]
+  - Most configurations "deviate slightly from the default", and hardly any add custom checks; custom rules never exceed 5% of a tool's enabled rules. Most configurations never change once committed. When they do, the changes are small and tend to come within a day of setup.
+  - (Corrected 2026-10-05: an earlier draft said projects run analyzers on their default settings. They change a few rules, not none.) [86] [research; peer-reviewed; large n; observational; read 2026-10-05; corrected]
 - **Developers think analysis is useful, yet many do not use it.**
   - In 20 interviews, every developer called static analysis beneficial.
   - The barriers they named:
@@ -210,20 +210,20 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
     - poor ways to share settings across a team
     - poor fit with the workflow
   - All 20 wanted to hear about issues in the editor or at build time, as reported by [77].
-  - Not verified: the counts "19 of 20" on poor explanation and "9" on team support. [84] [research; peer-reviewed; small n; qualitative; snippet-only]
+  - Not verified: the counts "19 of 20" on poor explanation and "9" on team support, and the barriers past false positives and warning presentation. The abstract confirms 20 interviews, that all participants saw a benefit, and those two barriers. [84] [research; peer-reviewed; small n; qualitative; snippet-only (re-check 2026-10-05: abstract only; full text not found)]
 - **A commercial lesson: a finding the user does not understand counts as false.**
   - Coverity's founders aimed for under 20% false positives in stable checkers.
   - They dropped or simplified checks whose results were hard to explain.
-  - Their account of selling through trials on the prospect's own code is from memory. It was not seen this session. [85] [first-party; practitioner essay; snippet-only]
+  - They sold through on-site trials: a salesperson and an engineer ran the tool on the prospect's own code and presented results the same day. They say false-positive rates over 30% cause people to ignore the tool, and that users label errors they don't understand as false. [85] [first-party; practitioner essay; read 2026-10-05]
 - **In CI, style checks break builds and bug finders run in a soft mode.**
-  - Zampetti et al. studied 20 Java open-source projects on Travis CI. Build breakages came mainly from coding-guideline checks. Bug and vulnerability checks rarely failed builds [87].
-  - Vassallo et al. report that developers use analyzers in CI 37% of the time, in code review 29% and locally 31% [88].
-  - Not verified: that failures were fixed by changing code rather than by disabling checks, and Vassallo's breakdown of warning types by context. [research; peer-reviewed; small n; snippet-only]
+  - Zampetti et al. studied 20 Java open-source projects on Travis CI. Build breakages came mainly from coding-guideline checks, with some on missing licences. Bug and vulnerability checks rarely failed builds, and some ran in a "softer" mode that does not fail the build. Breakages were fixed quickly by solving the problem rather than by disabling the warning [87].
+  - Vassallo et al. surveyed 56 developers: 37% said they rely on analyzers in CI, 29% in code review and 31% locally. 71% pay attention to different warning categories depending on context [88].
+  - (Corrected 2026-10-05: an earlier draft read Vassallo's 37/29/31% as shares of usage time; they are shares of 56 survey respondents.) [research; peer-reviewed; small n; [87] abstract read 2026-10-05; [88] read 2026-10-05; corrected]
 - **An LLM reviewer at one firm had 73.8% of its comments marked resolved.**
   - It ran at one industrial firm and was built on an open-source PR-review agent. About 238 practitioners in 10 projects had access.
   - Three projects were analysed: 4,335 PRs, 1,568 of them reviewed automatically.
   - "Resolved" may include dismissals, so it is not the same as fixed.
-  - Not verified: longer PR closure times, and complaints about wrong or irrelevant comments. [89] [research; peer-reviewed (ICSE-SEIP 2025); one firm; observational; snippet-only]
+  - Average PR closure time rose from 5 h 52 min to 8 h 20 min, with trends varying by project. The authors also report faulty reviews, unnecessary corrections and irrelevant comments. [89] [research; peer-reviewed (ICSE-SEIP 2025); one firm; observational; read 2026-10-05 (abstract)]
 
 ## 2. PR bots, and how developers find tools
 
@@ -249,14 +249,15 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
 - **Code-review bots changed PR activity in open-source projects.**
   - Wessel et al. used a regression discontinuity design. They compared the year before and the year after projects adopted codecov-io, coveralls, ansibot or elasticmachine.
   - After adoption, projects had more merged PRs per month, fewer unmerged PRs, less discussion, and faster rejections.
-  - The journal extension added 12 practitioner interviews. Maintainers credited the transparency and confidence that bot comments add. It also reports that merging took longer.
+  - The sample was 1,194 projects in both the conference paper and the journal extension. The journal extension added 12 practitioner interviews. Maintainers credited the transparency and confidence that bot comments add.
+  - (Corrected 2026-10-05: an earlier draft said the extension reports that merging took longer. Merge time rose in its two pilot case projects, but the 1,194-project model found no bot effect on the merge-time trend after adoption.)
   - Effect sizes were not captured. Every project chose to install its bot. The outcome is PR activity, not adoption or payment.
   - A later study of 662 projects adopting GitHub Actions found:
     - more rejected PRs
     - more comments on accepted PRs and fewer on rejected ones
     - fewer commits in accepted PRs
     - more time to accept a PR
-  - [91][92] [research; peer-reviewed; quasi-experimental (regression discontinuity); open source; snippet-only]
+  - [91][92] [research; peer-reviewed; quasi-experimental (regression discontinuity); open source; read 2026-10-05; [91] corrected]
 - **Bot PRs are merged less often, and teams turn them down.**
   - Wyrich et al.: human PRs were merged 72.53% of the time and bot PRs 37.38%. Bot PRs waited longer for any response, even though they were smaller [97].
   - He et al. studied 1,823 projects and 502,752 Dependabot PRs, and surveyed 131 developers [96]:
@@ -269,11 +270,11 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
     - Projects with automated PRs upgraded dependencies 1.6x as often as projects with no tool. Projects with badges upgraded 1.4x as often.
     - About 32% of the automated PRs were merged.
     - Projects chose their tools, so this is not causal.
-  - [research; peer-reviewed; observational; snippet-only]
+  - [research; peer-reviewed; observational; read 2026-10-05 ([95][96][98] full text, [97] abstract)]
 - **Noise is the main complaint about PR bots.**
   - In 21 interviews, maintainers, contributors and bot developers named noise as the central problem. It overwhelms and distracts developers, and it disrupts both communication and workflow.
   - A follow-up with 32 practitioners produced 22 design strategies. One is a "mediator" that summarizes other bots' output.
-  - Not verified: the specific kinds of noise (long comments, visual clutter, frequency and timing, unsolicited actions). [99] [research; peer-reviewed; qualitative; snippet-only]
+  - The kinds of noise named were verbosity (including overuse of visual elements), high frequency and timing of actions, and unsolicited actions. [99] [research; peer-reviewed; qualitative; read 2026-10-05]
 - **Tools spread through people who commit to many repos, and through visible badges.**
   - Lamba et al. tracked 92 badge types across 168,510 npm-linked repos, using survival models.
   - Exposure through co-committers' other projects was the strongest social channel. It mattered much more than exposure through watchers.
@@ -288,12 +289,12 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - In a lab study of 13 pairs and 142 recommendations, only the recipient's receptiveness predicted uptake (p = 0.0002) [102]:
     - About 61% of recommendations to receptive people worked.
     - Politeness and persuasiveness made no difference.
-  - [research; peer-reviewed; interviews, diary and lab; small n; [101] snippet-only; [102] read-full]
+  - [research; peer-reviewed; interviews, diary and lab; small n; [101] 2011 abstract read 2026-10-05, 2015 diary figures snippet-only; [102] read-full]
 - **Short "one problem, one tool" flyers raised tool use inside one firm.**
   - Causal-inference methods over six years linked Google's "Testing on the Toilet" flyers to more use of the tools they featured.
   - The effect depended on how broadly a tool applied, how many developers already used it, and how memorable its name was.
   - The authors also interviewed or surveyed 382 developers. Effect sizes were not captured.
-  - The tools were free and internal, and the audience was captive. [100] [research; peer-reviewed (ICSE 2019); quasi-experimental; one firm; snippet-only]
+  - The tools were free and internal, and the audience was captive. [100] [research; peer-reviewed (ICSE 2019); quasi-experimental; one firm; read 2026-10-05 (abstract)]
 - **Related, in the main note:** 75% of developers start a free trial and 72% ask developers they know [34]. Honest README badges are cheap signals [36]. [34] [first-party; self-selected]; [36] [research; read-full]
 
 ## 3. Free to paid, and pricing with little data
@@ -303,60 +304,63 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - A "hard landing" (pay or lose access) produced more subscriptions than a "soft landing" that kept a limited free tier.
   - Exclusive extras for payers also lowered willingness to subscribe. The two choices interacted: extras hurt less when combined with a soft landing.
   - The authors' explanation is that a limited free tier makes the paid version seem less valuable.
-  - Only conversion was captured. Effects on free-user churn, word of mouth and long-run revenue were not.
-  - (Corrected: the snippets do not show that extras raised subscriptions within the soft-landing group. An "avatar feature" detail was not verified.) [103] [research; randomized field experiment; one firm; consumer app; snippet-only + secondary]
+  - The abstract reports a positive interaction between the two choices on subscriptions, and says the firm then implemented the best-performing strategy. A secondary summary (Chicago Booth Review) adds that extras nudged a few more soft-landing users to subscribe, and that the hard landing would have brought about 102% more revenue. Effects on free-user churn and word of mouth were not reported.
+  - (Corrected 2026-10-05: an earlier draft said only conversion was captured; the secondary summary gives a revenue estimate. The full text was not reachable, so the revenue figure is secondary.) [103] [research; randomized field experiment; one firm; consumer app; abstract read 2026-10-05 + secondary; corrected (re-check 2026-10-05: SAGE full text returned 403)]
 - **A smaller free allowance traded reading for subscriptions.**
   - The New York Times cut both the number of free articles and the sections readable for free.
   - Total subscriptions rose 31% over the seven-month study, and content demand fell.
-  - Not verified: the 9.9% fall in demand and the net revenue gain of over $230,000.
-  - The publisher's brand was very strong. An unknown tool depends on free use just to be found. [105] [research; peer-reviewed; quasi-experiment; one firm; snippet-only]
+  - Content demand fell about 9.9%, and the change yielded net positive revenue of over $230,000.
+  - The publisher's brand was very strong. An unknown tool depends on free use just to be found. [105] [research; peer-reviewed; quasi-experiment; one firm; read 2026-10-05 (abstract)]
 - **Charging shrinks the free funnel and weakens free channels.**
-  - An online content firm added a paid tier. Free sign-ups fell, and search referrals and emails worked less well.
-  - Paid subscribers still added about $277 a day in revenue, against $4.64 a day of lost ad revenue.
-  - Not verified: 208 fewer free sign-ups a day, and 71 a day lost through weaker marketing.
-  - At this firm, a free user brought in only ad revenue. In the main note's cloud-storage case, a free user was worth about $0.52 a month, 44% of it through referrals [46]. [106] [research; peer-reviewed; observational time series; one firm; snippet-only]
+  - An online content firm added a paid tier. Free sign-ups fell below what the authors' model forecast (actual daily sign-ups were still 144 higher than in the free period), and search referrals and emails worked less well.
+  - The move itself accounted for 208 fewer free sign-ups a day, and weaker search referrals and emails for 71 fewer a day.
+  - Paid subscribers still added about $277 a day in revenue, against $4.64 a day of lost ad revenue. The $4.64 covers all 1,031 lost daily sign-ups, including 752 lost to e-mail blasts.
+  - (Corrected 2026-10-05: an earlier draft said free sign-ups fell outright. They fell against the forecast, not against the free period.)
+  - At this firm, a free user brought in only ad revenue. In the main note's cloud-storage case, a free user was worth about $0.52 a month, 44% of it through referrals [46]. [106] [research; peer-reviewed; observational time series; one firm; read 2026-10-05; corrected]
 - **A free version can raise demand for the paid version.**
   - In Apple's App Store, launching a free version of a paid app raised the paid version's daily ratings by 8.9%. Ratings serve as a stand-in for demand.
   - The design relies on the fact that Apple's review process makes the launch date of the free version hard to predict.
   - The authors credit sampling and easier discovery.
-  - These are consumer apps. The study says nothing about moving an existing free base to paid. [108] [research; peer-reviewed; quasi-experiment; consumer apps; snippet-only]
+  - These are game apps. The study says nothing about moving an existing free base to paid. [108] [research; peer-reviewed; quasi-experiment; consumer game apps; read 2026-10-05 (abstract); corrected: "consumer apps" narrowed to game apps]
 - **Discounts on purchases raised conversion without teaching users to wait for them.**
   - In a free-to-play game, each new cohort of users was randomly assigned to see price promotions or not.
   - Conversion and revenue rose. There was no evidence that users learned to wait for discounts, or took discounts as a sign of low quality.
-  - Not verified: lifts of 37% in conversion and about 24% in revenue, the six-month window, and the phrase "remarkably profitable … in both the short and long run".
-  - (Corrected: the abstract says only that promotions appear profitable.) [104] [research; randomized field experiment; one firm; consumer game; snippet-only]
+  - The abstract confirms half a year of observed behaviour per user.
+  - Not verified in the paper: lifts of 37% in conversion and about 24% in revenue (they appear only in a Stanford GSB summary), and the phrase "remarkably profitable … in both the short and long run".
+  - (Corrected: the abstract says only that promotions appear profitable.) [104] [research; randomized field experiment; one firm; consumer game; snippet-only (re-check 2026-10-05: abstract read on RePEc; SSRN and Springer full text blocked)]
 - **How much to give away free can change over time.**
   - A theory model shows it can pay to give more away when demand is high and to charge more when it is low. This holds when users differ in how much they value the content and those differences shift over time.
   - One content provider's data showed it raised the free share in periods of high demand.
-  - (Corrected: the paper says this "may" be optimal, and only under those conditions. A claim about which kinds of user to charge only in quiet periods was not verified.) [109] [research; peer-reviewed; theory plus one firm's data; snippet-only]
+  - (Corrected: the paper says this "may" be optimal, and only under those conditions. A claim about which kinds of user to charge only in quiet periods was not verified.) [109] [research; peer-reviewed; theory plus one firm's data; read 2026-10-05 (abstract)]
 - **Zero is a special price.**
   - Two chocolates each fell by one cent, which made the cheaper one free. Demand shifted to the free one far more than a cost-benefit model predicts.
-  - In a cafeteria version, prices went from 1¢ and 14¢ to 0¢ and 13¢. The cheap chocolate's share rose from 15% to 34%. The premium one's fell from 38% to 16%.
-  - Experiment 1 had 398 people. The popular figures (27/73 becoming 69/31) leave out a "nothing" option that the paper included.
+  - Experiment 2 (398 people at an MIT student-centre booth) cut prices from 1¢ and 15¢ to 0¢ and 14¢. The popular figures (27/73 becoming 69/31) come from it and leave out a "nothing" option that the paper included.
+  - In the cafeteria version (Experiment 3, 232 customers), prices went from 1¢ and 14¢ to 0¢ and 13¢. Excluding "nothing", the cheap chocolate's share rose from 21% to 71% and the premium one's fell from 79% to 29%.
+  - (Corrected 2026-10-05: an earlier draft gave the cafeteria shifts as 15%→34% and 38%→16%; those come from a later 342-person experiment on social norms. It also gave 398 people for Experiment 1, which was a hypothetical survey of 60.)
   - The effect is stronger for hedonic items.
-  - The stakes were small and the goods were consumer goods. A developer tool is practical and chosen with care, so the effect may be weaker. [107] [research; peer-reviewed; lab and field choice experiments; snippet-only + secondary]
+  - The stakes were small and the goods were consumer goods. A developer tool is practical and chosen with care, so the effect may be weaker; Hossain & Saini find the effect "more subdued for utilitarian products". [107] [research; peer-reviewed; lab and field choice experiments; read 2026-10-05; corrected]
 - **Stated willingness to pay runs high, but it may still rank prices correctly.**
   - Miller et al. compared four ways of measuring willingness to pay against real purchases.
   - The two incentive-aligned methods passed: BDM (a binding bid against a random price) and incentive-aligned conjoint. The two hypothetical methods, an open question and hypothetical conjoint, overstated willingness to pay.
   - Even so, the hypothetical methods may still point to the right demand curve and the right price.
-  - This fits the 21% hypothetical bias in the main note [8]. The product and sample size were not captured. [110] [research; peer-reviewed; method comparison; consumer product; snippet-only]
+  - This fits the 21% hypothetical bias in the main note [8]. The product and sample size were not captured. [110] [research; peer-reviewed; method comparison; consumer product; read 2026-10-05 (abstract)]
 - **Answers with real consequences predict real choices better.**
   - In incentive-aligned conjoint, a respondent may actually get or buy an option they chose. It beat hypothetical conjoint at predicting later choices, for restaurant dinner specials and for snacks.
   - A later mechanism needs only one real product to exist, and it makes telling the truth the best strategy. On an iPod package it "substantially" improved purchase prediction.
-  - The tests used meals, snacks and an iPod. Using a real discounted plan as the reward for software is untested. [111] [research; peer-reviewed; field and lab experiments; snippet-only]
+  - The tests used meals, snacks and an iPod. Using a real discounted plan as the reward for software is untested. [111] [research; peer-reviewed; field and lab experiments; read 2026-10-05 (abstracts)]
 - **BDM measures willingness to pay one person at a time.**
   - Each person states a price, and then a price is drawn at random. If the drawn price is at or below their stated price, they must buy, paying the drawn price.
   - Across three studies, BDM gave lower estimates than open and yes/no questions. Study 3 showed that the gap comes from the binding purchase, not from the effort of answering.
   - The studies used groceries and one cheap durable. In B2B, the person answering may not control the budget.
-  - (Corrected: an earlier draft said BDM was tested only on groceries.) [112] [research; peer-reviewed; field studies; cheap consumer goods; snippet-only]
+  - (Corrected: an earlier draft said BDM was tested only on groceries.) [112] [research; peer-reviewed; two field studies and a lab experiment; cheap consumer goods; read 2026-10-05]
 - **A single direct price question can be good enough once corrected.**
   - Hofstetter et al. measure the bias in a single open or yes/no price question, and correct for it.
   - They report that the corrected answer is accurate enough for management decisions.
-  - The correction was estimated on consumer products. [113] [research; peer-reviewed; consumer products; snippet-only]
+  - The correction was estimated on consumer products (a gym bag and a sweatshirt, with Swiss university students). [113] [research; peer-reviewed; consumer products; read 2026-10-05 (abstract)]
 - **Bandit price tests lower the cost of testing, but still need buyers.**
   - A bandit test shifts traffic toward the better-performing prices as results come in.
   - In a simulation based on a real pricing experiment, profit rose 43% during the test month and 4% over a year. The comparison was presumably an even traffic split, but that was not confirmed.
-  - The method still needs a live checkout and a steady flow of buyers. Compare the roughly 7,900 prospects a month in the main note's pricing test [50]. [114] [research; peer-reviewed; simulation; snippet-only]
+  - The method still needs a live checkout and a steady flow of buyers. Compare the roughly 7,900 prospects a month in the main note's pricing test [50]. [114] [research; peer-reviewed; simulation; read 2026-10-05 (abstract); baseline still unconfirmed]
 
 ## 4. Commercial open source
 
@@ -365,61 +369,61 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - Without open source, firms would spend about 3.5x what they now spend on software.
   - About 96% of the value comes from 5% of developers. Six languages account for 84%.
   - These are estimates of replacement cost, not revenue. The data are Census II, built by the Linux Foundation with Harvard's innovation lab, and scans of websites by BuiltWith.
-  - A published critique exists but was not read. Whether the Linux Foundation funded the paper was not verified. [115] [research; working paper; counterfactual estimate; snippet-only]
+  - The paper acknowledges financial and administrative support from the Linux Foundation. A published critique exists but was not read. [115] [research; working paper; counterfactual estimate; read 2026-10-05]
 - **Established firms open their code when they earn money from something else.**
   - Fosfuri et al. studied firms' open-source product releases, as announced in the trade press from 1995 to 2003.
   - Firms with many software patents or hardware trademarks were more likely to release open source. Firms with many software trademarks were less likely.
   - The authors read this as firms opening code when other assets capture the value.
-  - These were established firms, not startups. The sample size was not seen. [116] [research; peer-reviewed; observational; snippet-only]
+  - The sample was 461 firms that entered the open-source market (213 with applications, 320 with operating-system products, 72 with both), against a matched sample of firms that released none. These were mostly established firms, not startups. [116] [research; peer-reviewed; observational; read 2026-10-05]
 - **Mixing open and paid products is normal among small open-source suppliers.**
-  - In a survey of Italian firms that supply open-source software, most mixed proprietary and open-source products under different licences.
+  - In a survey of 146 Italian software firms that supply open-source software, firms commonly mixed proprietary and open-source products under different licences.
   - Purely open-source firms were not the norm. The sample was firms already active in open source, not software firms in general.
-  - The study shows that mixed models are common, not that they perform better. The sample size of 146 was not seen. [117] [research; peer-reviewed; cross-sectional survey; one country; snippet-only]
+  - The study shows that mixed models are common, not that they perform better. [117] [research; peer-reviewed; cross-sectional survey; one country; read 2026-10-05 (abstract; n = 146 confirmed; "most" not seen in the abstract)]
 - **"1–2% of open-source users pay" is relayed lore.**
-  - Riehle writes that, "according to Taylor", conversion rates of 0.5–2% are common for single-vendor commercial open-source firms. He does not measure this himself [118].
-  - A vendor blog gives 0.5–3% for open-source SaaS. It also offers a "rule of 3s": 0.3–1% for mass-market developer tools, 1–3% for enterprise, 3%+ exceptional. It cites OpenView data but gives no primary source [125].
-  - Not verified: Riehle's ratio of 50x–500x users to customers, and his comparison of sales spend with R&D spend.
-  - (Corrected: the 0.5–2% is Riehle passing on another source, not his own claim.) [118] [research; conceptual; figure second-hand; snippet-only]; [125] [vendor; secondary; snippet-only]
+  - Riehle writes that, "according to Taylor", conversion rates of 0.5–2% are common for single-vendor commercial open-source firms. The source is a personal communication; he does not measure this himself [118].
+  - Riehle's comparison of sales spend with R&D spend is also second-hand ("according to Augustin"): about 2.3x in traditional software firms, against an estimated 0.6x for a hypothetical open-source vendor.
+  - A vendor blog (November 2025) gives 0.5–3% for open-source SaaS. It also offers its own "rule of 3s": 0.3–1% for mass-market developer tools, 1–3% for enterprise, 3%+ exceptional. It cites OpenView only for leaders being at the lower end, and gives no primary source for the rule [125].
+  - (Corrected: the 0.5–2% is Riehle passing on another source, not his own claim. Corrected 2026-10-05: a "50x–500x users to customers" ratio attributed to Riehle is not in either version of his paper; removed.) [118] [research; conceptual; figure second-hand; read 2026-10-05 (preprint and AMCIS 2009 version); corrected]; [125] [vendor; secondary; read 2026-10-05; corrected]
 - **IPO filings give no usable conversion rate.**
   - HashiCorp's S-1 reports about 100 million downloads in fiscal 2021. At 31 July 2021 it had 2,101 customers: 558 paying over $100k a year and 58 over $1M.
   - GitLab's S-1 estimates over 30 million registered users. Its "Base Customers" rose 71%, from 2,126 at 31 July 2020 to 3,632 at 31 July 2021.
   - Downloads and registered users are not organizations. A ratio built from these numbers divides unlike units, so do not use one.
-  - The revenue threshold that defines a GitLab Base Customer was not re-verified. [124] [first-party; SEC filings; snippet-only]
+  - The revenue threshold that defines a GitLab Base Customer was not re-verified. [124] [first-party; SEC filings; snippet-only (re-check 2026-10-05: site requires a contact header)]
 - **License choice has no consistent effect on adoption.**
   - Stewart et al.: users were most drawn to projects with permissive licences and non-commercial sponsors. The licence's effect on development activity depended on the type of sponsor.
-  - Colazo & Fang studied 62 projects. Copyleft licences went with more developers, more coding and faster development.
+  - Colazo & Fang hypothesise that copyleft licences go with more developers, more coding, faster development and longer project life. The sample of 62 projects was not seen.
   - Both studies predate GitHub and cover volunteer projects.
-  - (Corrected: Stewart et al. link sponsorship to user interest, not to development activity. So the two studies do not simply contradict each other.) [119] [research; peer-reviewed; observational; small n; snippet-only]
+  - (Corrected: Stewart et al. link sponsorship to user interest, not to development activity. So the two studies do not simply contradict each other.) [119] [research; peer-reviewed; observational; small n; Stewart abstract read 2026-10-05; Colazo & Fang snippet-only (re-check 2026-10-05: abstract gives no sample size; full text paywalled)]
 - **Relicensing lost few contributors but disrupted users.**
   - In Elasticsearch, the vendor's own employees made over 95% of the changed lines both before and after the 2021 relicense. There were few outside contributors to lose, so the effect fell mainly on users.
-  - Redis had more outside contributors. Trade press reported that it lost most of them after relicensing.
-  - Forks led by users drew contributors from more organizations, especially under neutral foundations.
+  - Redis had more outside contributors: 12 people outside Redis made 5+ commits in the year before the relicense, and none did in the six months after.
+  - Terraform had only 2 contributors not affiliated with HashiCorp. None of OpenTofu's 31 contributors (from 11 organizations) had contributed to Terraform before. Valkey drew 29 people from 10 companies in its first six months, 18 of whom had contributed to Redis.
+  - Forks drew contributors from more organizations, especially under neutral foundations. (Not all forks were user-led: Amazon created OpenSearch.)
   - A companion paper on the same three cases finds that vendors justify relicensing by pointing to freeriding. Community members respond by moving to forks.
-  - Not verified:
-    - Terraform's two outside contributors.
-    - None of OpenTofu's contributors having contributed to Terraform before.
-    - Redis's 24 outside contributors, 37.5% of whom went quiet.
-    - Valkey growing from 18 to 49 contributors.
-  - [120] [research; preprint plus peer-reviewed paper; three cases; descriptive; snippet-only]
+  - (Corrected 2026-10-05: an earlier draft gave Redis 24 outside contributors, 37.5% of whom went quiet, and Valkey growing from 18 to 49 contributors. Neither pair of figures is in the paper. It also called the forks user-led.) Contributor counts are people with 5+ commits.
+  - [120] [research; preprint plus peer-reviewed paper; three cases; descriptive; read 2026-10-05; corrected]
 - **Single-vendor, venture-backed projects had far more licence events.**
-  - A preprint followed 105 author-selected data-infrastructure and AI-tooling projects from 2018 to May 2026. It counted 38 events. An event was one of:
+  - A preprint followed 105 author-selected data-infrastructure and AI-tooling projects from 2018 to May 2026. It counted 38 entries: 29 adverse events plus 9 related entries such as forks and reversals. An adverse event was one of:
     - relicensing to source-available
     - moving features into a paid edition
     - deprecating the open edition
-    - archiving the project
-  - About 24% of projects had at least one event.
-  - 46% of single-vendor venture-backed projects had one, against 2.5% of foundation-run projects funded outside the venture cycle. That is about 18x.
-  - Events rose from 2.7 a year to 4.2 a year. [121] [research; preprint; single author; author-selected sample; small n; observational; snippet-only]
+    - archiving the project without a maintained successor
+    - an acquisition followed within 18 months by a narrower open-source offering
+  - About 24% of projects (25 of 105) had at least one adverse event.
+  - 46% of single-vendor venture-backed projects had one (23 of 50), against 2.5% of foundation-run projects funded outside the venture cycle (1 of 40). That is about 18x.
+  - Events rose from 2.7 a year to 4.2 a year.
+  - (Corrected 2026-10-05: an earlier draft counted all 38 entries as events and listed four event types; the shares use the 29 adverse events, and there are five types.) [121] [research; preprint; single author; author-selected sample; small n; observational; read 2026-10-05; corrected]
 - **After a relicense, many said they would consider switching, but few had switched.**
   - Percona, a vendor that sells Valkey support, surveyed 151 IT professionals in 2024.
-  - 67% ran Redis. Of those, 75% were testing, considering or already using Valkey. 83% of large enterprises had adopted it or were exploring it.
-  - Not verified: that only 8% were already using Valkey, and that outside analysts validated the survey.
-  - The sponsor gains when people switch, and stated intent overstates action (main note [9]). [122] [vendor; self-selected; stated intent; snippet-only]
+  - 67% ran Redis. The press release says 75% of Redis users were testing, considering or already using Valkey; the report puts the 75.71% against a different base (those considering migration, or all respondents). 83% of large enterprises had adopted it or were exploring it.
+  - The report says the results were validated with analysts from Forrester and RedMonk. The sample was chosen by judgement, and the report gives two different survey windows.
+  - (Corrected 2026-10-05: an earlier draft said only 8% were already using Valkey. That figure is in neither the release nor the report.)
+  - The sponsor gains when people switch, and stated intent overstates action (main note [9]). [122] [vendor; self-selected; stated intent; read 2026-10-05; corrected]
 - **Two prominent relicensers later added an open-source licence back.**
   - Elastic added AGPLv3 as a third licence option in August 2024, about 3.6 years after it left open source. Its founder said the 2021 change had worked.
   - Redis offered Redis 8 under AGPLv3 in May 2025, about a year after it left BSD.
   - There are no public data on how either move changed downloads, adoption or revenue.
-  - Both points rest on the verifier's own knowledge, because the sources were blocked. [123] [first-party; self-interested; unverified this session]
+  - Both points were checked on 2026-10-05 against Elastic's blog (Banon, 29 Aug 2024: AGPL added alongside ELv2 and SSPL; of 2021, "it worked") and Redis's blog (1 May 2025: AGPL "starting with Redis 8"). [123] [first-party; self-interested; read 2026-10-05]
 - **Related, in the main note:** engaging with open source is linked to raising funding [52]. Commercial open-source companies exit at higher values [60]. [52] [research; observational; snippet-only]; [60] [vendor; secondary]
 
 ## 5. Choosing a first segment and winning first deals
@@ -429,36 +433,40 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
   - A pooled replication covered 759 firms across four trials run from 2016 to 2019:
     - Treated founders dropped more ideas.
     - The number of pivots did not simply rise. Treated firms more often made one or two pivots than none or three or more.
-  - On revenue, the sources conflict. One search summary gives +€6,999 in cumulative revenue (p = 0.008). The main note says the replication found no clear revenue effect. Cite neither until the full text is read.
+  - Treatment raised dropping an idea by 9.8 percentage points (p = .001). In the first trial alone the effect was not significant. Treatment raised pivoting exactly once by 8.3 points and cut pivoting more than twice by 3.7 points.
+  - On revenue, the pooled 759-firm sample shows treated firms earning about €7,000 more than controls (p = .030). Per trial, only one of the four estimates was significant (the 2018 Turin trial, about €3,300, p = .027). The authors say the effect is small because many firms had no revenue.
+  - (Corrected 2026-10-05: an earlier draft gave p = 0.008 for the revenue effect and reported a conflicting claim of no clear revenue effect. The full text gives p = .030 in the pooled sample.)
   - The founders were in training programmes, and the choice of segment was not tested directly. This study is also summarised in research/startup-risk-and-opportunity.md §3.
-  - (Corrected: the first trial did not show more dropping out. The effect on dropped ideas comes from the pooled sample.) [127] [research; randomized; pooled replication; snippet-only]
+  - (Corrected: the first trial did not show more dropping out. The effect on dropped ideas comes from the pooled sample.) [127] [research; randomized; pooled replication; read 2026-10-05 (2020 abstract; 2024 full text); corrected]
 - **Founders who listed several markets before entering one did better, but each extra option added less.**
-  - The study covers 83 venture-backed technology firms whose technology could serve several markets.
-  - Firms that identified a set of market opportunities before their first entry reported better performance. Each extra opportunity added less than the one before.
+  - The study covers 83 German venture-backed technology firms whose technology could serve several markets.
+  - Firms that identified a set of market opportunities before their first entry had higher sales in their first two years. Sales came from an investor's monthly revenue data; only the count of opportunities was self-reported.
+  - (Corrected 2026-10-05: an earlier draft said the firms "reported" better performance.) Each extra opportunity added less than the one before.
   - Serial founders were more likely to do this.
-  - The firms are survivors and the link is correlational. The best number of options is not known. [128] [research; peer-reviewed; small n; observational; cross-sectional; snippet-only]
+  - The firms are survivors and the link is correlational. The best number of options is not known. [128] [research; peer-reviewed; small n; observational; cross-sectional; read 2026-10-05; corrected]
 - **Founders' candidate markets mirror their own background.**
   - The study covers 496 technology ventures, through interviews with founders.
   - Teams with more varied industry experience, and more varied outside sources of knowledge, found more market opportunities, and more distant ones.
-  - Technical expertise affected the variety of opportunities more than their number. [129] [research; peer-reviewed; observational; self-report; snippet-only]
+  - Technical expertise affected the variety of opportunities more than their number. [129] [research; peer-reviewed; observational; self-report; read 2026-10-05 (abstract)]
 - **Screen lead users on two separate traits.**
-  - In an online kite-surfing community, 140 of 452 respondents (30.9%) had an idea to improve the equipment.
+  - Across 15 samples from several European kite-surfing communities (estimated overlap about 50%), 140 of 452 respondents (30.9%) had an idea to improve the equipment. After expert checks, 88 were coded as innovators.
   - Expecting a high benefit predicted who innovated. Being ahead of the trend predicted whose ideas were commercially attractive. Each trait added information the other did not.
-  - Not verified: the six-expert rating panel, the demographic figures and the overlap between community samples.
-  - This is a consumer extreme sport. It extends main-note sources [21][22]. [130] [research; peer-reviewed; one community; self-selected online sample; snippet-only]
+  - Six equipment experts rated the ideas in a one-day workshop. Respondents were 91.5% male, average age 30.
+  - (Corrected 2026-10-05: an earlier draft described the sample as one online community.)
+  - This is a consumer extreme sport. It extends main-note sources [21][22]. [130] [research; peer-reviewed; one sport; self-selected sample; read 2026-10-05; corrected]
 - **In six cases, locking onto a target market early went with failure.**
   - Molner et al. followed six early-stage technologies at one research university for several years.
-  - The failed projects emphasised target markets the most. The biggest successes emphasised them the least and accepted uncertainty about the market.
-  - These are six university technology-transfer cases, not software startups. The study builds theory and does not test it. The counts of documents and emails were not seen. [131] [research; peer-reviewed; qualitative; n = 6; snippet-only]
+  - In an exploratory text analysis of 12 projects, the failed projects emphasised target markets the most. The successes emphasised them the least and accepted uncertainty about the market.
+  - These are six university technology-transfer cases, not software startups, drawn from 1,866 project documents and 12,602 email trails collected over 20 months. The study builds theory and does not test it. [131] [research; peer-reviewed; qualitative; n = 6; read 2026-10-05 (accepted manuscript)]
 - **Business buyers' reliance on brands does not simply rise or fall with risk.**
-  - Interviews suggested that buyers use brands as a shortcut to reduce risk. A scenario study (206 buying-unit members) and a field survey (180) supported a nonlinear link between purchase risk and how much buyers weigh the brand.
+  - Interviews suggested that buyers use brands as a shortcut to reduce risk. A scenario study (206 buying-unit members) and a field survey (180) supported a nonlinear link between purchase risk and how much buyers weigh the brand: highest when risk is low or high.
   - A companion study of 273 buying-centre members found that brand weight rose and then fell as a purchase grew more important. For purchase complexity it found the reverse pattern (falling, then rising), depending on how tangible the product was.
-  - These are traditional buying centres, not developers adopting tools from the bottom up. [132] [research; peer-reviewed; survey plus scenario experiment; snippet-only]
+  - These are traditional buying centres, not developers adopting tools from the bottom up. [132] [research; peer-reviewed; survey plus scenario experiment; 2011 read 2026-10-05 (abstract); 2012 snippet-only (re-check 2026-10-05: SSRN and ScienceDirect blocked, abstract withheld in indexes)]
 - **Reaching beyond referrals went with more new deals.**
-  - Vissa coded the business cards of new contacts made over two months by Indian entrepreneurs running B2B ventures.
+  - Vissa coded the business cards of new contacts made over two months by 75 Indian entrepreneurs running 73 B2B ventures in Bangalore and Hyderabad (final sample 59), and checked 12 months later for new business.
   - Those who widened their networks started more new business relationships, partly because they relied less on referrals. Those who deepened existing ties started fewer.
-  - These relationships may include suppliers and partners, not only customers. The panel size was not seen. [133] [research; peer-reviewed; observational; one country; snippet-only]
-- **A definition, not evidence.** Entrepreneurial marketing is defined as "the proactive identification and exploitation of opportunities for acquiring and retaining profitable customers through innovative approaches to risk management, resource leveraging and value creation". It has seven dimensions. No evidence was found that any of them improves outcomes. [134] [research; conceptual; secondary; snippet-only]
+  - These relationships include customers, alliance partners and suppliers. [133] [research; peer-reviewed; observational; one country; read 2026-10-05 (INSEAD working-paper version)]
+- **A definition, not evidence.** Entrepreneurial marketing is defined as "the proactive identification and exploitation of opportunities for acquiring and retaining profitable customers through innovative approaches to risk management, resource leveraging and value creation". It has seven dimensions. No evidence was found that any of them improves outcomes. [134] [research; conceptual; secondary; snippet-only (re-check 2026-10-05: abstract confirms seven dimensions and pp. 1–19; definition seen only in the secondary source; publisher behind a bot check)]
 - **Related, in the main note:** lead users [21][22]; a few deep customer relationships [23]; references that look like the next prospect [24]; biased early users [14]. [research; see the main note for marks]
 
 ## 6. Gaps: what no study answers
@@ -484,6 +492,8 @@ Everything else rests on search-engine snippets, secondary summaries or memory. 
 ## Not verified
 
 Do not cite these without a primary source.
+
+These lists record what was open before the 2026-10-05 re-check. Items resolved by that pass are marked in the body and in the source tags ("read 2026-10-05" or "re-check 2026-10-05"); those marks take precedence over this list.
 
 - **Sources not checked this session.** Only bibliographic details were confirmed, or the content is from memory:
   - Dahlander & Magnusson [126]. Reported: four Nordic open-source firms had one of three kinds of relationship with their communities: symbiotic, commensalistic or parasitic. The symbiotic kind gave more influence but was harder to manage.

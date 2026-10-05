@@ -112,4 +112,4 @@ A brief is the instruction sheet for a writer. Include:
 
 ## Sources
 
-research/seo-advanced.md §C (Google Search Central: link best practices, crawl budget, faceted navigation Dec 2024, pagination, spam policies, helpful content; Search Console Help; Search Engine Land on content pruning; Google information gain patent; programmatic SEO practitioner teardowns). Google pages were read from search snippets only; see the access caveat there.
+research/seo-advanced.md §C (Google Search Central: link best practices, crawl budget, faceted navigation Dec 2024, pagination, spam policies, helpful content; Search Console Help; Search Engine Land on content pruning; Google information gain patent; programmatic SEO practitioner teardowns). Google pages were re-read directly on 2026-10-05; see the access caveat there.

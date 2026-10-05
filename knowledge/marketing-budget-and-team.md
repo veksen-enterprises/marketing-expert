@@ -9,13 +9,13 @@ tags: marketing budget, how much to spend, percent of revenue, gartner cmo spend
 The two most quoted surveys:
 
 - **Gartner CMO Spend Survey 2025**: marketing budgets were **7.7% of company revenue**, flat from 2024. Half of CMOs reported **6% or less**, so the average is pulled up by a few high spenders. 59% said their budget was not enough for their strategy. Sample: 402 marketing leaders in North America and Europe, mostly at companies with over US$1 billion revenue. [analyst]
-- Inside that budget Gartner reported paid media at 30.6%, the largest line. Trade press gave the rest as roughly martech (marketing software) 22%, internal staff 22% and agencies 21%, with 39% of CMOs planning to cut agency spend. [analyst via trade press, not re-verified]
-- **The CMO Survey (Duke Fuqua / Deloitte), Spring 2025**: marketing was **9.4% of revenue** and 11.4% of total company budget, up from 7.7% in Fall 2024 (281 US marketing leaders). A secondary report gives B2C product companies 15.5% of revenue vs B2B product companies 6.4%. [academic survey; sector split not re-verified]
+- Inside that budget Gartner reported paid media at 30.6%, the largest line. Trade press gave the rest as roughly martech (marketing software) 22%, internal staff 22% and agencies 21%. 39% of CMOs planned to cut agency spend and 39% to cut staff spending. [analyst; shares via trade press]
+- **The CMO Survey (Duke Fuqua / Deloitte), Spring 2025**: marketing was **9.4% of revenue** and 11.4% of total company budget, up from 7.7% in Fall 2024 (281 US marketing leaders). By sector, B2C product companies spent 15.5% of revenue vs 6.4% for B2B product companies. [academic survey]
 
 SaaS (all [vendor]: lenders and investors publish these, and their samples are their own clients and contacts):
 
-- **SaaS Capital 2026** (1,000+ private B2B SaaS companies): median **marketing 8% of ARR** and **selling 13% of ARR**, so about 21% for sales and marketing together. Secondary reports say equity-backed companies spend about twice as much on marketing as bootstrapped ones. [vendor; funding split not re-verified]
-- **KeyBanc / Sapphire** private SaaS survey: the 2024 edition reported median CAC payback of about 20 months. We could not confirm a current median for sales and marketing as a % of revenue; do not quote one from memory.
+- **SaaS Capital 2026** (1,000+ private B2B SaaS companies): median **marketing 8% of ARR** and **selling 15% of ARR**, so about 23% for sales and marketing together. Equity-backed companies spend about twice as much on marketing as bootstrapped ones. [vendor]
+- **KeyBanc / Sapphire** private SaaS survey: the 2024 edition reported median CAC payback of about 20 months and median sales and marketing spend of 31% of revenue (2024 estimate, 55 respondents), down from 42% in 2022. The median company had about $26M ARR in 2023; no 2025 figure was checked.
 - **Public SaaS** companies spend much more: one analysis put 2024 S&M at about 39% of revenue. [vendor, not re-verified]
 - **ICONIQ**: companies planned a median 22% year-on-year increase in S&M spend in 2025; no %-of-revenue figure confirmed. [vendor]
 

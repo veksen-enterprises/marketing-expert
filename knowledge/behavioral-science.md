@@ -15,7 +15,7 @@ Price-specific effects (decoy, charm/left-digit pricing, compromise effect, refe
 | Defaults / opt-out | Robust | Pre-selected plan, auto-renew, opt-out add-ons | Bad-faith defaults become dark patterns and drive refunds and complaints |
 | Anchoring (numeric estimates) | Robust in lab; size in real buying less clear | Show the higher plan or "was" price first | Fake reference prices are illegal in many markets |
 | Gain/loss framing | Robust (risky-choice framing) | "Save $200" vs "Don't lose $200" | Direction of best frame varies; test |
-| Loss aversion | Debated; present but moderated | Trials that give ownership, loss-framed reminders | Weaker at small stakes; not a universal 2:1 rule |
+| Loss aversion | Debated; present but moderated | Trials that give ownership, loss-framed reminders | Weaker for buyers who know the category; not a universal 2:1 rule |
 | Scarcity (real) | Mostly supported | Real low stock, real deadlines | Effect depends on type of scarcity |
 | Fake urgency (fake timers, false stock) | Illegal / dark pattern | None | EU blacklist; FTC enforcement |
 | Social proof / descriptive norms | Mixed | "Most customers choose X", reviews, counts | Famous hotel study did not replicate in Germany |
@@ -39,7 +39,7 @@ Many Labs 1 repeated 13 classic effects in 36 samples (6,344 people). Anchoring 
 
 ## Loss aversion [research, debated]
 
-Gal & Rucker (2018) argued loss aversion is overstated and not a general law. Mrkva, Johnson, Gächter & Herrmann (2020; five samples, 17,720 people) found it is real but changes in size with moderators such as stake size. Practical reading: losses usually weigh more than equal gains, but do not assume a fixed "2×" and expect weaker effects for small, routine purchases.
+Gal & Rucker (2018) argued loss aversion is overstated and not a general law. Mrkva, Johnson, Gächter & Herrmann (2020; five samples, 17,720 people) found it is real, even with small stakes (up to €6 or $20), but smaller in people with more knowledge, experience or education in the area and larger in older people. Practical reading: losses usually weigh more than equal gains, but do not assume a fixed "2×", and expect a weaker effect on expert buyers who know the category well.
 
 ## Scarcity and urgency [research, mixed; fake urgency illegal]
 
@@ -72,7 +72,7 @@ In Iyengar & Lepper's (2000) jam study, a 24-jam display drew more shoppers but 
 
 - **Social priming**: with automated timing, people primed with "elderly" words did not walk more slowly; they did only when experimenters expected it (Doyen et al. 2012). Flag and money priming also failed in Many Labs 1.
 - **Ego depletion**: 23 labs, 2,141 people, effect d=0.04, not different from zero (Hagger et al. 2016).
-- **Power posing**: with 200 people and a blind experimenter, poses changed self-reported feelings of power but not hormones or behavior (Ranehill et al. 2015).
+- **Power posing**: with 200 people, poses changed self-reported feelings of power but not hormones or behavior (Ranehill et al. 2015).
 
 ## Nudges overall [research]
 

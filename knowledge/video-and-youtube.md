@@ -34,7 +34,7 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 ## Shorts vs long-form
 
 - Since 15 October 2024, square or vertical videos up to **three minutes** count as Shorts [first-party].
-- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. Creator reports say that from 24 Aug 2026 views in all formats count from the first frame, with most analytics and YouTube Partner Program (YPP) still based on engaged views; not confirmed on a YouTube Help or Blog page [not re-verified].
+- Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. From 24 Aug 2026, YouTube counts a view the moment a video starts to play in all formats (Shorts, long-form and live); YouTube says this does not change YouTube Partner Program (YPP) earnings or eligibility [first-party].
 - YouTube says Shorts performance does not hurt long-form recommendations and can help people discover a channel [first-party: YouTube Blog "Shorts truths"].
 - **Use Shorts for**: reach and testing topics cheaply, clips from long videos, quick tips. **Use long-form for**: search demand, trust, depth, and the viewers who buy. In B2B, a long tutorial watched by 500 buyers is often worth more than a Short watched by 50,000 strangers [practitioner].
 - Judge Shorts on subscribers gained, profile visits and the long videos they lead to, not on views.
@@ -51,7 +51,7 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 ## YouTube ads
 
 - **Skippable in-stream**: viewers can skip after 5 seconds. With cost-per-view bidding you pay when someone watches 30 seconds (or the whole ad if shorter) or clicks, whichever comes first; with CPM or conversion bidding you pay per impression [first-party]. Put the brand, problem and offer in the first 5 seconds.
-- **Demand Gen campaigns** (Google Ads) run video and image ads across YouTube in-stream, in-feed (Home, Watch Next, Search), Shorts, Discover, Gmail and the Display Network, with lookalike segments built from your customer lists; Video action campaigns are being moved into Demand Gen [first-party]. Treat them like paid social: creative quality drives results.
+- **Demand Gen campaigns** (Google Ads) run video and image ads across YouTube in-stream, in-feed (Home, Watch Next, Search), Shorts, Discover, Gmail and the Display Network, with lookalike segments built from your customer lists; Video action campaigns have been folded into Demand Gen, the last ones by April 2026 [first-party]. Treat them like paid social: creative quality drives results.
 - Retarget people who watched your organic videos; they already know you.
 - Measurement, bidding and incrementality rules are in paid-acquisition and metrics-and-measurement. View-through conversions overstate what the ad caused.
 

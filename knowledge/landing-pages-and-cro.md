@@ -50,7 +50,7 @@ These are reasonable defaults, not proven laws:
 ## Folklore to stop citing
 
 - "Red buttons beat green": one page, ~2,000 visits, clicks not revenue; likely about contrast on a green page.
-- Any "this test lifted conversions 300%" case study: survivorship-biased libraries (vendor case studies, GoodUI). In 2,101 Optimizely experiments, ~73% of experimenters stopped when a positive effect hit 90% confidence, inflating false discoveries (Berman et al.). Use pattern libraries as hypotheses, not expected lifts.
+- Any "this test lifted conversions 300%" case study: survivorship-biased libraries (vendor case studies, GoodUI's paid case stories with a stated 92% success rate). In 2,101 Optimizely experiments, ~73% of experimenters stopped when a positive effect hit 90% confidence, inflating false discoveries (Berman et al.). Use pattern libraries as hypotheses, not expected lifts.
 
 ## Teardown checklist
 

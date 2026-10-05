@@ -25,6 +25,8 @@ Researched 2026-10-05 for a self-serve developer tool with no paying customers. 
 
 Everything else rests on search-engine snippets or secondary summaries. Do not quote a figure marked snippet-only or unverified until someone has checked it against the full text.
 
+Re-read on 2026-10-05 with open network access: sources 1, 3, 7, 8, 13–21, 24, 25, 28, 30, 31, 35, 38, 44 (published version), 45, 47–52, 53, 55, 56, 59, 61, 62, 67–71, 73 and 74, mostly at abstract level (full text for 18, 35, 45, 50, 52, 61, 68 (Guo), 73 and 74). Items still behind paywalls or bot checks keep the snippet-only mark with a re-check note.
+
 **How to read the marks.** The verification pass checked each finding against search text or the source. Where that pass changed a claim, the corrected version appears here, marked "(corrected: …)".
 
 **Short answer.** Not directly. No study found looks at marketing or go-to-market for a SaaS or developer tool with zero customers. The research that exists is adjacent:
@@ -55,84 +57,84 @@ The most consistent finding is modest: structured testing helps founders drop ba
 
 ## Sources
 
-1. Bennett, V.M. & Chatterji, A.K. (2023). "The entrepreneurial process: Evidence from a nationally representative survey." *Strategic Management Journal* 44(1):86–116. doi:10.1002/smj.3077. https://onlinelibrary.wiley.com/doi/full/10.1002/smj.3077 [snippet-only]
-2. Reynolds, P.D. et al. "Panel Study of Entrepreneurial Dynamics: A Five Cohort Outcomes Harmonized Data Set." https://www.academia.edu/31086431/Panel_Study_of_Entrepreneurial_Dynamics_A_Five_Cohort_Outcomes_Harmonized_Data_Set . Also Reynolds, P.D. & Curtin, R.T. "Business Creation in the United States: PSED II Initial Assessment." *Foundations and Trends in Entrepreneurship* (now publishers). [snippet-only; ICPSR study number 37202 unverified]
-3. ChartMogul (2023). "SaaS Growth Report: How SaaS Businesses Grow From Zero to $30M ARR and Beyond." https://chartmogul.com/reports/saas-growth-report/ . Also ChartMogul (2024). "SaaS Growth Report: Bootstrapped vs VC-Backed." [vendor; snippet-only]
-4. Shah, S.K., Winston Smith, S. & Reedy, E.J. (2012). "Who Are User Entrepreneurs? Findings on Innovation, Founder Characteristics, and Firm Characteristics." Kauffman Firm Survey report, Ewing Marion Kauffman Foundation. SSRN 2018517. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2018517 [snippet-only]
+1. Bennett, V.M. & Chatterji, A.K. (2023). "The entrepreneurial process: Evidence from a nationally representative survey." *Strategic Management Journal* 44(1):86–116. doi:10.1002/smj.3077. https://onlinelibrary.wiley.com/doi/full/10.1002/smj.3077 [read 2026-10-05; abstract]
+2. Reynolds, P.D. et al. "Panel Study of Entrepreneurial Dynamics: A Five Cohort Outcomes Harmonized Data Set." https://www.academia.edu/31086431/Panel_Study_of_Entrepreneurial_Dynamics_A_Five_Cohort_Outcomes_Harmonized_Data_Set . Also Reynolds, P.D. & Curtin, R.T. "Business Creation in the United States: PSED II Initial Assessment." *Foundations and Trends in Entrepreneurship* (now publishers). [snippet-only; ICPSR study number 37202 unverified] (re-check 2026-10-05: Reynolds' Oxford Research Encyclopedia abstract confirms a harmonized five-cohort, four-country data set; the 3,910 and 2,541 counts and the one-third profitable share were not seen; ICPSR, academia.edu and SSRN are behind bot checks)
+3. ChartMogul (2023). "SaaS Growth Report: How SaaS Businesses Grow From Zero to $30M ARR and Beyond." https://chartmogul.com/reports/saas-growth-report/ . Also ChartMogul (2024). "SaaS Growth Report: Bootstrapped vs VC-Backed." [vendor; 2023 report read 2026-10-05; corrected]
+4. Shah, S.K., Winston Smith, S. & Reedy, E.J. (2012). "Who Are User Entrepreneurs? Findings on Innovation, Founder Characteristics, and Firm Characteristics." Kauffman Firm Survey report, Ewing Marion Kauffman Foundation. SSRN 2018517. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2018517 [snippet-only] (re-check 2026-10-05: SSRN behind a bot check; no abstract in OpenAlex or Semantic Scholar)
 5. Stinchcombe, A.L. (1965). "Social structure and organizations." In J.G. March (ed.), *Handbook of Organizations*, pp. 142–193. [unverified]
 6. Zimmerman, M.A. & Zeitz, G.J. (2002). "Beyond Survival: Achieving New Venture Growth by Building Legitimacy." *Academy of Management Review* 27(3):414–431. https://www.semanticscholar.org/paper/Beyond-Survival:-Achieving-New-Venture-Growth-by-Zimmerman-Zeitz/26326adef1ce6b35643091c00dff75d720f1e2bb [unverified]
-7. Brüderl, J. & Schüssler, R. (1990). "Organizational Mortality: The Liabilities of Newness and Adolescence." *Administrative Science Quarterly* 35(3):530–547. [snippet-only; issue number inferred from the Sept 1990 date]
-8. Schmidt, J. & Bijmolt, T.H.A. (2020). "Accurately measuring willingness to pay for consumer goods: a meta-analysis of the hypothetical bias." *Journal of the Academy of Marketing Science* 48(3):499–518. https://research.rug.nl/en/publications/accurately-measuring-willingness-to-pay-for-consumer-goods-a-meta/ [snippet-only]
-9. Morwitz, V.G., Steckel, J.H. & Gupta, A. (2007). "When do purchase intentions predict sales?" *International Journal of Forecasting* 23(3):347–364. doi:10.1016/j.ijforecast.2007.05.015. https://www.sciencedirect.com/science/article/abs/pii/S0169207007000799 [snippet-only]
-10. Xu, T. (2018). "Learning from the Crowd: The Feedback Value of Crowdfunding." Working paper, University of Virginia Darden School. SSRN 2637699 (version dated 30 Sep 2018). doi:10.2139/ssrn.2637699. Summarised in Darden Ideas to Action, "Crowdfunding: Beyond Financing." [secondary + snippet-only]
+7. Brüderl, J. & Schüssler, R. (1990). "Organizational Mortality: The Liabilities of Newness and Adolescence." *Administrative Science Quarterly* 35(3):530–547. doi:10.2307/2393316 [read 2026-10-05; abstract; issue 3 confirmed]
+8. Schmidt, J. & Bijmolt, T.H.A. (2020). "Accurately measuring willingness to pay for consumer goods: a meta-analysis of the hypothetical bias." *Journal of the Academy of Marketing Science* 48(3):499–518. https://research.rug.nl/en/publications/accurately-measuring-willingness-to-pay-for-consumer-goods-a-meta/ [read 2026-10-05; abstract]
+9. Morwitz, V.G., Steckel, J.H. & Gupta, A. (2007). "When do purchase intentions predict sales?" *International Journal of Forecasting* 23(3):347–364. doi:10.1016/j.ijforecast.2007.05.015. https://www.sciencedirect.com/science/article/abs/pii/S0169207007000799 [snippet-only] (re-check 2026-10-05: ScienceDirect and Columbia return 403, SSRN is behind a bot check, and no abstract is in OpenAlex, Crossref or RePEc; two independent search snippets now list all six conditions)
+10. Xu, T. (2018). "Learning from the Crowd: The Feedback Value of Crowdfunding." Working paper, University of Virginia Darden School. SSRN 2637699 (version dated 30 Sep 2018). doi:10.2139/ssrn.2637699. Summarised in Darden Ideas to Action, "Crowdfunding: Beyond Financing." [secondary + snippet-only] (re-check 2026-10-05: SSRN behind a bot check; no abstract in OpenAlex or Semantic Scholar)
 11. Mollick, E. (2014). "The dynamics of crowdfunding: An exploratory study." *Journal of Business Venturing* 29(1):1–16. doi:10.1016/j.jbusvent.2013.06.005. https://econpapers.repec.org/RePEc:eee:jbvent:v:29:y:2014:i:1:p:1-16 [matches the known abstract; not separately re-searched]
-12. Mollick, E.R. & Kuppuswamy, V. (2014). "After the Campaign: Outcomes of Crowdfunding." UNC Kenan-Flagler Research Paper. SSRN 2376997 (9 Jan 2014). https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2376997 [snippet-only]
-13. Howell, S.T. (2021). "Learning from Feedback: Evidence from New Ventures." *Review of Finance* 25(3):595–627. NBER Working Paper w23874. https://academic.oup.com/rof/article-abstract/25/3/595/6136191 [snippet-only]
-14. Cao, R., Koning, R.M. & Nanda, R. (2021). "Biased Sampling of Early Users and the Direction of Startup Innovation." NBER Working Paper 28882. Earlier version: "Sampling Bias in Entrepreneurial Experiments," HBS Working Paper 21-059. https://www.nber.org/papers/w28882 [snippet-only]
-15. Allen, R.T., Bremner, R. & McDonald, R.M. (2026). "Listen to Your Users? Self-Selection in User Community Feedback and Commercial Impact." *Academy of Management Journal*, online 9 Apr 2026. doi:10.5465/amj.2024.0178 [snippet-only]
-16. Youtie, J. et al. (2021). "The Impact of I-Corps on Accelerating Venture Discontinuation in a Southeastern US University." *Science and Public Policy* 48(4):474–487. doi:10.1093/scipol/scab027. https://academic.oup.com/spp/article/48/4/474/6231618 [snippet-only; co-authors "Kwon, S. & Woo, S." unverified]
-17. Leatherbee, M. & Katila, R. (2020). "The lean startup method: Early-stage teams and hypothesis-based probing of business ideas." *Strategic Entrepreneurship Journal* 14(4):570–593. doi:10.1002/sej.1373 [snippet-only]
-18. Canaria, C.A., Portilla, L. & Weingarten, M. (2019). "I-Corps at NIH: Entrepreneurial Training Program Creating Successful Small Businesses." *Clinical and Translational Science* 12(4):324–328. doi:10.1111/cts.12637 [snippet-only]
-19. Read, S., Song, M. & Smit, W. (2009). "A meta-analytic review of effectuation and venture performance." *Journal of Business Venturing* 24(6):573–587. https://ideas.repec.org/a/eee/jbvent/v24y2009i6p573-587.html [snippet-only]
-20. Kirtley, J. & O'Mahony, S. (2023). "What is a pivot? Explaining when and how entrepreneurial firms decide to make strategic change and pivot." *Strategic Management Journal* 44(1):197–230. doi:10.1002/smj.3131 [snippet-only]
-21. Lilien, G.L., Morrison, P.D., Searls, K., Sonnack, M. & von Hippel, E. (2002). "Performance Assessment of the Lead User Idea-Generation Process for New Product Development." *Management Science* 48(8):1042–1059. doi:10.1287/mnsc.48.8.1042.171 [snippet-only]
-22. Franke, N. & von Hippel, E. (2003). "Satisfying heterogeneous user needs via innovation toolkits: the case of Apache security software." *Research Policy* 32(7):1199–1215. https://research.wu.ac.at/en/publications/satisfying-heterogeneous-user-needs-via-innovation-toolkits-the-c-3/ [snippet-only]
+12. Mollick, E.R. & Kuppuswamy, V. (2014). "After the Campaign: Outcomes of Crowdfunding." UNC Kenan-Flagler Research Paper. SSRN 2376997 (9 Jan 2014). https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2376997 [snippet-only] (re-check 2026-10-05: SSRN and the Penn repository copy are behind bot checks)
+13. Howell, S.T. (2021). "Learning from Feedback: Evidence from New Ventures." *Review of Finance* 25(3):595–627. NBER Working Paper w23874. https://academic.oup.com/rof/article-abstract/25/3/595/6136191 doi:10.1093/rof/rfab006 [read 2026-10-05; abstract; 87 competitions from the NBER working paper]
+14. Cao, R., Koning, R.M. & Nanda, R. (2021). "Biased Sampling of Early Users and the Direction of Startup Innovation." NBER Working Paper 28882. Earlier version: "Sampling Bias in Entrepreneurial Experiments," HBS Working Paper 21-059. https://www.nber.org/papers/w28882 [read 2026-10-05; abstract of the 2020 SocArXiv version, doi:10.31235/osf.io/g6wjn]
+15. Allen, R.T., Bremner, R. & McDonald, R.M. (2026). "Listen to Your Users? Self-Selection in User Community Feedback and Commercial Impact." *Academy of Management Journal*, online 9 Apr 2026. doi:10.5465/amj.2024.0178 [read 2026-10-05; abstract]
+16. Youtie, J. et al. (2021). "The Impact of I-Corps on Accelerating Venture Discontinuation in a Southeastern US University." *Science and Public Policy* 48(4):474–487. doi:10.1093/scipol/scab027. https://academic.oup.com/spp/article/48/4/474/6231618 [read 2026-10-05; abstract; co-authors Kwon, S. & Woo, S. confirmed]
+17. Leatherbee, M. & Katila, R. (2020). "The lean startup method: Early-stage teams and hypothesis-based probing of business ideas." *Strategic Entrepreneurship Journal* 14(4):570–593. doi:10.1002/sej.1373 [read 2026-10-05; abstract]
+18. Canaria, C.A., Portilla, L. & Weingarten, M. (2019). "I-Corps at NIH: Entrepreneurial Training Program Creating Successful Small Businesses." *Clinical and Translational Science* 12(4):324–328. doi:10.1111/cts.12637 [read 2026-10-05; full text via Europe PMC, PMC6617837]
+19. Read, S., Song, M. & Smit, W. (2009). "A meta-analytic review of effectuation and venture performance." *Journal of Business Venturing* 24(6):573–587. https://ideas.repec.org/a/eee/jbvent/v24y2009i6p573-587.html [read 2026-10-05; abstract]
+20. Kirtley, J. & O'Mahony, S. (2023). "What is a pivot? Explaining when and how entrepreneurial firms decide to make strategic change and pivot." *Strategic Management Journal* 44(1):197–230. doi:10.1002/smj.3131 [read 2026-10-05; abstract]
+21. Lilien, G.L., Morrison, P.D., Searls, K., Sonnack, M. & von Hippel, E. (2002). "Performance Assessment of the Lead User Idea-Generation Process for New Product Development." *Management Science* 48(8):1042–1059. doi:10.1287/mnsc.48.8.1042.171 [read 2026-10-05; abstract]
+22. Franke, N. & von Hippel, E. (2003). "Satisfying heterogeneous user needs via innovation toolkits: the case of Apache security software." *Research Policy* 32(7):1199–1215. https://research.wu.ac.at/en/publications/satisfying-heterogeneous-user-needs-via-innovation-toolkits-the-c-3/ [snippet-only] (re-check 2026-10-05: the MIT DSpace copy is behind a bot check and the publisher abstract is elided in OpenAlex, Crossref and Semantic Scholar)
 23. Yli-Renko, H. & Janakiraman, R. (2008). "How Customer Portfolio Affects New Product Development in Technology-Based Entrepreneurial Firms." *Journal of Marketing* 72(5):131–148. [unverified: source not reached; from memory of the abstract]
-24. Kumar, V., Petersen, J.A. & Leone, R.P. (2013). "Defining, Measuring, and Managing Business Reference Value." *Journal of Marketing* 77(1):68–86. doi:10.1509/jm.11.0424 [snippet-only; partly from memory]
-25. Kurpjuweit, S., Wagner, S.M. & Choi, T.Y. (2021). "Selecting Startups as Suppliers: A Typology of Supplier Selection Archetypes." *Journal of Supply Chain Management* 57(3):25–49. https://ideas.repec.org/a/bla/jscmgt/v57y2021i3p25-49.html [snippet-only]
+24. Kumar, V., Petersen, J.A. & Leone, R.P. (2013). "Defining, Measuring, and Managing Business Reference Value." *Journal of Marketing* 77(1):68–86. doi:10.1509/jm.11.0424 [read 2026-10-05; abstract]
+25. Kurpjuweit, S., Wagner, S.M. & Choi, T.Y. (2021). "Selecting Startups as Suppliers: A Typology of Supplier Selection Archetypes." *Journal of Supply Chain Management* 57(3):25–49. https://ideas.repec.org/a/bla/jscmgt/v57y2021i3p25-49.html [read 2026-10-05; abstract; case study of 20 buying firms; archetype names not in the abstract]
 26. Ruokolainen, J. & Igel, B. (2004). "The factors of making the first successful customer reference to leverage the business of start-up software company: multiple case study in Thai software industry." *Technovation* 24(9):673–681. doi:10.1016/S0166-4972(02)00130-X [unverified]
 27. Terho, H. & Jalkala, A. (2017). "Customer reference marketing: Conceptualization, measurement and link to selling performance." *Industrial Marketing Management* 64:175–186. [unverified]
-28. Goldenberg, J., Libai, B. & Muller, E. (2002). "Riding the Saddle: How Cross-Market Communications Can Create a Major Slump in Sales." *Journal of Marketing* 66(2):1–16. https://www.jstor.org/stable/3203412 [snippet-only; JSTOR ID unverified]
-29. Delmar, F. & Shane, S. (2004). "Legitimating first: Organizing activities and the survival of new ventures." *Journal of Business Venturing* 19(3):385–410. https://ideas.repec.org/a/eee/jbvent/v19y2004i3p385-410.html [snippet-only; DOI 10.1016/S0883-9026(03)00037-5 unverified]
-30. Stuart, T.E., Hoang, H. & Hybels, R.C. (1999). "Interorganizational Endorsements and the Performance of Entrepreneurial Ventures." *Administrative Science Quarterly* 44(2):315–349. https://www.hbs.edu/faculty/Pages/item.aspx?num=22374 [snippet-only]
-31. Stuart, T.E. (2000). "Interorganizational alliances and the performance of firms: A study of growth and innovation rates in a high-technology industry." *Strategic Management Journal* 21(8):791–811. https://faculty.haas.berkeley.edu/tstuart/publications/2000/Interorganizational%20alliances.pdf [snippet-only]
+28. Goldenberg, J., Libai, B. & Muller, E. (2002). "Riding the Saddle: How Cross-Market Communications Can Create a Major Slump in Sales." *Journal of Marketing* 66(2):1–16. https://www.jstor.org/stable/3203412 doi:10.1509/jmkg.66.2.1.18472 [read 2026-10-05; abstract; JSTOR ID unverified]
+29. Delmar, F. & Shane, S. (2004). "Legitimating first: Organizing activities and the survival of new ventures." *Journal of Business Venturing* 19(3):385–410. https://ideas.repec.org/a/eee/jbvent/v19y2004i3p385-410.html doi:10.1016/S0883-9026(03)00037-5 [snippet-only; DOI confirmed] (re-check 2026-10-05: no abstract on RePEc, OpenAlex, Crossref or Semantic Scholar; ScienceDirect returns 403)
+30. Stuart, T.E., Hoang, H. & Hybels, R.C. (1999). "Interorganizational Endorsements and the Performance of Entrepreneurial Ventures." *Administrative Science Quarterly* 44(2):315–349. https://www.hbs.edu/faculty/Pages/item.aspx?num=22374 [read 2026-10-05; abstract]
+31. Stuart, T.E. (2000). "Interorganizational alliances and the performance of firms: A study of growth and innovation rates in a high-technology industry." *Strategic Management Journal* 21(8):791–811. https://faculty.haas.berkeley.edu/tstuart/publications/2000/Interorganizational%20alliances.pdf [read 2026-10-05; abstract]
 32. Rao, R.S., Chandy, R.K. & Prabhu, J.C. (2008). "The Fruits of Legitimacy: Why Some New Ventures Gain More from Innovation than Others." *Journal of Marketing* 72(4):58–75. [unverified; DOI 10.1509/jmkg.72.4.058 from memory]
 33. LinkedIn B2B Institute & Bain & Company (c. 2025). B2B buyer research, in "Building More Buyable B2B Brands" (PDF) and trade press, e.g. The Drum, "LinkedIn's new B2B playbook shows ability to defend bad decisions drives B2B buying decisions." https://www.thedrum.com/news/linkedin-s-new-b2b-playbook-shows-ability-defend-bad-decisions-drives-b2b-buying [vendor; secondary; year unverified]
 34. Stack Overflow Developer Survey 2024 and 2025, Work sections. https://survey.stackoverflow.co/2024/work ; https://survey.stackoverflow.co/2025/work . Data files: github.com/StackExchange/Survey (packages/archive/2024 and 2025). [first-party; self-selected; data files read]
-35. Larios Vargas, E., Aniche, M., Treude, C., Bruntink, M. & Gousios, G. (2020). "Selecting third-party libraries: the practitioners' perspective." ESEC/FSE 2020. doi:10.1145/3368089.3409711. arXiv:2005.12574. https://pure.tudelft.nl/ws/files/82396020/Selecting_Third_Party_Libraries_The_Practitioners_Perspective.pdf [snippet-only]
+35. Larios Vargas, E., Aniche, M., Treude, C., Bruntink, M. & Gousios, G. (2020). "Selecting third-party libraries: the practitioners' perspective." ESEC/FSE 2020. doi:10.1145/3368089.3409711. arXiv:2005.12574. https://pure.tudelft.nl/ws/files/82396020/Selecting_Third_Party_Libraries_The_Practitioners_Perspective.pdf [read 2026-10-05; full text, arXiv version]
 36. Trockman, A., Zhou, S., Kästner, C. & Vasilescu, B. (2018). "Adding Sparkle to Social Coding: An Empirical Study of Repository Badges in the npm Ecosystem." ICSE 2018. doi:10.1145/3180155.3180209 [read-full]
 37. Venigalla, A.S.M. & Chimalakonda, S. (2022). "An Empirical Study On Correlation between Readme Content and Project Popularity." arXiv:2206.10772. [preprint; text read via a GitHub mirror]
-38. Vomberg, A., Friess, M., Alavi, S., Maag, V. & Wieseke, J. (2026; online 2025). "The Different Effects of Mass-Media Marketing and Personal Sales Budgets Across the Life Cycle of B2B High-Tech Start-Ups." *Journal of Marketing Research*. doi:10.1177/00222437251367766. Practitioner summary: HEC Paris, "Sell First, Market Later: The Go-to-Market Sequence Every B2B Startup Needs." [snippet-only; effect sizes from the HEC summary]
-39. Mintz, O. & Lilien, G.L. (2024). "Should B2B start-ups invest in marketing?" *Industrial Marketing Management* 117:220–237. https://www.sciencedirect.com/science/article/abs/pii/S0019850124000038 . Working paper: "The Effect of Systematic Marketing on Start-up Firm Valuation," MSI Working Paper Report No. 20-135 (2020). [journal version snippet-only; the first pass read the working paper, the verification pass could not reach it]
-40. KeyBanc Capital Markets with Sapphire Ventures. 12th (2021) and 13th (2022) Annual Private SaaS Company Survey results. https://www.key.com/content/dam/kco/documents/businesses___institutions/2022_kbcm_saas_survey_10-20-22_vF.pdf [vendor; self-selected; snippet-only]
+38. Vomberg, A., Friess, M., Alavi, S., Maag, V. & Wieseke, J. (2026; online 2025). "The Different Effects of Mass-Media Marketing and Personal Sales Budgets Across the Life Cycle of B2B High-Tech Start-Ups." *Journal of Marketing Research*. doi:10.1177/00222437251367766. Practitioner summary: HEC Paris, "Sell First, Market Later: The Go-to-Market Sequence Every B2B Startup Needs." [read 2026-10-05; corrected; abstract and HEC summary; effect sizes from the HEC summary]
+39. Mintz, O. & Lilien, G.L. (2024). "Should B2B start-ups invest in marketing?" *Industrial Marketing Management* 117:220–237. https://www.sciencedirect.com/science/article/abs/pii/S0019850124000038 . Working paper: "The Effect of Systematic Marketing on Start-up Firm Valuation," MSI Working Paper Report No. 20-135 (2020). [journal version snippet-only; the first pass read the working paper, the verification pass could not reach it] (re-check 2026-10-05: ScienceDirect returns 403, the Penn State ScholarSphere copy is behind a bot check, and no abstract is in OpenAlex or Crossref)
+40. KeyBanc Capital Markets with Sapphire Ventures. 12th (2021) and 13th (2022) Annual Private SaaS Company Survey results. https://www.key.com/content/dam/kco/documents/businesses___institutions/2022_kbcm_saas_survey_10-20-22_vF.pdf [vendor; self-selected; snippet-only] (re-check 2026-10-05: key.com returns 403 and refuses direct connections)
 41. Van den Bulte, C. & Lilien, G.L. (2001). "Medical Innovation Revisited: Social Contagion versus Marketing Effort." *American Journal of Sociology* 106(5):1409–1435. doi:10.1086/320819. https://repository.upenn.edu/marketing_papers/430/ . Counterpoint named by the verification pass: Iyengar, R., Van den Bulte, C. & Valente, T.W. (2011), on contagion with marketing controlled. [both unverified]
 42. Sultan, F., Farley, J.U. & Lehmann, D.R. (1990). "A Meta-Analysis of Applications of Diffusion Models." *Journal of Marketing Research* 27(1):70–77. [unverified]
 43. Marmer, M., Herrmann, B.L., Dogrultan, E. & Berman, R. (2011; v1.2 edited March 2012). "Startup Genome Report Extra on Premature Scaling: A deep dive into why most high growth startups fail." Startup Genome. https://s3.amazonaws.com/startupcompass-public/StartupGenomeReport2_Why_Startups_Fail_v2.pdf [vendor; read-full]
-44. Yoganarasimhan, H., Barzegary, E. & Pani, A. (2023). "Design and Evaluation of Optimal Free Trials." *Management Science* 69(6):3220–3240. doi:10.1287/mnsc.2022.4507. Earlier version: "Design and Evaluation of Personalized Free Trials," MSI Working Paper Report No. 20-121 (2020); arXiv:2006.13420; SSRN 3616641. [working paper read-full; published version snippet-only]
-45. Zhang, L. & Duan, J. (2025). "Longer or shorter? A large-scale randomized field experiment on the impact of free trial duration on sustainable user conversion in the Freemium model." *Frontiers in Psychology* 16:1568868. doi:10.3389/fpsyg.2025.1568868. Correction (affiliation only): doi:10.3389/fpsyg.2025.1732439. [snippet-only]
+44. Yoganarasimhan, H., Barzegary, E. & Pani, A. (2023). "Design and Evaluation of Optimal Free Trials." *Management Science* 69(6):3220–3240. doi:10.1287/mnsc.2022.4507. Earlier version: "Design and Evaluation of Personalized Free Trials," MSI Working Paper Report No. 20-121 (2020); arXiv:2006.13420; SSRN 3616641. [working paper read-full; published version read 2026-10-05, abstract]
+45. Zhang, L. & Duan, J. (2025). "Longer or shorter? A large-scale randomized field experiment on the impact of free trial duration on sustainable user conversion in the Freemium model." *Frontiers in Psychology* 16:1568868. doi:10.3389/fpsyg.2025.1568868. Correction (affiliation only): doi:10.3389/fpsyg.2025.1732439. [read 2026-10-05; corrected; full text]
 46. Lee, C., Kumar, V. & Gupta, S. (2017). "Designing Freemium: Strategic Balancing of Growth and Monetization." Working paper, July 2017. SSRN doi:10.2139/ssrn.2767135. http://spinup-000d1a-wp-offload-media.s3.amazonaws.com/faculty/wp-content/uploads/sites/61/2019/06/Freemium_LeeKumarGupta_2017.pdf [read-full]
-47. Li, H. (Alice) (2022). "Converting free users to paid subscribers in the SaaS context: The impact of marketing touchpoints, message content, and usage." *Production and Operations Management* 31(5):2185–2203. doi:10.1111/poms.13672. SSRN 3945909. [snippet-only]
-48. Datta, H., Foubert, B. & Van Heerde, H.J. (2015). "The Challenge of Retaining Customers Acquired with Free Trials." *Journal of Marketing Research* 52(2):217–234. https://cris.maastrichtuniversity.nl/en/publications/the-challenge-of-retaining-customers-acquired-with-free-trials/ [snippet-only]
-49. Foubert, B. & Gijsbrechts, E. (2016). "Try It, You'll Like It—Or Will You? The Perils of Early Free-Trial Promotions for High-Tech Service Adoption." *Marketing Science* 35(5):810–826. doi:10.1287/mksc.2015.0973 [snippet-only]
-50. Dubé, J.-P. & Misra, S. (2023). "Personalized Pricing and Consumer Welfare." *Journal of Political Economy* 131(1):131–189. doi:10.1086/720793. NBER Working Paper w23775 (2017). [snippet-only]
-51. Gu, X., Kannan, P.K. & Ma, L. (2018). "Selling the Premium in Freemium." *Journal of Marketing* 82(6):10–27. Summary: https://www.ama.org/2018/12/06/winning-the-freemium-to-premium-product-wars/ [snippet-only]
-52. Conti, A., Peukert, C. & Roche, M.P. (2025). "Beefing IT Up for Your Investor? Engagement with Open Source Communities, Innovation, and Startup Funding: Evidence from GitHub." *Organization Science* 36(4):1551–1573. doi:10.1287/orsc.2023.18348. Earlier version: HBS Working Paper 22-001; SSRN 3883936. [snippet-only]
-53. Wright, N.L., Nagle, F. & Greenstein, S. (2023). "Open source software and global entrepreneurship." *Research Policy* 52(9):104846. doi:10.1016/j.respol.2023.104846. Also Wright, Nagle & Greenstein (2024). "Contributing to Growth? The Role of Open Source Software for Global Startups." HBS Working Paper 24-040; SSRN 4699182. [snippet-only; working paper unverified]
+47. Li, H. (Alice) (2022). "Converting free users to paid subscribers in the SaaS context: The impact of marketing touchpoints, message content, and usage." *Production and Operations Management* 31(5):2185–2203. doi:10.1111/poms.13672. SSRN 3945909. [read 2026-10-05; abstract]
+48. Datta, H., Foubert, B. & Van Heerde, H.J. (2015). "The Challenge of Retaining Customers Acquired with Free Trials." *Journal of Marketing Research* 52(2):217–234. https://cris.maastrichtuniversity.nl/en/publications/the-challenge-of-retaining-customers-acquired-with-free-trials/ doi:10.1509/jmr.12.0160 [read 2026-10-05; abstract]
+49. Foubert, B. & Gijsbrechts, E. (2016). "Try It, You'll Like It—Or Will You? The Perils of Early Free-Trial Promotions for High-Tech Service Adoption." *Marketing Science* 35(5):810–826. doi:10.1287/mksc.2015.0973 [read 2026-10-05; abstract]
+50. Dubé, J.-P. & Misra, S. (2023). "Personalized Pricing and Consumer Welfare." *Journal of Political Economy* 131(1):131–189. doi:10.1086/720793. NBER Working Paper w23775 (2017). [read 2026-10-05; NBER working paper full text]
+51. Gu, X., Kannan, P.K. & Ma, L. (2018). "Selling the Premium in Freemium." *Journal of Marketing* 82(6):10–27. Summary: https://www.ama.org/2018/12/06/winning-the-freemium-to-premium-product-wars/ doi:10.1177/0022242918807170 [read 2026-10-05; abstract and AMA summary]
+52. Conti, A., Peukert, C. & Roche, M.P. (2025). "Beefing IT Up for Your Investor? Engagement with Open Source Communities, Innovation, and Startup Funding: Evidence from GitHub." *Organization Science* 36(4):1551–1573. doi:10.1287/orsc.2023.18348. Earlier version: HBS Working Paper 22-001; SSRN 3883936. [read 2026-10-05; corrected; journal abstract and HBS working-paper full text]
+53. Wright, N.L., Nagle, F. & Greenstein, S. (2023). "Open source software and global entrepreneurship." *Research Policy* 52(9):104846. doi:10.1016/j.respol.2023.104846. Also Wright, Nagle & Greenstein (2024). "Contributing to Growth? The Role of Open Source Software for Global Startups." HBS Working Paper 24-040; SSRN 4699182. [read 2026-10-05; corrected; journal abstract; working paper unverified]
 54. Fang, H., Lamba, H., Herbsleb, J. & Vasilescu, B. (2022). "'This Is Damn Slick!' Estimating the Impact of Tweets on Open Source Project Popularity and New Contributors." ICSE 2022. doi:10.1145/3510003.3510121. Replication: doi:10.5281/zenodo.6321448. [read-full]
-55. Maldeniya, D., Budak, C., Robert, L.P. Jr. & Romero, D.M. (2020). "Herding a Deluge of Good Samaritans: How GitHub Projects Respond to Increased Attention." Proceedings of The Web Conference 2020. doi:10.1145/3366423.3380272 [snippet-only]
-56. Borges, H. & Valente, M.T. (2019). "How Do Developers Promote Open Source Projects?" *IEEE Computer* 52(8). arXiv:1908.04219. Also Borges, H. & Valente, M.T. (2018). "What's in a GitHub Star? Understanding Repository Starring Practices in a Social Coding Platform." *Journal of Systems and Software* 146:112–129. [snippet-only; IEEE Computer venue not re-confirmed]
+55. Maldeniya, D., Budak, C., Robert, L.P. Jr. & Romero, D.M. (2020). "Herding a Deluge of Good Samaritans: How GitHub Projects Respond to Increased Attention." Proceedings of The Web Conference 2020. doi:10.1145/3366423.3380272 [read 2026-10-05; abstract]
+56. Borges, H. & Valente, M.T. (2019). "How Do Developers Promote Open Source Projects?" *IEEE Computer* 52(8). arXiv:1908.04219. Also Borges, H. & Valente, M.T. (2018). "What's in a GitHub Star? Understanding Repository Starring Practices in a Social Coding Platform." *Journal of Systems and Software* 146:112–129. [read 2026-10-05; arXiv abstract; venue confirmed as IEEE Computer 52(8):27–33; the 74-to-138 and 72.7% figures are not in the abstract and were not re-checked]
 57. Kraishan, O. (2025). "Launch-Day Diffusion: Tracking Hacker News Impact on GitHub Stars for AI Tools." arXiv:2511.04453. Code and outputs: https://github.com/obadaKraishan/Launch-Day-Diffusion [preprint; replication repo read-full]
 58. Lamba, H., Trockman, A., Armanios, D., Kästner, C., Miller, H. & Vasilescu, B. (2020). "Heard it through the Gitvine: an empirical study of tool diffusion across the npm ecosystem." ESEC/FSE 2020. [unverified]
-59. Decan, A., Mens, T., Mazrae, P.R. & Golzadeh, M. (2022). "On the Use of GitHub Actions in Software Development Repositories." ICSME 2022, pp. 235–245. Also Saroar, S.G. et al., a GitHub Marketplace study (title, venue and year unverified). [snippet-only]
+59. Decan, A., Mens, T., Mazrae, P.R. & Golzadeh, M. (2022). "On the Use of GitHub Actions in Software Development Repositories." ICSME 2022, pp. 235–245. Also Saroar, S.G. et al., a GitHub Marketplace study (title, venue and year unverified). [Decan et al. read 2026-10-05, abstract; Saroar et al. unverified]
 60. Linux Foundation Research, COSSA & Serena (2025). "The State of Commercial Open Source 2025." https://www.linuxfoundation.org/research/2025-state-of-commercial-open-source . Also Segall, J. (Redpoint Ventures), an analysis of GitHub stars at funding, relayed in "The Unicorn CTO #124 – GitHub Stars and Fundraising," developerfirst.substack.com/p/issue-124. [vendor; secondary]
-61. Faghih, K., Wang, W., Cheng, Y., Bharti, S., Sriramanan, G., Balasubramanian, S., Hosseini, P. & Feizi, S. (2025). "Tool Preferences in Agentic LLMs are Unreliable" (v1 title: "Gaming Tool Preferences in Agentic LLMs"). EMNLP 2025 (main). aclanthology 2025.emnlp-main.1060; arXiv:2505.18135. Code: github.com/kazemf78/llm-unreliable-tool-preferences [README read; paper snippet-only]
-62. Sneh, Yan, Yu, Torr, Gal, Sengupta, Sommerlade, Paren & Bibi (2025). "ToolTweak: An Attack on Tool Selection in LLM-based Agents." arXiv:2510.02554. [preprint; snippet-only; initials not captured]
+61. Faghih, K., Wang, W., Cheng, Y., Bharti, S., Sriramanan, G., Balasubramanian, S., Hosseini, P. & Feizi, S. (2025). "Tool Preferences in Agentic LLMs are Unreliable" (v1 title: "Gaming Tool Preferences in Agentic LLMs"). EMNLP 2025 (main). aclanthology 2025.emnlp-main.1060; arXiv:2505.18135. Code: github.com/kazemf78/llm-unreliable-tool-preferences [README read; paper read 2026-10-05; corrected]
+62. Sneh, J., Yan, R., Yu, J., Torr, P., Gal, Y., Sengupta, S., Sommerlade, E., Paren, A. & Bibi, A. (2025). "ToolTweak: An Attack on Tool Selection in LLM-based Agents." arXiv:2510.02554. [preprint; read 2026-10-05; abstract]
 63. Blankenstein, T., Yu, J., Li, Z., Plachouras, V., Sengupta, S., Torr, P., Gal, Y., Paren, A. & Bibi, A. (2026). "BiasBusters: Uncovering and Mitigating Tool Selection Bias in Large Language Models." ICLR 2026. arXiv:2510.00307. Code: github.com/thierry123454/tool-selection-bias [README read]
 64. Twist, L., Harman, M., Syme, D., Noppen, J., Yannakoudakis, H., Nauck, D. & Zhang, J.M. (2026). "A Study of LLMs' Preferences for Libraries and Programming Languages" (earlier title: "LLMs Love Python"). Findings of ACL 2026, pp. 331–351. doi:10.18653/v1/2026.findings-acl.15. arXiv:2503.17181. Code: github.com/itsluketwist/llm-code-bias [README read]
 65. Spracklen, J., Wijewickrama, R., Sakib, A.H.M.N., Maiti, A., Viswanath, B. & Jadliwala, M. (2025). "We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs." 34th USENIX Security Symposium (Distinguished Paper). arXiv:2406.10279. https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen [README read]
 66. Kuhar, Ahmad, Wang, Jain, Qian, Ray, Ramanathan, Ma & Deoras (2025). "LibEvolutionEval: A Benchmark and Study for Version-Specific Code Generation." NAACL 2025 (long). aclanthology 2025.naacl-long.348. Also GitChameleon, arXiv:2411.05830, and GitChameleon 2.0, arXiv:2507.12367. [project site read; GitChameleon unverified]
-67. Amplifying (Feb 2026). "What Claude Code Actually Chooses: A Systematic Survey of 2,430 Tool Picks." https://amplifying.ai/research/claude-code-picks/report [vendor; independent research firm; snippet-only]
-68. MCP ecosystem studies, all preprints, all snippet-only:
+67. Amplifying (Feb 2026). "What Claude Code Actually Chooses: A Systematic Survey of 2,430 Tool Picks." https://amplifying.ai/research/claude-code-picks/report [vendor; independent research firm; read 2026-10-05]
+68. MCP ecosystem studies, all preprints, all read 2026-10-05 (abstracts; full text for Guo et al.):
     - Guo, H., Hao, Y., Zhang, Y., Xu, M., Lyu, P., Chen, J. & Cheng, X. (2025). "A Measurement Study of Model Context Protocol Ecosystem." arXiv:2509.25292.
     - Hasan, M.M. et al. (2025). "Model Context Protocol (MCP) at First Glance: Studying the Security and Maintainability of MCP Servers." arXiv:2506.13538.
     - Chidambaram, N., Dalle Lucca Tosi, M. & Cabot, J. (2026). "A Two-Dimensional Study of the Model Context Protocol: Publication and Adoption." arXiv:2609.14721.
-    - "A First Look at the Security Issues in the Model Context Protocol Ecosystem." arXiv:2510.16558, accepted to DSN 2026. Authors not captured.
-69. Databricks (14 May 2025). "Databricks Agrees to Acquire Neon to Deliver Serverless Postgres for Developers + AI Agents." Press release. https://www.prnewswire.com/news-releases/databricks-agrees-to-acquire-neon-to-deliver-serverless-postgres-for-developers--ai-agents-302454992.html [first-party; snippet-only]
-70. Mintlify (March 2026). "The state of agent traffic in documentation." https://www.mintlify.com/blog/state-of-ai [vendor; snippet-only]
-71. Rauch, G. Posts on X, 7 Mar 2025 (status 1898122330653835656) and 9 Apr 2025 (status 1910093634445422639). https://x.com/rauchg/status/1910093634445422639 [first-party; snippet-only]
+    - "A First Look at the Security Issues in the Model Context Protocol Ecosystem." Li, X. & Gao, X. arXiv:2510.16558, accepted to DSN 2026.
+69. Databricks (14 May 2025). "Databricks Agrees to Acquire Neon to Deliver Serverless Postgres for Developers + AI Agents." Press release. https://www.prnewswire.com/news-releases/databricks-agrees-to-acquire-neon-to-deliver-serverless-postgres-for-developers--ai-agents-302454992.html [first-party; read 2026-10-05; corrected]
+70. Mintlify (3 April 2026). "The state of agent traffic in documentation." https://www.mintlify.com/blog/state-of-ai [vendor; read 2026-10-05; corrected]
+71. Rauch, G. Posts on X, 7 Mar 2025 (status 1898122330653835656) and 9 Apr 2025 (status 1910093634445422639). https://x.com/rauchg/status/1910093634445422639 [first-party; read 2026-10-05]
 72. Puerto, H., Gubri, M., Green, T., Oh, S.J. & Yun, S. (2025). "C-SEO Bench: Does Conversational SEO Work?" NeurIPS 2025 Datasets & Benchmarks Track. arXiv:2506.11097. Code: github.com/parameterlab/c-seo-bench [README read]
-73. Martinez, O. (2026). "Optimizing Visibility in Generative Engines: A Critical Survey of Generative Engine Optimization (2023–2026)." arXiv:2607.14035. Reviews Aggarwal, P. et al. (2024). "GEO: Generative Engine Optimization." KDD 2024. arXiv:2311.09735. [preprint; snippet-only]
-74. Chen, M., Wang, X., Chen, K. & Koudas, N. (2025). "Generative Engine Optimization: How to Dominate AI Search." arXiv:2509.08919. [preprint; snippet-only]
+73. Martinez, O. (2026). "Optimizing Visibility in Generative Engines: A Critical Survey of Generative Engine Optimization (2023–2026)." arXiv:2607.14035. Reviews Aggarwal, P. et al. (2024). "GEO: Generative Engine Optimization." KDD 2024. arXiv:2311.09735. [preprint; read 2026-10-05; corrected; full text]
+74. Chen, M., Wang, X., Chen, K. & Koudas, N. (2025). "Generative Engine Optimization: How to Dominate AI Search." arXiv:2509.08919. [preprint; read 2026-10-05; full text]
 75. Chu, X. & Hou, Y. (2026). "Incumbent Advantage: Brand Bias and Cognitive Manipulation Dynamics in LLM Recommendation Systems." arXiv:2606.17443. Code and results: github.com/XiChu2333/incumbent_advantage . Related: Kumar, A. & Lakkaraju, H. (2024), arXiv:2404.07981. [preprint; result files read; Kumar & Lakkaraju unverified]
 76. Growth Unhinged (Kyle Poyar) & GTM Strategist (Maja Voje) (2025). "State of B2B GTM 2026." https://stateofb2bgtm.com/ [practitioner; see "Not verified"]
 
@@ -144,7 +146,7 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - In a nationally representative US survey, fewer than half of people who considered starting a business took even the lowest-cost steps. Examples are searching online for competitors or talking to a friend.
   - Many spend a long pre-entry period gathering information and hitting frictions.
   - The sample size, and the share who talked to prospective customers, were not captured.
-  - This is descriptive. It shows customer contact is unusual. It does not show customer contact raises sales. [1] [research; nationally representative survey; snippet-only]
+  - This is descriptive. It shows customer contact is unusual. It does not show customer contact raises sales. [1] [research; nationally representative survey; read 2026-10-05; abstract]
 - **Most nascent ventures never become profitable firms.**
   - A harmonized panel covers five cohorts in four countries: US PSED I and II, Sweden, Australia and China.
   - It holds 3,910 nascent ventures, 2,541 of them with outcome data. About a third became profitable firms.
@@ -153,10 +155,11 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - (Corrected: an earlier version called the dataset US-only.) [2] [research; multi-country panel; snippet-only]
 - **Reaching $1M ARR is slow, even for companies that get there.**
   - In ChartMogul's billing data, among SaaS companies that reached $1M ARR, top performers took about **9 months** from their first paying customer. The median took about **2 years 9 months**.
-  - Top-quartile companies under $1M ARR grew 139.1% over the trailing 12 months (2023 report).
+  - A figure of 139.1% trailing growth for top-quartile companies under $1M ARR was not found on the 2023 report page; treat it as unverified. The page gives top-quartile growth of about 60–70% a year and median growth of about 30% for $1–30M ARR.
   - The top decile at $1–3M ARR grows 192% a year.
   - The median growth rate under $1M ARR was not verified.
-  - The report cannot say how many companies never reach $1M. [3] [vendor; billing data from the vendor's own customers; survivor sample; snippet-only]
+  - The 9 months and 2 years 9 months are counted from the first paying customer, across 2,200+ businesses. The report notes that only 13% of SaaS startups reach $10M ARR even after 10 years.
+  - The report cannot say how many companies never reach $1M. [3] [vendor; billing data from the vendor's own customers; survivor sample; read 2026-10-05; corrected]
 - **Innovative startups are often founded by their own users.**
   - The data are the Kauffman Firm Survey: the 2004 cohort, firms that survived to age five.
   - User entrepreneurs built something for their own use, then sold it. They founded 10.7% of all startups and about 46.6% of innovative startups (snippets say "more than 46%").
@@ -170,7 +173,7 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - Brüderl & Schüssler used commercial-register data on firms in Munich and Upper Bavaria, 1980–1989.
   - Mortality first rose, then fell. It peaked between one and fifteen years after founding, depending on the firm's starting resources.
   - (Corrected: not "in the first one to two years.")
-  - The count of about 170,000 firms was not seen. [7] [research; large register sample; snippet-only]
+  - The count of about 170,000 firms was not seen. [7] [research; large register sample; read 2026-10-05; abstract]
 
 ## 2. How far can early demand signals be trusted?
 
@@ -178,11 +181,11 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - A meta-analysis of 77 studies (115 effect sizes) compared stated willingness to pay with real willingness to pay, measured when people had to put money behind their answer.
   - Stated willingness to pay was on average about **21% higher**.
   - The gap is larger for indirect methods, for within-subject designs and for more expensive products.
-  - The evidence is from consumer goods only. In B2B, the developer you interview is often not the budget holder. The gap there is untested and may be larger. [8] [research; peer-reviewed meta-analysis; snippet-only]
+  - The evidence is from consumer goods only. In B2B, the developer you interview is often not the budget holder. The gap there is untested and may be larger. [8] [research; peer-reviewed meta-analysis; read 2026-10-05; abstract]
 - **Stated intent predicts purchases better in some settings than others.**
   - Intentions track purchases more closely for existing products than new ones, for durables than non-durables, and for trial rates than total market sales.
-  - Three more conditions are often cited from the same paper: a specific brand rather than a category, short rather than long horizons, and comparative rather than one-product questions. These three were not seen in snippets.
-  - A new developer tool sits where stated intent is least reliable. [9] [research; multi-dataset analysis; snippet-only; three conditions unverified]
+  - Three more conditions are often cited from the same paper: a specific brand rather than a category, short rather than long horizons, and comparative rather than one-product questions. Search snippets of the abstract now show all three (re-check 2026-10-05), but the abstract itself was not opened.
+  - A new developer tool sits where stated intent is least reliable. [9] [research; multi-dataset analysis; snippet-only (re-check 2026-10-05: abstract not reachable)]
 - **Pre-selling is a learning device, not just funding.**
   - Xu uses Kickstarter data and a weather-based instrument.
   - More early pledging causes founders to be more likely to continue and commercialize, including among projects that missed their target.
@@ -201,16 +204,16 @@ The most consistent finding is modest: structured testing helps founders drop ba
 - **Founders act on credible feedback.**
   - The data are 87 new-venture competitions, some of which privately told founders their rank.
   - Negative feedback raised venture abandonment by about 13% (published version). The design is difference-in-differences, and the paper makes a causal claim.
-  - Not verified: that founders discount feedback from fewer judges, the gender differences, the software-versus-hardware difference, and a 26% figure from an earlier draft. [13] [research; quasi-experimental; snippet-only]
+  - Not verified: that founders discount feedback from fewer judges, the gender differences, the software-versus-hardware difference, and a 26% figure from an earlier draft. [13] [research; quasi-experimental; read 2026-10-05; abstract]
 - **Launch-platform audiences bias the signal.**
   - On Product Hunt, about nine in ten users are men. Products aimed at women grew less after launch.
   - One version of the paper reports about 45% less growth a year after launch. Another reports 40% less, plus 5 points lower odds of having any users.
   - On days with more women on the platform, the gap shrank.
-  - Founders whose launch met the biased audience also cut product development by about 30% and were 4 points less likely to raise VC. [14] [research; NBER working paper; quasi-random variation; snippet-only; figures differ between versions]
+  - Founders whose launch met the biased audience also cut product development by about 30% and were 4 points less likely to raise VC. [14] [research; NBER working paper; quasi-random variation; read 2026-10-05, abstract of the 2020 version (40%, 5 points, 30%, 4 points); the 45% version not re-read]
 - **Feedback from a self-selected community helps only if the community looks like the market.**
   - The setting is Steam Early Access games. Acting on community feedback improved commercial outcomes only when the community resembled the wider Steam market.
   - Where self-selection was strong, acting on the feedback hurt.
-  - Games, not developer tools. [15] [research; peer-reviewed; archival data plus interviews; snippet-only]
+  - Games, not developer tools. [15] [research; peer-reviewed; archival data plus interviews; read 2026-10-05; abstract]
 
 ## 3. Does structured customer discovery help?
 
@@ -218,26 +221,27 @@ The most consistent finding is modest: structured testing helps founders drop ba
 - **NSF I-Corps teams dropped failing ventures somewhat faster (non-randomized comparison).**
   - At Georgia Tech, I-Corps teams were compared with researchers who got only baseline commercialization help, over an eight-year window.
   - The authors report "modest evidence" of faster discontinuation and estimate savings above $3.6M.
-  - Not verified: whether the comparison was matched, the co-author names, and the $50k team grant. The grant is standard I-Corps funding but was not stated in snippets. [16] [research; single university; comparison group; snippet-only]
+  - Not verified: whether the comparison was matched, and the $50k team grant. The grant is standard I-Corps funding but was not stated in the abstract. [16] [research; single university; comparison group; read 2026-10-05; abstract]
 - **The method's steps link up; teams with more MBAs formed fewer hypotheses.**
   - The sample is 152 US NSF I-Corps teams following a lean-startup curriculum. Forming hypotheses, probing customers and converging on a business idea were linked as the method predicts.
   - Teams with more business-educated (MBA) members were less likely to form hypotheses and converge.
   - I-Corps teams are mostly scientists and engineers, so the sample is close to technical founders.
-  - (Corrected: this is a US program. The Chile link is only the first author's affiliation.) [17] [research; observational; longitudinal; snippet-only]
+  - (Corrected: this is a US program. The Chile link is only the first author's affiliation.) [17] [research; observational; longitudinal; read 2026-10-05; abstract]
 - **I-Corps outcome reports have no counterfactual.**
   - In NIH's I-Corps pilot, 19 teams, all SBIR or STTR companies, logged 2,128 customer interviews. That is about 112 per team.
-  - The teams later raised more than $78M, over $53M of it non-federal.
+  - The teams later raised more than $78M, over $53M of it non-federal (funding data from PitchBook for all 19 teams).
+  - Only 13 of the 19 teams answered the follow-up survey. The 2,128 interview count sits in a table image that was not checked.
   - Program staff wrote the report, and there is no comparison group.
-  - No randomized evidence shows that interview counts drive revenue. Treat "about 100 interviews" as a program norm, not a proven input. [18] [first-party; program evaluation; small n; no counterfactual; snippet-only]
+  - No randomized evidence shows that interview counts drive revenue. Treat "about 100 interviews" as a program norm, not a proven input. [18] [first-party; program evaluation; small n; no counterfactual; read 2026-10-05]
 - **Starting from what you already have is weakly supported.**
   - A meta-analysis of 9,897 new ventures links three effectuation principles to performance.
   - Which three is from memory, not verified: using existing means, building partnerships and pre-commitments, and using surprises. Affordable loss is commonly said to be unsupported.
   - This pass confirmed the sample size. The startup-risk note had it as not re-verified.
-  - Do not quote effect sizes. [19] [research; peer-reviewed meta-analysis; n snippet-only; principles from memory]
+  - Do not quote effect sizes. [19] [research; peer-reviewed meta-analysis; n read 2026-10-05 in the abstract; principles from memory]
 - **Pivots come from a series of small changes.**
   - In a field study of seven energy and cleantech startups (93 strategic decisions at risk of change), founders changed strategy only after new information conflicted with or expanded their beliefs.
   - They dropped or added one element at a time. A pivot was the sum of these steps.
-  - Hardware, not software. [20] [research; qualitative; small n; snippet-only]
+  - Hardware, not software. [20] [research; qualitative; small n; read 2026-10-05; abstract]
 
 ## 4. Who should the first customers be?
 
@@ -245,7 +249,7 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - Lead users are people at the leading edge of a trend. They face the need early and often build their own fixes.
   - In a natural experiment inside 3M, ideas from 5 lead-user projects were forecast at an average **$146M** in year-5 annual sales. That is more than 8x the average of 42 traditional projects run at the same time.
   - Lead-user projects produced 5 major new product lines. Traditional projects produced 41 incremental improvements and 1 major line.
-  - These are management forecasts, not realized sales. The setting is one large firm, not a startup winning customers. [21] [research; natural experiment; one firm; few treated projects; snippet-only]
+  - These are management forecasts, not realized sales. The setting is one large firm, not a startup winning customers. [21] [research; natural experiment; one firm; few treated projects; read 2026-10-05; abstract confirms $146M and more than 8x; the 5-versus-42 project counts are not in the abstract]
 - **Some technical users already modify their tools.**
   - 19% of sampled Apache security-software users had changed the software for their own needs.
   - Needs varied widely. Users who built their own changes were significantly more satisfied.
@@ -259,17 +263,17 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - Using data from a financial-services firm and a telecom firm, Kumar et al. measure how much a client's reference persuades prospects.
   - The clients with the highest reference value differ from those with the highest lifetime value.
   - The drivers are relationship length, client size, reference format, and how closely the reference matches the prospect.
-  - These are established firms, and sample sizes were not seen. [24] [research; two firms; snippet-only; partly from memory]
+  - These are established firms, and sample sizes were not seen. [24] [research; two firms; read 2026-10-05; abstract]
 - **Research on how startups win their first business customers is thin and qualitative.**
   - Kurpjuweit et al. note that supplier-selection research had studied only established suppliers. From case studies, they describe three kinds of corporate buyer of startups: skeptical buyers, opportunistic adapters and systematic selectors [25].
   - The only paper found on a software startup's first reference is a multiple-case study of Thai software start-ups [26].
   - A survey-based scale links reference marketing to selling performance in established firms [27].
-  - No quantitative study tells a zero-customer software company how to land its first reference. [research; qualitative or small n; [25] snippet-only; [26][27] unverified]
+  - No quantitative study tells a zero-customer software company how to land its first reference. [research; qualitative or small n; [25] read 2026-10-05, abstract; [26][27] unverified]
 - **Early adopters may not lead on to the mainstream.**
   - Many consumer-electronics innovations show a "saddle": an early sales peak, then a deep and long trough, then recovery.
   - The model explains this as two markets, early and main, that talk to each other weakly. At low cross-market communication, more than half of simulated growth paths show a saddle.
-  - The empirical share, one-third to one-half of products, is from memory.
-  - Consumer electronics, not B2B. [28] [research; data plus simulation; snippet-only]
+  - Between one-third and one-half of the sales cases showed a saddle (confirmed in the abstract). At cross-market communication close to within-market levels, saddles fell below 5% of simulated cases.
+  - Consumer electronics, not B2B. [28] [research; data plus simulation; read 2026-10-05; abstract]
 
 ## 5. How does a product with no customers earn trust?
 
@@ -277,12 +281,12 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - In a random sample of 223 Swedish ventures started in 1998 and followed for 30 months, those that set up a legal entity or finished a business plan early were less likely to disband.
   - A secondary summary gives 42% lower odds of disbanding for a legal entity and 57% for a plan. These figures were not seen in the paper.
   - The data are observational. More committed founders may simply do both.
-  - (Corrected: an earlier version used causal wording.) [29] [research; random-sample panel; snippet-only]
+  - (Corrected: an earlier version used causal wording.) [29] [research; random-sample panel; snippet-only (re-check 2026-10-05: no abstract reachable)]
 - **Prominent partners lend status.**
   - Venture-backed biotech firms with prominent alliance partners and equity investors went public faster and at higher valuations. The authors attribute much of this to status transfer when quality is hard to judge [30].
   - In semiconductors, firms with large, innovative alliance partners grew sales faster. The effect was larger for young or small firms [31].
   - Rao et al. argue that biotech ventures with legitimacy, including from alliances, earn larger stock-market rewards from new products [32].
-  - The outcomes are investor outcomes and sales in hardware and biotech, not developers adopting a tool. Whether a marketplace or registry listing works the same way is untested. [research; observational; [30][31] snippet-only, with the uncertainty effect in [30] from memory; [32] unverified]
+  - The outcomes are investor outcomes and sales in hardware and biotech, not developers adopting a tool. Whether a marketplace or registry listing works the same way is untested. [research; observational; [30][31] read 2026-10-05, abstracts (both state the quality-uncertainty mechanism); [32] unverified]
 - **Business buyers want to be able to defend the choice.**
   - LinkedIn's B2B Institute and Bain surveyed 750 B2B buyers and analysed more than 1,000 interviews.
   - Among buyers who felt extremely confident about a purchase, the top reason was being able to defend the decision if it went wrong (34%). That is essentially tied with confidence that the product would work (33%, unverified).
@@ -302,8 +306,9 @@ The most consistent finding is modest: structured testing helps founders drop ba
 - **Developers screen on maturity, usability, maintenance and docs.**
   - Interviews with 16 developers from 11 companies, plus a survey of 115, found 26 factors in choosing libraries.
   - Rated highly influential: maturity/stability by 62%, usability by 55%, active maintenance by 44%.
-  - Documentation was about 51% in one summary, but another summary ties 51% to a different factor. Its share is unverified, so do not call it the top factor.
-  - These are free libraries, not paid tools. [35] [research; interviews plus small self-selected survey; snippet-only]
+  - Documentation quality was rated highly influential by 51%, third after maturity/stability (62%) and usability (55%). It is not the top factor.
+  - The survey was a convenience sample: 177 responses, 115 complete.
+  - These are free libraries, not paid tools. [35] [research; interviews plus small self-selected survey; read 2026-10-05; corrected]
 - **Badges and READMEs are cheap signals.**
   - Across 294,941 npm packages, badges that report real quality data (build status, test coverage, dependency freshness) mostly correlated with more tests, better pull requests and fresher dependencies. The effects did not always persist.
   - In the survey (15.3% response rate), 88% of 32 maintainers saw badges as quality signals. Only 53% of 57 contributors agreed, and 61% of contributors said badges did not affect whether they contribute [36].
@@ -316,9 +321,10 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - A panel of 300+ B2B high-tech start-ups (IT, SaaS, cybersecurity, biotech, Industry 4.0) studied how they split budget between personal selling and mass-media marketing.
   - A larger share on personal selling helped early and hurt later. A larger share on mass media hurt early and helped after product-market fit.
   - An HEC summary says that early on, moving 10 points of budget to personal sales lifted revenue by "nearly 50%". After fit, the same shift to mass media grew the customer base by about 12%. These effect sizes come from the summary, not the abstract.
-  - The abstract reports 407–598 start-up-wave observations.
-  - Not verified: 15 interviews, 4 waves over 20 months, and whether measures were self-reported.
-  - The study does not compare against self-serve. [38] [research; peer-reviewed (JMR); observational panel; snippet-only]
+  - The abstract describes a longitudinal survey of founders, so budget shares come from founders' own reports. It gives no sample size; the 407–598 start-up-wave observations figure is not in the abstract and is unverified. The HEC summary gives "more than 300" start-ups.
+  - The abstract adds that personal-sales spending still lifts some performance measures in later stages.
+  - Not verified: 15 interviews and 4 waves over 20 months.
+  - The study does not compare against self-serve. [38] [research; peer-reviewed (JMR); observational panel; founder survey; read 2026-10-05; corrected]
 - **Systematic marketing is linked to higher valuations for some start-ups.**
   - The data are Equidam records of 693 start-ups launched July 2016–April 2018. 202 of them gave 2019–2020 financials, and 55% reported systematic, ongoing marketing.
   - The link with valuation was positive for some groups and negative for others, depending on B2B versus B2C and on stage.
@@ -328,7 +334,7 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - In KeyBanc's 2022 survey, field sales was the primary distribution mode for 59% of companies. Web or self-serve was primary for very few (4%, unverified).
   - "Primary" means the mode that brings at least 20 points more new sales than any other. Otherwise the company is counted as "mixed".
   - The chart excludes companies under $5M ARR. It says nothing about channels below $1M.
-  - (Corrected: an earlier version read the chart as describing early companies.) [40] [vendor; investment-bank survey; self-selected; VC-backed skew; snippet-only]
+  - (Corrected: an earlier version read the chart as describing early companies.) [40] [vendor; investment-bank survey; self-selected; VC-backed skew; snippet-only (re-check 2026-10-05: key.com unreachable)]
 - **Apparent word of mouth can be marketing.**
   - Van den Bulte & Lilien re-analysed the classic study of how physicians adopted tetracycline, adding advertising data.
   - The social-contagion effect disappeared once marketing effort was controlled for.
@@ -354,12 +360,13 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - A personalized policy did best, at +6.81%. The base subscription rate was about 14.6%.
   - Inactivity near the end of a trial predicted non-conversion. Experienced users did better with longer trials, beginners with shorter. There was no evidence that the trials cannibalized paid demand.
   - (Corrected: n is 337,724, not about 303,514.)
-  - This was a strong brand with existing demand. "Use 7 days" for an unknown tool is an extrapolation. [44] [research; randomized field experiment; one firm; working paper read-full; published version snippet-only]
-- **With a permanent free tier, longer premium trials raised uptake but showed no effect on immediate conversion.** (critic: the later payoff is in the unverified effect sizes.)
-  - A two-year randomized experiment at a freemium SaaS covered 680,588 users in 190 countries (2023–2024).
-  - Longer premium trials raised trial uptake and delayed conversion. They had no significant effect on immediate conversion.
-  - Not verified: the effect sizes, that the product is image editing, and how the two groups responded to promotions and price.
-  - This does not contradict [44]. Here users keep a free tier after the trial. [45] [research; RCT; lower-tier venue (Frontiers in Psychology); snippet-only]
+  - This was a strong brand with existing demand. "Use 7 days" for an unknown tool is an extrapolation. [44] [research; randomized field experiment; one firm; working paper read-full; published abstract read 2026-10-05 (personalized policy +6.8%)]
+- **With a permanent free tier, a 7-day premium trial raised uptake against a 3-day one but showed no effect on immediate conversion.** (critic: the later payoff is in the effect sizes.)
+  - A two-year randomized experiment at an image-editing freemium SaaS covered 680,588 users in 190 countries (2023–2024). It compared a 7-day trial with the existing 3-day trial.
+  - The 7-day trial raised trial uptake from 0.856% to 0.951% (about +11%) and delayed conversion by about 42%. Immediate conversion (0.241% against 0.224%) was not significantly different.
+  - Users given longer trials responded more to feature promotions; users given shorter trials responded more to price incentives.
+  - (Corrected: "longer" here means 7 days against 3, not the 14- or 30-day trials in [44].)
+  - This does not contradict [44]. Here users keep a free tier after the trial, and the trials compared are much shorter. [45] [research; RCT; lower-tier venue (Frontiers in Psychology); read 2026-10-05; corrected]
 - **Freemium upgrades take months.**
   - The study models a leading cloud-storage service in its first two years: a random sample of 500 users, 13,438 monthly observations and 202 upgrade events.
   - No one upgraded before **15 weeks** of use. Most upgraders did so within the first year, before hitting the storage quota, so a binding free limit was not the trigger for most of them.
@@ -370,35 +377,37 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - In one multi-product SaaS firm's trial data, contacts the user started raised conversion. Persuasive messages the firm sent lowered it on average.
   - More frequent use raised conversion. Trying many different products lowered it.
   - Advertising and usage mostly substituted for each other. The exceptions were persuasive messages to frequent users and featured messages to variety-seekers.
-  - (Corrected: this does not show that upgrade emails backfire on engaged users.) [47] [research; peer-reviewed; observational; one firm; snippet-only]
+  - (Corrected: this does not show that upgrade emails backfire on engaged users.) [47] [research; peer-reviewed; observational; one firm; read 2026-10-05; abstract]
 - **Customers won through trials churn more.**
   - At a European telco's digital-TV service, customers acquired through free trials had lower retention.
-  - They also responded more to marketing and to their own usage, so targeting them on usage can help. [48] [research; observational; one firm; consumer; snippet-only]
+  - Their average customer lifetime value was 59% lower than that of regular customers.
+  - They also responded more to marketing and to their own usage, so targeting them on usage can help. [48] [research; observational; one firm; consumer; read 2026-10-05; abstract]
 - **Early trials can backfire if the product fails.**
   - For a high-tech service early in its life, free trials were a "double-edged sword". Trial users who hit failures could be put off adopting.
-  - Trial timing, and how much people used the trial, decided whether trials helped. [49] [research; structural model; one firm; snippet-only]
+  - Trial timing, and how much people used the trial, decided whether trials helped. [49] [research; structural model; one firm; read 2026-10-05; abstract]
 - **B2B subscriptions can be badly underpriced.**
   - ZipRecruiter randomly assigned 7,867 prospective customers to ten prices from $19 to $399 a month (2015).
   - The best single price was **$327**, against the existing $99. That would have raised expected profit by about 55%.
   - Personalized pricing gave +86% against the existing price. A second-month test found +84% profit against $99. Consumer surplus fell.
-  - One author was a paid adviser to ZipRecruiter. The test needed about 7,900 prospects a month. [50] [research; RCT; peer-reviewed; snippet-only]
+  - One author was a paid adviser to ZipRecruiter. The test needed about 7,900 prospects a month. [50] [research; RCT; peer-reviewed; read 2026-10-05; NBER version: 7,867 prospects, 28 Aug–29 Sep 2015]
 - **Showing a premium option can lift the middle option.**
   - On the National Academies Press site (free PDFs, paid paperbacks), randomly adding a premium version (e-book or hardcover) next to the paperback raised paperback sales.
-  - The 8.9% revenue figure was not verified.
-  - Books, not SaaS. [51] [research; field RCT; snippet-only]
+  - Adding a hardcover raised paperback revenue by 8.9%; adding an e-book raised it by 21.5% (AMA summary). The effect was stronger for popular or cheaper titles (abstract).
+  - Books, not SaaS. [51] [research; field RCT; read 2026-10-05; abstract and AMA summary]
 - **Benchmarks.** Vendor conversion benchmarks are in research/pricing.md and are not repeated here.
 
 ## 8. Developer channels: open source, GitHub, Hacker News, CI
 
 - **Open-source engagement is linked to raising money.**
   - The sample is 160,065 US startups from Crunchbase, linked to GitHub. The design is matched difference-in-differences.
-  - Starting to engage with open-source communities was associated with at least a **36%** higher chance of raising funding. A "15 percentage points" figure in a secondary source was not found.
+  - Starting to engage with open-source communities was associated with at least a **36%** higher chance of raising funding.
+  - (Corrected: the "15 percentage points" figure is in the HBS working paper, but only for the simplest model, where it is a 65% rise on a mean of 0.23. With full controls the estimate is 0.08, the 36%.)
   - The benefit was largest for novel technology and smaller in competitive markets. The authors point to access to outside knowledge, not only signalling to investors.
-  - The outcome is funding, not customers. [52] [research; peer-reviewed; observational; snippet-only]
+  - The outcome is funding, not customers. [52] [research; peer-reviewed; observational; read 2026-10-05; corrected]
 - **Countries with more GitHub activity found more, and better, tech ventures.**
   - The link is stronger where human capital and income are higher. Open source complements what a country already has.
-  - (Corrected: not a "prerequisite".)
-  - A firm-level working paper (about 25% of software ventures contribute to open source) was not verified. [53] [research; peer-reviewed; observational; country level; snippet-only]
+  - The authors use instrumental variables and "cannot reject a causal interpretation". The abstract calls human capital a prerequisite. (Corrected 2026-10-05: an earlier correction removed "prerequisite", but the abstract uses that word.)
+  - A firm-level working paper (about 25% of software ventures contribute to open source) was not verified. [53] [research; peer-reviewed; observational with an instrumental-variable design; country level; read 2026-10-05; corrected]
 - **One social post moves little.**
   - Across 44,544 tweets about 2,370 repositories over six months, a burst of tweets raised new stars by about **7%** in the next three days. The pre-period mean was 16.5 stars (median 9), so that is roughly one extra star.
   - New committers rose about 2%. Doubling original tweets added about one committer per 80 repositories.
@@ -406,12 +415,12 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - Being on GitHub Trending was associated with about 2.5x more new stars. Releases and appearing in Google results were also associated with more stars. These were control variables, so the links are not causal. [54] [research; peer-reviewed (ICSE 2022); quasi-experimental; read-full]
 - **Attention spikes bring shallow help.**
   - Over 1,100 projects that topped GitHub Trending saw explosive growth in effective team size, compared with matched controls.
-  - Most newcomers made shallow, short-lived contributions. The original team shifted to triage and review. [55] [research; peer-reviewed; matched comparison; snippet-only]
+  - Most newcomers made shallow, short-lived contributions. The original team shifted to triage and review. [55] [research; peer-reviewed; matched comparison; read 2026-10-05; abstract]
 - **Hacker News drives spikes for repos that are already popular.**
   - Among 100 popular GitHub projects, the most common promotion channels were Twitter, user meetings and blogs.
   - After a successful HN post, median stars gained over three days rose from **74 to 138** compared with the three days before.
   - Survey respondents mostly linked viral star growth to social media, mainly HN. The 72.7% figure was not verified.
-  - There is no control group, and the outcome is stars only. [56] [research; peer-reviewed; small sample of famous repos; snippet-only]
+  - There is no control group, and the outcome is stars only. [56] [research; peer-reviewed; small sample of famous repos; abstract read 2026-10-05; star figures snippet-only]
 - **A typical HN post that gets traction yields tens of stars.**
   - The sample is 137 HN posts linking to GitHub repos that scored at least 10 points, posted 14–28 Aug 2025.
   - Star gains were very skewed. Medians were 39, 57 and 82 across the three windows measured. Means were 121, 189 and 288.
@@ -421,8 +430,8 @@ The most consistent finding is modest: structured testing helps founders drop ba
 - **Visible traces help tools spread.** In npm, tool adoption tracked through README badges was associated with social exposure, competition and observability. [58] [research; peer-reviewed; observational; unverified]
 - **GitHub Actions is the CI installed base.**
   - 43.9% of sampled repositories used GitHub Actions workflows.
-  - Not re-verified: that nearly all of them reuse third-party Actions, and the sample size of about 67,870 repos.
-  - No research shows how a new Action gets found, or whether it converts users to a paid product. [59] [research; peer-reviewed; descriptive; snippet-only]
+  - The sample is about 68,000 repositories. Reuse of Actions is common but concentrated in a few Actions. "Nearly all" was not checked.
+  - No research shows how a new Action gets found, or whether it converts users to a paid product. [59] [research; peer-reviewed; descriptive; read 2026-10-05; abstract]
 - **How investors read developer traction.**
   - The LF/COSSA/Serena report covers 800 VC-backed commercial open-source startups. They raised $26.4B in 2024.
   - Median IPO valuation was $1.3B against $171M for closed-source peers (about 7x). Median M&A value was $482M against $34M (about 14x). Community health tracked valuation.
@@ -437,11 +446,11 @@ The most consistent finding is modest: structured testing helps founders drop ba
 
 - **Agents pick tools from description text, and that text can be gamed.**
   - Editing only a tool's description, with no change to what it does, raised its use more than **10x** for GPT-4.1 and Qwen2.5-7B when it competed with the original.
-  - Combining edits (assertive wording, maintenance claims, usage examples, name-dropping) beat any single edit across 10 models.
-  - The >7x figure for one assertive sentence and the >11x figure for combined edits were not checked against the paper [61].
+  - Averaged across 17 models, combining edits (assertive wording, maintenance claims, usage examples, name-dropping) slightly beat any single edit. Per model, the combined edit beat assertive wording alone in only half of them. (Corrected: not "10 models".)
+  - One assertive sentence gave more than 7x usage and combined edits more than 11x, both for GPT-4.1 and Qwen2.5-7B. For o4-mini, assertive descriptions got more than 17x [61].
   - ToolTweak's automated edits to tool names and descriptions raised selection from about 20% to as much as 81%. The effect carried over between open and closed models. Paraphrasing and perplexity filtering undid much of the bias [62].
   - It is an inference, not a finding, that clients will strip this kind of puffery over time.
-  - Lab settings with synthetic competitors. [research; [61] peer-reviewed (EMNLP 2025), README read; [62] preprint, snippet-only]
+  - Lab settings with synthetic competitors. [research; [61] peer-reviewed (EMNLP 2025), paper read 2026-10-05, corrected; [62] preprint, abstract read 2026-10-05]
 - **Word overlap and training exposure drive tool choice.**
   - The benchmark offers functionally equivalent tools: 10 clusters of 5 APIs, tested on 7 model families.
   - Models either fixated on one provider or favoured tools listed earlier.
@@ -465,24 +474,25 @@ The most consistent finding is modest: structured testing helps founders drop ba
   - Building it from scratch was the most common single outcome: 252 of 2,073 primary picks (12%), in 12 of 20 categories.
   - When the agent picked a tool, it was decisive: GitHub Actions 94%, Stripe 91%, shadcn/ui 90%. For databases, PostgreSQL got 58.4% (73 of 125) and Supabase 24%.
   - Picks flipped between models. Sonnet 4.5 chose Prisma 79% of the time; Opus 4.6 chose Drizzle 100% of the time.
-  - These are study templates, not production repos. [67] [vendor; independent research firm; not peer-reviewed; one agent; snippet-only]
+  - These are study templates, not production repos. [67] [vendor; independent research firm; not peer-reviewed; one agent; read 2026-10-05]
 - **The MCP server ecosystem is crowded and mostly low-value.**
   - A 14-day crawl of six MCP markets found 17,630 raw entries and 8,401 valid projects (8,060 servers, 341 clients).
   - The paper says more than half of listings are invalid or low-value. It also says "8,656 (49.1%) valid", which conflicts with the 8,401 figure.
-  - Another study counts 67,057 servers across registries.
+  - Another study (Li & Gao) counts 67,057 servers across six public registries.
   - Across 33,319 repos and 802 publications, 93.7% of repos use MCP as an enabling technology inside product-specific niches. Activity peaked in March 2026.
-  - No study links a listing, or a listing's rank, to installs or signups. [68] [research; preprints; descriptive; snippet-only]
+  - No study links a listing, or a listing's rank, to installs or signups. [68] [research; preprints; descriptive; read 2026-10-05]
 - **AI agents now create many Postgres databases.**
-  - When Databricks agreed to buy Neon (about $1B, May 2025), it said over 80% of Neon databases were created by AI agents rather than humans.
-  - This is Neon only, reported by an interested party. Creating a database is not paying for one. [69] [first-party; snippet-only]
+  - When Databricks agreed to buy Neon (14 May 2025), it said over 80% of the databases provisioned on Neon were created by AI agents rather than humans.
+  - (Corrected: the press release gives no price. The figure of about $1B comes from press reports.)
+  - This is Neon only, reported by an interested party. Creating a database is not paying for one. [69] [first-party; read 2026-10-05; corrected]
 - **AI coding agents made about as many requests to developer docs as browsers did (one vendor's data).**
-  - Across Mintlify-hosted docs over 30 days (March 2026), AI coding agents made 45.3% of requests. Browsers made 45.8%.
+  - Across Mintlify-hosted docs over 30 days (about 790M requests; post published 3 April 2026), AI coding agents made 45.3% of requests. Browsers made 45.8%. (Corrected: the post is dated April, not March.)
   - Claude Code and Cursor made 95.6% of the agent traffic Mintlify could identify.
-  - One agent task can make many requests, so this does not compare directly with human page views. [70] [vendor; sells agent-ready docs; snippet-only]
+  - One agent task can make many requests, so this does not compare directly with human page views. [70] [vendor; sells agent-ready docs; read 2026-10-05; corrected]
 - **Vercel: ChatGPT's share of its new signups grew quickly in 2024–25 (one company).**
   - Vercel's CEO said ChatGPT referred under 1% of new signups around September 2024, 4.8% on 7 March 2025 and 10% on 9 April 2025.
   - Vercel is an incumbent with a large footprint, and there are no conversion data.
-  - This says nothing about whether a new tool can get such referrals. [71] [first-party; social posts; snippet-only]
+  - This says nothing about whether a new tool can get such referrals. [71] [first-party; social posts; read 2026-10-05]
 - **Most "conversational SEO" rewriting does not work.**
   - A benchmark of 2 tasks across 6 domains found most published methods for rewriting content "for LLMs" largely ineffective, contrary to earlier reports.
   - Traditional SEO, meaning getting ranked in what the engine retrieves, worked much better.
@@ -490,12 +500,12 @@ The most consistent finding is modest: structured testing helps founders drop ba
 - **The famous "+40%" GEO figure is a lab number.**
   - A critical survey of 45 studies (Nov 2023–Jul 2026) on generative engine optimization (GEO) looked again at the Aggarwal et al. "up to 40%" figure.
   - It is a relative visibility gain inside a simulator where five documents were already in the model's context. It is often retold as a promise of ranking in ChatGPT.
-  - The survey notes that the original work reports no confidence intervals.
+  - The survey adds that the original testbed observes no clicks, referrals, traffic or purchases. (Corrected: an earlier version said the survey notes the original reports no confidence intervals; the survey text does not say this.)
   - Topical relevance and position in the context were the most reproducible levers.
-  - This adds to the "generalisation contested" note in research/landscape-2026.md §4. [73] [research; preprint survey; snippet-only]
+  - This adds to the "generalisation contested" note in research/landscape-2026.md §4. [73] [research; preprint survey; read 2026-10-05; corrected]
 - **AI search leans on third-party sources.**
   - Compared with Google, AI search engines showed "a systematic and overwhelming bias towards earned media" (third-party coverage) over brand-owned and social content.
-  - Example: on US automotive queries, earned media made up 81.9% of sources in AI search against 45.1% on Google. [74] [research; preprint; snippet-only]
+  - Example: on US automotive queries, earned media made up 81.9% of sources in AI search against 45.1% on Google. [74] [research; preprint; read 2026-10-05]
 - **A newcomer loses ties to incumbents but can win with a visible edge.**
   - In skincare recommendations across GPT-4o-mini, Claude Sonnet 4.6 and Gemini 3 Flash, a fictional brand won only 3.6–6.0% of head-to-head trials at parity.
   - Across the three models, a rating edge of +0.075 stars got it to 50%. This varied by model: Claude never passed 50% on rating alone (its maximum was 42.5%).

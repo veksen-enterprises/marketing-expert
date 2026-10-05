@@ -52,4 +52,4 @@ If buyers switch providers about every five years, roughly 20% are in-market per
 
 ## Sources
 
-research/brand-growth-channels.md (Binet & Field 2013, 2017, 2018, 2019; Sharp 2010; Romaniuk & Sharp 2016; Romaniuk 2018; Ehrenberg et al. 1990; Sharp, Romaniuk & Graham 2019; Dawes 2021; Ritson; Thomaz). Primary PDFs could not be opened during research.
+research/brand-growth-channels.md (Binet & Field 2013, 2017, 2018, 2019; Sharp 2010; Romaniuk & Sharp 2016; Romaniuk 2018; Ehrenberg et al. 1990; Sharp, Romaniuk & Graham 2019; Dawes 2021; Ritson; Thomaz). Primary PDFs could not be opened during research; on 2026-10-05 the IPA 2013 deck, Field's 2018 deck, the B2B report (46/54 and ESOV 0.7 vs 0.6, from fewer than 50 B2B cases) and the Dawes PDF were read.

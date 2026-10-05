@@ -55,7 +55,7 @@ Track by market (city × category), never only globally:
 ## Take rate (your commission)
 
 **Take rate** = marketplace revenue ÷ GMV.
-- Ranges are very wide by category: examples in Gurley's "A Rake Too Far" (2013) span roughly 2% to 70% [practitioner, snippet-only; not re-verified]. A single "benchmark" take rate is misleading; it depends on how much value you add (payments, insurance, demand, fulfilment) and how easily the two sides can go elsewhere.
+- Ranges are very wide by category: examples in Gurley's "A Rake Too Far" (2013) span roughly 2% (OpenTable) to 70% (Shutterstock), Gurley's own estimates [practitioner, read in full]. A single "benchmark" take rate is misleading; it depends on how much value you add (payments, insurance, demand, fulfilment) and how easily the two sides can go elsewhere.
 - Gurley's warning: "High rakes are a form of friction" and pricing too high is "the most dangerous strategy" for a platform; a modest rake on high volume lasts longer [practitioner].
 - Ways to earn beyond commission: seller subscriptions, promoted listings (ads), payment and financing fees, insurance, logistics. Each adds revenue but can reduce trust if buyers feel results are paid placements.
 - Who pays: charge the side that gets more value or has fewer alternatives; split fees between both sides to keep each visible fee small [practitioner].

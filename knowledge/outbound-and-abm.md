@@ -63,20 +63,20 @@ A first cold email that tends to work is short (under about 100 words), about th
 
 A **sequence** (or cadence) is the planned series of touches to one person.
 - Instantly's 2026 benchmark report (its own users' data) says the first email gets **58% of replies** and follow-ups the other 42%, and recommends 4–7 touches. [vendor, Instantly, 2026]
-- Belkins (2025 data, its agency clients) reports the first follow-up has the highest reply rate and reply rates fall by the fifth follow-up. [vendor, Belkins, 2026 study]
+- Belkins (7.5M emails in 2025, its agency clients) reports the first email has the highest reply rate of any single step (0.59%), but steps 2–6 together brought 58.6% of replies; it suggests 3–5 steps, with returns falling fast after step 5. [vendor, Belkins, 2026 study; read 2026-10-05]
 - Practical: 3–5 emails over 2–3 weeks, each adding something new (a different angle, a short case, a useful resource), mixed with LinkedIn and phone for higher-value accounts. Stop at the first reply of any kind, including "not interested". [practitioner]
 
 ## Reply-rate benchmarks: check the denominator
 
-- **Instantly 2026**: average reply rate **3.43%**, top quartile 5.5%, best campaigns above 10% (Instantly platform data). [vendor, Instantly, 2026]
+- **Instantly 2026**: average reply rate **3.43%**, top quartile 5.5%, best campaigns above 10% (Instantly platform data; all replies, including replies to follow-ups, divided by all emails sent). [vendor, Instantly, 2026]
 - **Belkins 2026 study** (7.5M emails from its client campaigns in 2025): average **0.45%** replies per email sent, falling from 0.50% in the first half of 2025 to 0.40% in the second half. Belkins notes earlier studies divided by **opened** emails; this one divides by **emails sent**. [vendor, Belkins, 2026]
-- The difference between 3.43% and 0.45% is mostly definition (per recipient vs per email, which replies count, which senders are included), not performance. Ask for the denominator before comparing yourself to any benchmark.
+- Both reports divide replies by emails sent, yet differ almost eightfold. The gap comes from who is sending (thousands of self-serve Instantly workspaces vs one agency's client campaigns) and which replies count; it says little about what a typical sender should expect. Ask for the denominator and the sender population before comparing yourself to any benchmark.
 - Track your own positive reply rate, meetings per 100 contacts and pipeline per 1,000 emails, and compare over time.
 
 ## AI-generated mass outreach
 
 - Cheap AI writing tools let senders send far more "personalised-looking" emails. Vendors and practitioners widely report falling reply rates as volume rose (e.g. Belkins' 2025 decline above). No controlled study isolating the cause was found; blame is plausible, not proven. [vendor/practitioner]
-- Lab research on AI-written messages: when people believed profile text was AI-written among a mix of AI and human texts, they trusted it less (Jakesch et al., CHI 2019); trust in email writers dropped when AI help was disclosed (Liu et al., CHI 2022). These are lab studies, not sales data. [research]
+- Lab research on AI-written messages: when people believed profile text was AI-written among a mix of AI and human texts, they trusted it less (Jakesch et al., CHI 2019); trust in email writers dropped when AI help was disclosed, but unexpectedly rose when AI was used for more personal rather than transactional emails (Liu et al., CHI 2022). These are lab studies, not sales data. [research]
 - Implications [practitioner]: use AI to research and draft, but have a person check facts and the reason for contact. Wrong "personal" details cost more than none.
 
 ## Account-based marketing (ABM)
@@ -89,7 +89,7 @@ A **sequence** (or cadence) is the planned series of touches to one person.
 | Strategic ABM (1:1) | A handful to a few dozen | A marketer works with the account team on custom research, content and events per account |
 | ABM Lite (1:few) | Small clusters of accounts with shared needs (tens of accounts in total) | Content and plays per cluster (industry, use case) |
 | Programmatic ABM (1:many) | Hundreds to thousands | Targeted ads, personalised pages and sequences by segment, using tools |
-- ITSMA research (via secondary relay) put the median Strategic ABM program at 13 accounts and about US$59,000 spend per account per year, and ABM Lite at about 50 accounts and US$4,000 per account. [vendor, secondary, not re-verified]
+- ITSMA research (via a 2017 LinkedIn relay; ITSMA's own report not found) put the median Strategic ABM program at 13 accounts and about US$59,000 spend per account per year, and ABM Lite at about 50 accounts and US$4,000 per account. Treat as 2017-or-older data. [vendor, secondary]
 
 **Evidence on results**
 - Momentum ITSMA and the ABM Leadership Alliance (2022) reported 72% of marketers say ABM delivers higher ROI than other marketing; an older, widely quoted ITSMA figure is 87%. [vendor, self-reported survey]

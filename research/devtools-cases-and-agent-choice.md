@@ -10,7 +10,7 @@
 - [vendor] means a company or investor with a stake in the claim.
 - [practitioner] means the words or rules of developers and operators.
 - "our experiment" and "our coding" mark results produced in this session.
-- Qualifiers give how the source was accessed (read in full, or seen only as a search snippet) and the sample size.
+- Qualifiers give how the source was accessed (read in full, or seen only as a search snippet) and the sample size. On 2026-10-05 the Snyk, pganalyze and pgMustard claims in the patterns list were re-read at the source; the Tailscale interview (Stratechery) is paywalled.
 
 ---
 
@@ -185,12 +185,12 @@ All shares are out of 31 unless a smaller n is given. These are descriptions of 
 
 ### Patterns worth reusing
 
-- **Users asked how to pay before there was a way to pay.** This happened at Sentry, Tailscale and Renovate (an enterprise user said "If you'll run it, I will pay you") [first-party; founder interviews; Sentry and Renovate read in full, Tailscale snippet-only].
+- **Users asked how to pay before there was a way to pay.** This happened at Sentry, Tailscale and Renovate (an enterprise user said "If you'll run it, I will pay you") [first-party; founder interviews; Sentry and Renovate read in full, Tailscale snippet-only (re-check 2026-10-05: Stratechery interview is subscriber-only; a fresh search summary quotes a user saying there was "no good way for me to give you money")].
 - **The first paid feature was often a professional need, not usage.** Examples: Metabase's logo removal at $300 a month, Vercel's custom domains, and private repos for coverage tools [first-party].
-- **A self-serve paywall can stall when the user is not the buyer.** Snyk's founder: "We opened the floodgates and got a trickle." Revenue came after Snyk sold to security leaders [vendor; investor write-up; snippet-only].
+- **A self-serve paywall can stall when the user is not the buyer.** Snyk's founder: "We opened the floodgates and got a trickle." Revenue came after Snyk sold to security leaders [vendor; investor write-up (Unusual Ventures, https://www.unusual.vc/how-snyk-found-product-market-fit-guy-podjarny-on-building-a-dev-centric-security-company/); read 2026-10-05: ~5,000 registered developers by summer 2016, self-serve paid plan judged a failure by early 2017, then first AE hired and the CISO targeted as buyer].
 - **The closest analogs to a developer-facing Postgres performance tool grew slowly.**
-  - pganalyze took about a year after billing went live to reach 10 payers [first-party; founder podcast; snippet-only].
-  - pgMustard took 3 years to go from its first subscriber to its 100th [first-party; company site; snippet-only].
+  - pganalyze took about a year after billing went live to reach 10 payers [first-party; founder podcast (SaaS Club ep. 374, https://saasclub.io/podcast/pganalyze-lukas-fittl-374/); read 2026-10-05: payments added in 2014, "over a year" to 10 customers via word of mouth and user-group talks].
+  - pgMustard took 3 years to go from its first subscriber to its 100th [first-party; company site; read 2026-10-05 in the June 2023 archived About page: first customer April 2019, 100th April 2022; the live page now says 400+ customers].
   - Both were bootstrapped.
 - **A founder was in the loop even in many self-serve cases.** Examples: PostHog's calendar on the pricing page, Dependabot's one-to-one outreach, Renovate's personal invitations, and Codecov's founder doing sales [first-party; mixed access].
 

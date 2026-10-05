@@ -34,7 +34,7 @@ Patterns seen in several cases [first-party; founder interviews; mixed access]:
 ## Validate with commitments, and decide in advance what kills the idea
 
 - What people say they would pay runs about 21% above what they pay when money is at stake [research; meta-analysis of 77 studies; consumer goods only; snippet-only]. Stated purchase intent is least reliable for new products [research; snippet-only]. Ask for a commitment: a paid pilot, a signed agreement, a pre-order, time on a call with their real data.
-- The best-measured benefit of structured, hypothesis-driven discovery is dropping bad ideas sooner; revenue effects are mixed (one randomized trial positive among firms that stayed active, the large replication null) [research; randomized trials, n=116 and n=759; revenue result from a secondary summary].
+- The best-measured benefit of structured, hypothesis-driven discovery is dropping bad ideas sooner; the revenue effect is small (pooled across four trials, treated firms earned about €7,000 more, p = .03; only one trial was significant on its own, and many firms had no revenue) [research; randomized trials, n=116 and n=759; read].
 - Pivots tend to come as a series of small changes after disconfirming evidence [research; qualitative; small n; hardware].
 - Write each bet as a dated rule: "By [date], N teams use it weekly for 30 days and M sign a paid pilot; if not, change the segment or the lead surface." Log what triggered each change. The thresholds are your judgement; the habit of a dated kill rule is what the evidence supports.
 - Launch and community audiences are biased samples: founders who met a biased launch audience cut product development and raised less money [research; NBER working paper; figures differ between versions; snippet-only]. Don't read the launch crowd as the market.
@@ -81,7 +81,7 @@ Before outreach, for any product that touches customer data, credentials or prod
 ## Price from the start
 
 - Short trials beat long ones in a large randomized trial: a 7-day trial for everyone raised subscriptions 5.6% against 30 days, and inactivity near the end of a trial predicted non-conversion [research; RCT, n=337,724; one dominant firm with existing demand; "7 days for an unknown tool" is an extrapolation].
-- With a permanent free tier, longer trials raised uptake with no detectable effect on immediate conversion [research; RCT; lower-tier venue; snippet-only].
+- With a permanent free tier, a 7-day trial raised trial uptake about 11% against a 3-day one and lifted later conversion, with no detectable effect on immediate conversion [research; RCT, n=680,588; one image-editing firm; lower-tier venue; read 2026-10-05]. This compares 3 and 7 days, not 7 and 30.
 - Freemium upgrades took months in one cloud-storage service (none before 15 weeks), and most happened before users hit the free limit [research; working paper; one firm; n=500 sampled users]. If your free tier has no binding limit, don't expect upgrades from it.
 - B2B subscriptions can be badly underpriced: one job-board's randomized price test found the profit-maximizing price at $327 against the existing $99 [research; RCT, n=7,867; one firm; one author was a paid adviser].
 - Showing a premium option can lift choice of the middle one [research; field RCT; books, not SaaS].

@@ -69,7 +69,7 @@ Run analyze_copy first, then:
 Evidence hierarchy for copy decisions, strongest first:
 1. A properly powered A/B test on real traffic against a business metric (see experimentation).
 2. Panel message tests (e.g. Wynter-style: verified target buyers answer open questions on clarity, relevance, value, differentiation). Diagnostic, not predictive: stated reactions from paid panelists reading cold. Saturation for themes typically at roughly 9–17 responses in qualitative research literature; this finds themes, not their prevalence.
-3. 5-second tests: measure first impressions and recall only. Peer-reviewed work (Gronier 2016; Kuric et al. 2024) supports validity for first impressions, but results are affected by visual complexity and participant cognitive abilities.
+3. 5-second tests: measure first impressions and recall only. Peer-reviewed support is thin: Gronier (2016) found his hypothesis about what 5 seconds captures only partly confirmed, and Kuric et al. (2024) found results change with the page's visual complexity and participants' working memory, so a fixed 5 seconds is not a reliable standard.
 4. Internal opinion.
 
 Low-traffic B2B sites usually can't A/B test copy (see experimentation); panel tests plus sales-call feedback are the realistic option.

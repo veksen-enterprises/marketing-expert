@@ -15,7 +15,7 @@ International SEO means helping search engines show the right version of your si
 
 ## URL structure
 
-Google documents three options for country/language versions; it does not recommend URL parameters (?lang=de) [not re-verified]. [first-party]
+Google documents three options for country/language versions; it does not recommend URL parameters (?lang=de). [first-party]
 
 | Option | Example | Google's listed pros | Google's listed cons |
 |---|---|---|---|
@@ -111,4 +111,4 @@ Google leads in most markets, but not all. Shares below are from aggregator site
 
 ## Sources
 
-research/seo-advanced.md §B (Google Search Central: multi-regional sites, localized versions, locale-adaptive pages, spam policies; Search Engine Land on the International Targeting report; market-share aggregators). Google pages were read from search snippets only; see the access caveat there.
+research/seo-advanced.md §B (Google Search Central: multi-regional sites, localized versions, locale-adaptive pages, spam policies; Search Engine Land on the International Targeting report; market-share aggregators). Google pages were re-read directly on 2026-10-05; see the access caveat there.

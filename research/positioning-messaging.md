@@ -1,6 +1,6 @@
 # Positioning, Messaging, and Customer Research
 
-Research date: 2026-10-04. **Access caveat:** the network proxy blocked every primary domain tried (aprildunford.com, aprildunford.substack.com, hbr.org, jobstobedone.org, strategyn.com, momtestbook.com, copyhackers.com, wynter.com, nngroup.com, uxpajournal.org, marketingscience.info, byronsharp.wordpress.com, semanticscholar PDFs, Wikipedia). No page could be fetched in full. Every claim below comes from search-engine snippets of the URL cited, so all of it is **[snippet-only]**. Where the snippet came from a secondary summary and not the owner's own site, the tag reads **[secondary snippet]**. Before anyone quotes these lines word for word, check them against the books.
+Research date: 2026-10-04. **Access caveat:** the network proxy blocked every primary domain tried (aprildunford.com, aprildunford.substack.com, hbr.org, jobstobedone.org, strategyn.com, momtestbook.com, copyhackers.com, wynter.com, nngroup.com, uxpajournal.org, marketingscience.info, byronsharp.wordpress.com, semanticscholar PDFs, Wikipedia). No page could be fetched in full. Every claim below comes from search-engine snippets of the URL cited, so all of it is **[snippet-only]**. Where the snippet came from a secondary summary and not the owner's own site, the tag reads **[secondary snippet]**. Before anyone quotes these lines word for word, check them against the books. Re-read on 2026-10-05 against the primary pages: Dunford's quickstart post, HBR 2016 (Christensen et al.), Strategyn's ODI pages and its 2010 track-record PDF, Ulwick's milkshake critiques, three Copyhackers pages, two Wynter pages, Gronier (2016, author's PDF), and the abstracts of Kuric et al. (2024) and Romaniuk, Sharp & Ehrenberg (2007).
 
 ## Sources
 
@@ -33,10 +33,10 @@ Research date: 2026-10-04. **Access caveat:** the network proxy blocked every pr
 5. Market category: the frame of reference that makes the value obvious.
 6. (+1) Relevant trends: optional, and only if layered on carefully.
 
-Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Marketing summaries for the full list [secondary snippet].
+Sources: Dunford quickstart [read 2026-10-05] for 1–3; Commoncog and Heinz Marketing summaries for the full list [secondary snippet].
 
-**Why competitive alternatives come first.** "We start with competitive alternatives, or what would customers do if our solution didn't exist." Then: "What do we have that the alternatives do not?" gives unique attributes. Then: "So what for customers?" gives value. (Dunford quickstart [snippet-only].)
-- Alternatives are defined from the customer's point of view. Often the answer is "do nothing" or the status quo (a spreadsheet, a manual process), not a named vendor (Dunford quickstart [snippet-only]).
+**Why competitive alternatives come first.** "We start with competitive alternatives, or what would customers do if our solution didn't exist." Then: "What do we have that the alternatives do not?" gives unique attributes. Then: "So what for customers?" gives value. (Dunford quickstart [read 2026-10-05].)
+- Alternatives are defined from the customer's point of view. Often the answer is "do nothing" or the status quo (a spreadsheet, a manual process), not a named vendor (Dunford quickstart [read 2026-10-05]). The post adds that in enterprise software "we typically lose 25% of deals to 'no decision'" (Dunford's own estimate, no data given).
 - Practical logic: differentiation only exists relative to something, so that reference point has to be fixed first. Value is derived from what differs. Target customers are then whoever cares most about that value. The category is picked last, to frame the value.
 
 **The 10-step process, in order** [secondary snippet: spinach.ai template, Nat Eliason, Userlist]:
@@ -75,9 +75,9 @@ Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Market
 
 ### Christensen (Innovator's Solution 2003; Competing Against Luck 2016; HBR Sept 2016)
 - A job is "the progress that a person is trying to make in a particular circumstance" [secondary snippet attributing Competing Against Luck].
-- "Jobs are never simply about function; they have powerful social and emotional dimensions." "The circumstances in which customers try to do jobs are more critical than any buyer characteristics." (HBR 2016 [snippet-only].)
+- "Jobs are multifaceted. They're never simply about function; they have powerful social and emotional dimensions. And the circumstances in which customers try to do them are more critical than any buyer characteristics." (HBR 2016 [read 2026-10-05; corrected: quote wording was paraphrased].)
 - Milkshake case: morning buyers "hired" a milkshake for a long, boring commute. It was something to occupy them, and it kept them from being hungry by 10:00. The competing hires were bagels, bananas and boredom, not other milkshakes [secondary snippet]. The case first appeared in The Innovator's Solution (2003) and was retold in Competing Against Luck [secondary snippet].
-- HBR 2016 condo example: sales to downsizing retirees were weak until developers saw that they were in the business of "transitioning lives." They added moving and decluttering services instead of adding condo features [snippet-only].
+- HBR 2016 condo example: sales to downsizing retirees were weak until developers saw that they were in the business of "transitioning lives." They added moving and decluttering services instead of adding condo features [read 2026-10-05].
 
 ### Moesta / Spiek (Re-Wired Group): switch interview and forces of progress
 - **Four forces.** Push: problems with the current situation. Pull: the attraction of the new solution. Anxiety: fear of the new choice. Habit: attachment to the present way. A switch happens when push plus pull exceed anxiety plus habit. Anxiety and habit are the "hidden" forces that customers rarely bring up unprompted [secondary snippet; primary at jobstobedone.org was blocked].
@@ -85,15 +85,15 @@ Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Market
 - Book: Moesta, *Demand-Side Sales 101* (2020). Not consulted.
 
 ### Ulwick / Strategyn: Outcome-Driven Innovation (ODI)
-- Five steps: (1) define the market around a job, not a product; (2) uncover all desired outcomes, the "50 to 150 metrics" customers use to judge success; (3) quantify under- and over-served outcomes with importance and satisfaction ratings; (4) find outcome-based segments; (5) target the highest-opportunity outcomes (Strategyn [snippet-only]).
-- Survey of "180 to 3,000 respondents" rating each outcome on importance and satisfaction. **Opportunity = importance + max(0, importance − satisfaction)** (Strategyn [snippet-only]).
-- Desired outcome statements are written to be solution-free and stable over time (Strategyn [snippet-only]).
-- Self-reported success rate: "86%" of projects using ODI were rated successful by the sponsoring company, against a 17% industry average. This comes from a 2010 track-record study that Strategyn calls "independent" (Strategyn [snippet-only]). The study is vendor-commissioned and the success criterion was self-rated by clients, so treat it as marketing, not evidence.
+- Steps: (1) define the market around a job, not a product; (2) uncover all desired outcomes, typically "50 to 150 desired outcome statements" per market; (3) quantify under- and over-served outcomes with importance and satisfaction ratings; (4) find outcome-based segments; then target the highest-opportunity outcomes. Strategyn's current process page lists six steps: it adds (5) align existing products with the opportunities and (6) conceptualize new products (Strategyn [read 2026-10-05; corrected: was "five steps"]).
+- Survey of "180 to 3,000 respondents" rating each outcome on importance and satisfaction. **Opportunity = importance + max(0, importance − satisfaction)** (Strategyn [read 2026-10-05]).
+- Desired outcome statements are written to be solution-free and stable over time (Strategyn [read 2026-10-05]).
+- Self-reported success rate: "86%" of projects using ODI were rated successful by the sponsoring company, against a 17% industry average. This comes from a 2010 track-record study that Strategyn calls "independent": in May 2010 Strategyn "engaged a researcher" (Janet Bumpas, Good Step Enterprises), who interviewed 43 Strategyn clients; of 21 ODI-based products that launched, 18 "were rated successes by the sponsoring company". The 17% is an average of 12 published success-rate figures from different sources and definitions (Strategyn, "Innovation Track Record Study" PDF [read 2026-10-05]). The study is vendor-commissioned, n = 21, and the success criterion was self-rated by clients, so treat it as marketing, not evidence.
 
 ### Where they disagree
 - **Job as progress vs job as activity.** Klement (2018) calls Christensen/Moesta "jobs-as-progress" and Ulwick "jobs-as-activities," and argues the two are incompatible models of why people buy [secondary snippet].
 - **Method.** Moesta asks "why did you switch?", which is qualitative, causal and about the purchase moment. Ulwick asks "what are you trying to accomplish, and how well does the current solution do it?", which is a quantitative survey about the task [secondary snippet].
-- **Ulwick on the milkshake.** He calls milkshake marketing "technically flawed." It segments by people using one product (milkshakes) and leaves out buyers of competing products. In his view a job belongs to the customer, not the product, and the analysis must be solution-agnostic. He also sees morning commuters and afternoon parents as separate jobs, not segments of one job (Strategyn, AMA Marketing Journal [snippet-only]).
+- **Ulwick on the milkshake.** He calls milkshake marketing "technically flawed." It segments by people using one product (milkshakes) and leaves out buyers of competing products. In his view a job belongs to the customer, not the product, and the analysis must be solution-agnostic. He also sees morning commuters and afternoon parents as separate jobs, not segments of one job (Strategyn, AMA Marketing Journal [read 2026-10-05]).
 - **Priority dispute.** Ulwick says he developed ODI in the early 1990s and presented it to Christensen at HBS in 1999 [secondary snippet]. Treat this as a contested origin claim.
 - **Practical use:** switch interviews to find triggers and anxieties for messaging; ODI-style surveys to rank needs for product roadmap and segmentation.
 
@@ -126,7 +126,7 @@ Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Market
 - **What is weaker:**
   - The "first-mover wins" anecdotes are survivorship-biased case stories.
   - The "own one word" and ladder ideas are untested metaphors.
-  - Ehrenberg-Bass found that "perceived differentiation is not necessary for a buyer to buy a brand or for a brand to be successful." Across many categories in two countries, perceived differentiation was low, yet those brands were still bought (Romaniuk, Sharp & Ehrenberg 2007 [snippet-only]). This challenges strong "unique position" claims for mass consumer goods. It says less about B2B buyers making deliberate, considered purchases, which is Dunford's domain.
+  - Ehrenberg-Bass found that "perceived differentiation is not necessary for a buyer to buy a brand or for a brand to be successful." Across many categories in two countries, perceived differentiation was low, yet those brands were still bought (Romaniuk, Sharp & Ehrenberg 2007 [read 2026-10-05: abstract only; the abstract supports the finding, but the quoted sentence is not in it and was not checked against the full text]). This challenges strong "unique position" claims for mass consumer goods. It says less about B2B buyers making deliberate, considered purchases, which is Dunford's domain.
 
 ## 6. Rob Fitzpatrick: The Mom Test (2013)
 
@@ -146,26 +146,26 @@ Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Market
 
 ## 7. Voice-of-customer copy: review mining (practitioner method, not research)
 
-- Wiebe/Copyhackers method: paste reviews (Amazon, G2, Google, TripAdvisor, competitors' reviews) into a sheet. Sort them into buckets: pain points, desires and outcomes, things already tried, triggers to buy, objections. Count how often each theme appears. Lift "sticky" verbatim phrases into headlines and body copy (Copyhackers [snippet-only]).
-- Selection tips: filter by objective. For example, 3-star reviews hold balanced pros and cons; use recent reviews (under ~2 years); filter by role or industry. For pain points, read only the "cons/dislikes" fields (Copyhackers [snippet-only]).
-- Headline evidence: a headline mined from rehab-book reviews ("If you think you need rehab, you do") reportedly got "400%" more clicks and "20%" more lead-gen submits than the control (Copyhackers [snippet-only]). This is a single self-reported A/B test with no published sample size or significance. Treat it as an anecdote.
-- Copyhackers now publishes LLM prompts for clustering reviews (Copyhackers [snippet-only]). Phrases should still be checked against the raw source text.
+- Wiebe/Copyhackers method: paste reviews (Amazon, G2, Google, TripAdvisor, competitors' reviews) into a sheet. Sort them into buckets: pain points, desires and outcomes, things already tried, triggers to buy, objections. Count how often each theme appears. Lift "sticky" verbatim phrases into headlines and body copy (Copyhackers [read 2026-10-05]).
+- Selection tips: filter by objective. For example, 3-star reviews hold balanced pros and cons; use recent reviews (under ~2 years); filter by role or industry. For pain points, read only the "cons/dislikes" fields (Copyhackers [read 2026-10-05], from its ChatGPT review-mining post).
+- Headline evidence: a headline mined from rehab-book reviews ("If you think you need rehab, you do") reportedly got ">400%" more clicks and ">20%" more lead-gen form submits on the next page than the control, "Your Addiction Ends Here" (Copyhackers [read 2026-10-05]). This is a single self-reported A/B test with no published sample size or significance. Treat it as an anecdote.
+- Copyhackers now publishes LLM prompts for clustering reviews (Copyhackers [read 2026-10-05]). Phrases should still be checked against the raw source text.
 
 ## 8. Message testing and its limits
 
-- **Wynter-style panel testing.** Verified B2B professionals targeted by title, industry and company size, with results in 12–48 hours. Wynter's "Message Layers" checks four things in order:
+- **Wynter-style panel testing.** Verified B2B professionals targeted by title, industry and company size, with results in 12–48 hours. Wynter's message-testing guide names four dimensions (the "Message Layers" label was not found on the page re-read 2026-10-05):
   - Clarity: can they say what you do?
   - Relevance: can they tell who it is for?
   - Value: do they want it?
   - Differentiation: can they say why they would pick you?
 
-  Respondents answer open-ended questions ("What is this company offering?", "What questions do you have?") (Wynter [snippet-only]).
-- Wynter's own framing: message testing is a *diagnostic*, while A/B testing is a *measurement*. A/B testing needs about 500+ conversions per month (Wynter [snippet-only]). On sample size, Wynter cites qualitative "saturation" at 12–13 responses, and a review of 23 peer-reviewed articles putting saturation at 9–17 participants (Wynter [snippet-only]). These figures appear to trace to Guest, Bunce & Johnson (2006) and Hennink & Kaiser (2022), which were not verified here.
+  Respondents answer open-ended questions; the guide's examples include "What do you think this message is trying to say?" and "Are there any unclear parts of the message?" (Wynter [read 2026-10-05; corrected: the question wording was not on the page]).
+- Wynter's own framing: message testing is a *diagnostic*, while A/B testing is a *measurement*. A/B testing needs "usually at least 500 transactions (signups, demo requests, etc) per month" (Wynter [read 2026-10-05]). On sample size, Wynter's current page says recurring themes stabilized "within the first 12 interviews" in one widely cited study, cites a review of 23 peer-reviewed articles putting saturation at 9–17 interviews for homogeneous groups and narrow questions, and suggests about 15 interviews as a starting point (Wynter [read 2026-10-05; corrected: was "12–13 responses"]). Wynter names Guest, Bunce & Johnson; the 23-article review appears to be Hennink & Kaiser (2022), which was not opened here.
 - **Limits of panel testing:**
   - It records stated reactions from paid panelists reading cold, outside a real buying context, so it is not revealed behavior.
   - Saturation applies to finding themes, not to ranking or estimating how common something is.
   - A panel can confirm clarity but cannot show that the copy will lift conversion.
-- **5-second tests.** Show a page for 5 seconds, hide it, then ask open questions about recall and impression. Associated with Spool, Perfetti and Tullis [secondary snippet]. Gronier (2016, JUS) compared 5-second exposure with unlimited exposure. The 5-second view "captures the very first moments" of interaction, which skew toward hedonic and visual qualities over instrumental and usability ones [snippet-only]. Kuric et al. (2024) found that cognitive abilities and visual complexity significantly affect 5-second impressions, which questions 5 seconds as a universal benchmark [snippet-only]. It tests above-the-fold clarity and recall only, not comprehension of the full argument or persuasion.
+- **5-second tests.** Show a page for 5 seconds, hide it, then ask open questions about recall and impression. Associated with Spool, Perfetti and Tullis [secondary snippet]. Gronier (2016, JUS) compared 5-second exposure with unlimited viewing of one web page in two groups (about 146 participants). His hypothesis was that the first moments favour hedonic and visual qualities and later viewing favours practical ones; the results "partially validate this hypothesis" (only the AttrakDiff pragmatic-quality score differed significantly), and he says the method still needs scientific validation [read 2026-10-05; corrected: was stated as an established finding]. Kuric et al. (2024; online 2023) showed pages for 2, 5 or 10 seconds and found first-impression answers were made inconsistent by visual complexity and by participants' working memory; they conclude the 5-second rule of thumb "misrepresents the reality of human cognition" and exposure time should be adapted [read 2026-10-05: abstract]. It tests above-the-fold clarity and recall only, not comprehension of the full argument or persuasion.
 - Hierarchy of evidence for copy decisions, strongest first:
   1. A properly powered A/B test on real traffic, with a business metric.
   2. Panel or qualitative tests, as diagnostics.
@@ -195,6 +195,6 @@ Sources: Dunford quickstart [snippet-only] for 1–3; Commoncog and Heinz Market
 - Sales Pitch step count: summaries list 7 or 8 steps depending on whether objections and the ask are counted separately.
 - Whether Moesta's published timeline ends at "consuming" or "satisfaction / ongoing use"; secondary sources differ.
 - The original milkshake study's data, sample and date. Moesta's role in it is often claimed but was not verified.
-- Who ran Strategyn's 2010 "independent" study (often said to be Strategos), and how it defined success.
+- Strategyn's 2010 study: resolved 2026-10-05. A researcher engaged by Strategyn (Janet Bumpas, Good Step Enterprises), not Strategos; success was whatever each sponsoring company rated as success (revenue, ROI, satisfaction).
 - Original sources for Wynter's saturation figures (presumed Guest et al. 2006; Hennink & Kaiser 2022).
 - No peer-reviewed test found of Schwartz's awareness model, Dunford's process, or review-mining copy against a baseline.

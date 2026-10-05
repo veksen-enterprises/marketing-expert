@@ -37,7 +37,7 @@ If an idea passes none of these, put it on your blog instead.
 - **Personal**: name a recent story they wrote and why this fits. Mass emails are easy to spot.
 - **Structure**: subject line with the news; the story in two sentences; why it matters to their readers; what you can offer (data, customer, founder interview, images); then stop.
 - **Follow up once**, a few days later, with something new. Repeated follow-ups get you ignored [practitioner].
-- **AI-written mass pitches**: Muck Rack found only 2% average overlap between the journalists most pitched on Muck Rack and those most pitched by AI tools, suggesting AI-generated media lists often target the wrong people [vendor].
+- **Pitching for AI answers**: Muck Rack found that the journalists most pitched on its platform and the journalists AI assistants most cite for a given brand overlap by only 2% on average ("What Is AI Reading?", Dec 2025). If you want to show up in AI answers, look at who those answers cite before building the media list [vendor].
 
 ### Embargoes and exclusives [practitioner]
 
@@ -107,4 +107,4 @@ If an idea passes none of these, put it on your blog instead.
 
 ## Sources
 
-research/content-social-pr.md (FTC Endorsement Guides 2023, Disclosures 101, Consumer Reviews and Testimonials Rule 2024; Google spam policies; Muck Rack State of Journalism 2024–2026; Cision State of the Media 2025; Influencer Marketing Hub benchmarks; vendor price guides; Meta business help).
+research/content-social-pr.md (FTC Endorsement Guides 2023, Disclosures 101, Consumer Reviews and Testimonials Rule 2024; Google spam policies; Muck Rack State of Journalism 2024–2026 and What Is AI Reading? 2025; Cision State of the Media 2025; Influencer Marketing Hub benchmarks; vendor price guides; Meta business help).

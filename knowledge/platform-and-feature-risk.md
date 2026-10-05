@@ -16,7 +16,7 @@ Both are common. Both have dated precedents below.
 - **Amazon** (Zhu & Liu 2018; 163,853 products): Amazon entered ~3% of third-party product spaces within ~10 months, choosing those with **higher sales and better ratings**, and avoided spaces that need **more seller effort** to grow. Afterwards, affected sellers were discouraged from growing on the platform. Your success is visible on their dashboards; that's the entry signal.
 - **Google on Android** (Foerderer et al. 2018; 6,620 apps): when Google entered photography apps, affected apps became **9.6% more likely to ship major updates**: entry increased attention to the category. Benefits went mostly to **larger, more diversified** developers.
 - **Threat of Google entry** (Wen & Zhu 2019): developers facing a credible threat **raised prices and reduced innovation** on the exposed app and moved effort to unaffected apps.
-- **Apple "Sherlocking"** (Leyden 2026 working paper; 22 App Store markets, 2016–2021): Apple's entry **reduced new third-party entry ~22%** with **no detectable increase in exits**; existing apps moved toward paid tiers. Effects were largest when the feature was built into the operating system.
+- **Apple "Sherlocking"** (Leyden 2026 working paper; 23 App Store markets, 2016–2021): Apple's entry **reduced new third-party entry by nearly 23%** with **no detectable change in exits**. That estimate moved between drafts: an earlier draft found no clear effect on entry. Existing apps moved toward paid tiers. Effects were largest when the feature was built into the operating system.
 - Exposure estimate: iOS 18 features overlapped apps with ~$393M annual revenue (Appfigures, 2024) [vendor; exposure, not realised loss].
 
 **Read**: platform entry mostly chills *new* entrants and pushes existing ones toward paying power users. Being shallow and commodity-like is what gets you replaced; serving users who need more than the default is what survives.
@@ -32,13 +32,13 @@ Both are common. Both have dated precedents below.
 | 2011 | Google | Panda update; Demand Media's Google traffic fell ~40% (Hitwise); Google was ~28% of its revenue |
 | 2025 | Google | AI Overviews: organic clicks ~8% with an AI summary vs ~15% without (Pew) |
 | Jun 2025 | Anthropic | Cut Windsurf's first-party Claude capacity with < 5 days' notice amid an OpenAI acquisition report |
-| Jan 2026 | Anthropic | Blocked consumer-subscription credentials in third-party coding tools, citing existing terms |
+| Jan 2026 | Anthropic | Blocked consumer-subscription credentials in third-party coding tools, saying unofficial tools caused bugs it could not diagnose |
 
 Pattern: the clause that cut access was usually already in the terms ("substitute product", "competing product", token-type limits), and notice was short.
 
 ## "You're a feature, not a product"
 
-- Origin: Steve Jobs to Drew Houston, December 2009, during a "nine-figure" acquisition pitch (Forbes 2011; Houston confirmed in 2012). Apple launched iCloud in 2011.
+- Origin: Steve Jobs to Drew Houston, December 2009, while floating an acquisition (Forbes 2011 put the stakes at "a nine-digit price"; Houston confirmed the meeting in 2012 and said Jobs named no price at the time). Apple launched iCloud in 2011.
 - How Dropbox survived (S-1, 2018: 500M+ registered users, 11M paying, $1.1B revenue 2017): it stayed **neutral across rival platforms** (Windows, Mac, iOS, Android, web), something no single platform owner would build well, and moved from consumer sync to team workflows. Storage did commoditise later.
 
 Tests (synthesis):
@@ -76,7 +76,7 @@ Tests (synthesis):
 - Harvest the exposed product (raise price, cut new investment) and move effort to adjacent areas (Wen & Zhu).
 - Move up to paid power-user segments the free default won't serve (Leyden).
 - If you have scale, ship big updates while the category gets attention (Foerderer et al.).
-- Consider selling: the platform or a rival may prefer buying to building (Dropbox was offered nine figures; Windsurf drew offers). See acquisition-and-exits.
+- Consider selling: the platform or a rival may prefer buying to building (Apple floated buying Dropbox; Windsurf drew offers). See acquisition-and-exits.
 
 ## Regulation is upside, not protection
 
@@ -97,4 +97,4 @@ The EU Digital Markets Act (obligations from March 2024; first fines 23 Apr 2025
 
 ## Sources
 
-research/platform-and-feature-risk.md (Zhu & Liu 2018; Foerderer et al. 2018; Wen & Zhu 2019; Leyden 2026; Appfigures 2024; Twitter, Reddit, Facebook, Zynga, Dropbox filings and announcements; Pew 2025; Cahn 2024; Casado & Lauten 2019; EU Teams decision 2025). All sources seen via search snippets; nothing read in full.
+research/platform-and-feature-risk.md (Zhu & Liu 2018; Foerderer et al. 2018; Wen & Zhu 2019; Leyden 2026; Appfigures 2024; Twitter, Reddit, Facebook, Zynga, Dropbox filings and announcements; Pew 2025; Cahn 2024; Casado & Lauten 2019; EU Teams decision 2025). Most of these were re-read in the original on 2026-10-05 (Zhu & Liu and Leyden in full; Foerderer et al. and Wen & Zhu as abstracts). Items still unread are marked in the research note.
