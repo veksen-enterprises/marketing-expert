@@ -74,3 +74,34 @@ describe("scanSource", () => {
     expect(() => scanSource("/")).toThrow(/root/);
   });
 });
+
+describe("scanSource review fixes", () => {
+  it("takes the index status from the Status column, and only for records in the same folder", () => {
+    // The status was the second-to-last cell: a date when the row had no trailing pipe. Records were keyed by number
+    // only, so billing/adr/0001 was dropped and could get docs/adr's index status.
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    mkdirSync(join(d, "docs", "adr"), { recursive: true });
+    mkdirSync(join(d, "billing", "adr"), { recursive: true });
+    writeFileSync(join(d, "docs", "adr", "0001-postgres.md"), "# Use Postgres\n\n## Status\n\nAccepted\n\n## Context\n");
+    writeFileSync(join(d, "docs", "adr", "0002-sso.md"), "# Add SSO\n\n## Status\n\nProposed\n\n## Context\n");
+    writeFileSync(join(d, "billing", "adr", "0001-usage-pricing.md"), "# Usage pricing\n\n## Status\n\nProposed\n\n## Context\n");
+    writeFileSync(join(d, "docs", "adr", "README.md"), "| ADR | Title | Date | Status\n| --- | --- | --- | ---\n| 0001 | Use Postgres | 2026-01-01 | Accepted\n| 0002 | Add SSO | 2026-02-01 | Proposed\n");
+    writeFileSync(join(d, "billing", "adr", "index.md"), "| ADR | Status | Title |\n| --- | --- | --- |\n| 0001 | Proposed | Usage pricing |\n");
+    const r = scanSource(d);
+    expect(r.decisions.map((x) => [x.file, x.status, x.indexStatus])).toEqual([
+      [join("billing", "adr", "0001-usage-pricing.md"), "Proposed", "Proposed"],
+      [join("docs", "adr", "0001-postgres.md"), "Accepted", "Accepted"],
+      [join("docs", "adr", "0002-sso.md"), "Proposed", "Proposed"],
+    ]);
+    expect(r.notes.join(" ")).not.toMatch(/prefer the index/);
+  });
+
+  it("finds a price at the end of a sentence and string literals inside JSX braces", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(join(d, "pricing.html"), "<p>The Pro plan costs $20.</p>\n<p>Team is $49.99.</p>\n");
+    writeFileSync(join(d, "Faq.tsx"), 'export const P = () => <p>{"We never store credentials; they stay on your machine."}</p>;\nconst f = [{ q: "Is it safe?", a: "We never store your query text." }];\n');
+    const r = scanSource(d);
+    expect(r.claims.price.map((c) => c.text)).toEqual(["The Pro plan costs $20.", "Team is $49.99."]);
+    expect(r.claims.data.map((c) => `${c.file}:${c.line}`)).toEqual(["Faq.tsx:1", "Faq.tsx:2"]);
+  });
+});

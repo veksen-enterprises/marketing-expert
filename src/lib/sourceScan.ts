@@ -5,7 +5,7 @@
 // Reads local files only, by extension, under the directory given. Returns text as data.
 
 import { readdirSync, readFileSync, statSync, lstatSync, realpathSync } from "node:fs";
-import { join, relative, extname, sep } from "node:path";
+import { join, relative, extname, sep, dirname } from "node:path";
 
 export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof";
 
@@ -59,7 +59,17 @@ function decisionStatus(src: string): string | null {
   return sec ? sec[1].replace(/\s+/g, " ").trim().slice(0, 240) : null;
 }
 
+// Table cells, with or without the outer pipes: "| a | b |" and "a | b" are both rows.
+function tableCells(row: string): string[] | null {
+  if (!row.includes("|")) return null;
+  const cells = row.split("|").map((c) => c.trim());
+  if (/^\s*\|/.test(row)) cells.shift();
+  if (/\|\s*$/.test(row)) cells.pop();
+  return cells;
+}
+
 function readDecisions(root: string, files: string[]): Decision[] {
+  // Keyed by file: two folders (docs/adr, billing/adr) can both have a 0001.
   const out = new Map<string, Decision>();
   for (const f of files) {
     const rel = relative(root, f);
@@ -73,9 +83,11 @@ function readDecisions(root: string, files: string[]): Decision[] {
       continue;
     }
     const title = (/^#\s+(.+)$/m.exec(src)?.[1] ?? name).trim();
-    out.set(m[1], { id: m[1], title, status: decisionStatus(src), indexStatus: null, file: rel });
+    out.set(rel, { id: m[1], title, status: decisionStatus(src), indexStatus: null, file: rel });
   }
-  // Index tables: | [0003](0003-....md) | Decision | Date | Status |
+  const byFolder = new Map([...out.values()].map((d) => [`${dirname(d.file)}/${d.id}`, d]));
+  // Index tables: | [0003](0003-....md) | Decision | Date | Status |. The status is the column headed "Status", and a
+  // table applies only to the records in its own folder.
   for (const f of files) {
     const rel = relative(root, f);
     if (!/(^|\/)(adr|adrs|decisions)\/(README|index)\.md$/i.test(rel)) continue;
@@ -85,17 +97,30 @@ function readDecisions(root: string, files: string[]): Decision[] {
     } catch {
       continue;
     }
+    const folder = dirname(rel);
+    let statusCol = -1;
+    let inTable = false;
     for (const row of src.split("\n")) {
-      const cells = row.split("|").map((c) => c.trim());
-      const id = /\[?(\d{3,4})\]?/.exec(cells[1] ?? "")?.[1];
-      if (!id || cells.length < 5) continue;
-      const d = out.get(id);
+      const cells = tableCells(row);
+      if (!cells) {
+        inTable = false;
+        continue;
+      }
+      if (!inTable) {
+        // The first row of a table is its header.
+        inTable = true;
+        statusCol = cells.findIndex((c) => /status/i.test(c));
+        continue;
+      }
+      const id = /\[?(\d{3,4})\]?/.exec(cells[0] ?? "")?.[1];
+      if (!id || statusCol < 1 || statusCol >= cells.length) continue;
+      const d = byFolder.get(`${folder}/${id}`);
       // [^()], not [^)]: from every "[1](" with no ")" after it, the scan ran to the end of the row.
-      const status = cells[cells.length - 2].replace(/\[(\d+)\]\([^()]*\)/g, "$1");
+      const status = cells[statusCol].replace(/\[(\d+)\]\([^()]*\)/g, "$1");
       if (d) d.indexStatus = status;
     }
   }
-  return [...out.values()].sort((a, b) => a.id.localeCompare(b.id));
+  return [...out.values()].sort((a, b) => a.file.localeCompare(b.file));
 }
 
 const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte"]);
@@ -107,7 +132,7 @@ const MAX_BYTES = 512 * 1024;
 // curl ...", "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
 const PATTERNS: Record<ClaimKind, RegExp> = {
   data: /\b(stores?|stored|storing|collects?|collected|sends?|sent|uploads?|uploaded|read-only|never (see|read|store|touch|leaves?|sends?)|leaves? (your|the)|locally|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|credentials?|connection strings?|passwords?|encrypt\w*|retain\w*|retention|sample (rows|values)|parameter values|literal values|PII|personal data|GDPR|SOC ?2|HIPAA|rows? of (your )?data|query text|we (never|don't|do not) (see|read|store|access)|your data)\b/i,
-  price: /([$€£]\d[\d,]*(\.\d{2})?(?![\d.]))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
+  price: /([$€£]\d[\d,]*(\.\d{2})?(?!\d|\.\d))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
   availability: /\b(coming soon|soon|on (our|the) radar|roadmap|planned|in beta|beta|alpha|preview|early access|waitlist|not yet|launching|available now|now available|shipped|deprecated|retired|sunset)\b/i,
   setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|\|(?<=curl [^|]*\|)\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes)\b)/i,
   proof: /(\b\d+(\.\d+)?\s?(%|x|×)(?![\w-])|\b(fastest|the only|first ever|#1|trusted by|used by|loved by|(?<![\d,])\d[\d,]*\+? (teams|companies|developers|users|customers)))/i,
@@ -116,13 +141,18 @@ const PATTERNS: Record<ClaimKind, RegExp> = {
 // Attributes whose values are visible or read as copy: tooltips, labels, alt text, meta content.
 const TEXT_ATTRS = /\b(data-tip|data-tooltip|title|aria-label|alt|placeholder|content|description|label|tooltip|summary)\s*=\s*(["'`])(.*?)\2/gi;
 
+function stringLiterals(s: string): string {
+  return (s.match(/(["'`])((?:(?!\1).){2,})\1/g) ?? []).map((l) => l.slice(1, -1)).join(" ");
+}
+
 function visibleParts(line: string): string {
   const attrs: string[] = [];
   for (const m of line.matchAll(TEXT_ATTRS)) attrs.push(m[3]);
   // [^<>], not [^>]: from every "<" with no ">" after it, the scan ran to the end of the line.
   const text = line
     .replace(/<[^<>]*>/g, " ")
-    .replace(/\{[^{}]*\}/g, " ")
+    // Keep the string literals inside {...}: <p>{"We don't store it."}</p> and { a: "..." } are copy.
+    .replace(/\{[^{}]*\}/g, (b) => " " + stringLiterals(b) + " ")
     .replace(/&[a-z]+;|&#\d+;/gi, " ");
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
 }
@@ -219,8 +249,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
         env.set(name, uses);
       }
       // In plain code files only string literals can be copy; elsewhere take visible text and text attributes.
-      const literals = (raw.match(/(["'`])((?:(?!\1).){2,})\1/g) ?? []).map((l) => l.slice(1, -1)).join(" ");
-      const text = isCode ? literals : visibleParts(raw);
+      const text = isCode ? stringLiterals(raw) : visibleParts(raw);
       // SQL examples ("$1", "select ...") and CSS rules are not copy.
       const sql = SQL.exec(text);
       if ((sql && /["$]/.test(text.slice(sql.index))) || CSS.test(raw.trim())) return;
@@ -252,7 +281,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   for (const k of Object.keys(counts) as ClaimKind[]) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
   const decisions = readDecisions(root, files);
   if (decisions.length) {
-    notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped, and prefer the index status when it differs from the record.");
+    notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
   return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, decisions, notes };
 }

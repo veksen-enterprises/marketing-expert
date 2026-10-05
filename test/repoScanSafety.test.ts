@@ -277,7 +277,7 @@ describe("time on hostile input", () => {
     mkdirSync(join(d, "adr"));
     writeFileSync(join(d, "adr", "0001-x.md"), "# X\n\nStatus: Accepted\n");
     writeFileSync(join(d, "adr", "0002-y.md"), "# Y\n\nStatus: Superseded\n");
-    writeFileSync(join(d, "adr", "README.md"), "| 0001 | X | d | " + "[1](".repeat(40000) + " |\n| [0002](0002-y.md) | Y | d | Superseded by [3](0003-z.md) |\n");
+    writeFileSync(join(d, "adr", "README.md"), "| ADR | Title | Date | Status |\n| --- | --- | --- | --- |\n| 0001 | X | d | " + "[1](".repeat(40000) + " |\n| [0002](0002-y.md) | Y | d | Superseded by [3](0003-z.md) |\n");
     let r: ReturnType<typeof scanSource> | undefined;
     expect(ms(() => (r = scanSource(d)))).toBeLessThan(1000);
     expect(r!.decisions[1].indexStatus).toBe("Superseded by 3");
