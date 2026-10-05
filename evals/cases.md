@@ -1,6 +1,10 @@
 # Cases
 
-Businesses (real, owned by the user of this project):
+Businesses (two real businesses owned by the user of this project, anonymised as profiles; product names, domains and feature names are replaced):
+- DBTool profile: an early-stage developer tool for Postgres query performance that runs in CI and as an MCP server for coding agents; technical founder, few users, B2B.
+- GameX Companion profile: a free, community-built companion for an online action RPG ("GameX"). It reads the item posts in Discord trade channels into a database that knows the game's item rules; players search it and watch searches, with a DM when a match is posted; a character planner and dashboard use real or hypothetical items; calculators cover game mechanics (attack-speed breakpoints, imbues and others); a Discord bot does the reading and the alerts. No revenue yet.
+
+Their original material:
 - **DBTool**: repo cloned at /home/user/site. Read VISION.md, docs/adr/ (titles and any that matter), README.md, apps/blog (marketing site source: landing components, pricing components). Website: dbtool.example (blocked from the sandbox; a local build may be provided).
 - **GameX Companion**: repo cloned at /home/user/gamex-companion. Read VISION.md, CONTEXT.md, README.md, docs/adr/, research/plannersite-planner.md (a competitor). Website: companion.example (blocked; the app is a Vite single-page app in apps/app).
 
