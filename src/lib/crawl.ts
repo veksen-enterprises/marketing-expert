@@ -60,7 +60,8 @@ export interface CrawlResult {
   sitemapSource: string | null;
   robotsDisallowed: number;
   issues: Issue[];
-  pages: Array<Pick<CrawledPage, "url" | "status" | "depth" | "inlinks" | "title" | "wordCount" | "noindex" | "inSitemap">>;
+  /** A URL that redirects has redirectsTo (where it leads) instead of title, wordCount and noindex. */
+  pages: Array<Pick<CrawledPage, "url" | "status" | "depth" | "inlinks" | "inSitemap"> & Partial<Pick<CrawledPage, "title" | "wordCount" | "noindex">> & { redirectsTo?: string }>;
   notes: string[];
 }
 
@@ -201,8 +202,9 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         }
         const xml = await readSitemap(r, sm);
         let found = 0;
+        const children: string[] = [];
+        let childrenFailed = 0;
         if (/<sitemapindex/i.test(xml)) {
-          const children: string[] = [];
           for (const c of extractLocs(xml)) {
             const child = locUrl(c, smUrl);
             if (child && children.push(child) >= 20) break;
@@ -212,7 +214,12 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
             try {
               const { res: cr, url: crUrl } = await getFollow(child);
               if (cr.ok) found += addLocs(await readSitemap(cr, child), crUrl);
+              else {
+                childrenFailed++;
+                notes.push(`Child sitemap ${child} returned HTTP ${cr.status}${cr.status >= 500 ? " (server error: crawlers can't read it until it recovers)" : ""}.`);
+              }
             } catch {
+              childrenFailed++;
               notes.push(`Child sitemap failed: ${child}`);
             }
           }
@@ -222,6 +229,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         // A sitemap counts only if it gave page URLs. A catch-all route that serves the app's HTML gives none.
         if (found) sitemapSource ??= sm;
         else if (/^\s*(<!doctype html|<html|<head|<body)/i.test(xml)) notes.push(`Sitemap ${sm} is an HTML page (probably the app's catch-all route), not an XML sitemap. Crawlers find no URLs in it.`);
+        else if (childrenFailed && childrenFailed === children.length) notes.push(`Sitemap ${sm} is a sitemap index, but none of its ${childrenFailed} child sitemaps could be read.`);
         else notes.push(`Sitemap ${sm} lists no page URLs.`);
       } catch {
         notes.push(`Sitemap could not be fetched: ${sm}`);
@@ -245,6 +253,8 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const linkQueue: string[] = [start];
   const sitemapQueue: string[] = [];
   const queued = new Set<string>([start]);
+  // URLs fetched or being fetched, including redirect targets read from the redirect's answer.
+  const fetched = new Set<string>();
   let robotsDisallowed = 0;
   for (const s of sitemapSet) {
     if (new URL(s).host === host && !queued.has(s)) {
@@ -255,24 +265,27 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const nextUrl = () => linkQueue.shift() ?? sitemapQueue.shift();
   const pending = () => linkQueue.length + sitemapQueue.length;
 
-  const fetchPage = async (url: string): Promise<{ page: CrawledPage; links: string[] }> => {
-    const page: CrawledPage = {
-      url,
-      status: null,
-      redirectChain: [],
-      finalUrl: url,
-      depth: null,
-      inSitemap: sitemapSet.has(url),
-      title: null,
-      metaDescription: null,
-      h1Count: 0,
-      canonical: null,
-      noindex: false,
-      wordCount: 0,
-      internalLinksOut: 0,
-      inlinks: 0,
-      hreflang: [],
-    };
+  const newPage = (url: string): CrawledPage => ({
+    url,
+    status: null,
+    redirectChain: [],
+    finalUrl: url,
+    depth: null,
+    inSitemap: sitemapSet.has(url),
+    title: null,
+    metaDescription: null,
+    h1Count: 0,
+    canonical: null,
+    noindex: false,
+    wordCount: 0,
+    internalLinksOut: 0,
+    inlinks: 0,
+    hreflang: [],
+  });
+  type Fetched = { page: CrawledPage; links: string[]; redirectsTo?: string };
+  /** The page at `url`. For a same-host redirect to an HTML page, also that page, unless it is crawled anyway. */
+  const fetchPage = async (url: string): Promise<Fetched[]> => {
+    const page = newPage(url);
     let current = url;
     let res: Response | null = null;
     try {
@@ -290,25 +303,43 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
       }
     } catch (e) {
       page.error = e instanceof Error ? e.message : String(e);
-      return { page, links: [] };
+      return [{ page, links: [] }];
     }
     page.status = res!.status;
     page.finalUrl = current;
     const xr = res!.headers.get("x-robots-tag");
     if (xr && robotsDirectives(xr).has("noindex")) page.noindex = true;
     const ct = res!.headers.get("content-type") ?? "";
-    // A redirect's target is crawled as its own page. Reading its HTML here would credit its links to this URL.
-    if (!res!.ok || !ct.includes("html") || page.redirectChain.length) return { page, links: [] };
+    const html = res!.ok && ct.includes("html");
+    if (page.redirectChain.length) {
+      // A redirect's target is its own page: reading its HTML as this URL would credit its links to this URL. A
+      // same-host HTML target is read here, from this answer, so it isn't fetched twice and one page doesn't use two of
+      // maxPages. A target that is not HTML (a PDF) is not a page to check.
+      if (!html || new URL(current).host !== host) return [{ page, links: [] }];
+      if (fetched.has(current) || (respectRobots && !robotsAllows(robots, current))) {
+        res!.body?.cancel().catch(() => undefined);
+        return [{ page, links: [], redirectsTo: current }];
+      }
+      fetched.add(current);
+      queued.add(current);
+      const target = newPage(current);
+      target.status = page.status;
+      target.noindex = page.noindex;
+      return [{ page, links: [], redirectsTo: current }, await readBody(res!, target)];
+    }
+    return [html ? await readBody(res!, page) : { page, links: [] }];
+  };
+  const readBody = async (res: Response, page: CrawledPage): Promise<Fetched> => {
     let html: string;
     try {
-      ({ text: html, truncated: page.truncated } = await readCapped(res!, MAX_HTML_BYTES));
+      ({ text: html, truncated: page.truncated } = await readCapped(res, MAX_HTML_BYTES));
     } catch (e) {
       page.error = `body download failed: ${e instanceof Error ? e.message : String(e)}`;
       return { page, links: [] };
     }
     // One page that can't be read (e.g. a <title> left open around thousands of nested tags) must not end the crawl.
     try {
-      return readPage(html, page, current);
+      return readPage(html, page, page.url);
     } catch (e) {
       page.error = `could not read the HTML: ${e instanceof RangeError ? "elements are nested too deeply (often many unclosed tags)" : e instanceof Error ? e.message : String(e)}`;
       return { page, links: [] };
@@ -356,24 +387,29 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     return { page, links: [...links] };
   };
 
-  while (pending() > 0 && pages.size < maxPages) {
+  // maxPages counts fetches: a redirect and the target read from its answer count once.
+  let fetches = 0;
+  while (pending() > 0 && fetches < maxPages) {
     const batch: string[] = [];
-    while (pending() > 0 && batch.length < concurrency && pages.size + batch.length < maxPages) {
+    while (pending() > 0 && batch.length < concurrency && fetches + batch.length < maxPages) {
       const u = nextUrl()!;
+      // Already read as a redirect's target.
+      if (fetched.has(u)) continue;
       if (respectRobots && !robotsAllows(robots, u)) {
         robotsDisallowed++;
         continue;
       }
+      fetched.add(u);
       batch.push(u);
     }
-    const results = await Promise.all(batch.map(fetchPage));
-    for (const { page, links } of results) {
+    fetches += batch.length;
+    const results = (await Promise.all(batch.map(fetchPage))).flat();
+    for (const { page, links, redirectsTo } of results) {
       pages.set(page.url, page);
       outlinks.set(page.url, links);
-      // A same-host redirect to a working URL: crawl the target as well.
-      const target = page.redirectChain.length && page.status !== null && page.status < 300 && new URL(page.finalUrl).host === host ? page.finalUrl : null;
-      if (target) redirects.set(page.url, target);
-      for (const l of target ? [...links, target] : links) {
+      // A same-host redirect to an HTML page: crawl the target as well, if it wasn't read already.
+      if (redirectsTo) redirects.set(page.url, redirectsTo);
+      for (const l of redirectsTo ? [...links, redirectsTo] : links) {
         if (!queued.has(l)) {
           queued.add(l);
           linkQueue.push(l);
@@ -385,7 +421,9 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
       }
     }
   }
-  const limitReached = pending() > 0;
+  // Queued URLs that a redirect led to were read already.
+  const left = [...linkQueue, ...sitemapQueue].filter((u) => !fetched.has(u)).length;
+  const limitReached = left > 0;
   // A link to a redirect also leads to its target.
   for (const [from, to] of redirects) {
     for (const s of inlinkSources.get(from) ?? []) {
@@ -415,7 +453,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   }
 
   const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial);
-  if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${pending()} more URLs were queued. Site-wide counts are partial.`);
+  if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${left} more URLs were queued. Site-wide counts are partial.`);
   if (robotsDisallowed) notes.push(`${robotsDisallowed} URL(s) skipped because robots.txt disallows them.`);
 
   return {
@@ -428,7 +466,12 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     issues,
     pages: [...pages.values()]
       .slice(0, 300)
-      .map((p) => ({ url: p.url, status: p.status, depth: p.depth, inlinks: p.inlinks, title: p.title, wordCount: p.wordCount, noindex: p.noindex, inSitemap: p.inSitemap })),
+      // A redirect's own page is not read: it says where it leads, with no title or word count.
+      .map((p) =>
+        p.redirectChain.length
+          ? { url: p.url, status: p.status, redirectsTo: p.finalUrl, depth: p.depth, inlinks: p.inlinks, inSitemap: p.inSitemap }
+          : { url: p.url, status: p.status, depth: p.depth, inlinks: p.inlinks, title: p.title, wordCount: p.wordCount, noindex: p.noindex, inSitemap: p.inSitemap }
+      ),
     notes,
   };
 }

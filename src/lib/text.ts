@@ -95,14 +95,22 @@ export function documentTitle(root: HTMLElement): HTMLElement | null {
 /**
  * Directives in a robots meta tag's content or an X-Robots-Tag header, in lower case. "none" means noindex and
  * nofollow. A crawler name before a directive ("googlebot: noindex", X-Robots-Tag only) is dropped; the value of
- * "max-image-preview:none" is not a directive.
+ * "max-image-preview:none" is not a directive. Directives are read between commas, and also between semicolons and
+ * spaces ("noindex nofollow"), which some sites write.
  */
 export function robotsDirectives(value: string): Set<string> {
   const out = new Set<string>();
-  for (const part of value.toLowerCase().split(",")) {
-    const d = part.trim().replace(/^(?!max-|unavailable_after)[\w-]+\s*:\s*/, "");
-    if (d === "none") out.add("noindex").add("nofollow");
-    else out.add(d);
+  for (const part of value.toLowerCase().split(/[,;]/)) {
+    const rest = part.trim().replace(/^(?!max-|unavailable_after)[\w-]+\s*:\s*/, "");
+    // The date after unavailable_after has spaces in it.
+    if (rest.startsWith("unavailable_after")) {
+      out.add(rest);
+      continue;
+    }
+    for (const [d] of rest.matchAll(/max-[\w-]+\s*:\s*\S*|\S+/g)) {
+      if (d === "none") out.add("noindex").add("nofollow");
+      else out.add(d);
+    }
   }
   return out;
 }

@@ -4,7 +4,7 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { auditHtml } from "../src/lib/pageAudit.js";
+import { auditHtml, fetchAndAudit } from "../src/lib/pageAudit.js";
 import { crawlSite, type FetchFn } from "../src/lib/crawl.js";
 import { parseRobots, parseRobotsFile, rulesFor, robotsAllows } from "../src/lib/robots.js";
 import { evaluateAiAccess, checkAiCrawlerAccess } from "../src/lib/aiCrawlers.js";
@@ -296,7 +296,10 @@ describe("check_ai_crawler_access and audit_page through the MCP server", () => 
     const r = await checkAiCrawlerAccess("https://f.test");
     expect(r.bots.every((b) => b.allowed === null && b.status === "unknown")).toBe(true);
     expect(r.robotsTxtFound).toBeNull();
-    expect(r.blockedSearchBots).toEqual([]);
+    // Empty lists would read as "nothing is blocked".
+    expect(r.blockedSearchBots).toBeNull();
+    expect(r.blockedTrainingBots).toBeNull();
+    expect(r.checkedPaths).toEqual([]);
     expect(r.findings[0]).toMatch(/HTTP 403.*nothing was checked/i);
   });
   it("rank 27: a genuine 404 still means every bot is allowed", async () => {
@@ -326,10 +329,138 @@ describe("check_ai_crawler_access and audit_page through the MCP server", () => 
     expect(r.json).toMatchObject({ reachable: false, status: null, contentType: null, checked: false });
     expect(r.json.reason).toMatch(/ENOTFOUND/);
   });
+  it("rank 27: audit_page on a firewall's HTML block page (403, 429, 5xx) returns 'nothing checked', not the block page's facts", async () => {
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
+    const call = await connect();
+    for (const status of [403, 429, 503]) {
+      vi.stubGlobal("fetch", async () => new Response(`<html><head><title>Attention Required! | Cloudflare</title></head><body><h1>Sorry, you have been blocked</h1></body></html>`, { status, headers: { "content-type": "text/html" } }));
+      const r = await call("audit_page", { url: "https://f.test/" });
+      expect(r.json).toMatchObject({ reachable: false, status, contentType: "text/html", checked: false });
+      expect(r.json.title).toBeUndefined();
+      expect(r.json.hint).toMatch(/html=/);
+    }
+    // A 404 is the site's real answer: the page is audited, with the status flagged.
+    vi.stubGlobal("fetch", async () => new Response(doc(""), { status: 404, headers: { "content-type": "text/html" } }));
+    const nf = await call("audit_page", { url: "https://f.test/" });
+    expect(nf.json.flags[0].message).toBe("HTTP 404.");
+  });
   it("audit_page still refuses private addresses with an error", async () => {
     const call = await connect();
     const r = await call("audit_page", { url: "http://127.0.0.1:1/" });
     expect(r.isError).toBe(true);
     expect(r.text).toMatch(/refusing to fetch/);
+  });
+});
+
+// Review follow-up for the fixes above.
+describe("follow-up: robots directives separated by spaces or semicolons", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+  it("audit_page reads 'noindex nofollow', 'noindex follow' and 'noindex;nofollow' as noindex", () => {
+    for (const v of ["noindex nofollow", "noindex follow", "noindex;nofollow", "NOINDEX ; NOFOLLOW"]) expect(excluded(doc(`<meta name="robots" content="${v}">`)), v).toBe(true);
+    // The value of a max- directive is still not a directive, with or without a space after the colon.
+    expect(excluded(doc(`<meta name="robots" content="max-image-preview: none max-snippet: -1">`))).toBe(false);
+  });
+  it("audit_page reads them in X-Robots-Tag too", async () => {
+    vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
+    for (const v of ["noindex nofollow", "googlebot: noindex nofollow"]) {
+      vi.stubGlobal("fetch", async () => new Response(doc(""), { headers: { "content-type": "text/html", "x-robots-tag": v } }));
+      expect((await fetchAndAudit("https://f.test/")).flags.map((f) => f.message)).toContain(`X-Robots-Tag: ${v}`);
+    }
+  });
+  it("crawl_site: such a page is noindex and its links are not followed", async () => {
+    const fetchFn: FetchFn = async (url, init) =>
+      new URL(url).pathname === "/xr"
+        ? new Response(page("XR", ""), { headers: { "content-type": "text/html", "x-robots-tag": "noindex follow" } })
+        : siteFetch({
+            "/robots.txt": "User-agent: *\nAllow: /",
+            "/sitemap.xml": sitemap(["/", "/p", "/semi", "/xr"]),
+            "/": page("Home", `<a href="/p">p</a><a href="/semi">s</a><a href="/xr">x</a>`),
+            "/p": page("P", `<a href="/hidden">h</a>`, `<meta name="robots" content="noindex nofollow">`),
+            "/semi": page("Semi", "", `<meta name="robots" content="noindex;follow">`),
+            "/hidden": page("Hidden", ""),
+          })(url, init);
+    const r = await crawlSite({ startUrl: `${B}/`, fetchFn });
+    expect(r.issues.find((i) => i.id === "noindex-in-sitemap")?.examples.sort()).toEqual([`${B}/p`, `${B}/semi`, `${B}/xr`]);
+    expect(r.pages.map((p) => p.url)).not.toContain(`${B}/hidden`);
+  });
+});
+
+describe("follow-up: redirects in crawl_site", () => {
+  /** Home links to /p1 ... /p8; each 301s to /pN/. The sitemap, when there is one, lists the targets. */
+  const navSite = () => {
+    const site: Record<string, string | [number, string]> = {
+      "/robots.txt": "User-agent: *\nAllow: /",
+      "/sitemap.xml": sitemap(["/", ...[1, 2, 3, 4, 5, 6, 7, 8].map((i) => `/p${i}/`)]),
+      "/": page("Home", [1, 2, 3, 4, 5, 6, 7, 8].map((i) => `<a href="/p${i}">p${i}</a>`).join("")),
+    };
+    for (let i = 1; i <= 8; i++) {
+      site[`/p${i}`] = [301, `/p${i}/`];
+      site[`/p${i}/`] = page(`P${i}`, "");
+    }
+    return site;
+  };
+  const titles = (r: { pages: Array<{ title?: string | null }> }) => r.pages.map((p) => p.title).filter(Boolean).sort();
+  const all = ["Home", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"];
+  it("pages[] shows where a redirect leads, not an empty untitled 200 page", async () => {
+    const r = await crawlSite({ startUrl: `${B}/`, fetchFn: siteFetch(navSite()) });
+    const stub = r.pages.find((p) => p.url === `${B}/p1`)!;
+    expect(stub).toMatchObject({ status: 200, redirectsTo: `${B}/p1/`, depth: 1, inlinks: 1 });
+    expect(stub).not.toHaveProperty("title");
+    expect(stub).not.toHaveProperty("wordCount");
+    expect(r.pages.find((p) => p.url === `${B}/p1/`)).toMatchObject({ title: "P1", depth: 1, inlinks: 1 });
+  });
+  it("reads a same-site redirect's target from the same fetch, so redirecting links don't use up maxPages", async () => {
+    const fetched: string[] = [];
+    const fetchFn: FetchFn = async (url, init) => {
+      fetched.push(new URL(url).pathname);
+      return siteFetch(navSite())(url, init);
+    };
+    const r = await crawlSite({ startUrl: `${B}/`, useSitemap: false, maxPages: 9, fetchFn });
+    expect(titles(r)).toEqual(all);
+    for (let i = 1; i <= 8; i++) expect(fetched.filter((p) => p === `/p${i}/`)).toHaveLength(1);
+    expect(r.limitReached).toBe(false);
+    expect(r.issues.find((i) => i.id === "links-to-redirects")?.count).toBe(8);
+  });
+  it("doesn't fetch a sitemap URL again that a redirect already led to", async () => {
+    // 4 sitemap URLs fill the first batch, then 8 redirects: 12 fetches read every page.
+    const r = await crawlSite({ startUrl: `${B}/`, maxPages: 12, fetchFn: siteFetch(navSite()) });
+    expect(titles(r)).toEqual(all);
+    expect(r.limitReached).toBe(false);
+    expect(r.notes.join("\n")).not.toMatch(/Stopped at maxPages/);
+    expect(r.issues.find((i) => i.id === "orphans")).toBeUndefined();
+  });
+  it("doesn't crawl a redirect's target that is not an HTML page", async () => {
+    const fetchFn: FetchFn = async (url, init) =>
+      new URL(url).pathname === "/doc.pdf"
+        ? new Response("%PDF-1.4", { headers: { "content-type": "application/pdf" } })
+        : siteFetch({ "/": page("Home", `<a href="/doc">Doc</a>`), "/doc": [301, "/doc.pdf"] })(url, init);
+    const r = await crawlSite({ startUrl: `${B}/`, useSitemap: false, fetchFn });
+    expect(r.pages.map((p) => p.url)).not.toContain(`${B}/doc.pdf`);
+    expect(r.issues.map((i) => i.id)).toEqual(["links-to-redirects"]);
+  });
+});
+
+describe("follow-up: sitemap index whose child sitemaps fail", () => {
+  it("names each child's status instead of saying the index lists no URLs", async () => {
+    const fetchFn: FetchFn = async (url, init) => {
+      const p = new URL(url).pathname;
+      if (p === "/s1.xml") return new Response("error", { status: 500 });
+      if (p === "/s2.xml") return new Response("denied", { status: 403 });
+      return siteFetch({
+        "/robots.txt": "User-agent: *\nAllow: /",
+        "/sitemap.xml": `<sitemapindex><sitemap><loc>${B}/s1.xml</loc></sitemap><sitemap><loc>${B}/s2.xml</loc></sitemap></sitemapindex>`,
+        "/": page("Home", ""),
+      })(url, init);
+    };
+    const r = await crawlSite({ startUrl: `${B}/`, fetchFn });
+    const notes = r.notes.join("\n");
+    expect(r.sitemapSource).toBeNull();
+    expect(notes).toMatch(/Child sitemap https:\/\/s\.test\/s1\.xml returned HTTP 500/);
+    expect(notes).toMatch(/Child sitemap https:\/\/s\.test\/s2\.xml returned HTTP 403/);
+    expect(notes).toMatch(/sitemap\.xml is a sitemap index, but none of its 2 child sitemaps could be read/);
+    expect(notes).not.toMatch(/lists no page URLs/);
   });
 });

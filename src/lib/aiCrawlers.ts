@@ -60,8 +60,9 @@ export interface AiAccessReport {
   robotsTxtFound: boolean | null;
   checkedPaths: string[];
   bots: BotAccess[];
-  blockedSearchBots: string[];
-  blockedTrainingBots: string[];
+  /** null when robots.txt could not be read from here (checkedPaths is then []): nothing is known about what is blocked. */
+  blockedSearchBots: string[] | null;
+  blockedTrainingBots: string[] | null;
   llmsTxtFound: boolean | null;
   sitemaps: string[];
   findings: string[];
@@ -176,6 +177,9 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
   if (unverified) {
     report.robotsTxtFound = null;
     report.bots = report.bots.map((b) => ({ ...b, allowed: null, status: "unknown" }));
+    // Empty lists would read as "nothing is blocked".
+    report.blockedSearchBots = report.blockedTrainingBots = null;
+    report.checkedPaths = [];
   }
   if (serverError) {
     report.robotsTxtFound = false;

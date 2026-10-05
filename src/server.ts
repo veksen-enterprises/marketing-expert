@@ -406,7 +406,7 @@ export function createServer(): McpServer {
     {
       title: "Audit a landing page",
       description:
-        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side. If no HTML could be read (the URL can't be reached, or the answer isn't an HTML page), it returns checked: false with the reason and what to do instead.",
+        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side. If no HTML could be read (the URL can't be reached, the answer isn't an HTML page, or it is a login, firewall, rate-limit or server error page: HTTP 401, 403, 429 or 5xx), it returns checked: false with the reason and what to do instead.",
       inputSchema: {
         url: z.string().optional().describe("http(s) URL to fetch"),
         html: z.string().optional().describe("Raw HTML instead of fetching"),
@@ -449,7 +449,7 @@ export function createServer(): McpServer {
     {
       title: "Check AI crawler access",
       description:
-        "Read a site's robots.txt and report which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl, ByteDance and others) are allowed or blocked, grouped by purpose: model training, AI search/answers, or user-triggered fetching. Flags blocks that keep a site out of AI answers. Also checks for llms.txt and sitemaps. If robots.txt can't be read from here (for example a firewall's 403), each bot's allowed is null and its status is \"unknown\".",
+        "Read a site's robots.txt and report which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl, ByteDance and others) are allowed or blocked, grouped by purpose: model training, AI search/answers, or user-triggered fetching. Flags blocks that keep a site out of AI answers. Also checks for llms.txt and sitemaps. If robots.txt can't be read from here (for example a firewall's 403), each bot's allowed is null and its status is \"unknown\", and blockedSearchBots and blockedTrainingBots are null.",
       inputSchema: {
         url: z.string().describe("Site URL"),
         paths: z.array(z.string()).min(1).optional().describe('Paths to check, default ["/"], e.g. ["/", "/blog/", "/pricing"]'),

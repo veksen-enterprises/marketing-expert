@@ -259,7 +259,7 @@ function readFacts(html: string, url?: string): PageFacts {
   };
 }
 
-/** audit_page's answer when it read no HTML: the URL could not be reached, or did not answer with an HTML page. */
+/** audit_page's answer when it read no HTML: the URL could not be reached, did not answer with an HTML page, or answered with an error page. */
 export interface NotChecked {
   /** False when no answer came back, or the answer was an error status (often a firewall or proxy). */
   reachable: boolean;
@@ -305,6 +305,18 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
       checked: false,
       reason: `The answer was not an HTML page (HTTP ${res.status}; see contentType). Nothing on the page was checked.`,
       hint: res.ok ? "This URL is not an HTML page, and audit_page checks only HTML pages. Audit the HTML page that links to it instead." : BLOCKED_HINT,
+    });
+  }
+  // A login, firewall, rate-limit or server error page is not the page asked for; auditing it would describe the wrong page.
+  // A 404 or 410 is the site's real answer, so that page is audited, with the status flagged.
+  if (res.status === 401 || res.status === 403 || res.status === 429 || res.status >= 500) {
+    throw new NotCheckedError({
+      reachable: false,
+      status: res.status,
+      contentType: ct,
+      checked: false,
+      reason: `The answer was an error page (HTTP ${res.status}), often from a firewall, a login, a rate limit or a server error, not the page itself. Nothing on the page was checked.`,
+      hint: BLOCKED_HINT,
     });
   }
   const { text: html, truncated } = await readCapped(res, MAX_HTML_BYTES);
