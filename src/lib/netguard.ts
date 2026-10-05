@@ -64,9 +64,11 @@ export function isBlockedIp(ip: string): boolean {
     const zero = (from: number, to: number) => g.slice(from, to).every((x) => x === 0);
     // Forms that carry an IPv4 address are judged by that address.
     if (zero(0, 5) && (g[5] === 0xffff || g[5] === 0)) return v4(g[6], g[7]); // ::ffff:0:0/96 mapped, ::/96 compatible (also :: and ::1)
-    if (g[0] === 0x64 && g[1] === 0xff9b && zero(2, 6)) return v4(g[6], g[7]); // 64:ff9b::/96 NAT64
-    if (g[0] === 0x64 && g[1] === 0xff9b && g[2] === 1) return true; // 64:ff9b:1::/48 local-use NAT64
+    if (zero(0, 4) && g[4] === 0xffff && g[5] === 0) return v4(g[6], g[7]); // ::ffff:0:0:0/96 SIIT translated
+    if (g[0] === 0x64 && g[1] === 0xff9b) return zero(2, 6) ? v4(g[6], g[7]) : true; // 64:ff9b::/96 NAT64; the rest of 64:ff9b::/32 is local-use or unassigned
     if (g[0] === 0x2002) return v4(g[1], g[2]); // 2002::/16 6to4
+    if (g[0] === 0x2001 && (g[1] === 0 || g[1] === 0xdb8)) return true; // 2001::/32 Teredo, 2001:db8::/32 documentation
+    if (g[0] === 0x100 && zero(1, 4)) return true; // 100::/64 discard-only
     if ((g[0] & 0xfe00) === 0xfc00) return true; // fc00::/7 unique local
     if ((g[0] & 0xffc0) === 0xfe80) return true; // fe80::/10 link-local
     if ((g[0] & 0xffc0) === 0xfec0) return true; // fec0::/10 site-local (deprecated)
@@ -104,6 +106,8 @@ export async function assertPublicUrl(url: string | URL): Promise<void> {
 
 /** The most HTML the audit and crawl tools read from one page (parsing 5 MB of tags takes about 0.7 GB of memory). */
 export const MAX_HTML_BYTES = 5 * 1024 * 1024;
+/** The most of a robots.txt file the tools read. Google reads the first 500 KiB and ignores the rest. */
+export const MAX_ROBOTS_BYTES = 500 * 1024;
 
 /**
  * Reads at most maxBytes of a response body (after gzip/brotli decoding) as UTF-8, like res.text(), then

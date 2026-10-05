@@ -2,6 +2,8 @@
 // structuredText only separates block elements, so sibling links in a nav ("<a>Search</a><a>IAS calculator</a>")
 // came out as "SearchIAS calculator" and the word count was too low. Inline formatting (span, b, em) stays
 // glued so "<b>Game</b>Companion" is still one word.
+// Pages are untrusted, so these helpers walk the tree with a loop and an explicit stack: unclosed tags can nest
+// elements thousands of levels deep, and recursion runs out of stack.
 
 import { HTMLElement, Node } from "node-html-parser";
 
@@ -15,26 +17,51 @@ const BREAK = new Set([
   "a", "br", "button", "img", "input", "label", "option", "select", "textarea", "output", "meter", "progress",
 ]);
 
-export function visibleText(el: HTMLElement | null | undefined): string {
+/** `end`: stop at the first node that starts at or after this offset in the parsed HTML. */
+export function visibleText(el: HTMLElement | null | undefined, end = Infinity): string {
   if (!el) return "";
   const out: string[] = [];
-  const walk = (n: Node) => {
+  // " " entries stand for the space after a block element's children.
+  const stack: Array<Node | " "> = [el];
+  while (stack.length) {
+    const n = stack.pop()!;
+    if (n === " ") {
+      out.push(" ");
+      continue;
+    }
+    if (n !== el && n.range[0] >= end) break;
     if (n.nodeType === 3) {
       out.push(n.text);
-      return;
+      continue;
     }
-    if (n.nodeType !== 1) return;
+    if (n.nodeType !== 1) continue;
     const tag = (n as HTMLElement).rawTagName?.toLowerCase() ?? "";
-    if (SKIP.has(tag)) return;
-    const brk = BREAK.has(tag);
-    if (brk) out.push(" ");
-    for (const c of n.childNodes) walk(c);
-    if (brk) out.push(" ");
-  };
-  walk(el);
+    if (SKIP.has(tag)) continue;
+    if (BREAK.has(tag)) {
+      out.push(" ");
+      stack.push(" ");
+    }
+    for (let i = n.childNodes.length - 1; i >= 0; i--) stack.push(n.childNodes[i]);
+  }
   return out.join("").replace(/\s+/g, " ").trim();
 }
 
 export function countWords(el: HTMLElement | null | undefined): number {
   return (visibleText(el).match(/\S+/g) ?? []).length;
+}
+
+/**
+ * The elements inside `root` in document order, leaving out `skip` tags (lower case) and everything in them.
+ * Use instead of querySelectorAll, which copies its result list once per child: 1 MB of plain links took 40 s.
+ */
+export function elementsOf(root: HTMLElement, skip: ReadonlySet<string> = new Set()): HTMLElement[] {
+  const out: HTMLElement[] = [];
+  const stack: Node[] = [...root.childNodes].reverse();
+  while (stack.length) {
+    const n = stack.pop()!;
+    if (n.nodeType !== 1 || skip.has((n as HTMLElement).rawTagName?.toLowerCase() ?? "")) continue;
+    out.push(n as HTMLElement);
+    for (let i = n.childNodes.length - 1; i >= 0; i--) stack.push(n.childNodes[i]);
+  }
+  return out;
 }

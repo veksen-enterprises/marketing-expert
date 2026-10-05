@@ -90,7 +90,7 @@ Tell it to save what it learns about your business (`save_business_profile`) so 
 ## Security
 
 The audit and crawl tools fetch URLs chosen by the model, and the model reads text from web pages, which may contain hidden instructions. So:
-- Requests to private, loopback, link-local (including cloud metadata at 169.254.169.254), carrier-NAT and IPv6 local addresses are refused, for every redirect hop and, in render mode, for every request the page itself makes. Set `MARKETING_EXPERT_ALLOW_PRIVATE=1` to audit a local dev server.
+- Requests to private, loopback, link-local (including cloud metadata at 169.254.169.254), carrier-NAT and IPv6 local addresses are refused, for every redirect hop and, in render mode, for every request the page itself makes (WebRTC's direct UDP traffic is turned off). Set `MARKETING_EXPERT_ALLOW_PRIVATE=1` to audit a local dev server.
 - Tool results that contain page text are labelled as untrusted, and the server instructions tell the model not to follow instructions found in web content.
 - Limits: DNS can change between the check and the request (DNS rebinding); this is a guard, not a firewall.
 - `scan_source` and `verify_quotes` read files on this machine: only markup, docs and script extensions (`.astro .html .md .mdx .tsx .jsx .ts .js .mjs .vue .svelte`), up to 512 KB each and 4,000 files, skipping dot-folders, `node_modules` and build output. It refuses the filesystem root. Point it at a repo, not at your home folder.
@@ -102,6 +102,8 @@ npm run dev        # run from source with tsx
 npm test           # unit tests + stdio end-to-end test (build first for e2e)
 npm run typecheck
 ```
+
+The render-mode tests (`test/render*.test.ts`), including the address-guard proxy tests, are skipped unless `MARKETING_EXPERT_CHROMIUM` points at a Chromium or chromium-headless-shell binary (`npx playwright-core install chromium` installs both). Set it in CI too, for example `MARKETING_EXPERT_CHROMIUM=/path/to/chrome npm test`.
 
 Layout: `src/lib/*` holds pure, tested logic; `src/server.ts` registers tools/resources; `src/prompts.ts` holds workflows; `knowledge/*.md` holds playbooks (frontmatter: title, summary, tags; `_`-prefixed files aren't served); `research/*.md` holds the cited research notes the playbooks are built from.
 

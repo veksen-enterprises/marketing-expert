@@ -3,7 +3,7 @@
 // blocking a search bot can keep the site out of AI answers and citations.
 
 import { parseRobotsFile, rulesFor, robotsAllows } from "./robots.js";
-import { guardedFetch } from "./netguard.js";
+import { guardedFetch, readCapped, MAX_ROBOTS_BYTES } from "./netguard.js";
 
 export type BotPurpose = "training" | "search" | "user-fetch" | "search-and-training";
 
@@ -129,8 +129,13 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
   }
   const robotsCt = r.headers.get("content-type") ?? "";
   const caveats: string[] = [];
-  if (r.ok && !robotsCt.includes("html")) robotsTxt = await r.text();
-  else if (r.ok) caveats.push("robots.txt is served as an HTML page (probably the app's catch-all route), so crawlers find no valid rules and treat everything as allowed. Serve a real text/plain robots.txt.");
+  if (r.ok && !robotsCt.includes("html")) {
+    // Capped: a few KB of gzip can inflate to gigabytes and crash the server.
+    const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
+    // Drop the cut-off last line so half a rule isn't read as a shorter one.
+    robotsTxt = truncated ? text.slice(0, text.lastIndexOf("\n") + 1) : text;
+    if (truncated) caveats.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this check did the same.");
+  } else if (r.ok) caveats.push("robots.txt is served as an HTML page (probably the app's catch-all route), so crawlers find no valid rules and treat everything as allowed. Serve a real text/plain robots.txt.");
   else if (r.status >= 500) serverError = r.status;
   else if (r.status === 404 || r.status === 410) caveats.push(`No robots.txt (HTTP ${r.status}): crawlers treat this as "everything allowed".`);
   else {

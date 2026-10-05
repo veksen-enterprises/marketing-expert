@@ -5,7 +5,7 @@ import { createServer, request as httpRequest, type IncomingHttpHeaders } from "
 import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "node:net";
 import { parse, HTMLElement } from "node-html-parser";
 import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
-import { visibleText } from "./text.js";
+import { visibleText, elementsOf } from "./text.js";
 
 export interface PageFacts {
   url?: string;
@@ -40,9 +40,37 @@ export interface PageFacts {
 
 const CTA_VERBS = /^(get|start|try|book|request|sign|join|buy|download|schedule|contact|talk|see|create|claim|subscribe|register|shop|order|add|watch|learn|explore|apply)\b/i;
 
-function text(el: HTMLElement | null | undefined): string {
+function text(el: HTMLElement | null | undefined, end?: number): string {
   // Plain .text glues "99" and "0.49%" into "990.49%", and sibling links into one word.
-  return visibleText(el);
+  return visibleText(el, end);
+}
+
+// Not part of the visible page; the audit doesn't count what is inside them.
+const NOT_CONTENT = new Set(["script", "style", "noscript", "svg", "template"]);
+
+/**
+ * Where the text of a heading, link or button ends in `html`, as a browser would end the element: at the next
+ * start or end tag of the same kind (any of h1-h6 for headings), or Infinity. Browsers close an open <a> when
+ * another <a> starts, and an open heading at any heading end tag.
+ */
+function textEnds(html: string): (el: HTMLElement) => number {
+  const at = new Map<string, number[]>();
+  for (const m of html.matchAll(/<\/?(h[1-6]|a|button)(?=[\s/>])/gi)) {
+    const kind = m[1].toUpperCase().replace(/^H\d$/, "H");
+    if (!at.has(kind)) at.set(kind, []);
+    at.get(kind)!.push(m.index);
+  }
+  return (el) => {
+    const list = at.get(el.tagName.replace(/^H\d$/, "H")) ?? [];
+    let lo = 0;
+    let hi = list.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (list[mid] > el.range[0]) hi = mid;
+      else lo = mid + 1;
+    }
+    return list[lo] ?? Infinity;
+  };
 }
 
 const TOO_LARGE = "The HTML is larger than 5 MB. This audit read only the first 5 MB, so its counts are partial. HTML this large is slow to download and render.";
@@ -54,7 +82,7 @@ export function auditHtml(html: string, url?: string): PageFacts {
     if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
     return facts;
   } catch (e) {
-    // node-html-parser's selector code recurses once per level of nesting.
+    // A stack overflow on deeply nested HTML. The tree walks here use loops; this is a safety net.
     if (e instanceof RangeError) throw new Error("Could not read this HTML: elements are nested too deeply (often many unclosed tags).");
     throw e;
   }
@@ -64,20 +92,28 @@ function readFacts(html: string, url?: string): PageFacts {
   // parseNoneClosedTags: the default clean-up of unclosed tags takes cubic time (30 KB of "<div>" took 18 s).
   const root = parse(html, { comment: false, parseNoneClosedTags: true, blockTextElements: { script: true, style: true, noscript: true } });
   const flags: PageFacts["flags"] = [];
-  const meta = (sel: string) => root.querySelector(sel)?.getAttribute("content")?.trim() ?? null;
+  // One walk of the tree instead of querySelectorAll, whose time grows with the square of the number of matches.
+  const all = elementsOf(root);
+  const first = (tag: string, attr?: string, value?: string) => all.find((e) => e.tagName === tag && (!attr || e.getAttribute(attr) === value)) ?? null;
+  const meta = (name: string) => first("META", "name", name)?.getAttribute("content")?.trim() ?? null;
+  // Text of the headings, links and buttons the audit quotes. The parser ignores an end tag that doesn't close the
+  // innermost open element, so in "<h1><span>X</h1>" the h1 would run to the end of the page. Ending the text where
+  // a browser ends the element fixes that, and keeps the work linear when unclosed <a> tags nest thousands deep.
+  const endOf = textEnds(html);
+  const quote = (el: HTMLElement) => text(el, endOf(el));
 
-  const title = text(root.querySelector("title")) || null;
-  const description = meta('meta[name="description"]');
-  const canonical = root.querySelector('link[rel="canonical"]')?.getAttribute("href") ?? null;
-  const robots = meta('meta[name="robots"]');
-  const lang = root.querySelector("html")?.getAttribute("lang") ?? null;
+  const title = text(first("TITLE")) || null;
+  const description = meta("description");
+  const canonical = first("LINK", "rel", "canonical")?.getAttribute("href") ?? null;
+  const robots = meta("robots");
+  const lang = first("HTML")?.getAttribute("lang") ?? null;
 
-  const headings = root.querySelectorAll("h1,h2,h3").map((h) => ({ level: Number(h.tagName[1]), text: text(h) })).filter((h) => h.text);
+  const headings = all.filter((h) => /^H[1-3]$/.test(h.tagName)).map((h) => ({ level: Number(h.tagName[1]), text: quote(h) })).filter((h) => h.text);
   const h1s = headings.filter((h) => h.level === 1).map((h) => h.text);
 
   const og: Record<string, string> = {};
   const tw: Record<string, string> = {};
-  for (const m of root.querySelectorAll("meta")) {
+  for (const m of all.filter((e) => e.tagName === "META")) {
     const p = m.getAttribute("property") ?? m.getAttribute("name") ?? "";
     const c = m.getAttribute("content") ?? "";
     if (p.startsWith("og:")) og[p] = c;
@@ -85,7 +121,7 @@ function readFacts(html: string, url?: string): PageFacts {
   }
 
   const jsonLdTypes: string[] = [];
-  for (const s of root.querySelectorAll('script[type="application/ld+json"]')) {
+  for (const s of all.filter((e) => e.tagName === "SCRIPT" && e.getAttribute("type") === "application/ld+json")) {
     try {
       const collect = (n: unknown): void => {
         if (Array.isArray(n)) return n.forEach(collect);
@@ -101,12 +137,12 @@ function readFacts(html: string, url?: string): PageFacts {
     }
   }
 
-  const body = root.querySelector("body") ?? root;
-  for (const el of body.querySelectorAll("script,style,noscript,svg,template")) el.remove();
+  const body = first("BODY") ?? root;
   const bodyText = text(body);
   const wordCount = (bodyText.match(/\S+/g) ?? []).length;
+  const els = elementsOf(body, NOT_CONTENT);
 
-  const imgs = body.querySelectorAll("img");
+  const imgs = els.filter((e) => e.tagName === "IMG");
   const missingAlt = imgs.filter((i) => i.getAttribute("alt") === undefined).length;
 
   let host: string | null = null;
@@ -116,7 +152,8 @@ function readFacts(html: string, url?: string): PageFacts {
     host = null;
   }
   const links = { internal: 0, external: 0, nofollow: 0 };
-  for (const a of body.querySelectorAll("a[href]")) {
+  for (const a of els) {
+    if (a.tagName !== "A" || !a.hasAttribute("href")) continue;
     const href = a.getAttribute("href") ?? "";
     if ((a.getAttribute("rel") ?? "").includes("nofollow")) links.nofollow++;
     if (/^(https?:)?\/\//i.test(href)) {
@@ -129,21 +166,38 @@ function readFacts(html: string, url?: string): PageFacts {
     } else if (!href.startsWith("#") && !/^(mailto|tel|javascript):/i.test(href)) links.internal++;
   }
 
-  const forms = body.querySelectorAll("form").map((f) => {
-    const fields = f.querySelectorAll("input,select,textarea").filter((i) => !["hidden", "submit", "button"].includes((i.getAttribute("type") ?? "").toLowerCase()));
-    const submit = f.querySelector('button[type="submit"],input[type="submit"],button:not([type])');
+  // Each element's form, found from its parent's in the same walk. Browsers ignore a <form> tag inside another form,
+  // so its fields belong to the outer one.
+  const formOf = new Map<HTMLElement, HTMLElement>();
+  const formParts = new Map<HTMLElement, { fields: HTMLElement[]; submit: HTMLElement | null }>();
+  for (const el of els) {
+    const f = formOf.get(el.parentNode!) ?? (el.tagName === "FORM" ? el : undefined);
+    if (!f) continue;
+    formOf.set(el, f);
+    if (f === el) {
+      formParts.set(f, { fields: [], submit: null });
+      continue;
+    }
+    const parts = formParts.get(f)!;
+    const type = el.getAttribute("type");
+    if (/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !["hidden", "submit", "button"].includes((type ?? "").toLowerCase())) parts.fields.push(el);
+    // button[type="submit"], input[type="submit"], button:not([type])
+    if (!parts.submit && ((/^(BUTTON|INPUT)$/.test(el.tagName) && type === "submit") || (el.tagName === "BUTTON" && type === undefined))) parts.submit = el;
+  }
+  const forms = [...formParts].map(([f, { fields, submit }]) => {
     return {
       // A form with no submit button and no action is usually an interactive tool (calculator, filter), not a sign-up.
       interactive: !submit && !f.getAttribute("action"),
       fields: fields.length,
       requiredFields: fields.filter((i) => i.hasAttribute("required")).length,
-      submitText: submit ? text(submit) || submit.getAttribute("value") || null : null,
+      submitText: submit ? quote(submit) || submit.getAttribute("value") || null : null,
     };
   });
 
   const ctaSet = new Set<string>();
-  for (const el of body.querySelectorAll("a,button")) {
-    const t = text(el);
+  for (const el of els) {
+    if (el.tagName !== "A" && el.tagName !== "BUTTON") continue;
+    const t = quote(el);
     // Buttons that only change the page (type="button", toggles, tabs) are controls, not calls to action.
     const control = el.tagName === "BUTTON" && (el.getAttribute("type") === "button" || el.hasAttribute("aria-pressed") || el.getAttribute("role") === "tab");
     if (control && !CTA_VERBS.test(t)) continue;
@@ -160,7 +214,7 @@ function readFacts(html: string, url?: string): PageFacts {
   if (!canonical) flags.push({ severity: "info", message: "No canonical link." });
   if (robots && /noindex/i.test(robots)) flags.push({ severity: "error", message: `meta robots="${robots}": page is excluded from search.` });
   if (!lang) flags.push({ severity: "info", message: "No lang attribute on <html>." });
-  if (!root.querySelector('meta[name="viewport"]')) flags.push({ severity: "warning", message: "No viewport meta; page will render poorly on mobile." });
+  if (!first("META", "name", "viewport")) flags.push({ severity: "warning", message: "No viewport meta; page will render poorly on mobile." });
   if (!og["og:image"]) flags.push({ severity: "info", message: "No og:image; shared links show no picture (or one the platform picks)." });
   else if (!/^https?:\/\//i.test(og["og:image"])) flags.push({ severity: "warning", message: `og:image is relative (${og["og:image"]}); most link previews need an absolute URL.` });
   if (!og["og:title"] && !title) flags.push({ severity: "info", message: "No og:title or <title>; shared links have no headline." });
@@ -182,7 +236,7 @@ function readFacts(html: string, url?: string): PageFacts {
     metaDescriptionLength: description?.length ?? 0,
     canonical,
     robots,
-    viewport: !!root.querySelector('meta[name="viewport"]'),
+    viewport: !!first("META", "name", "viewport"),
     headings: headings.slice(0, 60),
     h1s,
     openGraph: og,
@@ -265,9 +319,10 @@ const HOP_HEADERS = ["connection", "keep-alive", "proxy-connection", "proxy-auth
  * subresources, workers and WebSockets. Each host is resolved once and checked with resolvePublic, and the
  * proxy connects only to those addresses, so DNS can't change in between. page.route alone is not enough:
  * Playwright never shows redirected requests to route handlers, nor WebSockets or service worker requests.
- * Refused requests end as network errors; their messages are added to `blocked`.
+ * Refused and failed requests end as network errors in the browser, which don't say why; the reason
+ * (BlockedAddressError for a refused address) is kept in `errors`, by "host:port".
  */
-async function startGuardProxy(blocked: string[]): Promise<{ server: string; close: () => void }> {
+async function startGuardProxy(errors: Map<string, Error>): Promise<{ server: string; close: () => void }> {
   const sockets = new Set<Socket>();
   const track = (s: Socket) => {
     sockets.add(s);
@@ -283,14 +338,16 @@ async function startGuardProxy(blocked: string[]): Promise<{ server: string; clo
       s.once("connect", () => resolve(track(s))).once("error", reject);
     });
   };
-  const refuse = (e: unknown, socket: Socket) => {
-    if (e instanceof BlockedAddressError && !blocked.includes(e.message)) blocked.push(e.message);
+  const refuse = (e: unknown, key: string, socket: Socket) => {
+    if (e instanceof Error && !errors.has(key)) errors.set(key, e);
     socket.destroy();
   };
   const server = createServer(async (req, res) => {
+    let key = "";
     try {
       const target = new URL(req.url ?? "");
       if (target.protocol !== "http:") throw new Error(`not an http proxy request: ${req.url}`);
+      key = hostPort(target);
       const upstream = await open(target.hostname, Number(target.port) || 80);
       const headers: IncomingHttpHeaders = { ...req.headers };
       for (const h of HOP_HEADERS) delete headers[h];
@@ -303,14 +360,15 @@ async function startGuardProxy(blocked: string[]): Promise<{ server: string; clo
       up.on("error", () => res.destroy());
       req.on("error", () => up.destroy()).pipe(up);
     } catch (e) {
-      refuse(e, req.socket);
+      refuse(e, key, req.socket);
     }
   });
   server.on("connection", track);
   // HTTPS and WebSockets: CONNECT host:port, then a plain byte tunnel.
   server.on("connect", async (req, client: Socket, head: Buffer) => {
+    const i = (req.url ?? "").lastIndexOf(":");
+    const key = `${(req.url ?? "").slice(0, i).replace(/^\[|\]$/g, "")}:${(req.url ?? "").slice(i + 1)}`;
     try {
-      const i = (req.url ?? "").lastIndexOf(":");
       const upstream = await open(req.url!.slice(0, i), Number(req.url!.slice(i + 1)));
       client.write("HTTP/1.1 200 Connection Established\r\n\r\n");
       upstream.write(head);
@@ -318,7 +376,7 @@ async function startGuardProxy(blocked: string[]): Promise<{ server: string; clo
       upstream.on("close", () => client.destroy());
       client.on("close", () => upstream.destroy());
     } catch (e) {
-      refuse(e, client);
+      refuse(e, key, client);
     }
   });
   await new Promise<void>((r) => server.listen(0, "127.0.0.1", () => r()));
@@ -329,6 +387,11 @@ async function startGuardProxy(blocked: string[]): Promise<{ server: string; clo
       for (const s of sockets) s.destroy();
     },
   };
+}
+
+/** "host:port" of a URL, the key startGuardProxy uses for its errors. */
+function hostPort(u: URL): string {
+  return `${u.hostname.replace(/^\[|\]$/g, "")}:${u.port || (u.protocol === "https:" ? 443 : 80)}`;
 }
 
 /**
@@ -346,11 +409,18 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     throw new Error("render mode needs the optional dependency playwright-core: run `npm install playwright-core` and set MARKETING_EXPERT_CHROMIUM to a Chromium binary (or install one with `npx playwright-core install chromium`).");
   }
   // Every connection the browser makes goes through the guard proxy; "<-loopback>" stops Chromium from
-  // sending localhost and 127.0.0.1 around it.
-  const blocked: string[] = [];
-  const proxy = await startGuardProxy(blocked);
+  // sending localhost and 127.0.0.1 around it. WebRTC sends UDP, which no HTTP proxy carries, so it is turned
+  // off: a page could otherwise send STUN packets to private addresses. Chrome reads the first switch, the
+  // headless shell the second.
+  const errors = new Map<string, Error>();
+  const proxy = await startGuardProxy(errors);
   const browser = await chromium
-    .launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true, proxy: { server: proxy.server, bypass: "<-loopback>" } })
+    .launch({
+      executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined,
+      headless: true,
+      proxy: { server: proxy.server, bypass: "<-loopback>" },
+      args: ["--webrtc-ip-handling-policy=disable_non_proxied_udp", "--force-webrtc-ip-handling-policy=disable_non_proxied_udp"],
+    })
     .catch((e: unknown) => {
       proxy.close();
       throw e;
@@ -358,9 +428,16 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
   try {
     await assertPublicUrl(u);
     const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", serviceWorkers: "block" });
+    // Where the navigation went (the URL, then each redirect).
+    const navigation: string[] = [];
+    page.on("request", (r: any) => {
+      if (r.isNavigationRequest() && r.frame() === page.mainFrame()) navigation.push(hostPort(new URL(r.url())));
+    });
     const res = await page.goto(u.toString(), { waitUntil: "load", timeout: timeoutMs }).catch((e: unknown) => {
-      // A redirect to a refused address ends as a network error; report the refusal instead.
-      throw blocked.length ? new BlockedAddressError(blocked[0]) : e;
+      // A refused or failed connection reaches the browser as a vague network error. Give the reason when it was
+      // the navigation's own connection, not a blocked image on a page that then timed out.
+      const cause = navigation.map((h) => errors.get(h)).find((x) => x);
+      throw cause instanceof BlockedAddressError ? cause : cause ? new Error(`Could not load ${url}: ${cause.message}`) : e;
     });
     // Give client-side rendering a moment; pages with beacons or polling never go fully idle.
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);
@@ -400,6 +477,7 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     if (scriptUrl !== finalUrl) {
       facts.flags.push({ severity: "info", message: `Scripts changed the address to ${scriptUrl} after load. If people share that URL, give it a canonical pointing at the clean one.` });
     }
+    const blocked = [...new Set([...errors.values()].filter((e) => e instanceof BlockedAddressError).map((e) => e.message))];
     if (blocked.length) {
       facts.flags.push({ severity: "info", message: `The page tried to reach private or local network addresses, which this tool blocks (${blocked.slice(0, 3).join("; ")}). The rendered page may be missing what those requests would have loaded.` });
     }

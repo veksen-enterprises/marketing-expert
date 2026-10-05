@@ -4,8 +4,8 @@
 // canonical problems, link depth and hreflang errors.
 
 import { parse } from "node-html-parser";
-import { guardedFetch, readCapped, MAX_HTML_BYTES } from "./netguard.js";
-import { countWords } from "./text.js";
+import { guardedFetch, readCapped, MAX_HTML_BYTES, MAX_ROBOTS_BYTES } from "./netguard.js";
+import { countWords, elementsOf } from "./text.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
 export { parseRobots, robotsAllows };
@@ -66,9 +66,8 @@ export interface CrawlResult {
 
 const UA = "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; site crawl)";
 const HREFLANG_RE = /^(x-default|[a-z]{2,3}(-[A-Za-z]{4})?(-([A-Za-z]{2}|\d{3}))?)$/;
-// Body limits. Google reads the first 500 KiB of robots.txt; the sitemap protocol allows 50 MB per file.
-// The URL total bounds memory when a sitemap index lists many large sitemaps.
-const MAX_ROBOTS_BYTES = 500 * 1024;
+// Body limits. The sitemap protocol allows 50 MB per file. The URL total bounds memory when a sitemap index
+// lists many large sitemaps.
 const MAX_SITEMAP_BYTES = 50 * 1024 * 1024;
 const MAX_SITEMAP_URLS = 100_000;
 
@@ -164,12 +163,18 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     }
     return text;
   };
-  // <loc> values must be full URLs. Read relative ones against the sitemap's address; skip the rest.
+  // <loc> values must be full URLs. Read paths ("/about", "about") against the sitemap's address. Skip the rest:
+  // read as a path, "www.example.com/about" would give a URL that doesn't exist.
+  const locUrl = (l: string, base: string): string | null => {
+    const abs = normalize(l, l);
+    if (abs) return abs;
+    notFullUrls.push(l);
+    const firstPart = l.split(/[/?#]/)[0];
+    return firstPart.includes(".") && firstPart !== "." && firstPart !== ".." ? null : normalize(l, base);
+  };
   const addLocs = (xml: string, base: string) => {
     for (const l of extractLocs(xml)) {
-      const abs = normalize(l, l);
-      if (!abs) notFullUrls.push(l);
-      const n = abs ?? normalize(l, base);
+      const n = locUrl(l, base);
       if (!n || sitemapSet.has(n)) continue;
       if (sitemapSet.size >= MAX_SITEMAP_URLS) {
         sitemapPartial = urlLimitHit = true;
@@ -192,7 +197,10 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         sitemapSource ??= sm;
         if (/<sitemapindex/i.test(xml)) {
           const children: string[] = [];
-          for (const c of extractLocs(xml)) if (children.push(c) >= 20) break;
+          for (const c of extractLocs(xml)) {
+            const child = locUrl(c, smUrl);
+            if (child && children.push(child) >= 20) break;
+          }
           for (const child of children) {
             if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
             try {
@@ -213,7 +221,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     if (urlLimitHit) notes.push("Read only the first 100,000 sitemap URLs. Sitemap counts are partial, and pages were not checked against the rest.");
     if (notFullUrls.length) {
       notes.push(
-        `${notFullUrls.length} sitemap <loc> values are not full URLs (e.g. "${notFullUrls[0]}"). The sitemap rules require full URLs such as ${new URL("/page", start)}, and Google may ignore these entries. This crawl read relative ones against the sitemap's address and skipped the rest.`
+        `${notFullUrls.length} sitemap <loc> values are not full URLs (e.g. "${notFullUrls[0]}"). The sitemap rules require full URLs such as ${new URL("/page", start)}, and Google may ignore these entries. This crawl read paths such as "/about" against the sitemap's address and skipped the rest.`
       );
     }
   }
@@ -286,7 +294,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
       page.error = `body download failed: ${e instanceof Error ? e.message : String(e)}`;
       return { page, links: [] };
     }
-    // One page that can't be read (e.g. tags nested too deeply for the selector code) must not end the crawl.
+    // One page that can't be read (e.g. a <title> left open around thousands of nested tags) must not end the crawl.
     try {
       return readPage(html, page, current);
     } catch (e) {
@@ -297,25 +305,31 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const readPage = (html: string, page: CrawledPage, current: string): { page: CrawledPage; links: string[] } => {
     // parseNoneClosedTags: the default clean-up of unclosed tags takes cubic time (30 KB of "<div>" took 18 s).
     const root = parse(html, { parseNoneClosedTags: true, blockTextElements: { script: true, style: true, noscript: true } });
-    page.title = root.querySelector("title")?.text.trim() || null;
-    page.metaDescription = root.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() || null;
-    page.h1Count = root.querySelectorAll("h1").length;
-    const can = root.querySelector('link[rel="canonical"]')?.getAttribute("href");
+    // One walk of the tree instead of querySelectorAll, whose time grows with the square of the number of matches.
+    const all = elementsOf(root);
+    const first = (tag: string, attr?: string, value?: string) => all.find((e) => e.tagName === tag && (!attr || e.getAttribute(attr) === value));
+    page.title = first("TITLE")?.text.trim() || null;
+    page.metaDescription = first("META", "name", "description")?.getAttribute("content")?.trim() || null;
+    page.h1Count = all.filter((e) => e.tagName === "H1").length;
+    const can = first("LINK", "rel", "canonical")?.getAttribute("href");
     page.canonical = can ? normalize(can, current) : null;
-    const robotsMeta = root.querySelector('meta[name="robots"]')?.getAttribute("content") ?? "";
+    const robotsMeta = first("META", "name", "robots")?.getAttribute("content") ?? "";
     if (/noindex/i.test(robotsMeta)) page.noindex = true;
-    page.hreflang = root
-      .querySelectorAll('link[rel="alternate"][hreflang]')
+    page.hreflang = all
+      .filter((l) => l.tagName === "LINK" && l.getAttribute("rel") === "alternate" && l.hasAttribute("hreflang"))
       .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", current) ?? "" }));
-    // Count before removing scripts from the body; frameworks often put their module scripts there.
-    page.scriptCount = root.querySelectorAll('script[src],script[type="module"],link[rel="modulepreload"]').length;
-    const body = root.querySelector("body") ?? root;
-    for (const el of body.querySelectorAll("script,style,noscript,svg,template")) el.remove();
+    // Count in the whole page, body included; frameworks often put their module scripts there.
+    page.scriptCount = all.filter(
+      (e) => (e.tagName === "SCRIPT" && (e.hasAttribute("src") || e.getAttribute("type") === "module")) || (e.tagName === "LINK" && e.getAttribute("rel") === "modulepreload")
+    ).length;
+    const body = first("BODY") ?? root;
     page.wordCount = countWords(body);
     const nofollowPage = /nofollow/i.test(robotsMeta);
     const links = new Set<string>();
     if (!nofollowPage) {
-      for (const a of body.querySelectorAll("a[href]")) {
+      // Links inside script, style, noscript, svg and template are not part of the page.
+      for (const a of elementsOf(body, new Set(["script", "style", "noscript", "svg", "template"]))) {
+        if (a.tagName !== "A" || !a.hasAttribute("href")) continue;
         if (/nofollow/i.test(a.getAttribute("rel") ?? "")) continue;
         const n = normalize(a.getAttribute("href") ?? "", current);
         if (n && new URL(n).host === host) links.add(n);
