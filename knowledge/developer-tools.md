@@ -92,6 +92,8 @@ Value metric and usage-based pricing details are in pricing. For devtools:
 
 ## What usually works by stage
 
+For the first ten customers (design partners, trust before outreach, early pricing, launches, the agent channel), see first-customers.
+
 - **First users**: founders write the docs and quickstart, ship a free tier or open-source core, post one Show HN when it is easy to try, and answer every issue personally.
 - **Early revenue**: regular changelog and technical blog; examples repo; one or two integration marketplaces; an MCP server if agents are likely users; a team plan; first product-qualified lead routing.
 - **Scaling**: devrel team, talks, partner integrations, enterprise plan (SSO, audit logs, self-hosting), product-led sales for large accounts.

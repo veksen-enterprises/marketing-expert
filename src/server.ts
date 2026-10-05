@@ -3,6 +3,7 @@ import { z } from "zod";
 import { sampleSizeTwoProportions, twoProportionTest, sampleRatioMismatch, minimumDetectableEffect } from "./lib/stats.js";
 import { unitEconomics, paidMediaMath, analyzeFunnel } from "./lib/economics.js";
 import { checkAnswer } from "./lib/answerCheck.js";
+import { liquidity } from "./lib/liquidity.js";
 import { scanSource } from "./lib/sourceScan.js";
 import { checkQuotes } from "./lib/quoteCheck.js";
 import { analyzeCopy, checkLimits } from "./lib/copy.js";
@@ -262,6 +263,23 @@ export function createServer(): McpServer {
       annotations: readOnly,
     },
     safe((a) => analyzeFunnel(a.stages, a.spend, a.improvement))
+  );
+
+  server.registerTool(
+    "liquidity_math",
+    {
+      title: "Liquidity: will a watch or search find a match in time?",
+      description:
+        "For marketplaces, alerts and saved searches: given new listings per day and the share of listings a typical watch matches, returns the chance a watch fires within a window, the expected wait for the first match, and the listings per day needed for a target chance (Poisson arrivals). Give several match shares to cover narrow and broad watches. Use it to set go/stop thresholds instead of guessing.",
+      inputSchema: {
+        listingsPerDay: z.number().min(0).describe("New listings per day, each item counted once (no reposts)"),
+        matchShares: z.array(z.number().gt(0).max(1)).min(1).max(20).describe("Share of new listings a typical watch matches, e.g. [0.001, 0.01, 0.05]"),
+        windowDays: z.number().positive().describe("How long a watcher waits before giving up"),
+        targetProbability: z.number().gt(0).lt(1).optional().describe("Target chance of at least one match in the window, default 0.8"),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => liquidity(a))
   );
 
   server.registerTool(

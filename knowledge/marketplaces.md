@@ -42,6 +42,8 @@ Low frequency + no payment flow + concentrated supply is the classic failing com
 
 **Liquidity** = the probability that a listing sells or a request is filled within a reasonable time. Matching supply with demand is the job, so measure the **match rate** [practitioner, a16z "13 Metrics for Marketplace Companies", 2020].
 
+Before you have data, estimate it: liquidity_math takes new listings per day and the share of listings a typical request matches, and returns the chance a request is matched within a window and the listings per day needed for a target chance. Use it to set go/stop thresholds.
+
 Track by market (city × category), never only globally:
 - **Search-to-fill** (or search-to-book): share of searches or requests that end in a transaction.
 - **Time to match**: time from request to accepted match (rides: minutes; services: hours; B2B: days).

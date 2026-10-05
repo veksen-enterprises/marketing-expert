@@ -23,6 +23,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `unit_economics` | LTV (simple and horizon-bounded), LTV:CAC, simple and churn-adjusted CAC payback, with warnings where the formulas mislead |
 | `paid_media_math` | Break-even ROAS/CPA, max CPC, implied CPA/ROAS from CPC or CPM+CTR, budget projection, verdict |
 | `market_size` | Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity / acquisition budget with churn, top-down cross-check, and the share of the market a revenue target requires |
+| `liquidity_math` | For marketplaces, alerts and saved searches: chance a watch finds a match within a window, expected wait, listings per day needed (Poisson) |
 | `funnel_analysis` | Step/cumulative rates, losses, cost per stage, the effect of improving any step |
 | `analyze_copy` | Readability, sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, missing numbers |
 | `scan_source` | Lists claims in a local site or docs source tree (data handling, prices, availability, setup, proof), with `file:line`, plus build-time env flags and where they change output |
