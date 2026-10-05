@@ -20,7 +20,7 @@ describe("cross-references", () => {
     expect(promptNames.size).toBeGreaterThan(8);
   });
   it.each(docs)("$name: 'see <slug>' references exist", ({ text }) => {
-    const refs = [...text.matchAll(/\bsee (?:the )?\*{0,2}([a-z]+(?:-[a-z0-9]+)+)\*{0,2}/g)].map((m) => m[1]);
+    const refs = [...text.matchAll(/\b[Ss]ee (?:the )?\*{0,2}([a-z]+(?:-[a-z0-9]+)+)\*{0,2}/g)].map((m) => m[1]);
     const missing = refs.filter((r) => !slugs.has(r));
     expect(missing).toEqual([]);
   });

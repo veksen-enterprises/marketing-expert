@@ -8,6 +8,8 @@ This playbook extends **seo-and-ai-search** (AI Overviews click-through studies,
 
 ## How assistants find information
 
+_In short:_ AI assistants answer from live web searches, from what the model learned in training, and from product feeds, and each needs different work. Ranking in ordinary search still matters.
+
 An assistant answer comes from three places. Each needs different work.
 
 - **Live retrieval (search at answer time).** The assistant runs searches, fetches pages and cites them. This is where most citations and clicks come from.
@@ -21,6 +23,8 @@ An assistant answer comes from three places. Each needs different work.
 **Why classic search still matters:** live retrieval starts with a search. If you do not rank in Google and Bing for the question, the assistant is less likely to find you. But overlap is partial: Ahrefs (15k queries) found only ~12% of URLs cited by AI tools were also in Google's top 10. [vendor, not re-verified] Do both: rank, and be mentioned on the pages that do rank.
 
 ## Crawler access: training vs search vs user fetch
+
+_In short:_ Each AI company runs separate bots for training, search and user requests, so blocking the training bot does not hide you from answers. Allow the search bots, and check firewalls too.
 
 Most AI companies run separate bots for separate jobs. Blocking the training bot does **not** remove you from search answers; blocking the search bot does. See the token table in research/ai-assistant-visibility.md.
 
@@ -42,6 +46,8 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 
 ## What gets cited
 
+_In short:_ A few big third-party sites, such as Reddit, Wikipedia and review sites, take most citations, so being present and accurate there matters as much as your own site.
+
 - **A few large third-party sites take most citations.** Profound (680M citations, Aug 2024–Jun 2025): Wikipedia was 47.9% of ChatGPT's top-10 source share; Reddit about 46.7% of Perplexity's. [vendor] Semrush's 3-month study: Reddit, Wikipedia, YouTube, LinkedIn and Forbes led across platforms. [vendor] Platforms differ strongly: an estimated 11% of domains are cited by both ChatGPT and Perplexity. [vendor, not re-verified]
 - **For commercial questions, review and comparison sites matter.** Perplexity's top commercial sources reportedly include G2, Gartner, NerdWallet, PCMag, TripAdvisor and Yelp. [vendor, not re-verified]
 - **Brand mentions correlate with AI visibility more than links.** Ahrefs (75k brands): branded web mentions correlated 0.664 with AI Overview brand visibility; backlinks 0.218; branded search volume 0.392. Correlation, not cause; large brands score high on all of them. [vendor]
@@ -51,6 +57,8 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 
 ## AI shopping and product feeds
 
+_In short:_ Complete, accurate product feeds (the data files you send shops and search engines) are how products enter AI shopping answers. Treat them as a visibility channel, and check current rules because platforms change often.
+
 - **Google (AI Mode, AI Overviews, Gemini):** product answers are grounded in the Shopping Graph, which is fed by Merchant Center. Complete, accurate feeds (GTIN, price, availability, images, product highlights) are the base requirement. Google has started agentic checkout with selected US merchants via its Universal Commerce Protocol. [first-party, not re-verified in detail]
 - **ChatGPT:** OpenAI launched Instant Checkout with the Agentic Commerce Protocol (ACP, built with Stripe) in Sep 2025; merchants applied at chatgpt.com/merchants. [first-party] On 20 Mar 2026 OpenAI ended Instant Checkout. Merchants now share product feeds and promotions through ACP for discovery, and buyers complete purchases on the retailer's site or in a retailer's own ChatGPT app. Reported reasons: very few merchants integrated, and lower conversion than retailer sites. [secondary reporting]
 - **Practical:** treat feeds as a visibility channel, not just an ads input. Make on-page price, stock and reviews match the feed and be in server HTML.
@@ -58,12 +66,16 @@ Most AI companies run separate bots for separate jobs. Blocking the training bot
 
 ## Developer tools: coding agents are a separate audience
 
+_In short:_ For developer tools, the coding agent choosing a library matters more than chat search. Test it yourself by giving an agent your product's task, and don't count llms.txt files as a channel.
+
 For developer tools the assistant that matters is often a coding agent (Claude Code, Cursor, Copilot and others) choosing a library or calling a tool while it works, not a chat assistant answering a web search. What drives that choice is less studied than web citations [rule-of-thumb for everything below].
 - Test it directly: give a coding agent the task your product solves ("my Postgres query is slow, find out why") in a clean project and record whether it suggests or uses you. Repeat monthly; treat it as a direction check, not a measurement.
 - Docs-site llms.txt files and agent "skill" files are cheap to keep, but there is no evidence yet that agents use them more than normal docs. Check whether they exist before recommending them, and don't count them as a channel.
 - An MCP server listed in the MCP Registry and the client directories is a way to be found and called; see developer-tools ("AI coding agents as users and channel").
 
 ## Measurement
+
+_In short:_ Track AI referral visits, Bing's AI report and a monthly set of real buyer questions, and report how often you are named across repeated runs, because answers change every time.
 
 - **Referral traffic:** create an analytics channel group for assistant domains (chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com, claude.ai). ChatGPT adds **utm_source=chatgpt.com** to links. [first-party] Many AI-driven visits arrive without a referrer (copy-pasted links, apps), so referral traffic is a minimum, not a total. Watch branded search and direct traffic as well.
 - **Bing Webmaster Tools "AI Performance"** (preview Feb 2026): citations in Copilot and Bing AI answers, cited URLs, grounding queries; "Citation Share" added Jun 2026. [first-party] The only first-party citation report found so far; Google Search Console does not separate AI Mode citations in the material we checked.
@@ -73,6 +85,8 @@ For developer tools the assistant that matters is often a coding agent (Claude C
 
 ## What is speculation
 
+_In short:_ No evidence supports llms.txt, special AI markup, bot-only tricks or bought mentions, and some break search or advertising rules. Skip them.
+
 - **llms.txt:** no evidence it is used for citations (see seo-and-ai-search).
 - **"AI-specific" schema** or special markup for LLMs: no assistant documents a ranking or citation benefit. Use structured data for normal search features. [practitioner]
 - **"Optimising for the model" tricks** (hidden text for bots, prompt-injection text, cloaking content for AI user agents): risky. Google's spam policies cover cloaking and hidden text; assistants may treat injected instructions as attacks.
@@ -80,6 +94,8 @@ For developer tools the assistant that matters is often a coding agent (Claude C
 - **Mass-produced "best X" pages** made to be cited: Google's scaled content abuse policy applies; AI assistants that ground in Google or Bing inherit those signals.
 
 ## Checklist
+
+_In short:_ Check crawler access and JavaScript rendering, get indexed in Bing, make key facts quotable, fix your presence on third-party sites, and set up AI referral tracking with a monthly question panel.
 
 1. Run **check_ai_crawler_access** on your domain: it checks robots.txt for the AI bots above. Allow search and user bots; decide training bots on purpose. Check the CDN/WAF bot settings too.
 2. Run **audit_page with render=true** on key templates (home, product, pricing, comparison). It measures how much content exists only after JavaScript; move that content into server HTML.
@@ -90,6 +106,8 @@ For developer tools the assistant that matters is often a coding agent (Claude C
 7. Set up the AI-referral channel group and the monthly prompt panel; log wrong facts and fix their sources.
 
 ## Common mistakes
+
+_In short:_ The usual errors are blocking the wrong bots, firewalls overriding robots.txt, content hidden behind JavaScript, judging from one run, ignoring third-party sources, buying fake mentions, and ignoring Bing.
 
 - Blocking GPTBot or Google-Extended and thinking you left AI search, or blocking OAI-SearchBot or PerplexityBot by accident and disappearing from answers.
 - Robots.txt allows AI bots but the firewall blocks them.

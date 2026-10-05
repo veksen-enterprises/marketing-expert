@@ -10,6 +10,8 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Cookies and tracking consent (EU, UK)
 
+_In short:_ In the EU and UK, non-essential trackers need consent before they fire, and refusing must be as easy as accepting. Put Accept all and Reject all on the first layer, and audit every script.
+
 - **Rule** [first-party]: the ePrivacy rules require consent before storing or reading non-essential cookies or similar trackers (analytics, ad pixels, session replay) on a device. GDPR sets what valid consent means: freely given, specific, informed, unambiguous, and as easy to withdraw as to give.
 - **Refusing must be as easy as accepting** [first-party]:
   - The EDPB Cookie Banner Taskforce report (January 2023): a vast majority of EU authorities said that a banner with an "accept" button but no "reject" option on the same layer is an infringement.
@@ -20,6 +22,8 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 - **Tag audit**: list every script, its owner, and what data goes to which vendor.
 
 ## US state privacy laws and opt-out signals
+
+_In short:_ About 20 US states have privacy laws in force. In California you must let people opt out of sale or sharing of data, and honour browser opt-out signals like Global Privacy Control, with symmetrical choices.
 
 - **Number of states** [secondary; Oklahoma date verified-search: okhouse.gov, 2026-10-04]: 24 states have enacted comprehensive privacy laws. About 20 are in force (trackers say 19 or 20, depending on whether Florida's narrower law counts), including Indiana, Kentucky and Rhode Island from 1 January 2026. Four were signed in 2026 and are not yet in force: Oklahoma and Louisiana (1 January 2027), Alabama (1 May 2027) and Vermont (1 January 2028).
 - **California (CCPA as amended by CPRA)** [first-party]:
@@ -34,6 +38,8 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Pixels and health or other sensitive data
 
+_In short:_ Do not fire ad pixels or conversion events on pages revealing health or other sensitive details, or put them in URLs or event names. US regulators have fined firms for this.
+
 - **GoodRx (FTC, February 2023)** [first-party]: $1.5M civil penalty, the FTC's first action under the **Health Breach Notification Rule** (HBNR). GoodRx shared health information with Facebook, Google, Criteo and others despite privacy promises. It is now banned from sharing health data for advertising.
 - **BetterHelp (FTC, final order July 2023)** [first-party]: $7.8M for consumer refunds. Email addresses, IP addresses and health questionnaire answers went to Facebook, Snapchat, Criteo and Pinterest for advertising.
 - **HBNR amendments (in force 29 July 2024)** [first-party]:
@@ -47,11 +53,15 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Advertising claims and substantiation
 
+_In short:_ Hold evidence before publishing any claim that consumers will read as factual, such as best, number one or clinically proven. Regulators judge how people read the claim, not your intent.
+
 - **US (FTC)** [first-party; not re-verified this session]: claims must be truthful and not misleading. You must hold a "reasonable basis" before making an objective claim. Health claims usually need competent and reliable scientific evidence.
 - **UK (ASA, CAP Code rule 3.7)** [first-party]: hold documentary evidence **before** publishing claims that consumers are likely to see as objective. The ASA judges the likely consumer reading, not your intent; calling a claim "puffery" does not save it if people read it as factual.
 - High-risk words: "No. 1", "best", "fastest", "cheapest", "clinically proven", "carbon neutral", "free", "unlimited". Keep the evidence file next to the creative.
 
 ## Comparative advertising
+
+_In short:_ In the EU, you may name a competitor only if the comparison is not misleading, covers like-for-like needs, compares verifiable features and does not discredit them. Compare like with like, date it and keep screenshots.
 
 - **EU (Directive 2006/114/EC, Art. 4)** [first-party]: comparison with a named competitor is allowed only if **all** conditions are met:
   - not misleading;
@@ -65,6 +75,8 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## "Made in USA"
 
+_In short:_ An unqualified Made in USA claim requires all or virtually all of the product to be made in the US. Otherwise use a qualified claim such as assembled in USA from imported parts.
+
 - **Made in USA Labeling Rule (2021)** [first-party]: an unqualified "Made in USA" claim on a label, or as a seal, mark, tag or stamp in a print or online mail-order catalogue, requires that **all or virtually all** of the product is made in the US. That means final assembly, all significant processing, and nearly all components are US-made.
 - Williams-Sonoma paid a record $3.17M civil penalty (April 2024) for breaking an earlier FTC Made in USA order [first-party].
 - Origin claims in other ads fall outside the rule but are still judged under the FTC Act, so hold them to the same standard.
@@ -72,20 +84,28 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## Price claims and fake discounts
 
+_In short:_ A was price must be a real price actually offered for a reasonable period. In the EU, a reduction must show the lowest price of the previous 30 days. Generate was prices from price history.
+
 - **US (FTC Guides Against Deceptive Pricing, 16 CFR 233.1)** [first-party, via eCFR copies]: a "was" price must be a real price at which the product was openly and actively offered, in good faith, for a reasonably substantial period. An inflated price set so you can advertise a big reduction is deceptive.
 - **EU (Price Indication Directive Art. 6a, added by the Omnibus Directive)** [first-party]: every announced price reduction must show the **prior price**, defined as the **lowest price in at least the 30 days before** the reduction. Earlier promotional prices in that window count. A percentage discount must be calculated from that prior price.
 - **Practical**: generate "was" prices from stored price history, not by hand; avoid permanent "sales".
 
 ## Subscriptions, auto-renewal and cancellation
 
+_In short:_ Even without a US federal click-to-cancel rule, show price, renewal terms and how to cancel before checkout, get express consent, send reminders, and let people cancel online as easily as they signed up.
+
 - No US federal click-to-cancel rule is in force (the FTC's rule was vacated in July 2025), but the FTC can still act under the FTC Act and ROSCA, and state automatic renewal laws remain; see retention-and-expansion for the dated status and EU, German and UK rules. [first-party]
 - Safe practice: show price, renewal frequency and how to cancel before checkout; get express consent to the renewal; send renewal reminders; let people cancel online as easily as they signed up. Flow design: see retention-and-expansion.
 
 ## Dark patterns (brief)
 
+_In short:_ Regulators treat manipulative design, such as hidden reject buttons, pre-ticked boxes and fake urgency, as invalid consent or deception, so design choices that respect the user's decision.
+
 - Regulators on both sides of the Atlantic treat manipulative design (hidden reject buttons, confirmshaming, pre-ticked boxes, fake urgency, forced continuity) as a source of invalid consent or deception. See the EDPB deceptive design patterns guidelines 03/2022 and the CPPA Honda case above [first-party]. Persuasion that respects choice: see behavioral-science.
 
 ## Accessibility of marketing sites
+
+_In short:_ Marketing sites, especially shops serving EU consumers, must meet accessibility rules, and US lawsuits are rising. Build to WCAG 2.2 AA, test with keyboard and screen reader, and skip overlay widgets.
 
 - **European Accessibility Act** [first-party; read 2026-10-05, Directive (EU) 2019/882]: applies to covered products placed on the market after **28 June 2025**, and to covered services provided to consumers after that date, including e-commerce services. Existing online shops are covered, not only new ones; the transition period to 28 June 2030 is only for products already used to deliver a service. Microenterprises providing services (fewer than 10 staff and turnover or balance sheet up to €2M) are exempt.
 - **US (ADA Title III)** [secondary, Seyfarth Shaw data via search]: 3,117 federal website-accessibility lawsuits in 2025, up 27% from 2,452 in 2024. State-court filings push the total above 5,000 (vendor-relayed estimate).
@@ -93,15 +113,21 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 
 ## AI-generated content
 
+_In short:_ EU rules now require disclosing deepfakes and some AI-written public-interest text, and US regulators pursue deceptive AI claims. Prove any AI-powered result claim, label synthetic people and voices, and use no AI testimonials.
+
 - **EU AI Act Art. 50** [first-party; verified-search: digital-strategy.ec.europa.eu, 2026-10-04]: transparency obligations apply from **2 August 2026**. The AI Omnibus (in force 27 July 2026) delayed the high-risk rules to 2 December 2027 and 2 August 2028, but not Art. 50. The only grace period is for generative-AI systems already on the market before 2 August 2026: their providers have until 2 December 2026 to add machine-readable marking (Art. 50(2)). Systems launched after 2 August 2026 must comply from launch. Deployers must disclose deepfakes (realistic synthetic images, audio or video of real people, places or events) and AI-generated text published to inform the public on matters of public interest, unless it had human editorial review.
 - **US (FTC Operation AI Comply, September 2024)** [first-party; verified-search: ftc.gov, 2026-10-04]: an enforcement sweep against deceptive AI claims. DoNotPay ("robot lawyer") paid $193,000. The FTC set aside the Rytr order (AI review generator) in December 2025, but fake reviews remain illegal under the reviews rule (see pr-and-influencers).
 - **Practical**: prove any "AI-powered" result claim; label synthetic people and voices; no AI testimonials.
 
 ## Children
 
+_In short:_ For under-13 audiences, US rules require separate verifiable parental consent before sharing children's data with third parties such as advertisers.
+
 - **COPPA amended rule** [first-party; verified-search: ftc.gov, federalregister.gov, 2026-10-04]: published 22 April 2025, effective 23 June 2025, compliance required for most provisions from **22 April 2026**. Key change: **separate verifiable parental consent** before disclosing children's data to third parties such as advertisers.
 
 ## Pre-launch checklist
+
+_In short:_ Before launch, check consent and trackers, opt-out signals, sensitive-page pixels, evidence for claims, comparisons, was prices, origin claims, subscription terms, accessibility, AI labelling, children, and email consent.
 
 1. Tag audit done; no tracker fires before consent in the EU/UK; "Reject all" is on the first layer.
 2. GPC detected and honoured; "Do Not Sell or Share" link works and needs no more steps than opting in.
@@ -117,6 +143,8 @@ Related playbooks (not repeated here): email consent, CAN-SPAM, PECR, CASL and B
 12. Email consent checked against outbound-and-abm.
 
 ## Common mistakes
+
+_In short:_ Avoid a big Accept button against a grey Manage options link, ignoring opt-out signals, passing quiz answers to ad platforms, discounts from prices nobody paid, accessibility overlays, and assuming cancellation rules vanished.
 
 - "Accept" as a big button and "Manage options" as a grey link; tags added without consent checks.
 - Treating GPC as optional because the site "doesn't sell data", while ad pixels "share" it.

@@ -6,6 +6,8 @@ tags: mobile app, consumer app, app marketing, retention curve, d1 d7 d30, cohor
 
 ## Retention is the first test
 
+_In short:_ Before spending on growth, check that users stay: a retention curve (share still active over time) that flattens means the app has a product for someone. If it keeps falling, more users won't help.
+
 Before spending on growth, check whether people stay. Paying to acquire users who leave in a week is buying churn (see **channel-strategy**).
 - **Read cohort curves, not averages.** Plot the share of each install cohort that is active on day 1, 7, 30 (D1/D7/D30) and later. The key question is whether the curve **flattens** (a stable group keeps using the app) or keeps falling towards zero. A curve that flattens, even at a low level, means there is a product for someone; one that never flattens means more users will not fix it. [practitioner]
 - **Typical levels are low.** Adjust reports average retention across apps of about **26% on D1, 13% on D7 and 7% on D30**, with iOS slightly higher than Android (27/14/8% vs 24/11/6%) and food and drink apps much lower on D1 (13%). Averages across all of Adjust's clients; date of the data set not confirmed. [vendor]
@@ -15,6 +17,8 @@ Before spending on growth, check whether people stay. Paying to acquire users wh
 - Compare retention **by acquisition source**: paid cohorts often retain worse than organic or referred ones.
 
 ## App store optimization (ASO)
+
+_In short:_ App store optimization means improving how your app ranks in store search and how many visitors install it. Write for what people search, test your page, and ask for ratings after a success.
 
 ASO means improving how an app ranks in store search and how many store visitors install it. Two levers: being found (metadata) and converting the visit (product page). The full discovery picture (what each store's search reads, keyword-matched store pages, featuring, charts and launch timing, creators and communities) is in **app-store-discovery**; this section keeps the basics.
 
@@ -35,6 +39,8 @@ ASO means improving how an app ranks in store search and how many store visitors
 
 ## Paid user acquisition after ATT
 
+_In short:_ Apple's privacy rules limit tracking, so iOS ad results arrive late and modelled. Pick early signals that predict revenue, and judge spending by tests rather than platform-reported numbers.
+
 General paid-media math and creative rules are in **paid-acquisition**; app-specific points:
 - **App Tracking Transparency (ATT)**, since iOS 14.5, requires opt-in before an app may track users across other companies' apps. Opt-in averages about 35% of users (Adjust, 2025; see **paid-acquisition**). [vendor]
 - Without opt-in, iOS install attribution comes from Apple's privacy frameworks: **SKAdNetwork** and its successor **AdAttributionKit** (iOS 17.4+). They send ad networks delayed, aggregated "postbacks" (reports) with a limited "conversion value" you define, such as tutorial complete or trial started. AdAttributionKit adds **re-engagement** attribution (ads that bring existing users back), with multiple active re-engagement windows since iOS 18.4. [first-party]
@@ -46,12 +52,16 @@ General paid-media math and creative rules are in **paid-acquisition**; app-spec
 
 ## Virality and referral
 
+_In short:_ Virality helps even when each user brings less than one new user. Make sharing useful to the receiver, and prefer products that naturally work better with others over paid referral rewards.
+
 - **Viral coefficient (K-factor)** = invites sent per user × share of invites that convert. Above 1 means each user brings more than one new user; almost no product sustains this. Below 1, virality still lowers your effective acquisition cost. **Cycle time** (how fast an invite turns into a new inviter) matters as much as K. [practitioner]
 - Distinguish **inherent virality** (the product only works with others: messaging, shared lists, multiplayer) from **incentivised referral** (rewards for invites). Inherent loops last longer; incentivised ones need fraud controls.
 - Referred customers retained better and had at least 16% higher lifetime value in one long field study (bank customers; Schmitt, Skiera & Van den Bulte, 2011). [research]
 - Make sharing produce something useful for the receiver (a result, a playlist, an invitation to a shared space), not just a link to the store. Use deep links so the invited person lands on the shared content after install.
 
 ## Notifications and the permission prompt
+
+_In short:_ Ask for notification permission in context, after users see value, and keep one fallback screen so you don't waste the single system prompt. Send fewer, more relevant messages.
 
 - iOS always required opt-in for push notifications. **Android 13+** added a runtime permission (POST_NOTIFICATIONS), so Android users must also say yes. [first-party]
 - Google's guidance: let users explore first; ask **in context**, ideally triggered by a user action (tapping a bell, following someone, placing an order), and explain what they will receive. Check that notifications are enabled before sending. [first-party]
@@ -60,6 +70,8 @@ General paid-media math and creative rules are in **paid-acquisition**; app-spec
 - Send fewer, more personal notifications. Every irrelevant one risks the user turning them off. Measure with holdouts, as for email (see **email-and-lifecycle**).
 
 ## Subscriptions and paywalls
+
+_In short:_ Subscription results vary hugely by category and paywall type, so don't copy another app's. Show value in the first session because many trial cancellations happen at once, and test paywalls properly.
 
 General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-specific data from RevenueCat's *State of Subscription Apps 2026* (115,000+ apps, more than $16bn revenue, mostly 2025 data). RevenueCat sells subscription infrastructure, and its sample is apps that use it. [vendor]
 - **Growth is concentrated.** Median year-on-year MRR (monthly recurring revenue) growth was 5.3%, while the top 10% grew 306%. Apps launched before 2020 still earn 69% of subscription revenue, though new subscription app launches rose to more than 14,700 per month by Jan 2026.
@@ -71,6 +83,8 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 
 ## Web-to-app funnels after the 2025 US ruling
 
+_In short:_ A 2025 US ruling lets US apps link out to your own website for payment, but whether Apple can charge a fee is undecided. Test web checkout against in-app purchase before moving.
+
 - On **30 April 2025** a US federal court (Epic v. Apple) found Apple in contempt of a 2021 injunction, and ordered it to stop limiting links and buttons that send users to outside payment, and to stop charging a commission on those purchases. Apple updated its App Review Guidelines on **1 May 2025**: apps on the **US storefront** may include buttons, links and other calls to action to the developer's own website for purchases, without a special entitlement. [first-party / court record; read 2026-10-05]
 - On **11 Dec 2025** the Ninth Circuit Court of Appeals upheld the contempt finding (a 27% commission on linked purchases broke the injunction) but found parts of the lower court's restrictions too broad, including the **total ban on any commission**, and sent them back. On **30 June 2026** the US Supreme Court agreed to hear Apple's appeal (No. 25-1311), limited to one of Apple's questions. Apple filed its brief on 14 Sept 2026; Epic's brief is due 13 Nov 2026, so argument has not happened yet. A decision is expected before the term ends in mid-2027. **Whether Apple may charge a fee on linked-out US purchases is not settled.** Check current terms before building a business case on it. [court record; Ninth Circuit opinion and Supreme Court docket read 2026-10-05]
 - Other countries follow different rules; this section covers the US storefront only. See **platform-and-feature-risk** for planning around platform rule changes.
@@ -81,6 +95,8 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 
 ## What usually works by stage
 
+_In short:_ Early on, prove retention before anything else; later add store optimization, careful paid ads, experiments on pricing, and retention work. Match your effort to your stage.
+
 | Stage | Focus | Typical actions |
 |---|---|---|
 | Pre-launch / beta | Prove a flattening retention curve | Small cohorts from communities and friends; instrument activation; skip paid UA |
@@ -89,6 +105,8 @@ General pricing methods (anchoring, freemium vs trial) are in **pricing**. App-s
 | Mature | Retention and monetisation | Win-back and re-engagement ads; plan mix and price tests; notification relevance; localisation of store pages |
 
 ## Common mistakes
+
+_In short:_ Common mistakes: paying for installs before retention flattens, asking for permissions too early, trusting iOS ad numbers as exact, copying paywalls, and moving all US sales to the web untested.
 
 - Scaling paid installs before any cohort curve flattens.
 - Asking for notification permission or a rating on first launch.

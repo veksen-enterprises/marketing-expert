@@ -6,6 +6,8 @@ tags: metrics, measurement, attribution, incrementality, mmm, marketing mix mode
 
 ## Attribution is not incrementality [research]
 
+_In short:_ Attribution gives credit to touchpoints, but incrementality asks what happened because of the marketing, and ads often reach people who would have bought anyway. Treat platform results as hypotheses and confirm with tests.
+
 Attribution assigns credit for conversions to touchpoints. Incrementality asks how many conversions happened *because of* the marketing. They diverge because ads are shown to people already likely to buy.
 
 - **Gordon et al. (2019, Marketing Science)**: 15 Facebook RCTs, 500M user observations. Observational methods (matching, regression) usually overestimated lift; in half the studies they were off by a factor of three. Rich individual-level data did not fix it.
@@ -16,9 +18,13 @@ Attribution assigns credit for conversions to touchpoints. Incrementality asks h
 
 ## GA4 and platform attribution [first-party]
 
+_In short:_ Google removed several attribution models in 2023, leaving data-driven and last-click, and some reported conversions are modelled. Neither is a true measure of what the ads caused.
+
 In 2023 Google removed first-click, linear, time-decay and position-based models (Google Ads from mid-July 2023; GA4 by November 2023); data-driven (default) and last-click remain. Data-driven attribution still only sees Google-measurable touchpoints and is not a lift estimate. With Consent Mode and iOS ATT, part of reported conversions is modelled (see paid-acquisition).
 
 ## Incrementality tests
+
+_In short:_ Incrementality tests compare people or regions who saw your marketing with a held-out group who didn't. Choose the method by channel, and plan the target and sample size beforehand.
 
 | Method | Use when | Notes |
 |---|---|---|
@@ -31,6 +37,8 @@ Plan: pre-register the KPI and minimum detectable effect, run a power analysis o
 
 ## Marketing mix modelling [first-party docs]
 
+_In short:_ Marketing mix modelling estimates each channel's contribution from years of spending history. It needs lots of data and varied spend, so use it for budget splits and check it with experiments.
+
 - Tools: Google Meridian (Bayesian, open source, v1.0 Jan 2025), Meta Robyn (R/Python), PyMC-Marketing.
 - Needs: ~2–3 years of weekly data (Robyn: ≥ 2 years weekly, ~1 variable per 10 observations; Meridian: 2+ years geo-level, more for national), and **spend variation** in each channel (a channel held flat can't be separated from baseline).
 - Calibrate with experiments: feed lift-test results in as priors (Meridian) or a calibration objective (Robyn).
@@ -38,9 +46,13 @@ Plan: pre-register the KPI and minimum detectable effect, run a power analysis o
 
 ## Self-reported attribution [practitioner]
 
+_In short:_ Asking customers how they heard about you catches word of mouth and communities that click tracking misses. It has recall biases, so combine it with click data and experiments.
+
 A required free-text "How did you hear about us?" on high-intent forms catches word of mouth, podcasts, communities and "dark social" that click tracking structurally misses. Limits: recall bias toward salient or recent touches, pick-lists anchor answers, non-response isn't random, and it measures where awareness came from, not lift. Triangulate: self-reported attribution for where demand starts, click attribution for which paths convert, experiments and MMM for what's incremental.
 
 ## Unit economics
+
+_In short:_ Calculate CAC (cost to win one customer), LTV (lifetime value: what a customer is worth) and payback (months to earn back CAC) with the tool. Rules like 3:1 are only heuristics.
 
 Use unit_economics; don't compute by hand.
 - **CAC** = fully loaded sales and marketing spend ÷ new customers (lag spend by the sales cycle if long). Blended CAC hides that paid CAC may be far higher than organic.
@@ -50,6 +62,8 @@ Use unit_economics; don't compute by hand.
 
 ## Retention maths
 
+_In short:_ Compute churn (customers lost) compounded, not as a simple multiple, and track revenue churn alongside customer churn. Plot retention by cohort, where a curve flattening above zero signals product-market fit.
+
 - Annual churn = 1 − (1 − monthly)^12, not 12 × monthly. 3% monthly ≈ 30.6% annual. Monthly from annual: 1 − (1 − annual)^(1/12).
 - **Logo churn** (customers lost) and **revenue churn** (revenue lost) diverge when small accounts churn more; report both.
 - **GRR** = (start revenue − churn − contraction) ÷ start revenue, ≤ 100%. **NRR** = (start revenue + expansion − contraction − churn) ÷ start revenue; excludes new customers. State the period and basis (ARR or MRR). Definitions are convention; companies vary.
@@ -58,12 +72,16 @@ Use unit_economics; don't compute by hand.
 
 ## Frameworks for choosing what to track [practitioner]
 
+_In short:_ Pick a framework to choose what to track, such as the funnel stages or one north-star metric. Check that quick-moving metrics actually predict slower ones before managing to them.
+
 - **AARRR** (Dave McClure, 2007): acquisition, activation, retention, referral, revenue. Fits self-serve and consumer funnels; enterprise sales motions need pipeline stages. Retention predicts the rest, so some reorder it retention-first.
 - **North-star metric**: one metric capturing the value customers get that leads revenue (weekly active teams, orders delivered). Pair with input metrics teams can move and guardrails (retention, margin).
 - **Leading vs lagging**: revenue, NRR and payback are accurate but slow. Activation rate and week-1 retention are fast proxies. Check in your own cohorts that a leading metric predicts the lagging one before managing to it.
 - **Sean Ellis PMF survey**: "How would you feel if you could no longer use [product]?"; 40% "very disappointed" as threshold. Based on Ellis's experience with ~100 startups, never published as data. Useful for tracking over time and finding who loves the product (Superhuman: 22% → 58% by segmenting and building for that group).
 
 ## Benchmarks
+
+_In short:_ Benchmarks are context, not targets: check who collected them, how terms were defined and when. Your own trend over time is a better benchmark.
 
 Benchmarks are context, not targets. Before quoting one, check: who collected it (vendor platforms report their own customers), the definition (what counts as a conversion, CAC fully loaded or not), the date, and selection (survey respondents, awards entries, survivors). Your own trend over time is a better benchmark than someone else's median.
 

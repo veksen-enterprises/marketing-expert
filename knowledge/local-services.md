@@ -6,6 +6,8 @@ tags: local business, local marketing, small business, google business profile, 
 
 ## The shape of a local business
 
+_In short:_ Local demand is limited by geography and your capacity is fixed, so grow by winning nearby share, repeat customers and fuller quiet hours. Trust, built through reviews and referrals, is the main barrier.
+
 - **Demand is capped by geography.** Most customers come from a short drive or walk. You cannot grow by reaching "more of the internet"; you grow by winning a larger share of nearby demand, getting customers to come back, and raising average order value.
 - **Capacity is fixed in the short run.** A clinic has a set number of chair-hours, a plumber has a set number of van-days, a restaurant has a set number of covers (seated meals). Marketing that fills peak hours you already sell out is wasted; marketing that fills empty hours is close to pure profit. Plan marketing around **utilisation** (booked hours ÷ available hours). [practitioner]
 - **Trust is the main purchase barrier.** The buyer often has to let you into their home or body, or eat your food. Reviews, referrals and visible local presence do the work that brand advertising does for national companies.
@@ -13,11 +15,15 @@ tags: local business, local marketing, small business, google business profile, 
 
 ## Google Business Profile and the local pack
 
+_In short:_ Your Google Business Profile is often your real homepage, and local ranking depends on relevance, distance and prominence. Keep hours, services, photos and booking link correct.
+
 Detailed tactics (categories, citations, service-area setup, website location pages) are in **local-seo**. For the whole mix, remember:
 - Google says local results depend on **relevance** (how well the profile matches the search), **distance**, and **prominence** (how well known the business is, including links and review count and rating). You control relevance and prominence; you cannot change distance. [first-party]
 - The profile is often the real homepage: people call, ask for directions or book from it without visiting your site. Keep hours, services, photos and booking link correct. Expert surveys rank "open at the time of search" and a keyword in the business name among the strongest local-pack factors (Whitespark 2026). These are expert opinions, not tests, and adding keywords to your name that are not your real name breaks Google's guidelines. [practitioner]
 
 ## Reviews: getting them and answering them
+
+_In short:_ Ask every customer for a review, and never offer rewards or screen out unhappy customers: both Google and US law ban it. Reply to negative reviews briefly, factually and without private details.
 
 **The rules (US).** The FTC Rule on the Use of Consumer Reviews and Testimonials (announced Aug 2024, in force **21 Oct 2024**) bans fake reviews (including AI-written ones and reviews from people with no real experience), buying reviews, rewards **conditioned on a positive (or negative) review**, undisclosed reviews from insiders, and review suppression. Civil penalties can reach **$53,088 per violation** (unchanged for 2026). The FTC sent warning letters to 10 companies in Dec 2025. [first-party; read 2026-10-05]
 
@@ -37,6 +43,8 @@ The rule also bans legal threats, intimidation or false accusations used to remo
 
 ## Referrals and word of mouth
 
+_In short:_ Ask for referrals at the same moments you ask for reviews, and make the request concrete. Record how each customer heard about you, since word of mouth is invisible in click tracking.
+
 - Referred customers were worth at least 16% more and stayed longer in one long bank study (Schmitt, Skiera & Van den Bulte, 2011); one industry, one country, but the direction is plausible for local services. See referral-programs. [research]
 - Ask for referrals at the same moments you ask for reviews. Make it concrete ("Do you know one neighbour who needs their boiler checked before winter?").
 - A two-sided reward (both the referrer and the new customer get something) is common practice. Referral rewards are allowed; tying a reward to a *review* is not.
@@ -44,6 +52,8 @@ The rule also bans legal threats, intimidation or false accusations used to remo
 - Professional referral sources (a GP referring to a physiotherapist, an estate agent referring to a conveyancer) are often worth more than consumer referrals: cultivate them as relationships (see Partnerships below).
 
 ## Local Services Ads (LSA)
+
+_In short:_ Local Services Ads are Google's pay-per-lead ads (you pay for a call or message, not a click). Answer fast, dispute invalid leads weekly, and expect Google to move them into Performance Max.
 
 - Google's pay-per-lead ads for service businesses: you pay for a valid lead (call or message), not a click. They appear above normal search ads with a **Google Verified** badge after licence, insurance or background checks. On **7 Nov 2025** this single badge replaced Google Guaranteed (including its money-back guarantee), Google Screened and License Verified. [first-party]
 - Ranking uses your bid plus profile quality: rating, number of reviews, how fast you answer, photos, verification; better profiles may pay less per lead. The LSA account must be linked to your Business Profile, and since July 2025 LSA reviews are managed there. [first-party]
@@ -53,6 +63,8 @@ The rule also bans legal threats, intimidation or false accusations used to remo
 
 ## Paid search with geography
 
+_In short:_ Target only areas you can serve profitably, run call ads only when someone answers, bid up for urgent high-value searches, and pause when fully booked.
+
 General account setup, break-even CPA and signal quality are in **paid-acquisition**. Local specifics:
 - Target a **radius or list of postcodes** you actually serve and can reach profitably; exclude areas where travel time kills margin. Use "presence" targeting (people in the area), not "interest in" the area, unless you serve visitors (hotels, tourist restaurants). [practitioner]
 - Run call ads and call extensions during **staffed hours only**; a missed call is a paid lead lost.
@@ -61,12 +73,16 @@ General account setup, break-even CPA and signal quality are in **paid-acquisiti
 
 ## Partnerships and community presence
 
+_In short:_ Set up referral processes with complementary businesses and local institutions like property managers. Sponsor only when it gives people a reason to meet you, and track results.
+
 - **Complementary businesses** that serve the same customer at a different moment: a gym and a physiotherapist, a wedding venue and a florist, a builder and an electrician. Agree a referral process, not just a logo swap. [practitioner]
 - **Local institutions**: schools, sports clubs, employers, landlords and property managers. One property manager can be worth dozens of individual households for a trade.
 - Sponsorships and events work best when they create a **reason to meet people** (a free check-up day, a class, a tasting), not only a banner. Track them with a dedicated code or booking link.
 - Local press and "best of" lists also count: expert surveys rank inclusion on curated "best of" lists as the top factor for being named in AI search answers, though far lower for the map pack. [practitioner]
 
 ## Repeat business and rebooking
+
+_In short:_ The second visit is cheaper to win than the first, so book the next visit before customers leave, send reminders, and offer memberships or service plans.
 
 For most local services, the second visit is cheaper to win than the first, and retention is where profit is made.
 - **Book the next visit before the customer leaves** (dental check-ups, hair, physiotherapy, servicing contracts). This is the single most common recommendation from practitioners in appointment businesses. [practitioner]
@@ -76,6 +92,8 @@ For most local services, the second visit is cheaper to win than the first, and 
 
 ## Pricing and capacity
 
+_In short:_ Discount to fill empty slots, not peak hours that sell anyway. When you are nearly always full, raise prices or add capacity instead of marketing more.
+
 Price-setting methods are in **pricing**. Local-business specifics:
 - **Price by time slot when demand is uneven**: off-peak offers, weekday specials, early-bird menus. Fill empty capacity; do not discount peak hours that sell anyway. [practitioner]
 - When utilisation is consistently above roughly 85–90%, raising prices or adding capacity usually beats more marketing. This threshold is a heuristic. [rule-of-thumb]
@@ -83,6 +101,8 @@ Price-setting methods are in **pricing**. Local-business specifics:
 - Avoid deep-discount deal sites for acquisition unless you have measured how many deal customers return at full price.
 
 ## Tracking calls and bookings
+
+_In short:_ Most local sales happen by phone or in person, so use call tracking, ad call conversions and online booking, and ask how people heard of you. Measure cost per booked customer.
 
 - Most local conversions happen by **phone, message or in-person visit**, so web analytics alone undercounts. Set up:
   - **Call tracking** with distinct numbers per source (ads, website, flyers). On the Business Profile, Google requires a number under the business's direct control and prefers a local number; you can add up to two additional numbers. A common setup is a tracking number as primary and the main line as an additional number; check the current guidelines first. [first-party / practitioner]
@@ -94,6 +114,8 @@ Price-setting methods are in **pricing**. Local-business specifics:
 
 ## What usually works by stage
 
+_In short:_ New businesses should get found and trusted fast; growing ones build rebooking and referral systems; full ones raise prices and add memberships; multi-location ones need one consistent review process.
+
 | Stage | Focus | Typical actions |
 |---|---|---|
 | New (0–12 months) | Get found, build trust fast | Complete and verify Business Profile; ask every customer for a review; LSA or tightly geo-targeted search ads for high-intent terms; launch offer to fill empty slots; introduce yourself to 5–10 complementary businesses |
@@ -102,6 +124,8 @@ Price-setting methods are in **pricing**. Local-business specifics:
 | Multi-location | Consistency | One review and response process; location pages and profiles per site (see **local-seo**); compare locations on utilisation and repeat rate |
 
 ## Common mistakes
+
+_In short:_ Don't pay for reviews or ask only happy customers, advertise when full or unanswered, judge by clicks, skip the how-did-you-hear question, ignore negative reviews, or fail to rebook.
 
 - Offering a discount or prize for reviews, or only asking happy customers. Both break Google's rules; fake or sentiment-conditioned reviews break the FTC rule.
 - Spending on ads when the calendar is already full, or advertising during hours nobody answers the phone.

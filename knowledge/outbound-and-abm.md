@@ -6,6 +6,8 @@ tags: outbound, cold email, cold outreach, prospecting, sdr, bdr, sequence, cade
 
 ## When outbound makes sense
 
+_In short:_ Outbound (contacting people who didn't ask to hear from you) suits big deals that pay for human time, with a nameable buyer and a one-sentence problem. It works badly for cheap self-serve products.
+
 Outbound means you contact people who have not asked to hear from you: cold email, cold calls, LinkedIn messages. It works when [practitioner]:
 - The deal is big enough to pay for human time per account (see channel-strategy on channel-model fit and run unit_economics with sales cost as CAC).
 - You can name the companies and roles that buy (a clear ICP, ideal customer profile).
@@ -14,6 +16,8 @@ It works badly for low-price self-serve products and for problems buyers don't y
 
 ## Deliverability limits
 
+_In short:_ Cold email hits spam-complaint limits first, so send from a separate domain, keep volume low per mailbox, verify addresses and use plain text. Measure replies and meetings, not opens.
+
 The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold email too: SPF, DKIM, DMARC, one-click unsubscribe for marketing mail, and spam complaints below 0.1% (Gmail stops mitigation above 0.3%). Cold email gets more complaints than opted-in mail, so it hits these limits first. [first-party]
 - **Never send cold email from your main company domain.** Use a separate, similar domain so a reputation problem does not block invoices, password resets and customer mail. [practitioner]
 - **Low volume per mailbox**: practitioners commonly cap at a few dozen cold emails per mailbox per day after a warm-up period [rule-of-thumb]. Many small mailboxes at low volume is the usual pattern, but it does not excuse bad targeting: complaints still count per domain.
@@ -21,6 +25,8 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 - **Plain text, few links, no tracking pixels** [practitioner]; opens are unreliable anyway (email-and-lifecycle). Measure replies and meetings.
 
 ## Legal rules (summary, not legal advice)
+
+_In short:_ Cold email rules differ by country: the US allows it with opt-out, the UK splits companies from sole traders, Germany needs prior consent even for B2B, and Canada needs consent. Check each target country first.
 
 **United States: CAN-SPAM** [first-party, FTC; verified-search: ftc.gov, 2026-10-04]
 - No consent needed before the first commercial email, but: honest "From" and subject line, identify the message as an ad, a valid physical postal address, a clear way to opt out, and honour opt-outs within 10 business days. Penalties up to $53,088 per violating email (FTC figure; normally adjusted for inflation each year, but there was no 2026 adjustment, so it still applies).
@@ -44,6 +50,8 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 
 ## List building and targeting
 
+_In short:_ Start from target companies, then people, and use triggers like hiring or new funding to time outreach. Small tight lists beat big blasts, and contact data must be re-verified.
+
 - **Start from accounts, then people.** Define the ICP with firmographics (industry, size, region, technology used) and, better, with the traits of your best customers (positioning and customer-research). [practitioner]
 - **Use triggers** (signals that a company may need you now): hiring for a related role, new funding, a new leader in the buying role, a technology change, an expansion. Trigger-based lists are smaller and convert better in practitioner experience.
 - **Intent data** (third-party signals that a company is researching a topic) is noisy; treat it as one input to prioritise, not proof of interest. [practitioner; vendor claims vary]
@@ -51,6 +59,8 @@ The Gmail, Yahoo and Microsoft sender rules in email-and-lifecycle apply to cold
 - Small, tight lists beat large blasts in practitioner experience; figures comparing small and large sends circulate without a traceable source.
 
 ## Message structure
+
+_In short:_ Keep the first email under about 100 words: why them and why now, their problem, one piece of proof, and a small ask such as "Worth a look?".
 
 A first cold email that tends to work is short (under about 100 words), about the recipient, and asks for something small. [practitioner]
 1. **Why them, why now**: one line showing you know something specific (a trigger, their role's problem). Not flattery.
@@ -61,12 +71,16 @@ A first cold email that tends to work is short (under about 100 words), about th
 
 ## Sequences
 
+_In short:_ A sequence is the planned series of follow-ups to one person. Send three to five emails over two to three weeks, each adding something new, and stop at the first reply.
+
 A **sequence** (or cadence) is the planned series of touches to one person.
 - Instantly's 2026 benchmark report (its own users' data) says the first email gets **58% of replies** and follow-ups the other 42%, and recommends 4–7 touches. [vendor, Instantly, 2026]
 - Belkins (7.5M emails in 2025, its agency clients) reports the first email has the highest reply rate of any single step (0.59%), but steps 2–6 together brought 58.6% of replies; it suggests 3–5 steps, with returns falling fast after step 5. [vendor, Belkins, 2026 study; read 2026-10-05]
 - Practical: 3–5 emails over 2–3 weeks, each adding something new (a different angle, a short case, a useful resource), mixed with LinkedIn and phone for higher-value accounts. Stop at the first reply of any kind, including "not interested". [practitioner]
 
 ## Reply-rate benchmarks: check the denominator
+
+_In short:_ Published reply-rate benchmarks differ almost eightfold depending on who sends and what is counted. Ask what the rate is divided by, and track your own meetings and pipeline over time.
 
 - **Instantly 2026**: average reply rate **3.43%**, top quartile 5.5%, best campaigns above 10% (Instantly platform data; all replies, including replies to follow-ups, divided by all emails sent). [vendor, Instantly, 2026]
 - **Belkins 2026 study** (7.5M emails from its client campaigns in 2025): average **0.45%** replies per email sent, falling from 0.50% in the first half of 2025 to 0.40% in the second half. Belkins notes earlier studies divided by **opened** emails; this one divides by **emails sent**. [vendor, Belkins, 2026]
@@ -75,11 +89,15 @@ A **sequence** (or cadence) is the planned series of touches to one person.
 
 ## AI-generated mass outreach
 
+_In short:_ Use AI to research and draft, but have a person check facts and the reason for contact, since wrong "personal" details hurt more than none. AI volume plausibly lowers reply rates; this is unproven.
+
 - Cheap AI writing tools let senders send far more "personalised-looking" emails. Vendors and practitioners widely report falling reply rates as volume rose (e.g. Belkins' 2025 decline above). No controlled study isolating the cause was found; blame is plausible, not proven. [vendor/practitioner]
 - Lab research on AI-written messages: when people believed profile text was AI-written among a mix of AI and human texts, they trusted it less (Jakesch et al., CHI 2019); trust in email writers dropped when AI help was disclosed, but unexpectedly rose when AI was used for more personal rather than transactional emails (Liu et al., CHI 2022). These are lab studies, not sales data. [research]
 - Implications [practitioner]: use AI to research and draft, but have a person check facts and the reason for contact. Wrong "personal" details cost more than none.
 
 ## Account-based marketing (ABM)
+
+_In short:_ ABM (account-based marketing) treats a chosen list of companies as markets of one, with marketing and sales working them together. Survey claims of high ROI lack control groups, so measure against matched accounts.
 
 **ABM** treats a chosen set of companies as "markets of one": marketing and sales agree a target account list and coordinate everything (ads, content, events, outreach) on those accounts.
 
@@ -103,11 +121,15 @@ A **sequence** (or cadence) is the planned series of touches to one person.
 
 ## Sales–marketing alignment
 
+_In short:_ Sales and marketing need one written definition of a qualified lead, a service-level agreement (a mutual promise on volume and follow-up speed), and shared pipeline targets reviewed monthly.
+
 - **One shared definition** of a qualified lead and of a qualified account, written down. [practitioner]
 - **A service-level agreement (SLA)**: marketing commits to a number of qualified leads or engaged accounts; sales commits to follow up within a set time (e.g. same business day) and to record outcomes.
 - **Shared targets** (pipeline and revenue, not leads alone) and a monthly review of which sources produced won deals, fed by win/loss interviews (competitive-analysis).
 
 ## What usually works by stage
+
+_In short:_ Founders send small researched batches to learn. Early traction adds one sales development rep (a person who books first meetings), one ICP and a short sequence; scaling adds ABM; enterprise adds one-to-one accounts and partners.
 
 - **Founder-led (pre-PMF)**: founders send small batches of manual, researched emails; the goal is learning conversations, not pipeline (customer-research).
 - **Early traction**: one SDR (sales development representative) or founder plus tools; one ICP, triggers, a 3–5 step sequence; separate sending domains.
@@ -115,6 +137,8 @@ A **sequence** (or cadence) is the planned series of touches to one person.
 - **Enterprise**: 1:1 ABM for top accounts plus partner introductions (partnerships-and-affiliates).
 
 ## Common mistakes
+
+_In short:_ Don't send cold email from your main domain, blast bought lists, compare reply rates with different denominators, write long first emails, run ABM without sales agreeing the list, or report ABM success from surveys.
 
 - Sending cold email from the main company domain.
 - Buying large lists and blasting them; it fails on complaints and on law (Germany, sole traders in the UK, CASL).

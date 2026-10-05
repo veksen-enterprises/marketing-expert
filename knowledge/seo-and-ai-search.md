@@ -6,12 +6,16 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 
 ## What changed (2024–2026)
 
+_In short:_ AI summaries in search cut clicks per ranking and Google punishes mass-produced pages, so expect fewer but higher-intent visits and judge SEO by revenue per visit, not sessions.
+
 - **Fewer clicks per ranking.** When an AI Overview appears, organic CTR drops substantially. Pew (Mar 2025 browsing data, 900 US adults): users clicked a result on 8% of visits with an AI summary vs 15% without, and clicked a link inside the summary on 1%. Ahrefs: position-1 CTR −34.5% (Apr 2025), −58% in a Dec 2025 update. Seer Interactive (informational queries, Jun 2024–Sep 2025): −61% organic CTR on AI Overview queries, and −41% even on queries without one. Semrush clickstream: 92–94% of AI Mode sessions were zero-click. Methods differ; the direction is consistent, the size ranges ~35–61%. Seer's 2026 update shows some rebound: organic CTR on AI Overview queries rose from 1.3% (Dec 2025) to 2.4% (Feb 2026), and cited brands got ~120% more clicks per impression. [research / vendor]
 - **Quality systems**: the March 2024 core update folded "helpful content" into core ranking and added spam policies for scaled content abuse (mass-produced pages, by any method including AI), expired domain abuse, and site reputation abuse (third-party content riding a host site's authority; clarified Nov 2024 to apply even with first-party oversight). Core updates continued in March and May 2026. [first-party]
 
 **Implication**: informational traffic per keyword is falling. Plan for SEO to deliver fewer, higher-intent visits; value it on pipeline/revenue per visit, not sessions.
 
 ## What to do
+
+_In short:_ Aim at queries where you can win the click, such as comparisons and tools, add original data and first-hand experience, get cited, improve or prune weak pages, and don't mass-produce thin pages.
 
 1. **Target intent where you can win the click**: commercial and transactional queries (comparisons, alternatives, pricing, "[category] for [use case]", integrations), and queries where a summary can't substitute for the page (tools, calculators, templates, data, detailed how-tos with product context).
 2. **Information gain**: first-hand experience, original data, specific examples, expert opinion. Pages that restate the top 10 results add nothing for Google or for AI summaries to cite.
@@ -20,6 +24,8 @@ tags: seo, search engine optimization, content marketing, ai overviews, ai mode,
 5. **Don't**: mass-produce templated or AI pages without unique value; rent subfolders to third parties; buy expired domains for their links.
 
 ## Generative engine optimisation (GEO): evidence vs speculation
+
+_In short:_ Adding quotes, statistics and named sources has some lab support for appearing in AI answers, but claims about special files like llms.txt or schema lack evidence; track branded search and AI referrals instead.
 
 For the practical side (which bots to allow, what assistants cite, AI shopping feeds, measuring mentions) see ai-assistant-visibility and run check_ai_crawler_access.
 
@@ -30,12 +36,16 @@ For the practical side (which bots to allow, what assistants cite, AI shopping f
 
 ## Keyword and topic research
 
+_In short:_ Start from customer language, give each page one intent, and prioritise by business value and chance of winning over effort; a small "alternative to" query can beat a big informational one.
+
 - Start from customer language (sales calls, reviews, support) and the jobs they're trying to do, then validate volume.
 - Map each topic to a funnel stage and a page type. One primary intent per page.
 - Prioritise by (business value × ability to win) ÷ effort. A 50-search/month "alternative to [competitor]" query can beat a 50,000-search informational one.
 - Check the live SERP: if it's all AI Overview + forums + video, a blog post won't win much.
 
 ## Technical checklist
+
+_In short:_ Make sure key pages are indexable, correctly titled and linked, render their main content on the server, load fast, use valid structured data, and fix site-wide problems found by a crawl.
 
 Run crawl_site on the whole site for site-wide problems (broken links, redirect chains, duplicates, orphan pages, sitemap conflicts, click depth, hreflang), then audit_page on key templates (render=true if the site builds content with JavaScript).
 - Indexable (no stray noindex, X-Robots-Tag), canonical correct, in the XML sitemap, internally linked.
@@ -47,6 +57,8 @@ Run crawl_site on the whole site for site-wide problems (broken links, redirect 
 - Mobile-friendly, HTTPS, no redirect chains.
 
 ## Common mistakes
+
+_In short:_ Don't judge SEO by traffic alone, publish volume over quality, target keywords no customer uses, or treat rankings as the goal when qualified visits and sales are.
 
 - Measuring SEO on traffic when the traffic that disappeared was never converting.
 - Publishing volume over quality; it now risks a site-wide drag.

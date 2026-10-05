@@ -10,6 +10,8 @@ Use this playbook when you need to set up product analytics, or decide what to l
 
 ## What to track first
 
+_In short:_ Track only five to eight events at first: signup, each setup step, first value, value repeated and payment. Send them from your server so ad blockers cannot drop them.
+
 - **At 0–100 users, five to eight events answer almost every question** [practitioner; built from vendor docs]:
   1. Signed up.
   2. Each setup step the product needs (data source connected, CLI installed, CI check added, teammate invited).
@@ -23,6 +25,8 @@ Use this playbook when you need to set up product analytics, or decide what to l
 
 ## Event naming
 
+_In short:_ Pick one naming style, write it down and never mix: object first, then action, with changing details kept in properties (extra labelled fields), not in the name.
+
 Pick one convention, write it at the top of the tracking plan, and never mix. The three main vendors agree on object first, then action; few events with properties; and no changing values (dates, IDs, names) inside event names. They disagree on tense and case. [first-party; vendor; all three sell analytics]
 
 | Vendor | Event format | Example | Properties |
@@ -35,6 +39,8 @@ Pick one convention, write it at the top of the tracking plan, and never mix. Th
 - Put variable values in properties: "Report Exported" with a format property, not "Report Exported PDF". Segment's bad example is an event name with a date inside it. [first-party; vendor]
 
 ## A minimal tracking plan
+
+_In short:_ Keep a one-table tracking plan (the written list of events) in your code repo, each event tied to a question it answers, and delete events nobody has queried in three months.
 
 Keep it as one table in the repo, next to the code that sends the events.
 
@@ -51,6 +57,8 @@ Add a "status" column (planned, live, removed) and a date. Remove events nobody 
 
 ## Defining activation when the product needs setup
 
+_In short:_ Setup is not activation (the moment a user first gets real value). Measure the drop-off between each setup step and first value, and check your definition against your own retention.
+
 - **Separate setup from value.** Reforge describes three moments in order: setup (the user has done what is needed to get value), aha (first experience of value), habit (value repeated within a set period); "setup is not activation". [practitioner; snippet-only]
 - For products where the user must connect a database, install something in CI or invite a team, track the **drop between each setup step and first value**. A large drop at one step tells you where to help. Time to first value is covered in **developer-tools**.
 - **Activation** = first value reached within a time window (for example, first result within 7 days); **habit** = value repeated (for example, results on 3 separate days in the first 14). Choose and check against your own retention, as described in **self-serve-saas**. [practitioner]
@@ -66,6 +74,8 @@ Add a "status" column (planned, live, removed) and a date. Remove events nobody 
 
 ## Privacy-friendly and self-hosted tools, and what each can't do
 
+_In short:_ Privacy-friendly page counters show where visitors come from but cannot follow one person over time. Activation and retention need user-level events, and your own database is often enough.
+
 | Tool | Good for | What it can't do |
 |---|---|---|
 | Plausible | Page traffic, sources, goals without cookies | Recognise a person across days, devices or sites: the visitor ID uses a salt deleted every 24 hours. No user-level retention. [first-party; vendor] |
@@ -78,6 +88,8 @@ Add a "status" column (planned, live, removed) and a date. Remove events nobody 
 
 ## Consent and server-side tracking (not legal advice)
 
+_In short:_ Moving tracking to your server does not remove the need for consent if browser code still collects device data. Session replay (recordings of user screens) needs masking and, in the EU, consent.
+
 The banner rules (reject as easy as accept, no trackers before choice) are in **privacy-and-marketing-law**. What matters for analytics:
 - The EU data protection board (EDPB) reads the ePrivacy cookie rule to cover tracking pixels, browser code that sends device information back to a server, and in some cases tracking by IP address alone. [first-party; November 2023 version read]
 - **Server-side tagging does not remove consent** when browser code still reads and sends device data; it only moves where the data is processed. [first-party; our reading of the EDPB text]
@@ -87,6 +99,8 @@ The banner rules (reject as easy as accept, no trackers before choice) are in **
 - **Session replay** records what users see and type. Researchers found replay scripts on 482 of the top 50,000 sites capturing card numbers, passwords and medical details. [research; measurement study, 2017; snippet-only] PostHog masks all inputs by default but not other text. [first-party; vendor] Mask all text on screens with customer data, and treat replay as consent-requiring tracking in the EU.
 
 ## Measuring with very small numbers
+
+_In short:_ With under about 100 users, percentages mislead and jumps are usually noise. Count and name actual people, compare monthly groups, skip A/B tests, and email each signup yourself.
 
 - **Percentages mislead below about 100 users.** If 3 of 10 signups activate, the true rate could be anywhere from about 11% to 60% (95% Wilson interval). 30 of 100 gives about 22–40%; 300 of 1,000 gives 27–33%. [research: Brown, Cai & DasGupta 2001 recommend Wilson intervals for small samples; own calculation]
 - Zero events is not zero risk: 0 of 20 still allows a true rate up to about 16% (the "rule of three": 0 in n means up to about 3/n). [research; snippet-only]
@@ -98,6 +112,8 @@ The banner rules (reject as easy as accept, no trackers before choice) are in **
   - Ask "how did you hear about us?" at signup (see **metrics-and-measurement**).
 
 ## CLI and developer-tool telemetry
+
+_In short:_ Telemetry (anonymous usage reporting) is normally on by default in big developer tools, but a small tool should prefer opt-in, a first-run notice, its own endpoint, and honour DO_NOT_TRACK.
 
 **Norm today**: most large developer tools collect anonymous usage data **by default (opt-out)**, show a notice on first run, and offer their own environment variable to turn it off. [first-party]
 
@@ -122,6 +138,8 @@ The banner rules (reject as easy as accept, no trackers before choice) are in **
 
 ## Dashboards that matter vs vanity metrics
 
+_In short:_ Vanity metrics (numbers that grow but tell you nothing to act on, like page views) mislead. Review one weekly dashboard of signups by source, funnel, time to first value and retention.
+
 - **Vanity metric** = a number that grows but doesn't tell you what to do: page views, total signups, GitHub stars, total downloads. Eric Ries's example is "hits", which count "a technical process, not a number of human beings". [practitioner; Ries 2009]
 - One small-team dashboard, reviewed weekly:
   1. New signups by source (count).
@@ -133,12 +151,16 @@ The banner rules (reject as easy as accept, no trackers before choice) are in **
 
 ## What usually works by stage
 
+_In short:_ Match tooling to size: under 20 users query your own database and email everyone; at 20 to 100 add a few server-side events; beyond 100 add an analytics tool.
+
 - **0–20 users**: no analytics tool needed. Query your own database, watch replays, email every signup, and keep a list of who reached first value. [practitioner]
 - **20–100 users**: the five to eight server-side events above, one naming convention, a written tracking plan, a cookieless page counter for the website, and the monthly-cohort funnel in counts. [practitioner]
 - **100–1,000 users**: a product analytics tool (hosted or self-hosted), activation checked against retention, a first experiment on the activation step once each arm can get enough users (see **experimentation**). [practitioner]
 - **Beyond**: account-level analytics for teams, a data warehouse, and a reviewed tracking plan with an owner. [practitioner]
 
 ## Common mistakes
+
+_In short:_ Avoid autocapture-only tracking, mixed event names, browser-only core events, calling setup completion activation, reading tiny samples as trends, unmasked replays, and total-only dashboards with no decision attached.
 
 - Autocapture only, with no clean signup or first-value event. PostHog's own docs warn about this. [first-party; vendor]
 - Mixed naming ("signup", "Sign Up", "user signed up") splitting one action into three events.

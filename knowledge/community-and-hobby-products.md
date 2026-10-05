@@ -8,6 +8,8 @@ This playbook is for products that live **inside someone else's community**: Dis
 
 ## First question: what is your goal?
 
+_In short:_ Decide first whether this is a hobby, side income, lifestyle business or venture, since each needs a different plan. Startup survival rates do not apply to a hobby, and donations cover costs, not salaries.
+
 Ask this before any other advice. The right plan and the right base rates differ.
 
 | Goal | What success looks like | What to optimise | What not to do |
@@ -24,6 +26,8 @@ Ask this before any other advice. The right plan and the right base rates differ
 
 ## How overlay and aggregator products work
 
+_In short:_ An overlay (a layer on a community) or aggregator (one place gathering activity from many) depends on moderators who can remove you in one click. Start in one place, ask consent, delete data on request.
+
 An **overlay** adds a layer on top of an existing community (a bot in a server, a tool on a game's data). An **aggregator** collects activity from many places into one (trade listings from many servers). Value comes from the community's existing activity, not from content you create.
 
 - **Supply is permissioned.** Moderators and server admins decide whether your bot is installed, which channels it can read, and whether members may post links to your site. They are your real gatekeepers, and they can remove you in one click. Treat them as your first customers [practitioner].
@@ -37,6 +41,8 @@ An **overlay** adds a layer on top of an existing community (a bot in a server, 
 
 ## Making money without breaking the community
 
+_In short:_ Monetise from least to most risky: donations, charging server owners instead of members, extras like higher limits, then ads. Keep the core thing people come for free, since paywalling it loses the community.
+
 From least to most risk to trust:
 
 1. **Donations and supporter tiers.** Patreon (pages published after 4 Aug 2025 pay a 10% platform fee plus payment processing, 2.9% + $0.30 per US card payment) [first-party]; GitHub Sponsors (no fee on sponsorships from personal accounts) [first-party]; Ko-fi (no platform fee on one-time tips on the free plan; fees on memberships and shop sales unless you pay for Ko-fi Gold) [not re-verified]. Give supporters thanks, a badge or early access, not the core feature; showing running costs openly helps [practitioner].
@@ -47,6 +53,8 @@ From least to most risk to trust:
 **Paywalling the core loop** is the most common way these products lose their community. Anecdote: the Discord bot MEE6 drew public backlash in 2022 after promoting NFTs and moving previously free features behind its premium plan; users built a website listing alternative bots [anecdote; community sources]. One case, not a measured effect; but another free bot is one click away.
 
 ## Platform and IP rules
+
+_In short:_ Read each platform's and game publisher's terms before charging, because many forbid paid versions or ads on their data. A trading tool must also stay clear of real-money trading of in-game items.
 
 Read the current terms of every platform and publisher before charging anything.
 
@@ -65,6 +73,8 @@ Read the current terms of every platform and publisher before charging anything.
 
 ## Growth inside communities
 
+_In short:_ Ask moderators first, time launches to game patches and seasons, work with creators, follow each subreddit's promotion rules, and let shareable outputs carry your name to new servers.
+
 - **Moderators first.** Ask before posting in a server or subreddit and act on their feedback; a moderator who installs it brings the whole server [practitioner].
 - **Time launches to the game's calendar.** Patches, new seasons, ladder resets and expansions are when players look for new builds, guides and tools; search and community activity rise around them [practitioner]. Ship updates before the event, not after (see launches-and-gtm).
 - **Creator partnerships.** Streamers and YouTubers in the game can show the tool in use; offer free access or credit. If you pay, disclosure rules apply (see pr-and-influencers).
@@ -73,12 +83,16 @@ Read the current terms of every platform and publisher before charging anything.
 
 ## Measuring
 
+_In short:_ Measure per community, not total installs: active servers, use per server, and how many are still active after 30 and 90 days. Also track cohorts, how admins heard of you, and cost per active user.
+
 - **Per community, not just totals**: active servers, commands or lookups per active server per week, share of servers still active after 30 and 90 days. A large install count hides servers that removed or ignore you (see retention-and-expansion).
 - **Retention by cohort**: users or servers by the month they joined; watch for a dip after each game season.
 - **Word of mouth**: ask new admins how they heard of you; track installs from creators' links.
 - **Cost per active user**: hosting plus your hours; for a hobby, the number that decides whether it's still fun.
 
 ## What usually works by stage
+
+_In short:_ Start with one game or server and its moderators, then spread with shareable outputs and patch-timed launches. As costs rise, charge server owners. If you want a business, get a publisher licence.
 
 | Stage | Usually works | Usually fails |
 |---|---|---|
@@ -88,6 +102,8 @@ Read the current terms of every platform and publisher before charging anything.
 | Business (if wanted) | A licence from the publisher, more than one game or platform, an owned email list | Assuming Discord or one publisher will keep the rules unchanged |
 
 ## Common mistakes
+
+_In short:_ Avoid applying startup logic to a fun project, paywalling the core feature or adding early ads, charging for data the publisher requires free, drifting into real-money trades, hoarding messages, ignoring moderators, and counting installs.
 
 - Using startup failure rates or VC logic for a project that only needs to be fun.
 - Paywalling what people came for, or adding ads before the community trusts you.

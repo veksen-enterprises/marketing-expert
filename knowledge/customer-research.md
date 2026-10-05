@@ -6,6 +6,8 @@ tags: customer research, interviews, jobs to be done, jtbd, mom test, switch int
 
 ## Pick the method by question
 
+_In short:_ Choose the research method by the question: interviews for whether a problem is real or why people bought, surveys for needs across many customers, reviews for customer words. Never ask "would you pay?".
+
 | Question | Method |
 |---|---|
 | Is this problem real and painful? | Problem interviews (Mom Test) |
@@ -16,6 +18,8 @@ tags: customer research, interviews, jobs to be done, jtbd, mom test, switch int
 | Will they pay $X? | Pricing research (see pricing). Never ask "would you pay?" directly |
 
 ## The Mom Test (Rob Fitzpatrick, 2013) [practitioner]
+
+_In short:_ Ask about their life and specific past events, not your idea or future opinions. Compliments are worthless data; a meeting worked only if they committed time, an intro or money.
 
 1. Talk about their life, not your idea.
 2. Ask about specifics in the past, not generalities or opinions about the future.
@@ -32,6 +36,8 @@ A meeting succeeded only if they committed something: time, reputation (an intro
 
 ## Jobs to be done: three camps that disagree [practitioner]
 
+_In short:_ Jobs to be done means understanding the progress a customer wants to make. Use switch interviews to learn why people buy, and outcome surveys to prioritise what to build.
+
 - **Christensen (Competing Against Luck, 2016)**: a job is the progress a person is trying to make in a particular circumstance, with functional, social and emotional dimensions. Circumstance matters more than demographics. Milkshake story: commuters "hired" a milkshake for a boring drive; competitors were bagels and bananas, not other milkshakes. (Data never published.)
 - **Moesta / Spiek (switch interviews)**: interview recent switchers and reconstruct the timeline: first thought, passive looking, active looking, deciding, consuming. Four forces: **push** of the current situation + **pull** of the new solution must exceed **anxiety** about the new + **habit** of the present. Anxiety and habit are rarely volunteered: probe for them. Messaging uses: push/pull become headlines; anxieties become objection-handling and risk reversal.
 - **Ulwick (Outcome-Driven Innovation)**: jobs as activities; collect 50–150 solution-free desired outcome statements, survey 180–3,000 people on importance and satisfaction, opportunity = importance + max(0, importance − satisfaction). Strategyn's "86% success rate" claim (18 of 21 launches, in a 2010 study Strategyn paid for) is vendor-reported and client-self-rated.
@@ -39,6 +45,8 @@ A meeting succeeded only if they committed something: time, reputation (an intro
 Ulwick calls the milkshake analysis flawed (it segments by product, not by job). Use switch interviews to understand purchase decisions and messaging; use ODI-style surveys to prioritise roadmap and segment by need.
 
 ## Switch interview script outline
+
+_In short:_ Interview recent switchers about their timeline: when the old way failed, what they looked at, what nearly stopped them, and what tipped them. Eight to twelve interviews per segment usually reveals the patterns.
 
 1. Set the scene: when did you buy/switch? Where were you? Who else was involved?
 2. First thought: when did you first realise the old way wasn't working? What happened that day?
@@ -49,12 +57,16 @@ Listen for specific moments, quotes, people and numbers. 8–12 interviews per s
 
 ## Finding your best-fit customers (ICP)
 
+_In short:_ Find your ICP (ideal customer profile: the kind of customer who fits you best) from billing and CRM (customer records) data, not opinions, then interview five to ten of them about why they bought.
+
 Pull from the CRM / billing data, not opinions:
 - Shortest sales cycle, highest win rate, lowest churn, highest expansion, most referrals.
 - Look for the shared characteristics (situation, trigger, team, tech, size), not only firmographics.
 - Interview 5–10 of them about why they bought and what they'd do without you. That list of alternatives feeds positioning.
 
 ## Surveys: rules that keep them honest
+
+_In short:_ Ask about past behaviour, not hypotheticals, keep questions neutral, sample the right people including churned ones, and report response rates. Stated intent overstates what people really do.
 
 - Ask about past behaviour and current state, not hypotheticals. Stated purchase intent overstates real behaviour.
 - One idea per question; no leading wording; include "none/other".
@@ -64,11 +76,15 @@ Pull from the CRM / billing data, not opinions:
 
 ## Win/loss and churn interviews
 
+_In short:_ Interview within weeks of a win, loss or cancellation, ideally by someone not on the deal. Price is the polite reason; probe for value the customer never got.
+
 - Interview within 2–4 weeks of the decision, ideally by someone not on the deal.
 - Losses to "no decision" are about urgency and risk, not features.
 - Churn exit surveys over-report price. Price is the polite reason; probe for value not realised (often onboarding/activation).
 
 ## Mining public issue trackers and forums [practitioner]
+
+_In short:_ When you can't interview yet, read how people describe the problem in issue trackers and forums. Keep users' words apart from experts', note the source's bias, and reuse their words in headlines.
 
 When you can't interview yet, read how people describe the problem where they ask for help: issue trackers, Q&A sites, forum threads.
 - Collect short excerpts with link and date; mark each as verbatim or paraphrase.
@@ -78,6 +94,8 @@ When you can't interview yet, read how people describe the problem where they as
 - Use the words for headlines and outreach; use the trigger events to time and target outreach.
 
 ## Common mistakes
+
+_In short:_ Don't pitch during discovery, talk only to fans, take feature requests literally, or survey before interviewing.
 
 - Pitching during discovery and then counting the compliments.
 - Talking only to fans; never to churned users or lost deals.

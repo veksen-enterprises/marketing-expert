@@ -8,6 +8,8 @@ This playbook covers content whose main job is to earn attention and trust from 
 
 ## Strategy: who, which job, what point of view [practitioner]
 
+_In short:_ Before making anything, write down who the one reader is, what job they are doing, and what opinion you hold that a competitor would dispute. Tie topics to moments when people start buying.
+
 Write three sentences before you make anything. If you can't, more content won't help.
 - **Who**: one specific reader, described by role and situation (for example, "finance lead at a 50–200 person SaaS company during month-end close"). Get this from customer-research, not guesses. Content for "everyone in B2B" reaches nobody.
 - **Which job**: what the reader is trying to get done when they meet your content. Typical jobs are learning a skill, judging a vendor, building a business case for their boss, or keeping up with the field. Each job needs a different format.
@@ -17,6 +19,8 @@ Write three sentences before you make anything. If you can't, more content won't
 
 ## Formats and when to use them
 
+_In short:_ Pick formats by purpose: original research gets cited, newsletters are the one channel you own, podcasts build relationships, and free tools and case studies sit close to buying.
+
 - **Original research and data reports.** Survey your market, or publish anonymised data from your own product. This is the format most likely to be cited by journalists, analysts and AI answers (see seo-and-ai-search on "information gain"). In the Cision 2025 State of the Media survey, 61% of journalists said they value industry data such as trends and market statistics [vendor]. Rules: publish your method and sample size; ask questions whose answer you don't already know; get one headline number that can stand alone in a sentence; release it once a year on the same schedule so people expect it.
 - **Newsletters.** The one content channel you own: no algorithm decides who sees it (deliverability rules still apply, see email-and-lifecycle). Best for building a direct relationship over months. One clear topic, one sender voice, a fixed day. Grow it with sign-up forms on your best content and with cross-promotion swaps with similar newsletters [practitioner].
 - **Podcasts.** Slow to grow an audience, but strong for building relationships: inviting buyers, partners and experts as guests is often worth more than the downloads. Record on video too, and cut short clips for social [practitioner].
@@ -25,6 +29,8 @@ Write three sentences before you make anything. If you can't, more content won't
 - **Case studies and customer stories.** The format closest to buying. Use a specific "before" situation, numbers the customer agrees to publish, and quotes in the customer's words (see messaging-and-copy).
 
 ## Distribution before creation [practitioner]
+
+_In short:_ Plan where each piece will go before you make it: cut one big piece into many small ones, write natively for each platform, give sales a short version, and re-promote your best work.
 
 "Create once, distribute many": plan where each piece will go before you make it. A common practitioner split is to spend as much effort on distribution as on creation; this is a rule of thumb with no measured basis [rule-of-thumb].
 - Before writing, list the channels: newsletter, founder and employee posts, communities, partner newsletters, sales emails, paid promotion, journalists.
@@ -36,6 +42,8 @@ Write three sentences before you make anything. If you can't, more content won't
 
 ## Founder-led content [practitioner]
 
+_In short:_ Early on, the founder's own account usually reaches the right people better than the company page. Share real lessons and numbers, and build an email list so the audience is not stuck on one platform.
+
 - In early-stage B2B, the founder's personal account often reaches more of the right people than the company page, because platforms show posts from people more than posts from brand pages (see organic-social-and-community).
 - What works: specific lessons from building the company, honest numbers, strong opinions about the category, stories from customer conversations (with permission).
 - What fails: product announcements dressed as stories, generic motivation, and ghostwritten posts the founder never read. Ghostwriting help is fine if the ideas and voice are the founder's.
@@ -43,12 +51,16 @@ Write three sentences before you make anything. If you can't, more content won't
 
 ## B2B thought leadership: what the Edelman-LinkedIn data says [vendor]
 
+_In short:_ Surveys by interested parties say buyers trust thought leadership (expert opinion content) more than marketing. Treat that as direction only: write for the whole buying group and challenge assumptions.
+
 LinkedIn sells the ad space where thought leadership is promoted, and Edelman sells thought-leadership services, so both have a commercial interest in these findings. All figures are buyers' self-reports in a survey, not observed behaviour.
 - **2024 report** ("Reaching Beyond the Ready", 3,484 global business executives): 73% of decision-makers said an organisation's thought leadership is a more trustworthy basis for judging its capabilities than its marketing materials and product sheets; 90% said they would be more receptive to outreach from a company that consistently produces high-quality thought leadership; more than 75% said a piece of thought leadership had led them to research a product they were not considering; 60% said they would pay a premium to work with a company with strong thought leadership; 52% of decision-makers and 54% of C-suite executives spend an hour or more per week reading it.
 - **2025 report** ("Invisible Influence", 1,934 US respondents surveyed on LinkedIn among its own members): focuses on "hidden buyers" (people in finance, operations, legal, procurement who influence a deal but rarely meet sales). Reported findings: more than 40% of B2B deals stall because of internal misalignment; 71% of hidden buyers have little or no direct contact with sales; 95% of hidden buyers say strong thought leadership makes them more receptive to outreach; 86% prefer content that challenges their assumptions.
 - **How to use it**: as a direction, not proof. The practical lessons are sound and cheap to test: write for every person in the buying group, not only the champion; give buyers material they can forward internally; challenge an assumption instead of repeating the consensus.
 
 ## Measuring content
+
+_In short:_ Content effects are hard to track by clicks, so ask buyers how they heard of you, watch leading signals per format, and judge over months against two or three metrics agreed with sales and finance.
 
 See metrics-and-measurement for attribution methods. Content-specific rules:
 - **Self-reported attribution** (a free-text "How did you hear about us?" field on demo and sign-up forms) catches content consumed without a click: podcasts, newsletters, posts read in the feed [practitioner].
@@ -59,6 +71,8 @@ See metrics-and-measurement for attribution methods. Content-specific rules:
 
 ## AI-generated content: risks
 
+_In short:_ Mass-produced AI pages can be penalised by Google, sound like everyone else and invent facts. Use AI for research, editing and cutting pieces down, but keep ideas, data and final review human.
+
 - **Search penalties**: Google's spam policies count mass-produced pages with little value as "scaled content abuse", whatever tool made them (see seo-and-ai-search) [first-party].
 - **Sameness**: language models produce the average of what already exists. That is the opposite of a point of view and of "information gain".
 - **Accuracy and trust**: invented statistics and quotes damage credibility, and in ads or testimonials they can break consumer-protection law (see pr-and-influencers on the FTC reviews rule).
@@ -66,10 +80,14 @@ See metrics-and-measurement for attribution methods. Content-specific rules:
 
 ## What usually works by stage
 
+_In short:_ Early on, do founder posts plus one owned format like a newsletter, written from customer conversations. When scaling, add a yearly research report, case studies for sales and an editor before more writers.
+
 - **Early (pre product-market fit to first repeatable sales)**: founder-led posts plus one owned format (usually a newsletter). Write from customer conversations. Distribute by hand in the communities where buyers already are. No content team yet.
 - **Scaling**: an annual research report as the flagship, a regular newsletter or podcast, case studies for sales, and a repurposing system. Hire an editor before hiring more writers. Add paid promotion of proven pieces and employee advocacy.
 
 ## Common mistakes
+
+_In short:_ Avoid publishing with nothing to say, writing for search engines or fellow marketers, skipping distribution, gating everything, judging on last-click results after four weeks, and publishing research with a hidden method.
 
 - Publishing on a schedule with nothing to say; volume without a point of view.
 - Writing for search engines or for peers in marketing instead of for buyers.

@@ -6,6 +6,8 @@ tags: marketing budget, how much to spend, percent of revenue, gartner cmo spend
 
 ## What companies actually spend [analyst, academic survey, vendor]
 
+_In short:_ Surveyed spending ranges widely, from about 6% of revenue to 40% for fast-growing public software firms. Funding, growth goals and sales model decide spend, not an industry average.
+
 The two most quoted surveys:
 
 - **Gartner CMO Spend Survey 2025**: marketing budgets were **7.7% of company revenue**, flat from 2024. Half of CMOs reported **6% or less**, so the average is pulled up by a few high spenders. 59% said their budget was not enough for their strategy. Sample: 402 marketing leaders in North America and Europe, mostly at companies with over US$1 billion revenue. [analyst]
@@ -23,6 +25,8 @@ How to read these: the spread between 6% (B2B products, bootstrapped SaaS) and 4
 
 ## Why %-of-revenue is a weak way to set a budget
 
+_In short:_ Setting budget as a percentage of revenue gets cause and effect backwards and ignores your goals. Better to cost the tasks needed for a goal and cap spending by what customer payback allows.
+
 Percentage of revenue is easy to explain to a board, but it has three problems [textbook, practitioner]:
 
 1. **It reverses cause and effect.** Spend follows last year's sales, when marketing is meant to cause next year's sales. When sales fall, the rule cuts spend exactly when you may need more.
@@ -38,6 +42,8 @@ Better bases, used together:
 
 ## Splitting money between proven and new
 
+_In short:_ Keep most money on proven channels and a fixed slice for tests, each with enough budget, a deadline and a written stop rule. Before product-market fit, nearly everything is a test.
+
 - Keep most spend on what is proven, and protect a fixed slice for tests. A common form is **70/20/10**: 70% on proven channels, 20% on extending what works (new audiences, formats), 10% on new ideas. It comes from Coca-Cola's content planning, not from a study. [rule-of-thumb]
 - Before product-market fit the split is different: almost everything is a test. The goal is to find one channel that works, not to spread money thinly (see channel-strategy). [practitioner]
 - Give each test a budget big enough to reach a clear answer, a deadline and a kill rule written in advance. Ten tiny tests that each end "inconclusive" teach nothing (see experimentation). [practitioner]
@@ -45,6 +51,8 @@ Better bases, used together:
 - Hold back a reserve (many teams keep part of the budget unallocated until mid-year) so you can fund what works without waiting for next year's plan. [practitioner]
 
 ## The first marketing hire [practitioner]
+
+_In short:_ Don't hire marketing until you know the job; founders usually do it early. Hire a hands-on generalist first, aimed at your biggest bottleneck, not a senior leader with no team.
 
 All advice here is practitioner opinion; we found no controlled evidence.
 
@@ -55,6 +63,8 @@ All advice here is practitioner opinion; we found no controlled evidence.
 - **Avoid hiring a VP of Marketing as the first hire** unless they will do the work themselves for the first year. A senior leader with no team and no budget is an expensive mismatch. [practitioner]
 
 ## Agencies, freelancers or in-house [practitioner]
+
+_In short:_ Keep strategy, positioning and measurement in-house and outsource tasks you can describe clearly. Freelancers suit bounded tasks, agencies suit occasional specialist work; always own your accounts.
 
 | Option | Good for | Watch out for |
 |---|---|---|
@@ -67,6 +77,8 @@ All advice here is practitioner opinion; we found no controlled evidence.
 - Own your ad accounts, analytics and data. Never let an agency hold the only admin access. [practitioner]
 
 ## Team structure as you grow [practitioner]
+
+_In short:_ Teams grow from founder-led to a generalist to specialised roles (product marketing, growth, content, operations). The order depends on whether you sell through people or self-serve.
 
 There is no tested model; this is a common sequence, adapted to motion.
 
@@ -81,6 +93,8 @@ There is no tested model; this is a common sequence, adapted to motion.
 
 ## Planning cadence [practitioner]
 
+_In short:_ Plan yearly, set three to five priorities each quarter, and review weekly or monthly. Write down your assumptions so you can see which were wrong.
+
 - **Annual plan**: goals, budget envelope, headcount, and the few big bets. Built bottom-up (objective-and-task) and checked top-down (unit economics, benchmarks).
 - **Quarterly bets**: three to five priorities per quarter, each with a target, an owner and a test budget. Review results and move money at each quarter's end.
 - **Monthly or weekly**: channel performance, pacing against budget, and stopping things that fail their kill rule.
@@ -88,12 +102,16 @@ There is no tested model; this is a common sequence, adapted to motion.
 
 ## What to measure the team on
 
+_In short:_ Measure the team on outcomes the business values, such as customers, revenue or payback, not easily inflated numbers like leads or followers. Give each role leading indicators you've checked predict results.
+
 - Measure on **outcomes the business values**, agreed with sales and finance: new customers or revenue, qualified pipeline, CAC payback, retention for lifecycle work (see metrics-and-measurement). [practitioner]
 - Avoid targets that are easy to inflate: leads by count, traffic, followers, platform ROAS. These are useful diagnostics, not goals. [practitioner]
 - Match the time window to the work: brand work over 6–36 months on branded search, share of search, win rates and price; activation work over weeks on cost per customer and payback (see brand-and-demand). [research, with caveats]
 - Give each role leading indicators it can move (activation rate, meeting rate) that you have checked actually predict the lagging result.
 
 ## Common mistakes
+
+_In short:_ Common mistakes: copying a big company's percentage, spreading money thin, a wrong first hire, cutting brand and tests in downturns, outsourcing strategy, and rewarding lead volume.
 
 - Setting the budget as a % of revenue copied from a survey of billion-dollar companies.
 - Spreading a small budget across many channels before any one works.

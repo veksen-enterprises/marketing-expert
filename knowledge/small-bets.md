@@ -10,6 +10,8 @@ A small bet costs little money, takes days rather than months, and can be judged
 
 ## How to run small bets
 
+_In short:_ A small bet is a cheap test that teaches you something. Rank bets by upside, evidence and effort, set the judging window and stop rule first, run few at once, and measure each separately.
+
 - **Small bets work when a cheap test tells you something.** The case for many small tests is option logic: a small payment buys information and the right to invest more later. It fails where early results don't predict later ones. Direct outreach, launch posts and paid tests give fast signals; search, brand and audience-building give poor early signals (Google says search changes can take "several months", and few new pages rank within a year). [research; first-party; vendor]
 - **Rank by what a bet can do, its evidence and its effort.** match_small_bets scores each fitting bet as ceiling × evidence ÷ √effort and sorts by it. The ceiling is what the bet can do if it works: capped (a small, predictable gain, such as a directory listing), steady (slow and compounding, such as comparison pages) or lopsided (usually nothing, now and then a lot, such as a post, a short video or a launch). Weights: capped 1, steady 2, lopsided 3; evidence strong 1, some 0.85, anecdote 0.7; effort is the hours until the bet can be judged. The weights and each bet's ceiling are judgment calls, not measurements. [rule-of-thumb]
 - **Run lopsided bets as a batch and judge them by the best try.** One post tells you nothing; twenty posts tell you whether any format catches on. Each lopsided bet carries a number of tries to run before judging.
@@ -23,6 +25,8 @@ A small bet costs little money, takes days rather than months, and can be judged
 - **Money moves some bets earlier** (sponsorships, paid newsletters, paid tutorials, paid creators), but it buys reach the product hasn't earned. Check that a small first batch is still active four weeks later before paying for more. [practitioner]
 
 ## Stage 0: no users yet
+
+_In short:_ With no users, use bets that need only time, expertise or data: free listings, answering questions where people ask, comparison and error pages, free tools, open-source pieces, personal messages and one launch post.
 
 These need only time, expertise or data.
 
@@ -50,6 +54,8 @@ These need only time, expertise or data.
 
 ## Stage 1: the first users
 
+_In short:_ With your first users, talk to them: email every signup, payer and canceller one question yourself, do onboarding calls, ask happy users for introductions and reviews, and keep a public changelog.
+
 These need someone to talk to.
 
 - **Email every new sign-up, payer and canceller yourself.** A short plain-text email from the founder's own address with one question: "What made you sign up today?", "What almost stopped you paying?", "What made you cancel?" (one company found "what made you" got about twice the replies of "why did you"). Early hands-on help halved first-week churn in one field experiment. Keep these emails to a question with no offer, so they stay outside marketing rules: in Canada a message is commercial if promotion is one of its purposes; in the UK any promotional element makes it marketing; in the EU a 2025 court ruling lets the soft opt-in cover free accounts that are part of a freemium offer. Add "reply 'stop' and I won't email again". Needs a way to reach each user (accounts or emails). Judge after 20–30 emails. [research; practitioner; first-party]
@@ -68,6 +74,8 @@ These need someone to talk to.
 
 ## Stage 2: steady use
 
+_In short:_ Once use is steady, add bets that need something to spread or sell: shareable outputs, co-marketing, your own community or newsletter, small sponsorships, paid tutorials, affiliate links and perk listings.
+
 These need use to spread through, or something to sell.
 
 - **Outputs people want to share**: a share link or image card for results users are proud of or surprised by. Stop if fewer than about 1 in 50 results get shared after eight weeks. [anecdote]
@@ -81,9 +89,13 @@ These need use to spread through, or something to sell.
 
 ## Stage 3: something newsworthy
 
+_In short:_ Pitch the press only when you have numbers or a finding others would retell. Pitching with no users usually gets no coverage, and teardowns and your own data are the way to get there.
+
 - **Pitch the press** only with numbers or a finding others would retell. One documented solo launch sent twenty pitches with zero users and got no coverage. Teardowns and your own data are the usual way to reach this stage from below. See **pr-and-influencers**. [practitioner]
 
 ## Folklore
+
+_In short:_ Popular small-bet advice, such as one channel driving 70% of growth or small bets always lowering risk, has no published validation. Bets lower risk only when cheap, informative and not tied to one shared asset.
 
 - "70% of growth comes from one channel" and the Bullseye method are useful habits with no published validation.
 - "Small bets lower risk" holds only when bets are cheap, informative and not all tied to one shared asset (one audience, one platform).

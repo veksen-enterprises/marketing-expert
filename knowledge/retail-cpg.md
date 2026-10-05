@@ -8,6 +8,8 @@ Use this playbook for physical consumer products that sell mainly through stores
 
 ## How brands grow in retail (Ehrenberg-Bass, applied)
 
+_In short:_ Brands grow by getting more households to buy at least once, so being easy to find on the shelf matters. Track household penetration and store distribution before loyalty.
+
 The laws and their critiques are in brand-and-demand. What they mean on the shelf:
 
 - **Growth comes from penetration** (more households buying at least once a year), mostly light buyers. Retailers think the same way: they want items that bring more shoppers to the category [research for the laws; practitioner for the retail application].
@@ -16,6 +18,8 @@ The laws and their critiques are in brand-and-demand. What they mean on the shel
 - Practical rule: track **household penetration** and **distribution** (% of stores weighted by store size, called ACV, all-commodity volume) as your two main growth numbers, before loyalty metrics.
 
 ## Getting distribution
+
+_In short:_ Retail buyers decide on distribution at planned shelf changes, and want proof of demand, category growth and reliable supply. Start with fewer stores you can support, since slotting fees and over-expansion hurt.
 
 - **The buyer** (or category manager) at the retailer decides. They plan the category in "resets" (shelf changes) usually once or twice a year; learn each retailer's review calendar and pitch months before it [practitioner].
 - What buyers want to see [practitioner]:
@@ -29,12 +33,16 @@ The laws and their critiques are in brand-and-demand. What they mean on the shel
 
 ## Trade spend
 
+_In short:_ Trade spend (money paid to retailers and distributors to sell your product) is a large cost, often a fifth of sales. Model it from day one, reconcile deductions monthly, and measure each promotion's profit.
+
 - **Trade spend** = money paid to retailers and distributors to sell your product: temporary price reductions, displays, feature ads in flyers, slotting, free fill, "off-invoice" discounts, deductions for damages or late delivery.
 - Size: Strategy& (PwC) reported US trade spending above $200 billion a year, about 20% of gross sales for most CPG companies [vendor: consultancy; primary report not located]. Broker blogs say 15–25%, and higher for emerging brands [rule-of-thumb]. Model it as a cost line from day one.
 - **Deductions**: retailers and distributors subtract charges from what they pay you, often weeks later. Reconcile them every month; many are disputable [practitioner].
 - Measure every promotion: incremental units (above what you would have sold anyway) × margin, minus cost. Nielsen reported that almost three-quarters of CPG promotions it reviewed (39 million events) failed to break even; later NielsenIQ material says about two-thirds [vendor: data provider].
 
 ## Pricing and promotions
+
+_In short:_ Promotions mostly reach existing buyers and, when frequent, train shoppers to wait for deals. Use them for trial at launch, limit the weeks, and test discount depth.
 
 General research on reference prices and discount effects is in pricing.
 
@@ -49,6 +57,8 @@ General research on reference prices and discount effects is in pricing.
 
 ## Shelf and packaging
 
+_In short:_ Packaging is your most-seen ad, so make it distinctive and easy to find in seconds. Change it slowly, since redesigns can lose the cues shoppers use to find you.
+
 - Packaging is your most-seen ad. Make it a **distinctive asset** (colour, shape, logo, character) that shoppers can find in a few seconds on a crowded shelf (Romaniuk; see brand-and-demand) [practitioner].
 - Test new packs for **findability**: can people find your product among competitors quickly? Test with real shelf photos or online simulations before printing [practitioner].
 - **Redesign risk**: when Tropicana removed its familiar orange-with-straw image in 2009, unit sales fell 20% in about seven weeks according to Information Resources data reported by Bloomberg, and the old pack returned within about two months [secondary; one brand, other factors possible]. Change distinctive assets slowly and keep the main ones.
@@ -56,6 +66,8 @@ General research on reference prices and discount effects is in pricing.
 - Claims from packaging-research vendors (e.g. that most purchase decisions are made at the shelf) are often quoted without methods; treat them as [vendor] and test with your own data.
 
 ## Velocity: the number retailers watch
+
+_In short:_ Velocity (units sold per store per week) decides whether you keep your shelf space. Get the data, compare against what you replaced, and don't add stores while velocity is weak.
 
 - **Velocity** = units (or dollars) sold per store per week in stores that carry the item (UPSPW). Data providers also divide by total distribution points (which counts how many of your items each store carries) or by % ACV (all-commodity volume, which weights stores by their total sales) [vendor: SPINS definitions].
 - Velocity decides whether you keep your shelf space. Low velocity is the most common reason items are cut at a reset [practitioner].
@@ -65,12 +77,16 @@ General research on reference prices and discount effects is in pricing.
 
 ## Retail media networks
 
+_In short:_ Retail media means ads sold by retailers on their own sites and with their shopper data. Retailers report their own results, so ask for incrementality tests and budget it within trade spend talks.
+
 - **Retail media** = ads sold by retailers on their websites, apps, in-store screens, and with their shopper data on other sites. Examples: Amazon Ads, Walmart Connect, Target's Roundel, Kroger Precision Marketing.
 - Size: eMarketer forecast US retail media spending of about $58.8B in 2025 and $69.3B in 2026 [vendor: forecaster]. Amazon's advertising revenue was reported at $68.6B for 2025 (+22%) and Walmart's at $6.4B (+46%) [secondary summaries of company earnings].
 - Uses: sponsored product ads on retailer search, which capture shoppers ready to buy; and audience ads built from purchase data.
 - Caution: retailers report sales from their own data and often count sales that would have happened anyway. Ask for incrementality tests (holdouts, new-to-brand share) and compare with your total sales (see metrics-and-measurement) [practitioner]. Buyers increasingly expect retail media in your launch plan; budget it as part of trade spend negotiation.
 
 ## Launching in DTC, then retail
+
+_In short:_ Selling online first gives proof of demand, but shelf success is different since nobody explains the product. Expect lower margin and slow payment, and use your online audience at store launch.
 
 - Starting online is cheaper and gives you customer data, reviews and proof of demand. Many retail buyers ask for this proof [practitioner].
 - But online success doesn't guarantee shelf success: in a store nobody explains the product. Check that the pack and price work without your website's story (see ecommerce-dtc, "Retail and wholesale expansion").
@@ -80,6 +96,8 @@ General research on reference prices and discount effects is in pricing.
 
 ## Sampling and demos
 
+_In short:_ Sampling and demos at launch create trial and early velocity; focus on busy stores. Measure sales against similar stores without a demo and cost per new buyer.
+
 - In-store sampling can raise same-day sales of the sampled product a lot; in a US grocery chain field study (six products), talking with the person giving samples increased buying [research, Heilman, Lakishyk & Radas 2011; single chain].
 - Use demos at launch in each new retailer to create trial and early velocity; focus on stores with the most traffic.
 - Measure: units sold during and in the weeks after the demo vs similar stores without one.
@@ -87,11 +105,15 @@ General research on reference prices and discount effects is in pricing.
 
 ## What usually works by stage
 
+_In short:_ Early on, prove demand and learn velocity in a few stores; regionally, hit velocity targets before expanding; nationally, measure trade promotions for profit and add brand advertising.
+
 - **Pre-retail / first stores**: prove demand online or in local independent stores; pack and price tested on real shelves; a few demos per store; learn velocity in 10–50 stores before expanding [practitioner].
 - **Regional (one or a few chains)**: hit velocity targets before adding stores; plan promotions with the buyer per year; demos and local retail media at launch; reconcile deductions monthly; household penetration and ACV distribution as main metrics.
 - **National**: syndicated data, a trade promotion plan measured for incremental profit, brand advertising for mental availability (see brand-and-demand), retail media with incrementality tests, and portfolio decisions (cut weak SKUs, the individual product variants).
 
 ## Common mistakes
+
+_In short:_ Common mistakes: expanding faster than marketing can support, not measuring trade spend, over-promoting, redesigning packs, trusting retail media reports, ignoring deductions, and tracking loyalty over penetration.
 
 - Expanding distribution faster than marketing money can support velocity.
 - Treating trade spend as a sales cost nobody measures.

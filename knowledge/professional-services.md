@@ -8,11 +8,15 @@ Use this playbook when the product is people's expertise and time: agencies, con
 
 ## How buyers choose a firm
 
+_In short:_ Buyers can't test expertise before paying, so they mostly find firms by asking people they trust. Your reputation for a specific expertise creates leads, so make it visible to people who might refer you.
+
 - Buying expertise is risky: the buyer can't test the work before paying. So buyers lean on other people's judgement. In Hinge's *How Buyers Buy* survey (822 buyers), buyers found a new firm by asking someone 71% of the time and by searching online 11% of the time [vendor; Hinge sells marketing to these firms; published 2013].
 - Referrals don't only come from past clients. In Hinge's referral study (523 firms), 81.5% of firms had received a referral from someone who was not a former client. Of those referrals, 48.1% came from the firm's expertise and 46.4% from its general reputation. In a separate count of what drives new referrals, visible expertise (37.3%) beat client relationships (23.1%) [vendor; firm self-reports; 2015].
 - Implication: your reputation for a specific expertise is the main thing that creates leads. Marketing's job is to make that expertise **visible** to people who might refer or hire you.
 
 ## Positioning by specialization
+
+_In short:_ A specialist is easier to remember, refer and charge more than a generalist. Pick one industry or one discipline, based on your best clients, and lead with it in one sentence.
 
 - A generalist firm competes on price and relationships. A specialist firm is easier to remember, easier to refer, and can charge more [practitioner: David C. Baker, *The Business of Expertise*; Blair Enns, *The Win Without Pitching Manifesto*].
 - Baker's two directions [practitioner]:
@@ -23,6 +27,8 @@ Use this playbook when the product is people's expertise and time: agencies, con
 - Fear of narrowing is normal. Specializing in your **marketing** doesn't mean refusing all other work; it means what you say publicly is narrow [practitioner].
 
 ## Referrals: make them a system
+
+_In short:_ Referrals are usually the biggest source of work, so manage them: list referrers, make your offer easy to repeat, stay visible, ask at good moments with specific requests, and track who referred whom.
 
 Referrals are usually the largest source of new work, but most firms leave them to chance. For incentive design and measurement, see referral-programs.
 
@@ -35,6 +41,8 @@ Referrals are usually the largest source of new work, but most firms leave them 
 
 ## Visible expertise and thought leadership
 
+_In short:_ Publish on your narrow specialization so buyers and referrers see how you think before hiring. Original research, speaking in your industry and named senior people work best.
+
 Content for expert firms has one job: let buyers and referrers see how you think before they hire you. Formats, distribution and the Edelman-LinkedIn data are in content-marketing.
 
 - Publish on the narrow topic of your specialization: diagnostic frameworks, benchmark reports from your client work (anonymized), teardowns, explanations of new regulation.
@@ -44,6 +52,8 @@ Content for expert firms has one job: let buyers and referrers see how you think
 
 ## Productized services
 
+_In short:_ A productized service has a fixed scope, price and timeline sold the same way each time. It's easier to sell and refer, and works as a low-risk first purchase.
+
 A productized service = a fixed scope, fixed price and fixed timeline sold the same way each time (e.g. "website accessibility audit, 10 days, $8,000").
 
 - Benefits: easier to sell and refer, easier to deliver with junior staff, and works as a low-risk **first purchase** that leads to larger work [practitioner].
@@ -52,6 +62,8 @@ A productized service = a fixed scope, fixed price and fixed timeline sold the s
 
 ## Pricing: hourly, fixed, value-based, retainers
 
+_In short:_ Hourly pricing rewards slowness and caps income. Fixed or value-based prices (set from what the result is worth to the client) suit repeat work; retainers (monthly fees) smooth cash flow if scope is defined.
+
 - **Hourly** prices effort. It is simple and low risk for the firm, but it rewards slowness, caps income at hours available, and makes the buyer manage your time [practitioner: Ronald J. Baker, *Implementing Value Pricing*].
 - **Fixed price** per project moves scope risk to the firm. Ron Baker argues buyers will pay a premium for that certainty [practitioner].
 - **Value-based** = price set from the value the client expects (revenue gained, cost avoided, risk reduced), agreed before work starts. Requires a diagnostic conversation to quantify value. Offer three options at different scope and price [practitioner: Enns, Baker, Weiss]. No controlled study was found showing value pricing earns more; evidence is cases and argument.
@@ -59,6 +71,8 @@ A productized service = a fixed scope, fixed price and fixed timeline sold the s
 - For general pricing research (anchoring, good-better-best, discounting), see pricing.
 
 ## Proposals and pitching (and free spec work)
+
+_In short:_ Don't give away ideas in free pitches. Diagnose first, agree on the problem, value and price in conversation, then write a proposal that only confirms it, and offer paid discovery.
 
 - Enns defines a pitch as trying to win work "by giving [your ideas] away for free" and argues expert firms should refuse free creative or strategy work [practitioner].
 - What to do instead [practitioner]:
@@ -69,15 +83,21 @@ A productized service = a fixed scope, fixed price and fixed timeline sold the s
 
 ## Partnerships
 
+_In short:_ Partner with firms serving the same clients with a different service. Agree referral terms and client ownership in writing.
+
 - Find firms that serve the same clients with a different service: a branding agency and a web developer, a law firm and an accounting firm, a consultancy and a software vendor whose product it implements.
 - Agree in writing on referral terms and who owns the client. Software vendor partner programs can feed implementation firms (see platform-and-feature-risk for dependency risk). See partnerships-and-affiliates for partner types and measurement.
 
 ## Case studies
 
+_In short:_ Write one case study per specialization and main service, with the client's problem, your work, a measured result and a named quote. Ask permission at contract signing, or anonymize.
+
 - One case study per vertical and per main service. Structure: client situation, problem in the client's words, what you did, a measured result, quote from a named person [practitioner].
 - Ask for permission at contract signing, not at the end. Some clients (law, finance) can't be named; use anonymized but specific stories ("a 400-person regional bank").
 
 ## Utilization and pipeline math
+
+_In short:_ Utilization (the share of available hours that are billed) guides hiring and pricing. Work back from revenue to the number of conversations needed, and keep weekly business development time even when busy.
 
 - **Billable utilization** = billable hours ÷ available hours. SPI Research reported average utilization fell from 73.2% (2021) to 68.9% (2024) and 66.4% (2025), against a 70–75% target [vendor; mostly tech services organizations]. Partners and sales-heavy people should run lower.
 - Revenue capacity = billable people × available hours × utilization × average realized rate. When utilization is above target for months, raise prices or hire; when it falls, increase business development.
@@ -87,15 +107,21 @@ A productized service = a fixed scope, fixed price and fixed timeline sold the s
 
 ## Research on growing firms
 
+_In short:_ A vendor study links high growth to certain practices, but it is self-reported and correlational. Treat its lists as ideas, not proven causes.
+
 - Hinge's High Growth Study 2024 (824 firms) defines high growth as ≥20% compound annual growth over three years and says these firms grow "4X faster" and are "almost 2X as profitable" [vendor]. The data is correlational and self-reported; treat its lists of "what high-growth firms do" as ideas, not causes.
 
 ## What usually works by stage
+
+_In short:_ Solo experts pick a specialty and ask for referrals; small firms systematize referrals and case studies and move to fixed pricing; larger firms add business development staff, yearly research and partner programs.
 
 - **Solo / freelancer**: pick one specialization; tell your network what you do; one content channel (LinkedIn or a newsletter); one productized first offer; ask for referrals after each project. Don't build a large website or buy ads.
 - **Small firm (3–20 people)**: founder still sells. Systematize referrals (list, cadence, tracking), a case study library by vertical, speaking in your vertical, partner firms, proposals only after diagnosis. Move from hourly to fixed or value pricing for repeatable work. Protect weekly business development time.
 - **Scaling firm (20+ people)**: a dedicated business development lead, original research once a year, account management for top clients (expansion is the cheapest growth), formal partner programs, and senior people with personal public profiles beyond the founder. Watch utilization and pipeline coverage monthly.
 
 ## Common mistakes
+
+_In short:_ Don't position as full-service for everyone, do free spec work, stop marketing when busy, bill hourly for repeat work, write off-topic content, ask for referrals vaguely, or publish case studies without numbers.
 
 - Positioning as "full-service" for "businesses of all sizes"; nobody can refer that.
 - Doing free spec work or long proposals for buyers who haven't agreed on the problem or budget.

@@ -6,6 +6,8 @@ tags: ecommerce, e-commerce, dtc, direct to consumer, shopify, online store, con
 
 ## Start with contribution margin per order
 
+_In short:_ Base every spending decision on contribution margin (what one order leaves after the costs that order causes), not gross margin. It tells you how much you can afford to pay for ads.
+
 Every DTC decision (what to spend on ads, which discount, which channel) depends on how much money one order leaves after the costs that the order itself causes. That is **contribution margin per order** (CM):
 
 CM per order = order revenue (after discounts) − product cost (COGS) − pick, pack and shipping − payment fees − expected return cost − variable marketing such as affiliate commission.
@@ -17,6 +19,8 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 
 ## First-order vs repeat economics
 
+_In short:_ Most online brands lose money on the first order and need repeat orders to pay back. Decide on purpose which game you play, based on cohort data (customers grouped by first-order month), not hope.
+
 - **First-order profit** = CM per first order − CAC (cost to acquire a customer). Most DTC brands lose money on the first order in paid channels and need repeat orders to pay it back [practitioner].
 - Decide on purpose which game you are in:
   - **Profitable on first order**: required when repeat purchase is rare (furniture, mattresses, one-off gifts) or when you can't finance a long payback.
@@ -26,12 +30,16 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 
 ## Cohort repeat rate
 
+_In short:_ Track what share of each first-order-month group places a second order, since a second order predicts more. Compare groups by channel and first product before scaling.
+
 - Group customers by **first-order month** (a cohort). For each cohort track: % who place a 2nd order by day 30/60/90/180/365, orders per customer, and cumulative CM per customer.
 - The **second order** is the key step. Customers who buy twice are far more likely to buy again [practitioner]. Manage the time between order 1 and order 2 with flows (see below) and product (consumables, refills, sizing).
 - Compare cohorts by **acquisition channel and first product**. Discount-led or giveaway cohorts often repeat less; check before scaling a channel or offer.
 - Blended repeat rate rises as old loyal customers pile up and hides weaker new cohorts (see metrics-and-measurement for cohort maths).
 
 ## AOV levers (average order value)
+
+_In short:_ Raise average order value with bundles, quantity breaks and post-purchase offers, but only when profit per order rises, not just order size. Test with revenue, not conversion.
 
 - **Free-shipping threshold** set somewhat above current AOV. In one retailer's experiments, shoppers were very sensitive to shipping fees and free-shipping offers raised sales, but the lost shipping revenue made them unprofitable for that retailer [research, Lewis, Singh & Fay 2006, single retailer]. Model the threshold against CM, not revenue.
 - **Bundles and kits** (starter kit, refill pack) raise AOV and make a better first experience.
@@ -41,6 +49,8 @@ CM per order = order revenue (after discounts) − product cost (COGS) − pick,
 - Test AOV changes with a revenue test, not a conversion test (see experimentation).
 
 ## Paid acquisition for e-commerce
+
+_In short:_ For Google Shopping, a clean product feed is your ad. Test whole creative concepts, judge them on new customers and repeat rates, and keep new and returning customers separate.
 
 General rules (signal quality, creative as targeting, brand search and retargeting caveats) are in paid-acquisition. E-commerce specifics:
 - **Google Shopping / Performance Max with a Merchant Center feed**: Shopping ads use your product data, not keywords, to decide where to show [first-party, Google Ads Help]. The **product feed** is your ad copy: clear titles (brand + product type + key attribute such as size or colour), accurate price and availability, good images, correct GTINs (barcodes) [first-party / practitioner].
@@ -54,6 +64,8 @@ General rules (signal quality, creative as targeting, brand search and retargeti
 
 ## Email and SMS flows
 
+_In short:_ Email and SMS flows (welcome, abandoned cart, replenishment) earn well, with a holdout to see real lift. US texting needs prior written consent and honoured STOP replies; this is not legal advice.
+
 The deliverability, metric and holdout rules are in email-and-lifecycle. The core e-commerce flows, in rough order of value [practitioner]: welcome series (to first purchase), abandoned checkout, abandoned cart, browse abandonment, post-purchase (how to use, cross-sell, review request), replenishment (timed to when the product runs out), win-back. Keep a holdout to see real lift.
 
 **SMS consent in the US** [legal; this is not legal advice, ask a lawyer]:
@@ -64,6 +76,8 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Several US states have their own stricter "mini-TCPA" laws and quiet hours [not re-verified]. Outside the US, local consent law applies (e.g. GDPR/ePrivacy in the EU).
 
 ## Amazon and other marketplaces vs your own store
+
+_In short:_ Use Amazon for reach and search demand, and your own store for repeat buyers, data and control. Amazon limits customer data and brings fee and suspension risk.
 
 | | Amazon | Own store (e.g. Shopify) |
 |---|---|---|
@@ -79,10 +93,14 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 
 ## Retail and wholesale expansion
 
+_In short:_ Wholesale pays you less per unit and adds fees, returns and slow payment, so model cash flow. Expand only if the product sells without your explanation, starting with a small pilot.
+
 - Wholesale margins are lower (the retailer takes its share) and come with costs: slotting or placement fees in some grocery chains, promotional spending, returns of unsold stock (chargebacks), and 30–90-day payment terms [practitioner]. Model cash flow, not just margin.
 - Retail works when the product sells **without you explaining it**. Pilot a few stores or a regional chain and measure sales per store per week before a national rollout.
 
 ## Reviews and UGC
+
+_In short:_ Reviews help most when a product has none, so ask after the customer has used it. US rules now ban fake reviews, paid positive reviews and hiding negative ones.
 
 - Reviews move conversion most when a product has **none**: one analysis found purchase likelihood with five reviews was about 270% higher than with zero, with diminishing gains after the first few, and a bigger effect on higher-priced items [research centre with vendor data, Spiegel 2017].
 - Ask for reviews in the post-purchase flow, timed to when the customer has used the product.
@@ -90,6 +108,8 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 - Mine reviews for customer language (see messaging-and-copy).
 
 ## Returns policy
+
+_In short:_ Easier returns raise purchases overall, and exchange or store credit keeps revenue. Cut returns at the source with accurate sizing, photos and descriptions.
 
 - **Lenient return policies increase purchases overall** (meta-analysis, Janakiraman et al. 2016) [research]. Details matter:
   - Longer return windows barely change purchases but were associated with **fewer** returns.
@@ -101,6 +121,8 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 
 ## Measurement: MER and incrementality
 
+_In short:_ MER (total revenue divided by total marketing spend) shows whether the whole system works, but not which channel does. Use holdout or geo tests for individual channels, and look at all sales channels together.
+
 - **MER** (marketing efficiency ratio, also called blended ROAS) = total store revenue ÷ total marketing spend, across all channels [practitioner]. Platforms can't inflate it because it uses your real revenue. Track it weekly next to platform ROAS.
 - Better still: **new-customer MER** (first-order revenue ÷ spend) or new-customer CAC, because total revenue includes repeat buyers who would buy anyway.
 - MER tells you whether the whole system works, not which channel works. For that, run **holdout or geo tests** on the big channels, especially brand search, retargeting and Meta (see metrics-and-measurement).
@@ -109,6 +131,8 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 
 ## What usually works by stage
 
+_In short:_ Early on, prove people buy and return; at mid-size, scale one ad engine without hurting margin; later, add channels and measure them. Skip agencies, many products and early retail.
+
 | Stage | Focus | Usually works | Usually wastes money |
 |---|---|---|---|
 | Pre-launch / < $1M revenue | Prove people buy and come back | Founder-led social content, small creator seeding, waitlist, one hero product, Meta with simple offers, Google Shopping on brand and core terms, welcome + abandoned-cart flows | Big agency retainers, many SKUs (product variants), retail before online proof |
@@ -116,6 +140,8 @@ The deliverability, metric and holdout rules are in email-and-lifecycle. The cor
 | $10M+ | Add channels and defend margin | Incrementality tests, MMM (see metrics-and-measurement), wholesale/retail pilots, brand campaigns (see brand-and-demand), new product lines for repeat | Expanding channels before measuring the existing ones |
 
 ## Common mistakes
+
+_In short:_ Common mistakes: using gross margin, scaling channels without checking repeat buying, discounting without modelling margin, adding up platform ROAS, texting without consent, and slanting reviews.
 
 - Using gross margin instead of contribution margin for ad targets.
 - Scaling a channel because first-order ROAS looks fine, without checking whether its cohorts repeat.

@@ -8,12 +8,16 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## How Google ranks local results
 
+_In short:_ Google ranks local results on relevance, distance and prominence (how well-known you are). You cannot change distance, so do not promise city-wide rankings from one address, and ads do not improve local rank.
+
 - Google names three factors: **relevance** (how well your profile matches the search), **distance** (how far you are from the searcher, or Google's estimate of where they are) and **prominence** (how well-known you are: how many websites link to you and how many reviews you have). More reviews and positive ratings "can help". [first-party] (The page's summary sentence now says "popularity" instead of "prominence"; the meaning is the same.)
 - You cannot change **distance**. Searchers far from your address will rarely see you in the pack, however good your profile. Do not promise a client rankings across a whole city from one address. [first-party]
 - Google says paying for ads does not improve local ranking. [first-party] [not re-verified]
 - Practitioner surveys (Whitespark, expert opinion, not measurement) rate the **primary category** the single strongest local pack factor (2026 edition). Earlier editions, as relayed by third parties, put GBP signals first (~32% of local pack weight), then on-page signals, reviews and links, with citations ~7%. [practitioner]
 
 ## Google Business Profile setup
+
+_In short:_ Verify your Google Business Profile first, use your real name exactly as on the sign, pick the right primary category, and fill in every true detail. Photos and posts help customers choose you, not ranking.
 
 - **Verification** comes first; unverified profiles get no performance data and limited edits. Google chooses which methods you are offered. Video verification needs a live, unedited, continuous mobile recording of at least 30 seconds showing: where you are (street signs, landmarks), that the business exists (signage, equipment, products) and that you manage it (opening the till, back room, branded van, a permit or utility bill in the business name). Plan the shot before you press record. [first-party]
 - **Name**: use your real-world name exactly as on the sign and website. Google prohibits taglines, product/service words, location words, phone numbers or URLs in the name, and can suspend profiles for it. Some survey respondents rate keywords in the name highly; doing it risks suspension and competitors reporting you. Don't. [first-party; practitioner]
@@ -27,12 +31,16 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Reviews
 
+_In short:_ Ask every customer for a review shortly after the job, never gate it or reward it, keep a steady flow rather than bursts, and reply briefly to every review, especially negative ones.
+
 - **Ask every customer, not only happy ones.** Google bans review gating and any incentive for a review, and the US FTC rule (in force 21 Oct 2024) bans fake, bought and suppressed reviews; see local-services for the full rules and penalties. Similar consumer-law rules exist in the UK and EU [not re-verified]. [first-party]
 - **Process that works**: send the review link (from the GBP dashboard) by SMS or email within a day of the job; one reminder; make it part of the job checklist, not a campaign. [practitioner]
 - **Recency and steady flow** matter: practitioners rate review recency among the top factors; a burst of 50 reviews in one week looks unnatural and may be filtered. [practitioner]
 - **Reply to every review**, especially negative ones, briefly and without customer personal details. Future customers read the reply more than the complaint. [practitioner]
 
 ## NAP consistency and citations
+
+_In short:_ NAP (name, address, phone) listings on other sites matter less for ranking than folklore claims. Fix the main directories and Apple and Bing listings once, and skip paying for hundreds of poor ones.
 
 - NAP = name, address, phone. Citations are listings of your NAP on other sites (directories, Yelp, Apple Maps, Bing Places, industry and chamber of commerce sites).
 - The belief that exact NAP consistency drives rankings is long-standing practitioner lore with no first-party confirmation; Whitespark's own survey ranks citations low (~7%). [practitioner; weak evidence]
@@ -41,6 +49,8 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Multi-location businesses
 
+_In short:_ Give each real staffed location its own profile and its own page with genuinely unique content. Never use virtual offices or pages that only swap the town name, and make location links crawlable.
+
 - One GBP per real location with staff during stated hours. No profiles for virtual offices or mailboxes; they get suspended. [first-party] [not re-verified]
 - One landing page per location (e.g. /locations/lyon-part-dieu), linked from that location's GBP. Each page needs unique content: address, embedded map, hours, staff, photos of that site, services offered there, local reviews, parking/transport directions. A template with only the city name swapped is thin and risks scaled content abuse (see seo-content-and-architecture). [first-party; practitioner]
 - A store locator must output crawlable HTML links to every location page, not only a JavaScript map. [first-party]
@@ -48,20 +58,28 @@ Local SEO means getting found when people search for a business near them ("plum
 
 ## Service-area businesses (SAB)
 
+_In short:_ If you travel to customers, hide your address, set a service area within about two hours' drive, and write area pages with true local detail, or Google treats them as spam.
+
 - A SAB serves customers at their location (plumbers, cleaners, mobile mechanics). If customers do not come to your address, hide it in GBP; set service areas by city or postcode, no wider than about 2 hours' driving from your base. [first-party]
 - You still rank mainly near your verified base address. Covering a wider area takes service pages on your website and, where available, Local Services Ads. [practitioner]
 - Service-area pages ("emergency plumber in [town]") must say something true and specific about that area (jobs done there, response times, local regulations), or they are doorway pages. [first-party: spam policies; practitioner]
 
 ## Local schema
 
+_In short:_ Add LocalBusiness structured data (code that labels page facts for Google) to each location page, matching your profile. It helps Google understand the page but is not shown to move local rankings.
+
 - Add LocalBusiness structured data (or a more specific subtype such as Dentist, Restaurant, Plumber) to each location page. Required: name, address. Recommended: geo (5+ decimal places), openingHoursSpecification, telephone, url, priceRange. It must match the GBP and the visible page. [first-party]
 - Schema helps Google understand the page; there is no evidence it moves local pack ranking. Validate with the Rich Results Test. [first-party; practitioner]
 
 ## Local Services Ads (LSA)
 
+_In short:_ Local Services Ads are pay-per-lead ads above the map results, linked to your profile. Use them to cover areas or categories where you cannot rank organically.
+
 - LSAs are pay-per-lead ads shown above the local pack, with a "Google Verified" badge. The account is linked to your GBP, so review work helps both organic local ranking and LSA cost. Use LSA to cover areas or categories where you can't rank organically; badge, ranking, lead disputes and the move into Performance Max: see local-services. [first-party; practitioner]
 
 ## Tracking
+
+_In short:_ Track calls, direction requests and bookings from your profile, tag your profile links so analytics can separate them, keep your main number listed, and use grid-based rank tracking, since results change every few hundred metres.
 
 - GBP Performance shows searches (terms used), profile views, calls, website clicks, direction requests, messages and bookings; only for verified profiles. [first-party]
 - Tag the GBP website link with UTM parameters so GA4 can separate profile traffic from other organic traffic. Use build_utm_link, e.g. source=google, medium=organic, campaign=gbp-[location]. Keep medium "organic" so GA4 still groups it as Organic Search; separate by campaign. Use a different campaign for post links (e.g. gbp-post-[offer]). [first-party; practitioner]
@@ -69,6 +87,8 @@ Local SEO means getting found when people search for a business near them ("plum
 - Rank tracking: the local pack differs every few hundred metres. Use a grid-based rank tracker (rankings measured at points across a map) rather than a single "rank". [practitioner]
 
 ## Checklist
+
+_In short:_ Before moving on, confirm: verified profile, correct categories, complete details, real photos, honest review requests with replies, one page per location, matching schema, tagged links, and correct directory listings.
 
 - [ ] GBP verified; name matches signage; correct primary category; additional categories only for real lines of business.
 - [ ] All attributes, services, hours and holiday hours complete; description answers common questions.
@@ -81,6 +101,8 @@ Local SEO means getting found when people search for a business near them ("plum
 - [ ] Main directories and Apple/Bing listings correct.
 
 ## Common mistakes
+
+_In short:_ Avoid keywords in the profile name, review gating or buying, promising city-wide ranking, duplicate location pages, fake addresses, mass citation building, and reporting profile views instead of calls and bookings.
 
 - Keywords or city names in the GBP name; suspension follows reports.
 - Review gating, review incentives, or buying reviews: breaks Google policy and, in the US, federal law.

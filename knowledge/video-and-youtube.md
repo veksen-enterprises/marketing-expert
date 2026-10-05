@@ -8,12 +8,16 @@ This playbook covers making and distributing video, with YouTube as the main pla
 
 ## How YouTube decides what to show [first-party]
 
+_In short:_ YouTube ranks on viewer satisfaction and watch time, not clicks alone, so a title that disappoints loses reach; make a clear promise and deliver it early.
+
 YouTube is two systems: **search** (people type a need) and **recommendations** (Home, Up Next, Shorts feed). Most channels get views from both; check the "Traffic source" report to see which one feeds you.
 - **Recommendations**: YouTube says it uses clicks, watch time, survey responses, shares, likes and dislikes. It measures "valued watch time": viewers rate videos from 1 to 5 stars in surveys, only 4- and 5-star answers count, and a model predicts survey answers for everyone (YouTube Blog, 2021).
 - **Search**: YouTube Help names three main elements: **relevance** (how well title, tags, description and the video's content match the query), **engagement** (for example, watch time of a video for that specific query) and **quality** (signals that a channel shows expertise, authority and trustworthiness on the topic), plus personalisation from each viewer's history. YouTube says it does not accept payment for better organic search placement.
 - **What this means in practice**: YouTube does not reward the click alone. A title that gets clicks but disappoints causes quick exits, low survey scores and less reach. Make the promise in the title and thumbnail, and then deliver it early in the video.
 
 ## Titles and thumbnails
+
+_In short:_ Write the title and thumbnail before filming, use search words for search videos and curiosity for recommended ones, and use YouTube's Test & Compare tool with clearly different options.
 
 - The title and thumbnail are the "ad" for the video. Write them before you film, so the video is built to deliver that promise [practitioner].
 - **For search videos**: use the words people search ("how to reconcile bank transactions in Xero"). **For recommended videos**: lead with curiosity, a result or a conflict, in a few words.
@@ -25,6 +29,8 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 
 ## Retention: read the graph
 
+_In short:_ Use YouTube's retention graph to fix the intro first, find which sections cause drop-offs across videos, and make more of what viewers rewatch.
+
 - YouTube Studio's audience retention report marks four kinds of moment [first-party]: **Intro** (share of viewers still watching after 30 seconds), **Top moments** (almost no one left), **Spikes** (rewatched or shared) and **Dips** (skipped or abandoned).
 - Fix the intro first: state what the viewer gets, show the result or the problem, and cut logos, long greetings and "before we start" [practitioner].
 - Look at dips across several videos. If the same type of section (sponsor read, long setup, slides) always causes a dip, change the format.
@@ -33,6 +39,8 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 
 ## Shorts vs long-form
 
+_In short:_ Use Shorts for cheap reach and testing topics and long-form for search demand, trust and buyers, and judge Shorts by subscribers and visits, not views, which aren't comparable.
+
 - Since 15 October 2024, square or vertical videos up to **three minutes** count as Shorts [first-party].
 - Since 31 March 2025, a Shorts view counts each start or replay with no minimum watch time; the older measure is now called "Engaged views" [first-party]. Shorts view counts are therefore not comparable with long-form views or with older Shorts data. From 24 Aug 2026, YouTube counts a view the moment a video starts to play in all formats (Shorts, long-form and live); YouTube says this does not change YouTube Partner Program (YPP) earnings or eligibility [first-party].
 - YouTube says Shorts performance does not hurt long-form recommendations and can help people discover a channel [first-party: YouTube Blog "Shorts truths"].
@@ -40,6 +48,8 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 - Judge Shorts on subscribers gained, profile visits and the long videos they lead to, not on views.
 
 ## Video SEO (YouTube and Google)
+
+_In short:_ Help videos get found with searchable chapters, correct captions, a clear description opening and, on your own site, a dedicated watch page where the video is the main content.
 
 - **Chapters**: add timestamps in the description; the first must be 00:00, at least three in order, each at least 10 seconds long [first-party]. Name chapters with the words people search; they help viewers jump and can appear in search results.
 - **Transcripts and captions**: upload or correct captions. They help viewers who watch without sound and people who read English as a second language. Saying the key terms out loud in the video supports YouTube's "video content" relevance [practitioner].
@@ -50,12 +60,16 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 
 ## YouTube ads
 
+_In short:_ Put brand, problem and offer into an ad's first five seconds, treat Demand Gen like paid social where creative drives results, retarget viewers, and remember view-through conversions overstate impact.
+
 - **Skippable in-stream**: viewers can skip after 5 seconds. With cost-per-view bidding you pay when someone watches 30 seconds (or the whole ad if shorter) or clicks, whichever comes first; with CPM or conversion bidding you pay per impression [first-party]. Put the brand, problem and offer in the first 5 seconds.
 - **Demand Gen campaigns** (Google Ads) run video and image ads across YouTube in-stream, in-feed (Home, Watch Next, Search), Shorts, Discover, Gmail and the Display Network, with lookalike segments built from your customer lists; Video action campaigns have been folded into Demand Gen, the last ones by April 2026 [first-party]. Treat them like paid social: creative quality drives results.
 - Retarget people who watched your organic videos; they already know you.
 - Measurement, bidding and incrementality rules are in paid-acquisition and metrics-and-measurement. View-through conversions overstate what the ad caused.
 
 ## Demo and explainer videos on landing pages
+
+_In short:_ Evidence that landing-page video lifts conversion is weak, so use click-to-play with captions beside your headline and button, and A/B test video against no video on your own traffic.
 
 - **Evidence is weak**. The often-repeated claim that a landing-page video raises conversion "by up to 80%" (repeated by Wyzowl, which sells explainer videos) traces to a pre-2020 video-ad vendor figure with no published method [vendor; not re-verified]. Wyzowl's surveys report that 96% of people have watched an explainer video and 85% say a video convinced them to buy [vendor; self-reported].
 - No controlled public study found on autoplay vs click-to-play for B2B pages. Browsers allow muted autoplay but block autoplay with sound until the user interacts (Chrome policy) [first-party].
@@ -64,12 +78,16 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 
 ## Short-form across TikTok and Reels
 
+_In short:_ TikTok and Reels rank on viewer reactions, not follower count, so start with the result in the first seconds, reuse one vertical video across platforms and turn winning topics into long-form.
+
 - TikTok and Instagram rank short videos on how people react (finishing, rewatching, shares, sends), not mainly on follower count (see organic-social-and-community).
 - One vertical video can be posted to Shorts, TikTok and Reels; remove other platforms' watermarks and adjust text and captions to each platform [practitioner].
 - The first one to two seconds decide whether people stay. Start with the result, the problem or a moving visual, not a logo.
 - Test many ideas cheaply, then turn the winning topics into long-form videos.
 
 ## Production budget vs authenticity [practitioner]
+
+_In short:_ Simple production is forgiven but boring content and bad audio aren't, so spend on a good microphone and light first, and keep high production for lasting assets like the homepage demo.
 
 - Viewers forgive simple production; they don't forgive boring content or bad audio. Spend first on a good microphone and light, then on editing, then on cameras.
 - Founder or expert on camera, phone-shot, often outperforms polished brand video on social feeds, because it looks like the native content around it.
@@ -78,11 +96,15 @@ YouTube is two systems: **search** (people type a need) and **recommendations** 
 
 ## What usually works by stage
 
+_In short:_ Early on, record low-budget founder walkthroughs and a homepage demo; at growth, build search-driven tutorials and use Test & Compare; at scale, run a recurring series and ads with incrementality tests.
+
 - **Early**: founder-recorded product walkthroughs and answers to customer questions; a short demo video on the homepage; clips from sales calls (with permission) as social posts. Low budget, high frequency.
 - **Growth**: a YouTube channel built around search-demand tutorials for your buyers; Shorts cut from long videos; webinar recordings as long-form; Test & Compare on every important upload; retargeting video viewers with ads.
 - **Scale**: a recurring show or series with a host, Demand Gen and in-stream campaigns with proper incrementality tests, localised captions for international markets, and a video library used by sales.
 
 ## Common mistakes
+
+_In short:_ Don't judge by click-through alone, open with long intros, equate Shorts views with results, bury videos in third-party players, autoplay with sound, believe "80% more conversions" or overspend on production.
 
 - Judging YouTube on click-through rate alone; misleading thumbnails lose watch time and reach.
 - Long intros, logo animations and "subscribe" requests before any value.

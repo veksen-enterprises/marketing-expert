@@ -8,12 +8,16 @@ Use this playbook when one deal is worth enough to pay for a salesperson's time:
 
 ## ICP and account selection
 
+_In short:_ Define your ICP (ideal customer profile: the kind of company that buys fast, pays well and stays) from your best existing customers, write down who is not a fit, and re-check it twice a year.
+
 - **ICP (ideal customer profile)** = the type of company that buys fastest, pays most and stays longest. Build it from your own closed-won and churned deals, not from a market map: industry, size, tech stack, trigger events (new funding, new leader, regulation, a failed tool), and the problem they had. [practitioner]
 - Score your best 20 customers by retention, expansion and sales-cycle length. The ICP is what the top group shares. Write down who is *not* a fit, too; sales will chase anything with budget otherwise.
 - Turn the ICP into a **named account list** (a finite list of companies sales and marketing both work). Size it to capacity: each account executive (AE, the person who closes deals) can work only a limited number of accounts properly. For targeting, tiers and plays, see outbound-and-abm.
 - Re-check the ICP each half-year against win rate and retention by segment. Segments with low win rates and long cycles usually signal a positioning problem, not a lead-volume problem (see positioning).
 
 ## Pipeline math
+
+_In short:_ Work backward from the revenue target to the number of deals, qualified opportunities (deals sales accepts as real) and meetings you need, using your own win rate, then plan for realistic rep performance.
 
 Pipeline = the total value of open, qualified opportunities (deals sales has accepted as real). Work backward from the revenue target:
 
@@ -27,6 +31,8 @@ Pipeline = the total value of open, qualified opportunities (deals sales has acc
 
 ## Marketing ↔ sales handoff: lead, account, opportunity
 
+_In short:_ Companies buy in groups, so judge marketing by opportunities sales accepts, not MQLs (people who passed a score threshold). Agree stage definitions in writing and route new contacts to the account's owner fast.
+
 - **Lead** = one person. **Account** = one company. **Opportunity** = a specific potential deal at an account, with the people involved.
 - **MQL (marketing-qualified lead)** = a person who passed a score threshold (downloads, webinar, page visits). Criticism: it counts individuals while companies buy in groups; it rewards gated content volume; and sales often ignores MQLs, so both teams argue about quality. [practitioner]
 - **Buying groups are large and disagree.** Gartner reports buying groups of 5 to 16 people across up to four functions, and 74% of buyer teams showed "unhealthy conflict"; groups that reached consensus were 2.5× more likely to report a high-quality deal [vendor: analyst survey]. Forrester's 2024 survey: on average 13 people involved, and 89% of purchases cross two or more departments [vendor: analyst survey].
@@ -39,12 +45,16 @@ Pipeline = the total value of open, qualified opportunities (deals sales has acc
 
 ## Demand creation vs demand capture
 
+_In short:_ Capture finds buyers already looking; creation builds preference in buyers not yet looking. Buyers shortlist before talking to sales and prefer self-education, so capture first before product-market fit and create later.
+
 - **Capture** = being found by buyers already in market (search, review sites, comparison pages, inbound demo requests). **Creation** = building memory and preference in buyers who are not yet in market.
 - **The shortlist forms before sales calls.** Bain and Google found most technology buyers start with a "day one list" and roughly 80–90% buy from it [vendor-adjacent survey]. 6sense reports the winning vendor is on the day-one shortlist ~95% of the time and buyers first contact sellers about 61% of the way through the journey (69% a year earlier) [vendor; 6sense sells intent data]. Gartner: buyers spend a small share of buying time with suppliers (17% in total, and 5–6% with any one rep when comparing several, on earlier versions of Gartner's page; the current page gives no figure) [vendor: analyst survey]. These are post-purchase recall surveys; treat as direction, not precise numbers.
 - **Buyers want less of reps, but not none.** Gartner: 61% (2024 survey) and 67% (2025 survey) of B2B buyers prefer a rep-free experience; 73% avoid suppliers who send irrelevant outreach; an earlier Gartner survey found buyers who preferred rep-free reported 23% higher purchase regret [vendor: analyst survey]. Implication: make self-education easy (public pricing ranges, demo videos, docs, security pages), and use reps for fit, risk and consensus.
 - Only a small share of your market is buying in any quarter, so creation matters in B2B too. For the budget split and the 95-5 arithmetic, see brand-and-demand. Pre-PMF, capture first; creation pays back over 6–36 months.
 
 ## Content and proof
+
+_In short:_ Buyers trust peers and their own testing over vendor claims, so invest in matching case studies, ready references, review sites, honest ROI tools and material a champion (your internal supporter) can forward.
 
 Buyers trust peers and their own testing more than vendor claims. TrustRadius surveys rank demos, free trials, peer conversations and user reviews as most helpful, and vendor materials as least trusted [vendor].
 
@@ -58,9 +68,13 @@ Buyers trust peers and their own testing more than vendor claims. TrustRadius su
 
 ## ABM and outbound
 
+_In short:_ ABM (account-based marketing: marketing and sales working one named list of companies) only works if that list follows your ICP and success is measured in pipeline and wins from those accounts.
+
 Account-based marketing (ABM) = marketing and sales coordinate on a named list of accounts instead of chasing individual leads. Account tiers, intent data, sequencing and outbound rules are in outbound-and-abm. Key link here: ABM only works if the account list follows the ICP above and success is measured in pipeline and win rate from those accounts.
 
 ## Events
+
+_In short:_ Small dinners for target-account executives usually beat big booths. At trade shows, book meetings beforehand and judge results one or two sales cycles later; webinars suit education, not lead generation.
 
 Event types, cost per meeting, follow-up and webinar benchmarks: see events-and-webinars. The short version:
 
@@ -71,6 +85,8 @@ Event types, cost per meeting, follow-up and webinar benchmarks: see events-and-
 
 ## Measuring with pipeline and win rate
 
+_In short:_ Track pipeline created, win rate, sales cycle length, deal size and CAC payback (time to earn back what a customer cost to win). Attribution is unreliable in long cycles, so ask buyers how they heard.
+
 - Primary metrics: **pipeline created** (count and value of sales-accepted opportunities by source and segment), **win rate**, **sales cycle length**, **average deal size**, and **CAC payback** (see metrics-and-measurement).
 - **Sales velocity** = (opportunities × win rate × deal size) ÷ cycle length. Shows which lever moved.
 - **Source attribution is unreliable in long cycles** with many people. Use self-reported attribution ("How did you hear about us?" on demo forms and in discovery calls) plus account-level influence; test big programs with holdouts by account or region (see metrics-and-measurement).
@@ -78,11 +94,15 @@ Event types, cost per meeting, follow-up and webinar benchmarks: see events-and-
 
 ## What usually works by stage
 
+_In short:_ Early on, the founder sells and marketing stays simple. From $1M to $10M in yearly revenue, hire sales reps slowly and add capture and targeted events. Later, split teams by segment.
+
 - **$0–1M ARR** (see first-customers for zero to ten): founder-led sales (the founder sells the first deals to learn the pitch and objections) [practitioner, not re-verified: Kazanjy, Founding Sales]. Narrow ICP, warm intros, personal outbound, a few design partners (early customers who help shape the product) who become case studies. Marketing = website that explains the product clearly, two or three proof assets, founder content in one channel. Don't hire a VP Sales or buy ABM software yet.
 - **$1–10M ARR**: hire AEs in small batches and measure ramp before adding more [practitioner, not re-verified: Roberge]. Add SDRs (sales development reps, who book meetings) only after AEs can close a repeatable pitch. Marketing builds capture (search, review sites, comparison pages), a case study library by segment, targeted events, and starts ABM on tier-1 accounts. Move the team goal from MQLs to pipeline. Start brand/category work once capture plateaus (see brand-and-demand).
 - **$10M+ ARR**: segment teams (SMB / mid-market / enterprise), formal analyst relations, own-event programs, partner and channel sales, multi-product proof, and measurement with holdouts or MMM. Expansion and net revenue retention become a larger share of growth; customer marketing gets its own owner.
 
 ## Common mistakes
+
+_In short:_ Avoid an ICP built on wishes, MQL-volume goals, single-contact deals, hiring many reps before the sale repeats, assuming instant full performance, ignoring no-decision losses, early judgment of events and inflated ROI claims.
 
 - Defining the ICP by who you wish would buy, not by who buys, retains and expands.
 - Measuring marketing on MQL volume, which rewards gated content and annoys sales.

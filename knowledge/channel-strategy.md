@@ -6,6 +6,8 @@ tags: channels, acquisition, traction, bullseye, four fits, product channel fit,
 
 ## The core constraint: channel-model fit [practitioner]
 
+_In short:_ Your price per customer must fit the cost of the channel that reaches them. Cheap products need cheap channels such as search or word of mouth; expensive ones can afford sales teams.
+
 Brian Balfour's Four Fits: market-product, product-channel, channel-model, model-market. Change one and the others move.
 - **Channel-model fit**: every business sits on an ARPU ↔ CAC spectrum. Low ARPU needs low-CAC channels (virality, SEO, UGC, marketplaces). High ARPU can afford high-CAC channels (outbound sales, events). The middle (too expensive for self-serve volume, too cheap for a sales team) is where many B2B companies stall.
 - **Product-channel fit**: "Products are built to fit with channels. Channels do not mold to products." The channel sets the rules (Google Ads wants existing search demand; virality needs a product that's better with others; SEO needs content people search for).
@@ -14,6 +16,8 @@ Brian Balfour's Four Fits: market-product, product-channel, channel-model, model
 Run unit_economics with the channel's CAC to check channel-model fit before scaling any channel.
 
 ## Bullseye (Weinberg & Mares, Traction, 2015) [practitioner]
+
+_In short:_ Brainstorm every channel, test the best three cheaply, then focus on the one that works until it is used up. Measure cost per customer and customer quality, not clicks.
 
 The 19 channels: viral, PR, unconventional PR, search ads, social & display ads, offline ads, SEO, content, email, engineering as marketing (free tools), targeting blogs/communities, business development, sales, affiliates, existing platforms (app stores, marketplaces, integrations), trade shows, offline events, speaking, community.
 
@@ -25,9 +29,13 @@ Their "50% rule": spend half your time on traction while building product, not a
 
 ## Channel decay (Andrew Chen's "law of shitty clickthroughs") [practitioner]
 
+_In short:_ Every channel gets worse as novelty fades and competitors crowd in. Keep testing new channels, and expect costs to rise rather than scaling early test results.
+
 Every channel's performance decays as novelty wears off and competitors pile in (Chen's example: the first banner ad, on HotWired in 1994, had a 78% click-through rate; Facebook ads in 2011 averaged 0.05%). Implications: keep testing new channels and formats continuously; expect a scaled channel's CAC to rise; don't extrapolate early test CAC linearly to 10× spend.
 
 ## Picking channels: questions that narrow it fast
+
+_In short:_ A few questions narrow the choice fast: is there existing demand, how much does a customer pay, where do your best customers gather, and what do they say brought them. Use the answers over guessing.
 
 - **Is there existing search demand?** (Keyword volume for the problem or category.) Yes → search ads and SEO are candidates. No → you must create demand: content, social, outbound, community, PR.
 - **What's the ACV and sales motion?** ≲$1–5k ACV usually can't pay for a sales rep per deal → self-serve, product-led. ≳$25–50k with multiple stakeholders → sales-led, with marketing generating pipeline. These thresholds are heuristics; derive yours from CAC payback (sales cost per deal vs margin × ACV).
@@ -38,6 +46,8 @@ Every channel's performance decays as novelty wears off and competitors pile in 
 
 ## PLG vs sales-led [practitioner / vendor]
 
+_In short:_ Product-led growth means the product itself wins and expands customers; sales-led means people do. Cheap, easy-to-try products suit the first, expensive complex ones the second, and many companies mix them.
+
 - **Product-led growth** (term coined by Blake Bartlett, OpenView, 2016): the product is the main driver of customer acquisition, conversion and expansion (OpenView's definition); end users adopt before buyers approve. Fits: bottom-up adoption, fast time-to-value, low marginal cost, an individual user with daily pain.
 - **Sales-led**: people drive growth via demos and negotiation. Fits: high ACV, complex buying committees, products that need configuration or change management, new categories that need education.
 - Most B2B SaaS ends up hybrid: self-serve acquisition, sales-assisted expansion into larger accounts ("product-led sales").
@@ -45,12 +55,16 @@ Every channel's performance decays as novelty wears off and competitors pile in 
 
 ## Sequencing rules
 
+_In short:_ Put your effort into one channel that works rather than five that don't. Don't scale a channel whose customers leave, and redo the channel search when costs keep rising.
+
 - One channel working well beats five mediocre ones. Spreading thin pre-PMF hides which channel works.
 - Start where demand already exists (capture) before trying to create it, unless you're creating a category.
 - Don't scale a channel until the cohorts it brings retain; otherwise you're buying churn.
 - Re-run the Bullseye when the main channel's CAC rises for two consecutive quarters.
 
 ## Common mistakes
+
+_In short:_ Common mistakes: copying competitors, judging a channel too early, counting leads instead of retained revenue, and running ads for a product nobody searches for.
 
 - Choosing channels by what competitors do or what the team knows.
 - Judging a channel after one week or a few hundred dollars.

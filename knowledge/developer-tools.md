@@ -8,12 +8,16 @@ Use this playbook when your users are developers (or the AI coding agents workin
 
 ## Who uses vs who pays
 
+_In short:_ Developers adopt a tool and someone else pays later, so let developers try it in minutes and give the buyer pricing, security answers and proof it scales; add sales only when teams and limits appear.
+
 - **The developer adopts; someone else pays.** A developer tries it on one service; if it works, the team lead or platform team pays as usage grows, with security and procurement joining larger deals. Serve both: the developer must try it in minutes; the buyer needs pricing, security answers and proof it scales.
 - **GitLab made this explicit** with "buyer-based open core": features go into tiers by *who would buy them* — individual contributor (free), manager or director (Premium), executive (Ultimate) — priced per user. [first-party] It is a useful test for any feature: who asks for it, and who signs for it?
 - **Bottom-up adoption** (usage spreads from individuals to teams before any sale) is the default. A "contact sales" wall in front of a trial loses most developers.
 - **When to add sales:** when several users from one company appear, when accounts hit plan limits, or when security reviews start blocking upgrades. Use product-qualified leads and product-led sales as in self-serve-saas; move to the sales-led motion in b2b-saas-sales-led only for accounts large enough to pay for it. Sales should offer help (security review, invoicing, architecture review), not cold pitches to developers who signed up. [practitioner]
 
 ## Open source as distribution
+
+_In short:_ Open source speeds adoption but lets others, including cloud giants, sell your product, so pick the licence before a community forms; changing it later spawned rival forks. GitHub stars are weak signals.
 
 Open source lowers the cost of trying, lets developers audit the code, and spreads through package managers. It also lets anyone, including cloud providers, sell your product as a service. The license decides who can.
 
@@ -33,6 +37,8 @@ A 2024 study of these cases found the originals' code came almost entirely from 
 
 ## Docs are the main marketing surface
 
+_In short:_ For developers, the docs are the product evaluation, so cut time to first value (the minutes until a first success) with a one-page, copy-paste quickstart tested on a clean machine.
+
 - In Stack Overflow's 2025 survey, technical documentation was the resource respondents used most to learn to code in the past year (68%; AI tools 44%) [first-party survey; self-selected sample]. For developers, the docs *are* the product evaluation.
 - **Time to first value**: the time from landing on the docs to a first successful run (an API response, a passing CI check, a query returned). Measure it and cut it. "Time to first API call" is a common practitioner version; Stripe's one-page quickstarts and in-docs request runner are the standard example [practitioner].
 - **Quickstart rules** [practitioner]: one page; copy-paste commands; authentication inside it, not on another page; a real result at the end. Test it on a clean machine every release.
@@ -43,6 +49,8 @@ A 2024 study of these cases found the originals' code came almost entirely from 
 
 ## Developer channels
 
+_In short:_ Reach developers where they already are, through Show HN, communities, honest technical posts, talks, integration marketplaces and package registries; expect spikes from launches, not a steady channel.
+
 - **Hacker News (Show HN).** Rules: for "something you've made that other people can play with"; landing pages, sign-up pages and blog posts are off topic; the maker must be in the thread; make it easy to try "without barriers such as signups"; don't ask friends to upvote [first-party]. Use a plain title, explain how it works and its limits, and answer criticism calmly. It brings a spike, not a channel; plan how those visitors activate (see launches-and-gtm).
 - **Reddit.** Participate first; follow each subreddit's self-promotion rules (see organic-social-and-community).
 - **Discord/Slack communities.** Start your own once you have active users, and staff it; before that, help in existing ones.
@@ -52,6 +60,8 @@ A 2024 study of these cases found the originals' code came almost entirely from 
 - **Package registries** (npm, PyPI, Docker Hub, Homebrew): clear name, description and a README with a quickstart. Download counts are inflated by CI and mirrors; use them for trends only. [not re-verified]
 
 ## AI coding agents as users and channel
+
+_In short:_ AI coding agents increasingly choose and call tools, so write clear, honest tool descriptions like prompts, state limits plainly, and test whether agents actually pick your tool across whole sessions.
 
 More code is now written by agents. Stack Overflow's 2025 survey found 31% of respondents used AI agents (23% at least weekly) [first-party survey]; JetBrains' 2026 survey of 15,000+ professional developers reports 90% using an AI coding agent at work at least weekly by mid-2026 [vendor]. When an agent picks a library or calls a tool, your "user" may be a model reading your docs and tool descriptions.
 
@@ -70,6 +80,8 @@ More code is now written by agents. Stack Overflow's 2025 survey found 31% of re
 
 ## Self-hosting and the enterprise upgrade path
 
+_In short:_ Enterprise needs like single sign-on, audit logs and self-hosting are the natural paid tier; keep the price gap reasonable and publish a security page before buyers ask.
+
 - Enterprise needs are the natural paid tier: SSO/SAML, SCIM user provisioning, audit logs, role-based access, data residency, private networking, SLAs, and self-hosted or "bring your own cloud" deployment.
 - **The "SSO tax".** The community list sso.tax names vendors that put SSO only on top tiers, often at several times the base price [community]. Security teams treat SSO as basic. Many devtools still put it in an enterprise plan; if you do, keep the price gap reasonable and say why.
 - Self-hosting can be the free path (open source) or the paid one (enterprise licence); say which. Opt-in telemetry or licence keys tell you who self-hosts.
@@ -77,12 +89,16 @@ More code is now written by agents. Stack Overflow's 2025 survey found 31% of re
 
 ## Pricing models
 
+_In short:_ Match pricing to how the tool is used: usage-based for APIs and infrastructure, with free allowances and spend caps, per seat for collaboration tools, and public prices except for enterprise.
+
 Value metric and usage-based pricing details are in pricing. For devtools:
 - **Usage-based** (requests, compute, storage) fits APIs and infrastructure; add a free allowance, a cost calculator and spend caps. Surprise bills destroy trust. [practitioner]
 - **Per seat** fits collaboration tools; **per project** is simple for CI and hosting but can push teams to cram work into one project.
 - Public pricing is expected; "contact us" only for enterprise.
 
 ## Tools that comment on code (CI checks, analyzers, PR bots)
+
+_In short:_ Findings get acted on when they appear in the pull request at the moment of change, come with a one-click fix, and are accurate; noisy or unsolicited tools get ignored or removed.
 
 For a tool whose value shows up as findings on code, where and how findings appear decides whether anyone acts on them. The evidence is about fixes and merges, not signups or revenue.
 
@@ -95,10 +111,14 @@ For a tool whose value shows up as findings on code, where and how findings appe
 
 ## Developer trust
 
+_In short:_ Earn developer trust with honest benchmarks, public pricing, no dark patterns, status pages and early warning of breaking changes, and judge developer relations by activation, not followers.
+
 - Honest benchmarks, public pricing, no dark patterns (hidden limits, hard-to-cancel plans), public status pages and postmortems, and early notice of breaking changes.
 - **Developer relations (devrel)** = engineers whose job is to help developers succeed with the product: docs, examples, talks, community answers, and taking feedback back to the product team. Measure devrel on activation and community-sourced adoption, not on follower counts. [practitioner]
 
 ## Metrics
+
+_In short:_ Track whether developers actually succeed, such as first successful run, weekly active projects, time to first value and expansion to teams, rather than signups, stars or downloads.
 
 - **Activation**: first successful run, API call, deploy or integration (define it from retention data, as in self-serve-saas).
 - **Weekly active projects** (or repos, workspaces, API keys with traffic): better than signups, stars or downloads.
@@ -109,6 +129,8 @@ For a tool whose value shows up as findings on code, where and how findings appe
 
 ## What usually works by stage
 
+_In short:_ Early on, write docs and the quickstart yourself, offer a free tier and answer every issue; later add a changelog, examples and integrations, then developer relations and an enterprise plan.
+
 For the first ten customers (design partners, trust before outreach, early pricing, launches, the agent channel), see first-customers.
 
 - **First users**: founders write the docs and quickstart, ship a free tier or open-source core, post one Show HN when it is easy to try, and answer every issue personally.
@@ -116,6 +138,8 @@ For the first ten customers (design partners, trust before outreach, early prici
 - **Scaling**: devrel team, talks, partner integrations, enterprise plan (SSO, audit logs, self-hosting), product-led sales for large accounts.
 
 ## Common mistakes
+
+_In short:_ Avoid gating trials behind sales, treating stars as traction, choosing a licence you later regret, broken quickstarts, unreproducible benchmarks, uncapped usage bills and marketing-style tool descriptions.
 
 - Gating the trial behind a demo or sales call.
 - Treating GitHub stars or downloads as traction.

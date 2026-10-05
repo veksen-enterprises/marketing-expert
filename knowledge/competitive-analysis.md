@@ -6,22 +6,30 @@ tags: competitive analysis, competitors, win loss, competitive intelligence, def
 
 ## Define competitors the way the buyer does
 
+_In short:_ Define competitors the way your buyer does: include doing nothing, a spreadsheet or an existing suite, and note that fear of choosing wrong, not a rival's features, often kills deals.
+
 - Ask: what would customers do if we didn't exist? Answers include a direct rival, a spreadsheet, hiring someone, an agency, a suite they already own, or nothing (Dunford). [practitioner]
 - **"No decision" is often the biggest competitor.** Dixon & McKenna (2.5M+ sales conversations): 40–60% of qualified B2B deals end with no decision, roughly half from buyers who wanted to change but were afraid of choosing wrong. [practitioner, proprietary data] Your competitor list needs a "do nothing" column, and that fight is about reducing risk, not beating features.
 - **The feature-matrix trap**: feature checklists use your frame, not the buyer's, and push you toward copying features when differentiation pays mainly when it's large. Rank attributes by the value they create for your best-fit customers versus their actual alternatives.
 
 ## Win/loss interviews
 
+_In short:_ Ask buyers, through a non-sales interviewer, why they won or lost, because sales reps' recorded loss reasons are unreliable and overblame price.
+
 - Reps blame price far more than buyers do (48% vs 23% of losses, Primary Intelligence); buyer and seller loss reasons agree ~15% of the time (Clozd). [vendor, no published method] Directionally: CRM loss reasons are unreliable.
 - Practice: a non-sales interviewer; at least 5 wins, 5 losses and 5 no-decisions per quarter; ask what alternatives they considered (including staying put), their criteria, and the moment they decided.
 
 ## Monitoring competitors legally
+
+_In short:_ Track competitors through public sources such as pricing pages, job postings, changelogs and ad libraries, and stay legal: no posing as a prospect or obtaining confidential files.
 
 Public sources: pricing pages (track changes), job postings (direction), changelogs, reviews of competitors (1–3 stars show unmet needs), Meta Ad Library (all active ads), Google Ads Transparency Center (since Mar 2023), filings and earnings calls, your own prospects.
 
 Limits: misrepresentation, bribery, inducing breach of confidentiality and theft are "improper means" under US trade-secret law; reverse engineering and independent development are not (18 U.S.C. §1839). Don't pose as a prospect or candidate; don't hire people to bring confidential files.
 
 ## Check every claimed difference before you use it [practitioner]
+
+_In short:_ Before claiming a difference such as "they don't do X", verify it in the competitor's own docs and free tools, write "not found in" with a date, and watch for customers building it themselves.
 
 A difference you believe you have ("they don't do X") is the claim most likely to be wrong, and the one buyers test first. Before it goes on a website, in a pitch or in a plan:
 - Read the competitor's own documentation, changelog and release notes, not only the home page. For developer tools these are often public repositories (docs sites built from GitHub, open-source agents and collectors), readable even when the marketing site isn't.
@@ -32,6 +40,8 @@ A difference you believe you have ("they don't do X") is the claim most likely t
 In one session, a model's from-memory comparison said a competitor had no MCP server and no free entry tool; its public docs repository showed both [our experiment; one case].
 
 ## Sources of defensibility: what the evidence says
+
+_In short:_ Network effects, switching costs, scale, brand, data and distribution each protect a business less than people assume, so check how each really works for you and for the alternatives.
 
 **Network effects** [research]
 - Network effects are often weaker and more local than user counts suggest. Uber's network is city-level (a rival can enter one city at a time); Airbnb's travellers draw on a global host network (harder to enter) (Zhu & Iansiti 2019). Social networks are made of many small clusters, which lets focused entrants win a cluster.
@@ -56,18 +66,26 @@ In one session, a model's from-memory comparison said a competitor had no MCP se
 
 ## Bundling vs point solutions
 
+_In short:_ Big bundlers can price single-purpose products out, but a focused product can win where one segment values one component far more than the bundle delivers.
+
 - For digital goods with near-zero marginal cost, large bundles are more profitable and efficient than selling separately, because bundle valuations are more predictable (Bakos & Brynjolfsson 1999). A big bundler can price point solutions out. [research]
 - Unbundling works when a segment values one component far more than the bundle delivers, the bundle's version is visibly worse for a specific job, or regulation weakens the bundle's zero price.
 
 ## Price wars
 
+_In short:_ Don't answer a price cut with a price cut; respond with quality, service and risk arguments, cut prices only for specific segments, and give up segments not worth fighting for.
+
 "The best counterattack does not involve a retaliatory price" (Rao, Bergen & Davis, HBR 2000). Sequence: understand the cause → try to prevent (signal intent) → respond with non-price moves (quality, service, risk of cheap options) → selective price moves for specific segments → cede segments where fighting costs more than it returns. An incumbent with many locked-in customers loses margin on all of them when it cuts price; a small player can target only new and switching buyers. [practitioner]
 
 ## Advantages don't last
 
+_In short:_ Few firms keep a lead for long, so plan defensibility (what stops competitors catching up) as a sequence of advantages, such as a niche network, then switching costs, then brand, and re-check it often.
+
 Persistently superior performance is achieved by a very small minority of firms and has become harder to sustain; lasting advantage is increasingly "a sequence of advantages over time" (Wiggins & Ruefli 2002, 2005). Plan defensibility as a sequence (e.g. win a niche network → build switching costs → build brand) and re-check it every planning cycle. [research]
 
 ## Procedure
+
+_In short:_ Run a repeatable loop: list buyer alternatives, interview win/loss quarterly, map each side's defences, find your niche, watch public signals, pre-decide how to answer big entrants, and repeat.
 
 1. List alternatives from the buyer's view for your last 10–20 deals (won, lost, stalled), including "do nothing" and suites they already own.
 2. Run win/loss interviews each quarter with a non-sales interviewer.

@@ -6,6 +6,8 @@ tags: paid media, ppc, google ads, meta ads, facebook ads, linkedin ads, perform
 
 ## Do the math first
 
+_In short:_ Before spending, work out break-even: the return and cost per customer your margin allows; if realistic costs exceed it, no account tweaks will fix it, only the offer, price or conversion rate.
+
 Run paid_media_math before spending:
 - **Break-even ROAS** (first order) = 1 ÷ contribution margin. At 40% margin you need 2.5× just to break even.
 - **Break-even CPA** = AOV × margin (first order), or lifetime gross profit if you can finance payback.
@@ -13,6 +15,8 @@ Run paid_media_math before spending:
 If the implied CPA at realistic CPC and CVR is above break-even, no amount of optimisation in the account fixes it. The fix is in the offer, price, margin, AOV or conversion rate.
 
 ## What the algorithms changed [first-party / practitioner]
+
+_In short:_ With automated campaigns, your levers are the quality of the conversion signal you feed them, varied creative, exclusions, consolidated budget and the landing page and offer.
 
 Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval system, 2025) automate targeting, bidding and placement. The levers you still control:
 1. **Conversion signal quality**: optimise toward the event that represents value (qualified lead, purchase with value), not a cheap proxy. Use value-based bidding; import offline conversions (CRM stages) for lead-gen; implement Meta Conversions API and Google enhanced conversions to recover signal lost to browsers, ATT and consent.
@@ -23,6 +27,8 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 
 ## Measurement after privacy changes [first-party]
 
+_In short:_ Privacy changes mean platform numbers are partly modelled, so confirm important channels with lift or geo tests, and set up consent and server-side tracking properly.
+
 - iOS App Tracking Transparency opt-in averaged ~35% (Adjust, 2025) [vendor]; Meta reports a partly modelled, delayed view of iOS conversions.
 - Google Consent Mode v2 has been required for EEA ads measurement and remarketing since March 2024; without it you lose EEA conversion data and audiences. Advanced mode enables modelled conversions.
 - Third-party cookies remain in Chrome (Google abandoned deprecation; most Privacy Sandbox APIs retired Oct 2025). Safari and Firefox still block them.
@@ -30,11 +36,15 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 
 ## Where attribution lies most
 
+_In short:_ Brand search, retargeting and view-through conversions claim credit for customers you'd have won anyway, so check them with a holdout test before trusting their returns.
+
 - **Brand search**: often captures people who'd have arrived anyway. When eBay paused brand ads, total clicks fell only ~0.5% because organic results picked up nearly all the lost paid clicks. Test with a geo or time holdout, especially if no competitor bids on your brand.
 - **Retargeting**: reaches people already likely to convert. Measure with a holdout before treating its ROAS as real.
 - **View-through conversions**: credit for ads that may never have been noticed. Check the attribution window settings.
 
 ## Channel notes [practitioner]
+
+_In short:_ Search captures demand that already exists, paid social creates it and needs strong creative, and LinkedIn is costly but precise for high-value B2B sales.
 
 - **Search** captures existing demand; it can't create it. Useless for products nobody searches for yet.
 - **Paid social** creates demand and can target broad interest; it needs strong creative and a clear, low-friction offer.
@@ -43,11 +53,15 @@ Google Performance Max and Meta Advantage+ (with Meta's Andromeda retrieval syst
 
 ## Testing and scaling
 
+_In short:_ Judge tests on cost at the margin, raise budgets in steps because each increase buys costlier customers, and keep refreshing creative and trying new channels.
+
 - Give tests enough budget for statistically meaningful conversion counts; judge on CPA/ROAS at the margin, not averages.
 - Scaling raises marginal CPA (you exhaust the cheapest audience first). Increase budget in steps and watch marginal, not blended, numbers.
 - Every channel decays: refresh creative on a schedule and keep testing new channels (see channel-strategy).
 
 ## When to stop or cut
+
+_In short:_ Stop or cut paid spend when costs sit above break-even with no fix, the channel's customers churn faster, a holdout shows little extra lift, or you're mostly paying for demand you already had.
 
 - Implied CPA above break-even with no realistic path to fix it.
 - Cohorts from the channel churn faster than others (check unit_economics by channel).

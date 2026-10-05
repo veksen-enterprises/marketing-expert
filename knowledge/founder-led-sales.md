@@ -10,6 +10,8 @@ Evidence note: almost no controlled research studies founder-led selling. The st
 
 ## Discovery calls: which method for which question
 
+_In short:_ A discovery call (where you learn if the buyer has a problem worth paying to fix) should be a conversation, not a pitch. Raise budget early and end by asking for a specific next action.
+
 Discovery is the call where you learn whether this account has a problem worth paying to fix, and how they buy. Three methods are often mixed up. They answer different questions.
 
 | Method | Question it answers | Use it when |
@@ -32,6 +34,8 @@ What the evidence says about asking questions:
 
 ## Demos: show their problem, not your product
 
+_In short:_ Run the demo only after discovery: restate their problems briefly, show the few flows that fix them, and keep stopping to let the buyer talk. Use their own data where you can.
+
 - Run the demo only after discovery. Open with less than two minutes on the problems they told you, then show the two or three flows that fix those problems. [vendor; Gong, 67,149 demos, 2017; partly snippet-only]
 - **Stop talking every minute or so.** Rep talk share was the same in won and lost demos (about 65%). The difference: the longest monologue in won demos was 76 seconds; lost demos often ran past 106 seconds. Won demos had 21% more back-and-forth per minute. [vendor; Gong 2017; correlational]
 - Won demos were longer (47 vs 36 minutes average) [vendor; Gong 2017]. That probably reflects engaged buyers, not a reason to stretch the call.
@@ -39,6 +43,8 @@ What the evidence says about asking questions:
 - **Demo-to-close rates** by contract size, from one vendor: about 35% under $10k a year, 22% at $50–100k, 15% over $100k [vendor; Optifai, claimed 939 companies, 2025–26; data mixed with other reports; not traceable]. Use your own numbers once you have ten demos.
 
 ## Pilots and proofs of concept that turn into contracts
+
+_In short:_ Charge for pilots (time-limited trials in the customer's real setting) and agree a one-page success test, price and decision date in writing before starting. Open-ended free pilots rarely turn into contracts.
 
 A pilot (or proof of concept, POC) is a time-limited trial of the product in the customer's real environment, ending in a buy or no-buy decision.
 
@@ -55,6 +61,8 @@ A pilot (or proof of concept, POC) is a time-limited trial of the product in the
 
 ## Security questionnaires as a tiny company
 
+_In short:_ Expect security questionnaires from larger buyers. Offer a trust page, one reusable completed standard questionnaire, and a SOC 2 audit only once a real deal needs it. Answer honestly and ask early.
+
 At 0–10 customers, assume any buyer with a security team will send a questionnaire. What you can offer, from cheapest:
 
 1. **A trust page** (a public page on security and data handling): what data you read, send and store, where, for how long, who has access, sub-processors, and how to report a vulnerability. Build it from the data-flow page in first-customers. No study measures its effect on deals; vendor claims that it cuts questionnaire volume by half are untraced [vendor; snippet-only].
@@ -69,6 +77,8 @@ Rules [practitioner]:
 
 ## Negotiating price and discounts
 
+_In short:_ Name your price first, as a range with your target at the bottom, and avoid extreme opening numbers. Never give discounts for free: trade them for prepayment, a case study or a signing date.
+
 Pricing structure, value metrics and discount risks are in pricing. Here only the conversation.
 
 - **Name the price first, and name it as a range with your target at the bottom.** First offers anchor the result: across simulated negotiations the correlation between first offer and outcome was about 0.5 [research; meta-analysis; snippet-only], weaker with experienced counterparts. A range such as "$18–22k a year" with $18k as your real target gave better settlements than a single number, without seeming less polite [research; JPSP 2015; 5 experiments; lab and online].
@@ -78,6 +88,8 @@ Pricing structure, value metrics and discount risks are in pricing. Here only th
 - **Design-partner price:** a dated discount off a written list price, converting to list (or a stated step-up) at renewal [practitioner; see first-customers].
 
 ## Procurement and how long deals take
+
+_In short:_ Even small buyers have steps between yes and payment, so ask early what happens before signing. Bigger deals take longer; set expectations from your first five deals and plan cash for the slow end.
 
 Even small companies have steps between "yes" and money [practitioner]:
 - **Under ~50 people:** the founder or a team lead signs; a card payment or a one-page order form. Security may be one engineer's questions.
@@ -94,6 +106,8 @@ Set your own expectation from your first five deals, and plan cash on the slow e
 
 ## Follow-up cadence
 
+_In short:_ End every call with a dated next step in the calendar, answer inbound interest within an hour, send a written recap the same day, involve several people at the account, and follow up usefully.
+
 - **Every call ends with a dated next step in the calendar**, sent as an invite before you hang up. In one vendor's data, deals with no activity and no scheduled next step for more than 7 days had 65% lower win rates, and top performers were far more likely to have a next meeting defined [vendor; Ebsta × Pavilion, 4.2M opportunities, 2024; correlational].
 - **Answer inbound interest within the hour.** Firms that tried to reach a web lead within an hour were about 7x as likely to qualify it as those that waited one hour more, and 60x as likely as those that waited a day [research-adjacent; HBR 2011; 1.25M leads, mostly consumer; snippet-only].
 - **Recap in writing the same day:** their problem in their words, what you agreed, the next step, open questions. The champion forwards this inside their company [practitioner].
@@ -102,12 +116,16 @@ Set your own expectation from your first five deals, and plan cash on the slow e
 
 ## Tracking: when a spreadsheet is enough
 
+_In short:_ One founder with under about 30 to 50 live deals can track them in a spreadsheet, sorted daily by next-step date. Switch to a CRM (customer database) when a second person sells or follow-ups slip.
+
 - **One founder, under about 30–50 active conversations:** a spreadsheet is enough [rule-of-thumb; CRM vendors' own advice]. One row per deal: company, contact, champion, economic buyer, problem, metric, stage, next step and date, security status, paper process, last contact, source.
 - **Columns beat tools.** The MEDDIC fields and the "next step date" column do the work; sort by next-step date every morning.
 - **Switch to a CRM** when a second person sells, when you miss a follow-up, or when you cannot answer "how many deals at pilot stage?" in a minute [rule-of-thumb].
 - Record why each deal was lost in one sentence. With ten losses you have a positioning signal (see positioning and competitive-analysis).
 
 ## When to hire the first salesperson
+
+_In short:_ Hire the first seller only when the sale is repeatable, with a steady win rate and referenceable customers, or when you are the bottleneck. Hiring does not fix a sale you cannot make yourself.
 
 - No study compares founder-led with hired selling. In 300+ B2B high-tech start-ups, more budget on personal selling helped early and hurt after product-market fit [research; observational panel; snippet-only; see first-customers]. Among 2,484 US start-ups, adding sales staff was associated with better performance and adding non-owner managers with worse [research; Kauffman Firm Survey panel; abstract and summaries]. Neither tells you whether a founder or a hire should do the selling.
 - Practitioner thresholds converge [practitioner]:
@@ -119,12 +137,16 @@ Set your own expectation from your first five deals, and plan cash on the slow e
 
 ## What usually works by stage
 
+_In short:_ Move from interview calls with no pitch, to discovery and paid pilots for the first customers, to standard terms and annual prepay, and only then hire a seller with a stable win rate.
+
 - **0 customers:** Mom Test calls with 15–30 people in one segment. Pitch nothing until you hear the same problem, in the same words, several times. Ask each for a commitment (see first-customers).
 - **First 1–3 customers:** discovery with SPIN implication questions; demo on their data; a paid pilot with a one-page success test; a trust page and one completed CAIQ or SIG Lite; spreadsheet with MEDDIC columns.
 - **3–10 customers:** a standard order form and terms; annual prepay as the default offer; list price with written, traded discounts; record cycle length and loss reasons; decide on SOC 2 when a real deal requires it; write down the sales steps that worked so a hire can repeat them.
 - **About 10+ referenceable customers and a stable win rate:** hire the first seller; co-sell; move to a CRM (see b2b-saas-sales-led).
 
 ## Common mistakes
+
+_In short:_ Avoid pitching on the first call, ending without a dated next step, free pilots with no success test, late surprises about security or purchasing, claiming controls you lack, and giving discounts for nothing.
 
 - Pitching in the first call instead of learning; asking all the questions up front like a form.
 - Ending calls with "I'll send some info" instead of a dated next step.
@@ -137,6 +159,8 @@ Set your own expectation from your first five deals, and plan cash on the slow e
 - Hiring a VP of Sales to find the sales process for you.
 
 ## Folklore
+
+_In short:_ Several popular sales statistics, such as pilot conversion multipliers and talk-time ratios, have no traceable source or were contradicted. Treat the advice behind them as sensible, but the numbers as not evidence.
 
 - "Pilots with predefined success criteria are 3.2x more likely to convert" (said to be Forrester 2023) and "structured pilots convert 40–60%" (said to be McKinsey 2023): no source found. The advice is sensible; the numbers are not evidence.
 - "Security review adds 2–6 weeks" and "a trust centre cuts questionnaires 50–70%": vendor blogs without data.

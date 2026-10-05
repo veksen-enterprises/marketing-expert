@@ -8,6 +8,8 @@ This playbook is about using generative AI (large language models and image/vide
 
 ## Productivity: what the experiments show [research]
 
+_In short:_ AI makes drafting and rewriting faster, especially for junior staff, but on tasks needing careful judgement it can make people more confidently wrong, so check which kind of task you have.
+
 - **Writing tasks get faster and, on average, better.** Noy & Zhang (Science, 2023): professionals doing mid-level writing tasks (press releases, short reports, analysis plans, sensitive emails) with ChatGPT took about 40% less time and their output was rated about 18% higher in quality. Weaker writers gained most, so the gap between workers narrowed. Tasks were short and self-contained; this is the best case for AI.
 - **The "jagged technological frontier".** Dell'Acqua et al. (HBS working paper 24-013, 2023; 758 BCG consultants, pre-registered): on tasks inside AI's capability, consultants with GPT-4 completed 12.2% more tasks, 25.1% faster, at more than 40% higher rated quality. On a task chosen to be just outside the frontier (a business problem that needed careful reading of interview notes and numbers), consultants using AI were 19 percentage points less likely to reach the correct answer. The two kinds of task looked similarly hard. Lesson: you can't tell by looking which side of the frontier a task is on; you have to check.
 - **Gains are largest for less experienced people.** Brynjolfsson, Li & Raymond (QJE, 2025; 5,000+ customer-support agents, staggered rollout): issues resolved per hour rose about 15% on average (14% in the 2023 working paper). The working paper reports about 34% for novice and low-skilled agents and little effect for the most experienced; the QJE version adds that their quality fell slightly. The tool seems to spread top performers' know-how to new staff.
@@ -15,11 +17,15 @@ This playbook is about using generative AI (large language models and image/vide
 
 ## Quality risk: everyone's output starts to look the same [research]
 
+_In short:_ AI-assisted writing is better on average but more alike across writers, so if everyone prompts similar models, your marketing blends in; write the point of view yourself first.
+
 - Doshi & Hauser (Science Advances, 2024): writers who got story ideas from an LLM wrote stories rated more creative and better written, especially the less creative writers. But AI-assisted stories were more similar to each other than stories written without AI. The authors call it a social dilemma: each writer is better off, but the group produces a narrower range of ideas.
 - For marketing, distinctiveness is the point (see positioning and brand-and-demand). If you and your competitors prompt similar models with similar briefs, you get similar headlines, angles and visuals. AI raises the floor and pulls the ceiling toward the average.
 - Countermeasures [practitioner]: write the point of view, the customer insight and the brief yourself before prompting; feed the model your own material (call transcripts, reviews, win/loss notes; see customer-research); ask for many very different options and reject the obvious ones; have one person own the final voice.
 
 ## AI-generated ad creative
+
+_In short:_ AI can cheaply produce many different ad concepts, but platform performance claims are self-reported, so test generated ads against your best human ones and judge by cost per customer won, not clicks.
 
 - **Platform tools [first-party]**: Meta Advantage+ creative generates image variations, backgrounds, text variations and format changes (for example, turning media into 9:16). Meta says background generation for Advantage+ catalog ads gave a 2–3% lift in conversions. Google Performance Max can build an asset group from your website and generate text, images, logos and video; Google's help pages say generated assets aren't guaranteed to pass ads policy and that you must review them for accuracy before they run. Treat platform performance claims as the platform marking its own homework.
 - **Independent evidence [research]**: Hartmann, Exner & Domdey (International Journal of Research in Marketing, 2025) compared AI-generated and human-made marketing images. In a field test with more than 173,000 banner-ad impressions, some AI-generated images reached up to 50% higher click-through than human-made stock photos. One study, CTR only (not sales), and newer image models have changed since. Little independent evidence yet on AI-generated video or copy at scale.
@@ -27,6 +33,8 @@ This playbook is about using generative AI (large language models and image/vide
 - **Labels**: since 2025 Meta adds an "AI info" label to ads made or heavily edited with its generative tools and says it will try to detect third-party AI edits [first-party].
 
 ## Synthetic personas and "silicon samples" for research
+
+_In short:_ AI-simulated survey respondents are fine for drafting and stress-testing questions, but they get the spread of opinions wrong, so never use them as proof of demand, pricing or segment size.
 
 - **The promise [research]**: Argyle et al. (Political Analysis, 2023) showed that GPT-3, given demographic backstories, reproduced many patterns in US survey answers ("algorithmic fidelity"). Brand, Israeli & Ngwe (HBS working paper 23-062) found GPT gave answers consistent with economic theory (downward-sloping demand) and willingness-to-pay estimates similar to human studies, and that fine-tuning on earlier survey data improved fit.
 - **The limits [research]**:
@@ -37,10 +45,14 @@ This playbook is about using generative AI (large language models and image/vide
 
 ## AI content and search [first-party]
 
+_In short:_ Google judges content by how helpful it is, not by how it was made; mass-producing low-value pages with AI breaks its spam rules.
+
 - Google (Search Central, Feb 2023): it rewards helpful content "however it is produced"; using automation to create content mainly to manipulate rankings breaks its spam policies.
 - Since March 2024, "scaled content abuse" covers mass-produced, low-value pages by any method, including AI. See seo-and-ai-search and seo-content-and-architecture (programmatic pages). The test is value added, not the tool used.
 
 ## Disclosure and law
+
+_In short:_ Claims about what your AI product does need evidence, fake or AI-generated reviews are banned, and EU rules require labelling some AI content; label where required and never present AI people as real customers.
 
 Not legal advice; see privacy-and-marketing-law and pr-and-influencers for wider coverage.
 - **FTC, United States [first-party; verified-search: ftc.gov, 2026-10-04]**: Operation AI Comply (25 Sep 2024) brought five actions over deceptive AI claims and AI-enabled deception, including DoNotPay ("robot lawyer" claims; $193,000 settlement) and Ascend Ecom (AI income claims). The order against Rytr (an AI tool that generated reviews) was set aside on 22 December 2025; the FTC said it unduly burdened AI innovation, citing the administration's AI Action Plan. Enforcement priorities have shifted. What has not changed: claims about what your AI product does need evidence, and the Consumer Reviews and Testimonials Rule (in force 21 Oct 2024) bans fake reviews and testimonials, explicitly including AI-generated ones.
@@ -48,6 +60,8 @@ Not legal advice; see privacy-and-marketing-law and pr-and-influencers for wider
 - **Consumer reaction to "made with AI" labels [research, mixed; not re-verified]**: several experiments report that disclosing AI involvement lowers perceived authenticity, trust and purchase intent. Wang, Sturgis & de Kadt (Telematics and Informatics, 2026; 3,861 people) found an AI label on a news article lowered its perceived accuracy but had limited wider effects. An agency study (TBWA with Ideally, 2026) reported trust penalties that disclosure made worse, larger for video and for high-trust categories such as airlines and banks [vendor]. Effects are measured on stated attitudes, not real purchases. Don't hide AI use where the law or platform requires a label; do avoid AI-generated people presented as real customers.
 
 ## Workflow: where AI helps and where it doesn't
+
+_In short:_ Use AI for drafts, summaries and variants, with checks; never for final facts, prices, customer quotes or regulated claims, and don't let it author your strategy or positioning.
 
 | Task | Use AI? | How |
 |---|---|---|
@@ -65,12 +79,16 @@ Not legal advice; see privacy-and-marketing-law and pr-and-influencers for wider
 
 ## How to use this MCP server with an AI assistant
 
+_In short:_ Get numbers from the calculators, claims from the evidence-tagged playbooks and business facts from the profile, rather than from the model's memory.
+
 - **Numbers come from tools, not from the model's head.** Use paid_media_math, unit_economics, ab_test_sample_size, ab_test_evaluate, funnel_analysis and market_size. LLMs make arithmetic errors and invent plausible benchmarks.
 - **Claims come from playbooks with evidence tags.** Treat [research] and [first-party] as stronger than [practitioner], [vendor] and [rule-of-thumb]. If a playbook has no evidence for something, say so rather than filling the gap.
 - **Business facts come from the business profile** (get_business_profile), not from guesses about the customer.
 - Use check_copy_limits and analyze_copy on AI-written copy before it ships.
 
 ## Common mistakes
+
+_In short:_ Don't assume AI helps everywhere, publish drafts with no first-hand content, trust synthetic personas, let AI invent facts or quotes, or measure success by hours saved.
 
 - Assuming AI helps on every task; the "jagged frontier" means it can make careful analytical work worse while looking confident.
 - Publishing AI drafts without adding first-hand data, examples or a point of view; the result reads like everyone else's.

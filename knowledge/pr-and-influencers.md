@@ -8,6 +8,8 @@ PR (public relations) here means getting coverage you don't pay for. Influencer 
 
 ## What makes something news [practitioner]
 
+_In short:_ Journalists cover what their readers care about, so an idea needs to be new, surprising, timely, human or relevant to that outlet; if it passes none, put it on your blog.
+
 Journalists cover what their readers care about, not what your company cares about. Test every idea against these:
 - **New**: first, only, biggest, or a real change from before. "We launched version 2" usually isn't news; "first X to do Y" may be.
 - **Surprising data**: a number that goes against what people assume, with a clear method.
@@ -18,6 +20,8 @@ If an idea passes none of these, put it on your blog instead.
 
 ## Data-driven PR
 
+_In short:_ Original data is one of the most reliable ways for a small company to earn coverage; design the study around a headline, publish whatever it shows, and include method and reusable charts.
+
 - Original data is one of the most reliable ways for a small company to get coverage. In Cision's 2025 State of the Media survey (3,000+ journalists, 19 markets), 72% called press releases the most useful resource PR teams offer; asked about preferred formats, 74% chose press releases, 61% original research and 55% exclusives [vendor].
 - Design the study for the story: decide the headline you'd want, then ask questions that could prove or disprove it. Publish whatever the answer is.
 - Include the method (sample size, dates, who was asked), a chart journalists can reuse, and regional or industry breakdowns that local and trade outlets can use.
@@ -25,11 +29,15 @@ If an idea passes none of these, put it on your blog instead.
 
 ## Founder story [practitioner]
 
+_In short:_ Early on, the founder's story is often your most interesting asset, so prepare key messages and real numbers, and become a fast, quotable source on news in your field.
+
 - Early on, the founder is often the most interesting thing about the company. Useful angles: why this founder saw the problem first, an unusual background, a contrarian view of the industry.
 - Prepare the founder for interviews: three key messages, real numbers they're allowed to share, and stories, not slogans.
 - Build the founder as a source, not only as a subject: reporters return to people who give fast, quotable, honest comments on news in their field.
 
 ## Pitching journalists
+
+_In short:_ Pitch only relevant journalists, briefly, by email, naming a recent story of theirs, follow up once with something new, and offer exclusives or embargoes only by agreement.
 
 - **Relevance first.** Muck Rack reports that 73% of journalists reject pitches because they aren't relevant to what they cover, far ahead of any other reason [vendor].
 - **Short.** In Muck Rack's State of Journalism 2026 (897 usable responses), 69% of journalists prefer pitches under 200 words, and 86% say at least some of their work started from a PR pitch [vendor].
@@ -48,12 +56,16 @@ If an idea passes none of these, put it on your blog instead.
 
 ## Digital PR for links
 
+_In short:_ Earn links by creating data, tools and expert comment that editors choose to cite; paid or keyword-stuffed links break Google's rules, and wire releases rarely earn editorial links.
+
 - Digital PR means creating stories and assets (data studies, tools, expert comment) that earn links from news and industry sites. It is also one of the safest ways to get links, because the links are editorial (chosen by an editor), not bought (see seo-and-ai-search).
 - Google's spam policies count paid articles with links that pass ranking credit, and links with keyword-rich anchor text in press releases distributed on other sites, as link spam. Paid or sponsored links must carry rel="sponsored" or rel="nofollow" [first-party].
 - Wire-service press releases rarely earn editorial links on their own; their value is distribution and records, not SEO [practitioner].
 - Measure digital PR on links from relevant, real publications and on referral traffic and brand mentions, not on raw link counts.
 
 ## Influencer and creator marketing
+
+_In short:_ Choose creators by audience fit, content quality and real engagement rather than follower count, price a small test first, disclose every paid or gifted tie, and track each creator separately.
 
 ### Picking creators
 
@@ -87,16 +99,22 @@ If an idea passes none of these, put it on your blog instead.
 
 ## Measuring PR and influencer work
 
+_In short:_ Measure PR by coverage in outlets your buyers read, share of voice, referral traffic and branded search, and influencers by tracked codes and links; skip mention counts and ad-equivalent value.
+
 - **PR**: coverage in the publications your buyers read (a short target list, not total mentions); share of voice (your mentions vs competitors'); referral traffic; branded search lift in the week after coverage; self-reported attribution (see metrics-and-measurement). Advertising value equivalency (AVE: what the space would cost as an ad) is widely rejected by measurement practitioners (the Barcelona Principles) [practitioner; not re-verified].
 - **Influencers**: unique discount codes and tracked links per creator, cost per engaged view, conversions, and post-campaign branded search. Codes undercount because people forget them or buy later; combine with self-reported attribution and, at scale, geo or holdout tests.
 - Track each creator separately and keep a list of who performed. Repeat partnerships usually beat one-off posts [practitioner].
 
 ## What usually works by stage
 
+_In short:_ Early on, pitch the founder story to a few niche journalists, run one small data study and gift product to micro creators; later add an annual flagship report and a creator programme.
+
 - **Early**: founder story pitched to a handful of niche and trade journalists; one small data study; gifting product to 10–30 micro or nano creators who fit; reacting quickly to news with expert comment.
 - **Scaling**: an annual flagship data report; an agency or in-house PR lead with defined target outlets; a creator program with repeat partners and partnership ads; formal disclosure and monitoring process.
 
 ## Common mistakes
+
+_In short:_ Don't pitch product updates as news, mass-email, count mentions as results, pick creators by followers, skip written disclosure instructions or buy links without a sponsored tag.
 
 - Pitching product updates as news.
 - Mass emails to lists built by tools without reading what journalists cover.

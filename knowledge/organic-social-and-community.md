@@ -8,12 +8,16 @@ This playbook covers unpaid posting and community. For what to say and which for
 
 ## How feeds work now (all platforms)
 
+_In short:_ Feeds mix accounts you follow with recommended strangers' posts, so followers no longer guarantee reach. Each post is ranked on how people react to it, so earn attention in the first lines.
+
 - Every major feed mixes posts from accounts you follow with recommended posts from accounts you don't follow. Followers no longer guarantee reach; each post is judged on how people react to it.
 - X's open-source ranking documentation (2023, updated 2026) describes this directly: candidates come "in-network" (accounts you follow) and "out-of-network" (accounts you don't); the 2023 post said the For You feed was about 50/50 on average [first-party].
 - Platforms predict reactions and rank on them. Positive signals include time spent, shares and private sends; negative signals include "not interested", mutes, blocks and reports [first-party, X; similar statements from Instagram and YouTube below].
 - Implication: write each post to earn attention from strangers in the first lines or seconds. Reach depends on the post, not on past follower growth.
 
 ## Platform notes
+
+_In short:_ Each platform ranks differently: LinkedIn rewards time spent on thoughtful posts, X and Instagram weigh replies and private shares, TikTok ignores follower count, and YouTube rewards satisfied watching and search-friendly titles.
 
 **LinkedIn** (B2B default)
 - LinkedIn engineering has said it uses "dwell time" (how long a post is visible on screen and time spent after a click) as a ranking signal, because it is available for every post, not only those that get clicks [first-party].
@@ -42,11 +46,15 @@ This playbook covers unpaid posting and community. For what to say and which for
 
 ## People reach more than brand pages
 
+_In short:_ Platforms tend to favour posts from people over brand pages, and employees' networks are larger than a company's followers. Use the company page for proof and people's accounts for reach.
+
 - Platforms rank posts from people above posts from brands in several documented cases. Facebook's January 2018 News Feed change announced fewer posts from businesses and media in favour of posts from friends and family [first-party; not re-verified this session].
 - LinkedIn's own employee advocacy guide states that employees' networks are on average 10 times larger than a company's follower base, and that content shared by employees gets twice the click-through rate [vendor: LinkedIn sells employee advocacy tools].
 - Use the company page for proof and reference (jobs, customer stories, launches); use people's accounts for reach.
 
 ## Employee advocacy [practitioner]
+
+_In short:_ Employee advocacy (staff sharing company content) works only if voluntary. Give people raw material instead of scripts, start with those whose audience matches buyers, and train them on confidentiality and disclosure.
 
 - Voluntary only. Forced posting produces identical posts that audiences ignore and platforms may down-rank.
 - Give people raw material, not scripts: data points, customer stories, behind-the-scenes, and let them write in their own words.
@@ -55,6 +63,8 @@ This playbook covers unpaid posting and community. For what to say and which for
 - Measure reach and profile visits per person over months, plus self-reported attribution, not only clicks.
 
 ## Community building
+
+_In short:_ A community is a place where members help each other, not just a support channel. Choose its business purpose first, pick the platform by member habits, seed it by hand, and set rules.
 
 A community is a place where members get value from each other, not only from you. If members only talk to your staff, it's a support channel.
 - **Pick the business purpose first.** CMX's SPACES model lists six ways a community creates business value: Support, Product ideas, Acquisition, Content/Contribution, Engagement (retention), Success (customer education) [practitioner]. In CMX's 2025 Community Industry Report (589 community professionals), support, success, acquisition and retention were the most common top business objectives, and only 24% of respondents said they can confidently quantify their community's value [vendor/practitioner survey].
@@ -66,6 +76,8 @@ A community is a place where members get value from each other, not only from yo
 
 ## Reddit norms
 
+_In short:_ Reddit allows some promotion but each subreddit sets its own rules, often banning it. Read the rules, disclose that you work for the company, and never buy upvotes or use fake accounts.
+
 - Reddit's help pages say promotion is not automatically spam, but if your posts are mainly links to a business you run or benefit from, you should be careful about frequency, or use Reddit ads instead [first-party].
 - Each subreddit (community) sets its own rules, enforced by volunteer moderators; many ban promotion entirely. Read the rules before posting.
 - Some communities use the "10% rule": at most 10% of your posts and comments should be self-promotional [first-party: Reddit describes it as used by some communities].
@@ -75,6 +87,8 @@ A community is a place where members get value from each other, not only from yo
 
 ## Measuring organic social and community
 
+_In short:_ Likes alone are weak. Measure reach beyond followers, saves and shares, inbound messages and self-reported attribution, and for communities, member-to-member answers and active members, remembering members were often already your keenest customers.
+
 - **Per post**: reach from non-followers, saves, shares and sends, comments with substance, profile visits. Likes alone are weak.
 - **Per channel**: follower growth among your target buyers (check titles and companies), inbound DMs, newsletter sign-ups from social.
 - **Business outcomes**: self-reported attribution, branded search trends, pipeline from accounts that engaged (see metrics-and-measurement).
@@ -82,10 +96,14 @@ A community is a place where members get value from each other, not only from yo
 
 ## What usually works by stage
 
+_In short:_ Early on, pick one platform where buyers already are, post from founder and team accounts, and join existing communities. When scaling, add a second platform, employee advocacy and your own owned community.
+
 - **Early**: one platform where your buyers already are; founder and team accounts, not a brand page strategy; join existing communities before building your own; answer questions in Reddit and niche forums honestly.
 - **Scaling**: a second platform, employee advocacy, a regular content system, and an owned community with a clear SPACES purpose and a dedicated community manager.
 
 ## Common mistakes
+
+_In short:_ Avoid posting the same link everywhere, judging a platform after a few weeks, engagement bait and pods, launching a community without an audience, counting community size, and hiding company affiliation.
 
 - Posting the same link on every platform with no native content.
 - Judging a platform after a few weeks of irregular posting.

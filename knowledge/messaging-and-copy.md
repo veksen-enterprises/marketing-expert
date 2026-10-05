@@ -6,6 +6,8 @@ tags: copywriting, messaging, headlines, value proposition, schwartz, awareness,
 
 ## Start from where the reader is (Schwartz, Breakthrough Advertising, 1966) [practitioner]
 
+_In short:_ Start your message from what the reader already knows, from unaware to ready to buy, and, in crowded markets where claims feel tired, show how it works or get specific.
+
 Awareness determines where the headline starts:
 - **Most aware**: knows the product and wants it. Lead with the offer, price, deadline.
 - **Product-aware**: knows the product, not yet convinced. Lead with proof, comparison, risk reversal.
@@ -26,6 +28,8 @@ Most B2B SaaS categories are at stage 3–5. "Save time" no longer lands. Show t
 
 ## Use the customer's words [practitioner]
 
+_In short:_ Mine reviews, interviews, sales calls and support tickets for the exact phrases customers use, and write in those words rather than expert terms.
+
 - **Review mining** (Joanna Wiebe / Copyhackers): collect reviews of you and competitors (G2, Capterra, Amazon, app stores). Bucket them into pains, desired outcomes, alternatives tried, purchase triggers, objections. Count frequency. Lift exact phrases. 3-star reviews hold the most balanced detail. Results reported are single self-reported tests: useful method, no evidence of the size of effect.
 - **Switch interviews** (see customer-research) give you the trigger moments and anxieties.
 - **Sales call recordings and support tickets**: the objections you must answer on the page.
@@ -35,6 +39,8 @@ LLM-clustered reviews are fine for sorting; always check phrases against the raw
 Users and experts use different words for the same problem. Write headlines, outreach and agent-facing descriptions in the words users type (often a symptom plus a number: "takes 4 seconds"), and keep the expert terms for docs and results. Mine them from support threads and issue trackers (see customer-research).
 
 ## What makes copy work (rules with mechanisms)
+
+_In short:_ Good copy is specific, aimed at one reader, ties each benefit to how it works, puts proof beside the claim, answers real objections, and ends with a button saying what you get.
 
 - **Specific beats general.** "Close your books in 3 days, not 10" vs "faster close". Specific claims are checkable, which makes them more credible, and they tell the reader whether it applies to them.
 - **One reader, one job.** Copy written to everyone is read by no one. Name the role and situation.
@@ -47,12 +53,16 @@ Users and experts use different words for the same problem. Write headlines, out
 
 ## Headline and subhead
 
+_In short:_ A page's top should answer in seconds what it is, who it's for, why it's better and what to do next, with an outcome headline and a subhead saying category, audience and how.
+
 A homepage or landing-page hero should answer, in about 10 seconds: what is it, who is it for, why is it better than the alternative, and what do I do next.
 - Headline: the value or outcome, in the reader's terms.
 - Subhead: what the product is (category) + for whom + how (mechanism).
 - Supporting visual that shows the product doing the thing, not an abstract illustration.
 
 ## Critique checklist
+
+_In short:_ Review copy by asking whether a stranger can say what it is, whether a competitor could say the same sentence, and whether claims have proof, objections are answered and there's one clear action.
 
 Run analyze_copy first, then:
 1. Can a stranger state what it is and who it's for after one read?
@@ -66,6 +76,8 @@ Run analyze_copy first, then:
 
 ## Message testing [research] / [practitioner]
 
+_In short:_ Trust a properly powered A/B test most, then panel message tests, then five-second tests, then opinion; low-traffic B2B sites usually rely on panels and sales feedback.
+
 Evidence hierarchy for copy decisions, strongest first:
 1. A properly powered A/B test on real traffic against a business metric (see experimentation).
 2. Panel message tests (e.g. Wynter-style: verified target buyers answer open questions on clarity, relevance, value, differentiation). Diagnostic, not predictive: stated reactions from paid panelists reading cold. Saturation for themes typically at roughly 9–17 responses in qualitative research literature; this finds themes, not their prevalence.
@@ -75,6 +87,8 @@ Evidence hierarchy for copy decisions, strongest first:
 Low-traffic B2B sites usually can't A/B test copy (see experimentation); panel tests plus sales-call feedback are the realistic option.
 
 ## Common mistakes
+
+_In short:_ Don't write copy before positioning is settled, use hype words, list features without the benefit, rely on clever headlines, copy competitors' structure or declare winners without enough traffic.
 
 - Writing copy before positioning is settled.
 - Hype words (revolutionary, seamless, cutting-edge): unbelievable and indistinguishable.

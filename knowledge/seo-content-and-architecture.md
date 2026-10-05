@@ -8,6 +8,8 @@ This playbook covers how pages are organised, linked and written so Google can f
 
 ## Site architecture and internal linking
 
+_In short:_ Search engines find pages through real links, so give every important page a normal link, descriptive anchor text and a short click path from the home page. Use the crawl tool to find gaps.
+
 Start with crawl_site: it reports click depth, pages with one or zero internal links (orphans), links to redirects, duplicate titles and sitemap conflicts, which is the evidence for the decisions below.
 
 
@@ -20,11 +22,15 @@ Start with crawl_site: it reports click depth, pages with one or zero internal l
 
 ## Topic clusters and hub pages
 
+_In short:_ A topic cluster is an overview page linking to detailed sub-topic pages that link back. There's no proof the format ranks better, but it organises links; keep one page per search intent.
+
 - A **topic cluster** is a hub page (also called a pillar page) that gives an overview of a topic and links to detailed pages on each sub-topic; the detailed pages link back to the hub and to each other where it helps the reader. [practitioner]
 - Why it works (plausibly): it creates dense, relevant internal links and forces you to cover a topic completely. There is no controlled evidence that the "cluster" format itself is a ranking factor. [practitioner]
 - One page per intent. If two pages target the same query and intent, they compete ("cannibalisation"); merge them and 301-redirect (permanently redirect) the weaker. Check in Search Console: one query showing two of your URLs alternating. [practitioner]
 
 ## Crawl budget
+
+_In short:_ Most sites can ignore crawl budget (how much Google is willing to crawl), which only matters at around a million pages. Below that, unindexed pages usually have quality or duplication problems.
 
 - **Most sites don't need to think about it.** Google's crawl budget guide is written for sites with 1 million+ unique pages that change about weekly, or 10,000+ pages that change daily, or sites where a large share of URLs sit in "Discovered – currently not indexed". Below that, if pages aren't indexed, the cause is usually quality or duplication, not crawl budget. [first-party]
 - Crawl budget = **crawl capacity** (how much Google can crawl without overloading your server) + **crawl demand** (how much it wants to crawl). You control demand most: duplicate and low-value URLs waste it. [first-party]
@@ -32,11 +38,15 @@ Start with crawl_site: it reports click depth, pages with one or zero internal l
 
 ## Pagination
 
+_In short:_ Give each page of a paginated list its own URL, link them in order with normal links, and let each canonicalise to itself. Google no longer uses next and previous tags.
+
 - Google no longer uses `rel="next"`/`rel="prev"`. [first-party]
 - Give each page its own URL (`?page=2`, not `#page=2`; Google ignores fragments), link pages in sequence with normal `<a href>` links, and let each page canonicalise to itself, not to page 1. [first-party]
 - Infinite scroll and "load more" buttons need a paginated URL fallback with real links, or items beyond the first batch may never be crawled. [first-party] [not re-verified]
 
 ## Faceted navigation (filters)
+
+_In short:_ Filter combinations can create millions of near-duplicate URLs. Block the ones that don't need to rank, and turn the few with real search demand into proper category pages.
 
 Facets are the filters on category pages (size, colour, price, brand). Each combination can create a new URL, producing millions of near-duplicate pages. Google's Dec 2024 guidance: [first-party]
 
@@ -46,6 +56,8 @@ Facets are the filters on category pages (size, colour, price, brand). Each comb
 - Practitioner pattern: pick the few combinations with real search demand ("men's waterproof running shoes") and turn them into proper static category pages with their own copy and internal links; keep the rest uncrawlable. [practitioner]
 
 ## Programmatic SEO
+
+_In short:_ Programmatic SEO (many template-built pages) is fine when each page has different, useful data and abuse when pages exist only to rank. Launch a sample first and check indexing before expanding.
 
 Programmatic SEO = building many pages from a template and a dataset (one page per city, product pair, integration, currency pair).
 
@@ -63,6 +75,8 @@ Programmatic SEO = building many pages from a template and a dataset (one page p
 
 ## Content briefs
 
+_In short:_ A good brief starts from what ranks on the live results page and the reader's job, and adds what your page offers that others don't, plus questions to answer and who writes it.
+
 A brief is the instruction sheet for a writer. Include:
 
 1. **Target query and intent**, taken from the live results page, not a tool. Search it (logged out, right country). What page types rank (guides, product pages, lists, tools, videos, forums)? Is there an AI Overview? Match the dominant format, or decide deliberately why you won't. [practitioner]
@@ -75,12 +89,16 @@ A brief is the instruction sheet for a writer. Include:
 
 ## Content refreshes and pruning
 
+_In short:_ Refresh pages ranking in positions 4 to 20 or losing clicks, and don't delete content just for being old. For each weak page choose improve, merge and redirect, noindex or delete.
+
 - **Refresh** pages that rank on positions 4–20 or that have lost clicks year on year: update facts, prices and screenshots, answer new questions, improve the intro, add internal links. Change the visible date only when the content changed meaningfully. [practitioner]
 - **Prune with care.** Google's Search Liaison (Aug 2023): deleting content because it is "old" is "not a thing"; old content can still be helpful. Removing pages may help a very large site get other pages crawled, but doesn't make the whole site "better" by itself. [first-party via secondary reporting]
 - For each weak page choose: **improve** (relevant, has potential), **merge and 301 redirect** (overlaps a stronger page), **noindex** (useful to users, not to searchers), or **delete with 404/410** (no value, no links, no traffic). Check backlinks and conversions before deleting. [practitioner]
 - Whole-site quality still matters under core updates (see seo-and-ai-search), so large sets of thin pages are worth fixing; just don't delete by age.
 
 ## Measuring with Search Console
+
+_In short:_ Read Search Console per query and page, not site-wide, since average position can fall while traffic grows. Use it to find overlapping pages, refresh candidates and indexing problems.
 
 - **Performance report fields**: clicks; impressions (times your link was shown); CTR (clicks ÷ impressions); average position (the topmost position of your link for each query, averaged across queries; recorded only when the result was actually seen). Filter or group by query, page, country, device, search appearance and date. [first-party]
 - Average position falls when you start appearing for more, lower-ranked queries; it can drop while traffic grows. Read it per query, not site-wide. [first-party; practitioner]
@@ -89,6 +107,8 @@ A brief is the instruction sheet for a writer. Include:
 - Compare year on year, annotate core update dates, and join with GA4 conversions (see metrics-and-measurement) to judge pages on revenue.
 
 ## Checklist
+
+_In short:_ A quick checklist: real links, hub pages, pagination and facets handled, programmatic pages tested, briefs complete, regular refresh reviews, and Search Console tied to conversions.
 
 - [ ] All navigation and content links are `<a href>`; no orphan pages; descriptive anchor text.
 - [ ] Hub pages for core topics, linked both ways with detail pages; one page per intent.
@@ -101,6 +121,8 @@ A brief is the instruction sheet for a writer. Include:
 - [ ] Search Console reviewed per query and page, joined to conversions.
 
 ## Common mistakes
+
+_In short:_ Common mistakes: script-only links, filters creating endless URLs, canonicalising every page to page 1, templated pages that only swap a keyword, bulk deleting old posts, and reading site-wide average position.
 
 - JavaScript-only links and "load more" without paginated URLs.
 - Letting filters generate millions of crawlable URLs.

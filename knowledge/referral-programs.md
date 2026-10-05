@@ -6,6 +6,8 @@ tags: referral, referral program, refer a friend, word of mouth, wom, double-sid
 
 ## What the research shows about referred customers
 
+_In short:_ Referred customers tend to be worth more and stay longer, and referrers know who will fit, but the gap varies by segment, and your biggest spenders aren't always your best referrers.
+
 **Referred customers are worth more, on average** [research]
 - Schmitt, Skiera & Van den Bulte (2011, *Journal of Marketing*) followed about 10,000 customers of a German bank for almost three years. Referred customers had a higher contribution margin (the gap shrank over time), a higher retention rate (the gap stayed), and were more valuable in both the short and long run. Lifetime value was **at least 16% higher** than for similar non-referred customers acquired at the same time.
 - The value gap **differed across customer segments**, so the authors recommend being selective about whom you push to refer.
@@ -23,12 +25,16 @@ tags: referral, referral program, refer a friend, word of mouth, wom, double-sid
 
 ## Net Promoter Score: useful question, weak growth predictor
 
+_In short:_ NPS (a score from asking how likely people are to recommend you) tracks sentiment but doesn't reliably predict growth, so don't treat it as proof of word of mouth; measure actual referrals.
+
 - NPS asks "How likely are you to recommend us?" (0–10); % of 9–10 scores minus % of 0–6. Reichheld (2003, HBR) called it "the one number you need to grow".
 - Critics noted the original analysis correlated NPS with **past**, not future, growth [research, secondary].
 - Keiningham et al. (2007, *Journal of Marketing*, 21 firms, 15,500+ interviews, Norwegian data) **failed to replicate** NPS's claimed superiority over other satisfaction measures such as the American Customer Satisfaction Index. A second Keiningham et al. (2007, customer-level panel of 8,000+ US customers) found recommend intention helps predict recommending behaviour but should not be used alone. [research]
 - Use: NPS can track sentiment and find candidates to ask for referrals and reviews. Do not use it as proof that word of mouth is happening; measure actual referrals.
 
 ## Program design
+
+_In short:_ Referral programmes amplify satisfaction that already exists; reward both sides, preferably in product value, ask right after a success, cap rewards by what a customer is worth, and guard against fraud.
 
 **Prerequisites** [practitioner]
 - Referral programs amplify existing satisfaction; they do not create it. Check retention cohorts and organic "a friend told me" answers in self-reported attribution first (channel-strategy).
@@ -55,12 +61,16 @@ tags: referral, referral program, refer a friend, word of mouth, wom, double-sid
 
 ## The Dropbox case: what is verified
 
+_In short:_ Only Dropbox's own filings are firmly verified; the famous growth figures come from a 2010 talk relayed second-hand, and Dropbox's unusually shareable product means you shouldn't expect the same results.
+
 - **First-party, filed with the SEC** (S-1, 2018): Dropbox said it acquires users "efficiently" through word of mouth, in-product referrals and content sharing, and that over 90% of revenue came from self-serve channels. [first-party, read 2026-10-05]
 - **From Drew Houston's 2010 "Startup Lessons Learned" talk**, as reported by secondary sources: the two-sided referral (500MB extra storage for both people) "permanently increased signups by 60%"; users grew from about 100,000 (Sep 2008) to 4 million (Jan 2010); referrals made up about 35% of daily sign-ups; users sent about 2.8 million direct invites in 30 days (April 2010). The slides could not be opened this session. [anecdote; first-party talk via secondary relay, not re-verified]
 - The often-quoted "3900% growth" is a marketing-blog calculation (100K → 4M), not a Dropbox metric. Don't quote it.
 - What generalizes: storage was a reward that cost Dropbox little, made the product better for the referrer, and was useful only to people who wanted the product. What doesn't: Dropbox had an unusually shareable product (shared folders pull in new users without any reward).
 
 ## Measuring incrementality of referrals
+
+_In short:_ Check whether referrals caused new customers rather than merely getting credit for them, using holdouts, reward-level tests or switching the programme off, and compare retention of referred customers.
 
 Referral tracking credits every sign-up that used a referral link, but some of those people would have joined anyway (they heard about you and the link was just convenient). [practitioner]
 - **Holdout test**: randomly withhold the program (or the reward) from a share of eligible users for a period, and compare total new customers brought in per user, including those who arrived without a link. See experimentation for sample sizes.
@@ -71,12 +81,16 @@ Referral tracking credits every sign-up that used a referral link, but some of t
 
 ## What usually works by stage
 
+_In short:_ Before product-market fit, ask happy users personally for introductions; later add a simple double-sided reward, then testing and fraud rules; in B2B, favour references and case studies over rewards.
+
 - **Pre-product-market fit**: no formal program. Ask happy users personally for introductions; record "how did you hear about us?" at sign-up. [practitioner]
 - **Early traction**: a simple double-sided reward in product value, triggered at the first moment of value; manual fraud checks.
 - **Scaling**: dedicated referral tooling, reward-level tests, holdout measurement, fraud rules, referral asks in lifecycle email.
 - **B2B**: replace rewards with customer references, case studies, review-site asks and introductions; many buyers' employers forbid personal rewards. See partnerships-and-affiliates for paid referral partners.
 
 ## Common mistakes
+
+_In short:_ Don't use referrals to fix weak retention, reward sign-ups instead of paying customers, ask at random moments, treat NPS as word of mouth, or expect Dropbox-level results.
 
 - Launching a referral program to fix weak retention.
 - Rewarding sign-ups instead of paid, retained customers.

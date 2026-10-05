@@ -6,6 +6,8 @@ tags: partnerships, partners, partner program, integrations, technology partners
 
 ## Types of partnership and what each one gives you
 
+_In short:_ Partnership types behave very differently, so name the type first. Each partner needs a clear reason to care, such as revenue or a stickier product; with no answer, skip the partnership.
+
 A **partnership** here means another company helps you reach or win customers. The types behave very differently, so name the type before you design anything. [practitioner]
 
 | Type | What the partner does | What you pay | Fits |
@@ -22,6 +24,8 @@ A **partnership** here means another company helps you reach or win customers. T
 
 ## Integrations and app marketplaces
 
+_In short:_ Build the integration your best customers already ask for and treat marketplace listings like landing pages. Early reviews drive later rank, and platform rule changes are a real risk.
+
 - **Build the integration your best customers already ask for.** Check support tickets, sales-call notes and "what else do you use?" answers in customer-research. One deep integration used by many customers beats ten shallow logos. [practitioner]
 - **Marketplace listings are a distribution channel with its own search engine.** Ranking inputs usually include installs, ratings, reviews and recency. Treat the listing like a landing page (see landing-pages-and-cro): clear outcome in the first line, screenshots, setup steps, pricing. [practitioner]
 - **Scale is real on the big stores.** Shopify reported paying more than US$1B to app developers in 2024, with 16,000+ apps in its store; its revenue-share rule takes 0% on a developer's first US$1M of lifetime revenue (counted from 2025; the old yearly reset ended in 2025), then 15% (check current terms on shopify.dev). [first-party, read 2026-10-05]
@@ -31,11 +35,15 @@ A **partnership** here means another company helps you reach or win customers. T
 
 ## Co-marketing and co-selling
 
+_In short:_ Co-market with non-competitors who share your ideal customer, agree lead ownership in writing, and use overlap lists to get warm introductions. Warm introductions beat cold outreach.
+
 - **Co-marketing**: pick partners whose customers match your ideal customer profile (ICP: the type of company that gets most value from you) but who do not compete. Share effort evenly, agree ownership of leads in writing before launch, and only share contact data where people consented to both companies (see outbound-and-abm for EU/UK rules). [practitioner]
 - **Account mapping**: two partners compare customer and prospect lists, usually through a neutral tool (Crossbeam, Reveal and others) that shows only the overlap. Use the overlap to find (a) your prospects who are the partner's customers (ask for an introduction) and (b) shared customers (good targets for integration adoption and case studies). [practitioner]
 - **Warm introductions beat cold outreach** in practitioner experience. Ask the partner's account manager for one introduction per real fit, not a list dump.
 
 ## Resellers, agencies and channel partners
+
+_In short:_ Resellers and agencies can reach buyers you can't, but they own the relationship and need real support. Reward results, protect deals from conflict, and expect most partners to produce little.
 
 - **The channel partner owns the relationship**, so you lose some customer contact and price control. Accept this only where the partner reaches buyers you can't reach at a sensible cost. [practitioner]
 - **Enablement is the real cost.** Partners sell what is easy to sell. Give them a short pitch, demo account, pricing sheet, objection handling and a named contact. Expect months before a new partner produces a deal. [practitioner]
@@ -44,6 +52,8 @@ A **partnership** here means another company helps you reach or win customers. T
 - **Most partners produce nothing.** In practitioner experience a small share of partners produce most partner revenue. Recruit narrowly and drop inactive partners rather than counting sign-ups.
 
 ## Affiliate programs
+
+_In short:_ Cap affiliate commissions at what a customer is worth to you and pay on qualified sales, not signups. Watch for fraud and credit for sales that would have happened anyway, and require honest disclosure.
 
 **Commission structures** [practitioner]
 - **Percentage of first sale** (common in e-commerce), **flat fee per sale or trial-to-paid** (common in SaaS), or **recurring share** of subscription revenue for a fixed period (e.g. 12 months) or for life.
@@ -65,6 +75,8 @@ A **partnership** here means another company helps you reach or win customers. T
 
 ## The evidence on partner-sourced vs partner-influenced pipeline
 
+_In short:_ Reports that partner deals close more often are vendor data and probably reflect deals that were already likely to close. Count each deal once and compare against similar non-partner deals.
+
 - **Partner-sourced**: the partner created the opportunity (introduction, referral, registered deal). **Partner-influenced**: the partner helped a deal that already existed (shared customer, integration, advice).
 - Crossbeam reports, across companies on its network, an average **11.7% lift in win rate** when partners are involved (network data as of October 2024), from about **+9.4% (1–5 partners) up to +37.1% (50+ partners)**, but not steadily: companies with 5–10 partners showed only +2.5%. [vendor, Crossbeam, read 2026-10-05] Other circulating figures ("53% more likely to close", "46% faster") come from Crossbeam's 2023 State of the Partner Ecosystem Report; no method is shown.
 - Forrester's 2025 partner-ecosystem survey reported that 67% of B2B channel leaders plan for indirect (partner-transacted) revenue to grow more than 30% year on year. That is a plan, not a result. [vendor/analyst, read 2026-10-05]
@@ -73,6 +85,8 @@ A **partnership** here means another company helps you reach or win customers. T
 
 ## What usually works by stage
 
+_In short:_ Before product-market fit, skip formal programs; early on, use one marketplace, one co-marketing partner and simple affiliates. Add partner roles, tiers and platform co-selling only as you scale.
+
 - **Pre-product-market fit**: skip formal partner programs. One or two integrations that your first customers need, and warm introductions from founders' networks. Partners cannot sell a product you can't yet sell yourself. [practitioner]
 - **Early traction (repeatable sales, small team)**: list on the one marketplace where your buyers live; one co-marketing partner per quarter; a simple affiliate or referral-fee program if you are self-serve; account mapping with 2–5 close partners.
 - **Scaling**: a partner manager role, tiers, deal registration, partner portal, agency/implementation partners for complex products, resellers for regions or sectors you can't staff.
@@ -80,6 +94,8 @@ A **partnership** here means another company helps you reach or win customers. T
 - See channel-strategy for how partnerships compete with other channels for focus.
 
 ## Common mistakes
+
+_In short:_ Common mistakes: signing many partners and supporting none, calling an announcement a channel, overpaying affiliates, rewarding coupon sites, over-crediting partners, and depending on one marketplace.
 
 - Signing many partners and enabling none.
 - Announcing a partnership (press release, logo swap) and calling it a channel.

@@ -6,6 +6,8 @@ tags: brand, brand awareness, performance marketing, binet field, 60/40, how bra
 
 ## The two effects (Binet & Field, IPA, 2013) [research, with caveats]
 
+_In short:_ Long-term brand building and short-term sales activation both matter; a roughly 60/40 brand-to-activation split worked best for consumer brands in big-company data, so treat it as a starting guess, not a formula.
+
 From 996 IPA Effectiveness Awards campaigns (1980–2010):
 - **Activation** (sales-focused, targeted, rational): sharp short-term response that decays within weeks.
 - **Brand building** (broad reach, emotional, memorable): slow, compounding growth in baseline sales and pricing power. Pricing effects take 6+ months to show and keep growing past 3 years.
@@ -17,6 +19,8 @@ From 996 IPA Effectiveness Awards campaigns (1980–2010):
 **Limits:** awards entries are self-selected successes (survivorship bias), effects are self-reported, analysis is observational, and the data skews to large B2C advertisers. These are priors, not budget formulas.
 
 ## How brands grow (Ehrenberg-Bass) [research for the laws; practitioner for the prescriptions]
+
+_In short:_ Brands grow mainly by reaching more buyers, including light ones, not by deepening loyalty, so be easy to remember and to find, with consistent, recognisable look and cues.
 
 Strong, replicated regularities:
 - **Double jeopardy**: smaller brands have far fewer buyers, who are also slightly less loyal. Loyalty mostly tracks size. Growth comes mainly from **penetration** (more buyers, especially light buyers), not deeper loyalty.
@@ -32,9 +36,13 @@ Prescriptions drawn from them:
 
 ## The 95-5 rule (Dawes, LinkedIn B2B Institute, 2021)
 
+_In short:_ Most of your future buyers aren't buying right now, so advertising to them builds the memory that makes you the default choice later; work out your own in-market share from your purchase cycle.
+
 If buyers switch providers about every five years, roughly 20% are in-market per year and ~5% per quarter. It's arithmetic, not a measurement: compute your own as (quarter length ÷ purchase cycle). Implication: most of your future buyers aren't buying now; advertising to them builds the memory that makes you the default when they enter the market. Intent-data vendors (6sense, NetLine) report higher in-market shares; they have a commercial interest in that conclusion.
 
 ## What this means in practice
+
+_In short:_ Before product-market fit (proof that people want it), find a working channel and keep your look consistent; once demand capture plateaus, build demand and judge brand work over 6 to 36 months.
 
 - **Pre-product-market fit**: brand budget is mostly wasted; the job is finding a channel that works (see channel-strategy). But make every asset distinctive and consistent from day one: it costs nothing and compounds.
 - **Post-PMF, when demand capture plateaus** (branded search flat, paid CAC rising as you exhaust in-market demand): this is the signal that you need to create demand, not just capture it.
@@ -43,6 +51,8 @@ If buyers switch providers about every five years, roughly 20% are in-market per
 - **Share of search** (your branded search volume ÷ total branded search in the category) is a cheap, practitioner-favoured proxy for share of mind.
 
 ## Common mistakes
+
+_In short:_ Don't cut brand spend because attribution can't see it, copy 60/40 as a law, rebrand often, mistake retargeting for brand, or expect loyalty programmes to drive growth.
 
 - Cutting brand because it doesn't show up in attribution, then wondering why paid CAC keeps rising.
 - Treating 60/40 as a law for a seed-stage startup.

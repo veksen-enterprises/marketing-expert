@@ -8,12 +8,16 @@ This playbook covers events you run, attend or sponsor, and webinars. How events
 
 ## When events pay off
 
+_In short:_ Events pay off mainly for B2B (selling to businesses) products with high contract values, long sales cycles and many buyers per deal. For cheap self-serve products they rarely pay back as acquisition.
+
 - **Best fit**: B2B with high annual contract value (roughly $25–50k and up; a heuristic, see channel-strategy), long sales cycles and buying groups. One won deal can pay for a whole event program. For low-price self-serve products, events rarely pay back as acquisition; use them for community, recruiting or partnerships instead [practitioner].
 - **Why they work in B2B**: deals involve many people. Forrester's 2025 Buyers' Journey Survey reports an average of 13 people inside the buying organisation and 9 outside it, and its 2024 State of Business Buying found that 86% of purchases stall at some point [vendor: analyst survey]. A dinner or a meeting at a show can reach several of these people at once, and can restart a stalled deal.
 - **Trend**: in Forrester's 2024 B2B Event Trends Survey, 58% of marketers planned more small hosted in-person events (the fastest-growing type), and 92% planned to improve post-event follow-up [vendor: analyst survey]. Bizzabo's 2025 survey of 1,500+ organisers and attendees found 78% of organisers say in-person events have unmatched impact on their goals [vendor: Bizzabo sells event software; opinion, not measured outcomes].
 - **Bad fit signs**: no clear ICP (ideal customer profile, see b2b-saas-sales-led), no sales team to follow up, or a goal of "awareness" with no way to check it.
 
 ## Event types
+
+_In short:_ Small field events like dinners and roundtables usually give the best pipeline per dollar. Booths and logo-only sponsorships pay back only with meetings booked beforehand; own conferences are a later-stage play.
 
 | Type | Typical job | Notes [practitioner] |
 |---|---|---|
@@ -27,6 +31,8 @@ This playbook covers events you run, attend or sponsor, and webinars. How events
 
 ## Goals and math
 
+_In short:_ Pick one goal first, then work out cost per meeting and per qualified opportunity (a sales prospect likely to buy). Judge over one or two sales cycles, and don't trust influenced pipeline alone.
+
 Decide the one goal before you book anything: new pipeline, moving open deals forward, expansion, or customer retention. Each needs different invitees.
 - **Cost per meeting** = total cost (fees, booth, travel, staff time, swag, food) ÷ meetings held with ICP accounts. Count only meetings with people who match the ICP, not badge scans.
 - **Cost per opportunity** = total cost ÷ new qualified opportunities from attendees. Compare it with the same number from outbound, paid search and partners (see channel-strategy).
@@ -36,6 +42,8 @@ Decide the one goal before you book anything: new pipeline, moving open deals fo
 
 ## Before the event
 
+_In short:_ Agree a target account list with sales, book meetings two to four weeks ahead, add side dinners, invite people personally, and brief the team.
+
 - **Target account list first**: agree with sales on the accounts and roles you want to meet (see outbound-and-abm). Check the attendee or sponsor list against it before paying.
 - **Book meetings in advance**: aim to fill most of the sales team's time at the event with meetings set two to four weeks before. Use personal emails from the account owner, LinkedIn messages, and a specific reason to meet (a private briefing, a customer dinner, a demo of something new) [practitioner].
 - **Side events**: a dinner or breakfast near a big conference often reaches more buyers than the booth, at lower cost.
@@ -44,6 +52,8 @@ Decide the one goal before you book anything: new pipeline, moving open deals fo
 
 ## At the event
 
+_In short:_ Log every conversation the same day, qualify quickly, don't count badge scans as leads, and teach something specific if you speak instead of pitching.
+
 - Log every conversation the same day in the CRM, with the account, person, topic and next step. Unlogged conversations are lost pipeline.
 - Qualify quickly: one or two questions to separate buyers from students, vendors and job seekers. Do not count badge scans as leads.
 - For talks: teach something specific and give a reason to follow up (a template, the dataset, a short assessment). A product pitch from the stage loses the room.
@@ -51,12 +61,16 @@ Decide the one goal before you book anything: new pipeline, moving open deals fo
 
 ## After the event
 
+_In short:_ Follow up personally within one to three working days, route people by intent, reuse the content, and review results at two weeks and again after a sales cycle or two.
+
 - **Follow up within days, not weeks**: send personal follow-ups within one to three working days, referencing the actual conversation. Generic "thanks for visiting our booth" emails to the whole scan list do little [practitioner].
 - **Route by intent**: meetings held → account owner next step; good conversations without a meeting → sales outreach within the week; everyone else → a nurture email track (see email-and-lifecycle).
 - **Reuse the content**: talk recordings, slides and photos become posts, a recap article and sales material.
 - **Review in two steps**: a quick check after two weeks (meetings held, opportunities opened, cost per meeting), and a pipeline review after one to two sales cycles.
 
 ## Webinars
+
+_In short:_ Expect about a third of registrants to attend live, so promote for two weeks and treat the recording as the main product. Pick one topic for one role, and judge by meetings, not registrations.
 
 **Benchmarks** (vendor data from platform customers; definitions differ, so compare only with the same definition):
 - ON24's Webinar Benchmarks Reports put registrant-to-attendee conversion at 57% (2025 report, 2024 data) and 60% (2026 report, 2025 data), and on-demand viewers at roughly 43–50% of all attendees, depending on which figure in the report you read [vendor: ON24 sells webinar software; ON24 counts on-demand viewers as attendees].
@@ -74,17 +88,23 @@ Decide the one goal before you book anything: new pipeline, moving open deals fo
 
 ## Community and meetups
 
+_In short:_ Meetups build relationships that keep customers longer and create advocates. Let customers host, and measure over quarters through retention, expansion and referrals.
+
 - Meetups and user groups build relationships between customers, which keeps them longer and turns some into advocates (see organic-social-and-community for the SPACES model).
 - Let customers host; give them a format, a budget and speakers. Company-run meetups that are only product demos stop drawing people.
 - Measure through retention and expansion of member accounts and referrals, over quarters.
 
 ## What usually works by stage
 
+_In short:_ Early on, host small dinners and attend a few shows with meetings booked. Growth adds regular field events and webinar series; large companies add their own conference and compare attendees with non-attendees.
+
 - **Early (before repeatable sales)**: founder-hosted dinners and roundtables for 10–20 target buyers; speaking at existing community meetups; attending (not sponsoring) one or two industry shows with meetings booked in advance. Small webinars with a customer as co-host. Little or no booth spend.
 - **Growth ($1–10M ARR)**: a repeatable field event program in the cities where your ICP accounts are; one or two trade shows a year with pre-booked meetings and side dinners; a monthly or quarterly webinar series with an on-demand library; customer user groups.
 - **Scale ($10M+ ARR)**: an own conference or customer summit, partner events, regional field teams, and measurement of attending vs similar non-attending accounts.
 
 ## Common mistakes
+
+_In short:_ Don't buy booths without target lists and booked meetings, count scans or registrations as leads, follow up late with generic emails, or judge an event too soon.
 
 - Buying a booth or sponsorship without a target account list and pre-booked meetings.
 - Counting badge scans or webinar registrations as leads.

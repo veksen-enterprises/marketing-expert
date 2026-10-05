@@ -6,6 +6,8 @@ tags: a/b testing, ab test, experiment, split test, statistical significance, sa
 
 ## Before launching
 
+_In short:_ Before an A/B test, write the hypothesis, pick one main metric plus safety metrics, calculate the needed sample, fix the duration and decision rule, and check tracking works in every variant.
+
 1. **Hypothesis**: "Because [evidence], changing [X] for [audience] will improve [metric]." No evidence → you're guessing; that's fine, but say so and size bets accordingly.
 2. **One primary metric** (the overall evaluation criterion), close enough to the change to move detectably, but tied to value (completed signups, purchases, not clicks). Plus **guardrails** (revenue per visitor, refund rate, page speed, unsubscribe rate) that must not get worse.
 3. **Power analysis**: call ab_test_sample_size (conversion rates) or ab_test_means_sample_size (revenue per visitor, order value: needs the standard deviation per visitor from historical data). Required sample scales with 1/MDE²: halving the effect you want to detect quadruples the traffic. Default 80% power, α = 0.05 two-sided.
@@ -13,6 +15,8 @@ tags: a/b testing, ab test, experiment, split test, statistical significance, sa
 5. **QA** every variant on every major browser/device; check the tracking fires identically in both arms.
 
 ## Reading results
+
+_In short:_ Read results in order: check the traffic split first, confirm you reached the planned sample, look at the size and range of the effect, distrust surprising wins, and use segments only for new ideas.
 
 Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue-type metrics (give raw per-visitor values if you can, and also run it with capPercentile 0.99: a few large orders can decide a revenue test). In order:
 1. **Sample ratio mismatch** first. If a 50/50 test's split differs significantly (p < 0.001), randomisation or tracking is broken (bots, redirects, a variant that errors, tracking differences). Don't interpret the result until it's found.
@@ -24,6 +28,8 @@ Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue
 
 ## Peeking and sequential testing [research]
 
+_In short:_ Checking a test repeatedly and stopping when it looks good produces false wins; read fixed tests once at the planned sample, or use a method built for continuous monitoring.
+
 Use ab_test_sequential when the team will check results continuously: it implements the mixture SPRT ("always valid inference", Johari, Pekelis & Walsh), so stopping when it says stop is valid. In this project's simulation (A/A tests checked 50 times each), it gave false positives 0.8% of the time vs 33% for a repeatedly checked z-test; the price is lower power than a fixed test read once at its planned size.
 
 - Fixed-horizon tests must be evaluated once, at the planned sample.
@@ -32,9 +38,13 @@ Use ab_test_sequential when the team will check results continuously: it impleme
 
 ## Variance reduction [research]
 
+_In short:_ Using each user's pre-test behaviour as a baseline (CUPED) can cut the traffic you need roughly in half, but only where you have earlier data on the same users.
+
 CUPED (Deng, Xu, Kohavi & Walker 2013) uses pre-experiment data on the same users as a covariate; it reduced variance ~50% on some Bing metrics, roughly halving required sample. Available in most mature experimentation platforms. Only works where you have pre-period data per user (logged-in products, returning visitors).
 
 ## When traffic is too low
+
+_In short:_ If your traffic can't detect small lifts, test bigger changes, use a higher-volume step, pool pages, use qualitative evidence, or ship on judgement and say it isn't a controlled result.
 
 Most B2B sites can't detect a 5–10% lift on a 2% conversion rate in any reasonable time. Run ab_test_sample_size with your real numbers before arguing. Options, in order:
 1. **Test bigger changes**: a new value proposition or offer, not a button colour. Bigger true effects need far less traffic.
@@ -47,12 +57,16 @@ Don't run underpowered tests and report "no significant difference" as "no diffe
 
 ## Experiment program health
 
+_In short:_ Expect most tests to fail, log every test and its decision, run at least a full business cycle, and don't test the same element twice at once.
+
 - Expect most ideas to fail; at large companies the majority of tests show no improvement (Kohavi, Tang & Xu, Trustworthy Online Controlled Experiments, 2020).
 - Log every test (hypothesis, result, CI, decision) so losses teach as much as wins.
 - Run tests for at least one full business cycle; watch for novelty effects (an early lift that fades).
 - Interactions between concurrent tests are usually small, but don't run two tests on the same element at once.
 
 ## Common mistakes
+
+_In short:_ Don't stop at the first significant result, ignore a broken traffic split, test many variants without correcting for chance, optimise clicks over revenue, or copy other companies' winning tests.
 
 - Stopping at the first significant reading.
 - Ignoring SRM.

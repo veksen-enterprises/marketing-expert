@@ -8,6 +8,8 @@ A **two-sided marketplace** matches two groups: supply (sellers, hosts, freelanc
 
 ## Is this a good marketplace at all?
 
+_In short:_ Check the idea against Gurley's ten factors: is it much better than today, are the sellers fragmented, is buying frequent, does money flow through you. Rare purchases with scattered payments and concentrated suppliers usually fail.
+
 Use Bill Gurley's 10 factors from "All Markets Are Not Created Equal" (2012) as a checklist [practitioner]:
 1. **New experience vs status quo**: is it much better than today's way of buying?
 2. **Economic advantage vs status quo**: do both sides save or earn money?
@@ -24,6 +26,8 @@ Low frequency + no payment flow + concentrated supply is the classic failing com
 
 ## Solve the cold start: start small
 
+_In short:_ Beat the chicken-and-egg problem by building one small network that works alone, such as one city or category, then copying it. Do things that don't scale, like listing sellers by hand.
+
 - **Atomic network** (Andrew Chen, *The Cold Start Problem*): the smallest group of buyers and sellers that is useful on its own and keeps working without you pushing it, such as one city, one campus, one category [practitioner]. Build one, then copy it to the next.
 - **Constrain geography or category** until liquidity (see below) is good. "Home services in one city" or "vintage watches only" beats "everything everywhere" with empty shelves.
 - Find the **tipping point** in your data. Airbnb reported a step-change in bookings growth once a city had about 300 listings (with about 100 having reviews), when guests could find something that fit their dates and taste [practitioner, single company, Jonathan Golden / Chen].
@@ -32,6 +36,8 @@ Low frequency + no payment flow + concentrated supply is the classic failing com
 
 ## Which side first? Usually supply
 
+_In short:_ Usually start with supply, since there is nothing to buy without it. Check monthly which side is short, and spend only on that side.
+
 - Every marketplace starts **supply-constrained**: you need something to sell. In Lenny Rachitsky's interviews with early operators, about 14 of 17 marketplaces focused on supply first; most of the biggest stayed supply-constrained; a few (Rover, TaskRabbit) became demand-constrained because supply got easy, accessible income [practitioner, small sample of successes].
 - Early supply levers: direct outreach and sales, importing existing listings (with permission), partnerships with associations, paying or guaranteeing early supply income [practitioner].
 - Early demand levers: word of mouth was the top early demand driver in the same interviews; also SEO, communities where buyers already meet, and paid search on high-intent terms [practitioner].
@@ -39,6 +45,8 @@ Low frequency + no payment flow + concentrated supply is the classic failing com
 - Rule: spend on the constrained side only. Buying demand when supply can't serve it burns money and reputation.
 
 ## Liquidity metrics
+
+_In short:_ Liquidity (how often a request actually gets matched) is the key measure. Track it per city and category, never only globally, along with time to match, repeat rate and how concentrated sales are.
 
 **Liquidity** = the probability that a listing sells or a request is filled within a reasonable time. Matching supply with demand is the job, so measure the **match rate** [practitioner, a16z "13 Metrics for Marketplace Companies", 2020].
 
@@ -54,6 +62,8 @@ Track by market (city × category), never only globally:
 
 ## Take rate (your commission)
 
+_In short:_ Take rate (your commission as a share of total sales value) varies hugely by category, and too high a rate is dangerous. A modest rate on high volume lasts longer.
+
 **Take rate** = marketplace revenue ÷ GMV.
 - Ranges are very wide by category: examples in Gurley's "A Rake Too Far" (2013) span roughly 2% (OpenTable) to 70% (Shutterstock), Gurley's own estimates [practitioner, read in full]. A single "benchmark" take rate is misleading; it depends on how much value you add (payments, insurance, demand, fulfilment) and how easily the two sides can go elsewhere.
 - Gurley's warning: "High rakes are a form of friction" and pricing too high is "the most dangerous strategy" for a platform; a modest rake on high volume lasts longer [practitioner].
@@ -63,6 +73,8 @@ Track by market (city × category), never only globally:
 
 ## Leakage (disintermediation)
 
+_In short:_ Leakage is buyers and sellers meeting on your platform and then dealing off it to skip your fee. Make on-platform deals clearly better, or charge for the introduction if that is where your value lies.
+
 **Leakage** or **disintermediation** = the two sides meet on your platform, then transact off it to avoid your fee.
 - It is worst for high-value, repeat relationships between the same pair (cleaners, tutors, freelancers, B2B suppliers).
 - Trust tools can increase it: a randomized trial on a freelance marketplace found that more trust helped good freelancers get hired but also raised the risk of later deals moving off-platform [research, Gu & Zhu 2021].
@@ -70,6 +82,8 @@ Track by market (city × category), never only globally:
 - Practical rule: if the main value is the **first introduction**, charge for the introduction (lead fee or subscription). If the value is in **every transaction**, charge per transaction and keep adding transaction-level value.
 
 ## Trust and safety
+
+_In short:_ Reputation systems make strangers trust each other, but star ratings inflate. Curate early supply by hand, use double-blind reviews, watch other signals, and budget for guarantees.
 
 - Buyers and sellers are strangers; reputation systems are what make them trust each other [research, Tadelis 2016].
 - Ratings inflate: most feedback is positive and unhappy users often stay silent, so a 4.8 average may hide real problems [research; not re-verified]. Use additional signals: repeat booking rate, cancellations, response time, dispute rate, verified identity.
@@ -80,6 +94,8 @@ Track by market (city × category), never only globally:
 
 ## SEO on supply pages
 
+_In short:_ Pages for each listing or category-plus-location can bring search traffic, but only with real, unique supply behind them. Keep thin pages out of search until the market has enough.
+
 - Each listing, provider or category-plus-location page ("plumbers in Lyon", "used Canon R6") can rank for long-tail searches. This is **programmatic SEO**: many pages built from a template and your data [practitioner].
 - It only works if pages have **real, unique supply** (actual listings, prices, reviews, availability). Thin or empty pages can count as scaled low-value content under Google's spam policies (see seo-and-ai-search).
 - Show a page only when the market has enough supply; otherwise keep it out of the index (noindex) until it does.
@@ -87,11 +103,15 @@ Track by market (city × category), never only globally:
 
 ## Multi-homing
 
+_In short:_ Multi-homing means users are active on several competing platforms at once, which weakens network effects. Find which side does it, and compete hardest for the side that uses only one.
+
 **Multi-homing** = users being active on several competing platforms at once (drivers on Uber and Lyft; sellers on Etsy and Amazon). When it is easy, network effects protect less (see competitive-analysis).
 - Find out which side multi-homes. Compete hardest for the side that uses only one platform.
 - Reduce multi-homing by being better, not by trapping: tools sellers depend on (calendars, inventory, payouts), reputation that matters on your platform, loyalty programs for buyers. Exclusivity contracts can create legal risk in some markets [not re-verified].
 
 ## Growth loops
+
+_In short:_ A growth loop is a cycle where each step feeds the next, such as supply creating pages that bring buyers who attract more supply. Paid acquisition should top up a loop, not replace it.
 
 A **growth loop** is a cycle where the output of one step becomes the input of the next, so growth feeds itself [practitioner]. Common marketplace loops:
 - **Supply SEO loop**: supply creates pages → search brings buyers → sales attract more supply.
@@ -102,6 +122,8 @@ Map which loop your growth comes from per market; paid acquisition should top up
 
 ## What usually works by stage
 
+_In short:_ Before the market works, hand-build supply in one place. Once it works, measure liquidity weekly and add trust features. Expand to new cities only with tipping-point targets for each.
+
 | Stage | Focus | Usually works | Usually fails |
 |---|---|---|---|
 | Pre-liquidity (one market) | Get the first atomic network to work | Hand-built supply, manual matching, one city or category, founder sales, single-player tools | Paid demand before supply exists; launching many cities at once |
@@ -109,6 +131,8 @@ Map which loop your growth comes from per market; paid acquisition should top up
 | Expanding | Copy the playbook to adjacent markets | Launch playbook with tipping-point targets per market, local supply teams, paid search on high-intent terms, adjacent categories | Assuming a new city works like the first; global averages hiding dead markets |
 
 ## Common mistakes
+
+_In short:_ Don't start too broad, report only global numbers, buy demand where supply is short, set a high take rate too early, trust average star ratings, or build pages with no real supply.
 
 - Starting too broad: thin supply everywhere, liquidity nowhere.
 - Reporting global metrics; markets die one at a time.

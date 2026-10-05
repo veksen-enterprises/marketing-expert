@@ -8,6 +8,8 @@ Use this playbook when you want a software product to be found inside a store or
 
 ## The main rule: most stores rank on use you bring yourself
 
+_In short:_ Most marketplaces rank listings by installs, ratings and usage a new listing lacks, so a listing rarely brings your first users. Bring the first installs yourself, then the store's ranking can start working.
+
 - **Most marketplace search rewards installs, ratings and usage the new listing does not have yet.** JetBrains publishes its formula: text match, a staff-pick boost, then a multiplier from downloads (logarithmic) and one from rating (square root). Chrome uses ratings and downloads versus uninstalls; Atlassian uses keyword and meaning match plus installs, reviews and support details; Shopify uses how merchants act after a search; AppExchange "popularity" is installs, clicks, test drives and demos; HubSpot's "Most popular" and "Now trending" rows are install counts. [first-party]
 - **crates.io is the extreme case.** Its relevance sort only ranks the 1,000 matching crates with the most downloads in the last 90 days (plus an exact name match). A new crate on a common word may not appear at all. [first-party; source code]
 - **A few rank on text only**: npm (keyword match since it dropped its quality and popularity scores in December 2024), PyPI (name weighted most, no download signal) and the official MCP Registry (no ranking at all). On these, the name and first sentence of the description do most of the work. [first-party]
@@ -15,6 +17,8 @@ Use this playbook when you want a software product to be found inside a store or
 - **No platform publishes where installs come from** (search, browse, featuring or outside links). Measure it yourself (see "How to measure" below).
 
 ## Developer registries and editor stores
+
+_In short:_ Each developer registry and editor store has its own review, fee and verification rules. Publish to the free, no-review ones first from automated builds, and make your name and first sentence do the work.
 
 - **Official MCP Registry.** Still "in preview" in October 2026, with possible "breaking changes or data resets". It stores metadata only, pointing at your npm, PyPI or Docker package or your public remote server; private servers are not accepted. You prove you own the name through GitHub or your domain. No human review, no ranking, no fee. It is built to feed other directories ("aggregators"), not for people or coding tools to browse. PulseMCP, for example, has paused direct submissions and says it will import from the official registry. Publish here first, from CI, so the copies stay current. [first-party]
 - **Client directories have their own rules.** Claude's Connectors Directory: any paid Claude plan can submit; remote HTTPS servers only; every tool needs a title and a read-only or destructive annotation; OAuth for logins; a reviewer test account. Listings start as "Community" after an automatic scan; "Verified" is by invitation only. OpenAI's directory (now called "Plugins") needs a verified individual or organisation, a manual review, and does not allow selling digital goods inside. Docker's catalog takes a pull request and a permissive licence ("GPL is not" accepted). Ranking rules are not published for these. [first-party]
@@ -27,6 +31,8 @@ Use this playbook when you want a software product to be found inside a store or
 - **Package registries.** npm may take up to two weeks to index a new package. Download counts include CI, mirrors and bots (npm: under about 50 a day is noise), and both downloads and GitHub stars can be faked cheaply. Developers still pick packages by downloads, stars and README size, so a clear README with a quickstart is your listing page. Use trusted publishing from CI (npm and PyPI) so users can see where a package was built. [first-party; research]
 
 ## Other products' app marketplaces
+
+_In short:_ If your product extends another platform, its app store is the main channel but usually has an entry gate or needs installs first. Write the first line for the store's search and budget for reviews.
 
 These are the main channel for a product that extends one platform. Most have an entry gate or a ranking that needs installs first.
 
@@ -47,6 +53,8 @@ All [first-party], read 2026-10-05; check current terms before you commit.
 
 ## Cloud marketplaces: a way to buy, not a way to be found
 
+_In short:_ AWS, Google Cloud and Microsoft marketplaces let buyers pay on their existing cloud bill and use committed spend, but they do not help buyers find you. Use private offers for buyers who already chose you.
+
 - **What they give you**: the buyer pays on their existing AWS, Google Cloud or Microsoft bill and can use money already committed to that provider. Microsoft counts 100% of the price toward a buyer's Azure commitment for "Azure benefit eligible" offers; AWS and Google count marketplace purchases toward commitments, with caps around 25% per an analyst report. [first-party; analyst]
 - **Private offers** are the main tool: a price and contract made for one named buyer, shown only to them. A reseller can also make one for you (a "channel partner private offer"). [first-party]
 - **Fees are low**: SaaS 3% on AWS, Google and Microsoft; private offers on AWS and Google fall to 2% above $1M and 1.5% above $10M; renewals 1.5% on all three. AWS charges 20% on software customers run on their own servers (machine images, containers). [first-party]
@@ -55,6 +63,8 @@ All [first-party], read 2026-10-05; check current terms before you commit.
 - **Evidence on value is thin**: analysts put 2023 marketplace sales at $16B and forecast far more [analyst]; a marketplace-tooling vendor's survey found 35% of sellers made under 1% of revenue there [vendor; sample size not stated]. No source shows buyers discovering small vendors by browsing these stores.
 
 ## Review sites (G2, Capterra, TrustRadius, Gartner Peer Insights)
+
+_In short:_ Review sites need a minimum number of recent reviews before you rank. Ask all customers, never only happy ones, never tie gifts to ratings, and start with the free profile.
 
 - **One company now owns most of the channel**: G2 bought Capterra, Software Advice and GetApp (closed February 2026). Gartner Peer Insights and TrustRadius are the main independents. [snippet-only for deal terms]
 - **Thresholds before you show up in rankings**: G2 Grid needs 10 reviews; G2's "Users Love Us" badge 20 at 4.0+ stars; Capterra Shortlist 20 in 24 months; TrustRadius Top Rated 10 in 12 months (2022 rules); Gartner Customers' Choice 50 in 12 months, and reviews from companies under $50M revenue don't count, so it suits enterprise products only. Old reviews fade: on G2 a review keeps about 3% of its weight after about 3 years. [first-party; Gartner and TrustRadius partly snippet-only]
@@ -66,6 +76,8 @@ All [first-party], read 2026-10-05; check current terms before you commit.
 
 ## What research says about joining a platform's ecosystem
 
+_In short:_ Studies suggest joining a platform's ecosystem can lift sales, but the firms that joined were already stronger, early entry does not decide a category, and most listings fade within a year or two.
+
 - **The best study is about SAP.** Among 1,210 small enterprise-software vendors (1996–2004), those that became SAP-certified partners had about 26% higher sales and a 5.9-point higher chance of going public, more if they had strong patents or copyrights or strong sales and service teams. [research; observational; one platform; read in full]
 - **But the joiners were already different.** Only 35 of 1,220 vendors joined, and firms with stronger IP and sales capability were more likely to join. Part of the gain is who chose to join. [research; same data]
 - **Platforms promote what serves the platform.** Studies of game consoles and Google Play awards find promotion is not simply "best in class", and an award changes what winners build and draws rivals into their niche. [research]
@@ -73,6 +85,8 @@ All [first-party], read 2026-10-05; check current terms before you commit.
 - **Most listings fade.** About 60% of Chrome extensions stay in the store only a year; the median Shopify app that left peaked at 8 installs. [research]
 
 ## Which listings fit which business and stage
+
+_In short:_ Choose listings by business type and stage: developer tools start with registry entries, platform extensions with the platform's store, and sales-led enterprise software lists on cloud marketplaces only when a named buyer asks.
 
 | Business type | No users yet | First 1–20 customers | Repeatable sales |
 |---|---|---|---|
@@ -85,6 +99,8 @@ All [first-party], read 2026-10-05; check current terms before you commit.
 Not a fit: services firms, local businesses and online shops (see **local-seo** and **ecommerce-dtc**); mobile apps (see **app-store-discovery**). [synthesis from the first-party rules above]
 
 ## Listings are rented: platform risk
+
+_In short:_ Stores change fees, entry gates and whole product lines, and can remove you quickly. Capture customer email at install, track each store's share of customers, and prefer listings that cost nothing to keep.
 
 Every platform in this playbook changed its rules between 2024 and 2026. [first-party]
 
@@ -103,12 +119,16 @@ What to do about it:
 
 ## How to measure and when to stop
 
+_In short:_ Give each listing its own tagged link and a how-did-you-hear field, use the store's own data, and judge a free listing after about 90 days. Drop paid tiers that bring no tagged signups.
+
 - Use a separate tagged link per listing where outbound links are allowed (build_utm_link), and a free-text "How did you hear about us?" field at signup.
 - Use the store's own data where it exists: HubSpot listing analytics (impressions, average position, search terms), Claude's directory funnel (views, install clicks, installs), Chrome impressions and installs, GitHub traffic (export weekly; referrers are kept 14 days).
 - Judge a free listing after about 90 days with a complete page and a few reviews. Keep free listings that cost nothing to maintain; drop paid tiers and yearly certifications that bring no tagged signups. [practitioner]
 - For agents as users, log the MCP client name and first successful call (see **developer-tools**).
 
 ## Common mistakes and folklore
+
+_In short:_ Avoid listing everywhere before anyone uses the product, paying for directory-submission services, treating badges as quality, asking only happy customers for reviews, expecting cloud marketplaces to bring new buyers, and relying on one store.
 
 - Listing everywhere before anyone uses the product, then reading silence as "no demand". Most stores cannot rank a listing with no installs.
 - Paying for "submit to 100 directories" services. No evidence they bring users; low-value links can count as link spam.
