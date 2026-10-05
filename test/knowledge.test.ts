@@ -46,6 +46,8 @@ describe("knowledge base", () => {
     ["dentist plumber local business rebooking", "local-services"],
     ["app store optimization retention d30 paywall", "consumer-apps"],
     ["get my app featured on the app store launch day charts", "app-store-discovery"],
+    ["cheap marketing ideas with no users and no budget", "small-bets"],
+    ["email every new signup manually public changelog building in public", "small-bets"],
     ["custom product page keywords google play crash rate", "app-store-discovery"],
     ["hreflang cctld subdirectory", "international-seo"],
     ["programmatic seo internal linking faceted navigation", "seo-content-and-architecture"],

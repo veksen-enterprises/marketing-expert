@@ -4,6 +4,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
+import type { Audience, AvoidTag, Surface } from "./smallBets.js";
 
 export interface Metric {
   value: number | string;
@@ -28,6 +29,16 @@ export interface BusinessProfile {
   metrics?: Record<string, Metric>;
   voice?: { do?: string[]; dont?: string[] };
   constraints?: string[];
+  /** Facts match_small_bets uses to decide which bets fit. */
+  traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
+  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean };
+  audiences?: Audience[];
+  surfaces?: Surface[];
+  revenue?: "none" | "planned" | "live";
+  /** People can use the product now. */
+  launched?: boolean;
+  /** Things the business rules out (its non-goals and principles), as fixed tags. */
+  avoid?: AvoidTag[];
   openQuestions?: string[];
   notes?: string;
   updatedAt?: string;

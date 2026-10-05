@@ -217,7 +217,7 @@ The most consistent finding is modest: structured testing helps founders drop ba
 
 ## 3. Does structured customer discovery help?
 
-- **Strongest evidence (already covered elsewhere).** The Camuffo et al. randomized trials (116 and 759 startups) are in research/startup-risk-and-opportunity.md §3. Founders taught to test hypotheses killed bad ideas sooner. The results on revenue are mixed: the 2020 trial reported higher revenue among firms that stayed active (from a secondary summary; see the companion note), and the large replication found no clear revenue effect. (critic: the first version cited only the null result.)
+- **Strongest evidence (already covered elsewhere).** The Camuffo et al. randomized trials (116 and 759 startups) are in research/startup-risk-and-opportunity.md §3. Founders taught to test hypotheses killed bad ideas sooner. The results on revenue are mixed: the 2020 trial reported higher revenue among firms that stayed active (from a secondary summary; see the companion note), and the large replication found a small positive pooled revenue effect (about EUR 7,000, p = .030; corrected 2026-10-05, see research/early-stage-gtm-devtools.md and research/startup-risk-and-opportunity.md).
 - **NSF I-Corps teams dropped failing ventures somewhat faster (non-randomized comparison).**
   - At Georgia Tech, I-Corps teams were compared with researchers who got only baseline commercialization help, over an eight-year window.
   - The authors report "modest evidence" of faster discontinuation and estimate savings above $3.6M.

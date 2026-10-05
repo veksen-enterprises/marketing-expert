@@ -1,7 +1,7 @@
 ---
 title: Getting an app noticed (App Store and Google Play)
 summary: How a new or small app gets found, on the stores and around them; what store search reads, keyword-matched store pages, ratings, featuring nominations, charts and launch timing, pre-orders and pre-registration, In-App Events, short video and creators, communities, press, AI assistants, and the folklore to ignore.
-tags: app store, google play, aso, app store optimization, app discovery, get featured, featuring nomination, today tab, app of the day, top charts, chart rank, launch day, pre-order, pre-registration, in-app events, promotional content, liveops, custom product page, custom store listing, keyword field, subtitle, apple ads, search ads, halo effect, android vitals, crash rate, tiktok app, ugc creators, product hunt, show hn, reddit launch, indie app, smart app banner, universal links, app links, firebase dynamic links, app tags
+tags: app store, small bets, cheap tests, google play, aso, app store optimization, app discovery, get featured, featuring nomination, today tab, app of the day, top charts, chart rank, launch day, pre-order, pre-registration, in-app events, promotional content, liveops, custom product page, custom store listing, keyword field, subtitle, apple ads, search ads, halo effect, android vitals, crash rate, tiktok app, ugc creators, product hunt, show hn, reddit launch, indie app, smart app banner, universal links, app links, firebase dynamic links, app tags
 ---
 
 This playbook covers being found. Retention, paywalls, paid acquisition after ATT and web-to-app purchase flows are in **consumer-apps**; check that the retention curve flattens before spending effort on discovery.
@@ -117,6 +117,26 @@ This playbook covers being found. Retention, paywalls, paid acquisition after AT
 3. After: run an In-App Event for the next real content moment; test one store-page change at a time; post short videos of the app doing its job and keep the formats that get copied; measure installs per source with tagged links and custom pages.
 
 Each step should state what result would make you stop it (see **experimentation** and **launches-and-gtm**).
+
+## Small bets: cheap discovery tests
+
+When nothing is proven yet, run several cheap tests rather than one expensive campaign. Each one below costs little money, takes days rather than months, and can be measured on its own. Before starting, write down the result that would make you keep it and the result that would make you stop: a number of installs or retained users per hour of work or per dollar, compared with your current baseline. Most will fail; that is the point of keeping them small. This is the app-store version; small bets for any business (listings, open source, social media, building in public, a public changelog, emailing every new user) and the method for running them are in **small-bets**.
+
+| Bet | Cost | How to measure | Notes |
+|---|---|---|---|
+| One keyword-matched store page per user need | Screenshots and an afternoon | Page conversion and installs per custom product page (Apple) or custom store listing (Play) | Free; Apple allows up to 70 pages, Play up to 50. Start with two or three. [first-party] |
+| Name and subtitle rewritten for one niche search | An hour | Installs from App Store search before and after, over the same weekdays | Text match matters most for rare searches, where a new app can rank. One change at a time. [first-party] |
+| Apple Ads Basic | Your cost-per-install cap; new accounts get a $100 credit (terms apply) | Installs and later retention from the Apple Ads source | No keyword control; capped at $10,000 per app per month. Next step if it works: Advanced on your own name and core keywords. [first-party] |
+| Featuring nomination | Half an hour | Whether you are featured; the spike if you are | Free; submit up to three months ahead. No reply is promised, so cost is the only thing you control. [first-party] |
+| An In-App Event for a real content moment | Event card art and copy | Event page views and installs in App Store Connect | Free; up to 10 live, 31 days each. Only Google's own data on uplift, from large Play events. [first-party] |
+| One community post where the problem is discussed | A few hours, including answering comments | Installs through a tagged link or its own custom product page | A hit brings hundreds to a few thousand installs in documented single cases; many posts bring nothing. Follow each community's rules. [practitioner; first-party] |
+| Show HN (if the app can be tried without signing up) | A few hours on launch day | Same as above | Rejects "quickly-generated one-offs"; asking friends to upvote breaks the rules. [first-party] |
+| Founder-made short videos of the app doing its job | A phone and 30 minutes a video | Views to installs per video, with a link per platform | Keep the formats people copy; drop the rest after a fixed number of posts you set in advance. [practitioner] |
+| Two or three paid creators | Their fee | Installs and paying users per creator, each with their own link or custom product page | The one causal study (Twitch, games) found small, short effects; creators must disclose the ad. [research; first-party] |
+| A pitch to a standing indie-app slot | An email and promo codes | Coverage, then installs from the web referrer | For example 9to5Mac's weekly Indie App Spotlight. Cold pitches to general press rarely land. [first-party; practitioner] |
+| Pre-orders or pre-registration for the next app or major release | Setup time | Pre-orders or pre-registrations, then installs on release day | Banks launch-day installs into Apple's 24-hour chart window. [first-party] |
+
+**Measuring small numbers.** App Store Connect shows campaign links only after a day and at least five installs (App Units), and many of these tests produce tens of installs, not thousands. Judge a bet on installs that stay (day-7 users or trial starts), compare like days of the week, and treat a single good day as a lead to repeat, not a result. [first-party; practitioner]
 
 ## Sources
 

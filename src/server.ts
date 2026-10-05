@@ -16,6 +16,7 @@ import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
+import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
 import { registerPrompts, MAX_MOVES, MOVE_FORMAT } from "./prompts.js";
 
@@ -721,6 +722,32 @@ export function createServer(): McpServer {
           .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe"}}'),
         voice: z.object({ do: strList, dont: strList }).nullable().optional(),
         constraints: strList,
+        traction: z
+          .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional() })
+          .nullable()
+          .optional()
+          .describe("Replaces the whole object; date it with asOf"),
+        assets: z
+          .object({
+            data: z.string().optional().describe("Data you hold that nobody else has published, including public data you collect"),
+            expertise: z.string().optional(),
+            founderAudience: z.string().optional().describe("Where the founder already has followers, and how many"),
+            newsworthy: z.string().optional().describe("A story or numbers others would retell"),
+            monthlyBudget: z.number().min(0).optional().describe("Dollars a month available for marketing"),
+            accounts: z.boolean().optional().describe("You can reach each user one to one (accounts, emails)"),
+          })
+          .nullable()
+          .optional()
+          .describe("Replaces the whole object"),
+        audiences: z.array(z.enum(AUDIENCES)).nullable().optional(),
+        surfaces: z.array(z.enum(SURFACES)).nullable().optional(),
+        revenue: z.enum(["none", "planned", "live"]).nullable().optional(),
+        launched: z.boolean().nullable().optional().describe("People can use the product now"),
+        avoid: z
+          .array(z.enum(AVOID_TAGS))
+          .nullable()
+          .optional()
+          .describe("What the business rules out, from its non-goals and principles. Save only what the user confirmed"),
         openQuestions: strList,
         notes: z.string().nullable().optional(),
       },
@@ -734,13 +761,29 @@ export function createServer(): McpServer {
     }, okExact)
   );
 
+  server.registerTool(
+    "match_small_bets",
+    {
+      title: "Match small bets to a business",
+      description:
+        "Sort the small-bets catalog (cheap marketing moves: listings, answering questions, comparison pages, founder emails, launch posts, open source, data pages, sponsorships...) into fitsNow, fitsLater (with what's missing) and doesntFit (with why), from a saved business profile's traction, assets, audiences, product surfaces, revenue, launch status and avoid list. Report only fitsNow by default (see howToReport). Playbook: small-bets.",
+      inputSchema: { name: z.string().describe("Saved business profile id") },
+      annotations: readOnly,
+    },
+    safe((a) => {
+      const p = getProfile(a.name);
+      if (!p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
+      return matchSmallBets(factsFromProfile(p));
+    })
+  );
+
   // ── Knowledge ─────────────────────────────────────────────────────────────
   server.registerTool(
     "search_playbooks",
     {
       title: "Search marketing playbooks",
       description:
-        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, developer tools (APIs, CLIs, SDKs, MCP servers), e-commerce/DTC, marketplaces, local services, consumer apps, community and hobby products, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, getting an app noticed on the App Store and Google Play, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
+        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, developer tools (APIs, CLIs, SDKs, MCP servers), e-commerce/DTC, marketplaces, local services, consumer apps, community and hobby products, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, getting an app noticed on the App Store and Google Play, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: small bets (cheap tests by stage), positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
       inputSchema: { query: z.string().min(2).max(500), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },
