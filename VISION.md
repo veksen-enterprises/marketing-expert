@@ -16,7 +16,7 @@ The first users are technical founders at zero to ten customers, mostly B2B and 
 4. **Evidence is labelled honestly.** Every playbook claim carries its strength (research, first-party, practitioner, vendor, rule of thumb) and its caveats (snippet-only, self-selected, one firm). Where research is thin, say so, and generate evidence (experiments, coded case sets) labelled as our own.
 5. **Short, ranked, testable.** At most three moves, each one action, with a cheapest test, a metric, a time box and a stop condition. Say what not to do yet and what would prove the diagnosis wrong.
 6. **Respect the founder's vision.** Check advice against the business's stated principles and non-goals.
-7. **Plain English.** Readers' first language may not be English. Never "moat"; explain jargon or drop it.
+7. **Business language, explained.** Readers are not business people, and many want to learn the trade, and their first language may not be English. Use the real business term and explain it in plain words the first time (the glossary holds both); never "moat".
 8. **Measure, don't assume.** Changes are judged by evaluations on real cases, graded against a fixed rubric, with several runs per case so noise is visible.
 
 ## What exists

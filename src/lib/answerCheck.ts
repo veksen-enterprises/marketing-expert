@@ -23,6 +23,8 @@ export interface AnswerCheck {
   overBy: number;
   bannedWords: string[];
   unexplainedTerms: string[];
+  /** For each unexplained term the glossary has, its plain one-liner: use the term and explain it with these words. */
+  explainWith: Array<{ term: string; plain: string }>;
   /** Common words with a marketing meaning (churn, cohort) used without a gloss. A reminder only; not in problems. */
   considerExplaining: string[];
   /** Parts the server instructions ask for that weren't found by keyword. Phrasing varies, so treat these as reminders. */
@@ -79,6 +81,30 @@ function glossary(): Map<string, string> {
     else if (abbr.test(paren) && !KNOWN.has(paren)) glossaryCache.set(paren, head);
   }
   return glossaryCache;
+}
+
+let plainCache: Map<string, string> | null = null;
+/** Every glossary term (as written, and lower-cased) and its abbreviation, to the entry's first sentence: the plain
+ * one-liner a reader with no business background can follow. */
+export function plainGloss(): Map<string, string> {
+  if (plainCache) return plainCache;
+  plainCache = new Map();
+  let raw = "";
+  try {
+    raw = readFileSync(join(KNOWLEDGE_DIR, "glossary.md"), "utf8");
+  } catch {
+    return plainCache;
+  }
+  for (const m of raw.matchAll(/^- \*\*([^*]+?)\*\*:\s*(.+)$/gm)) {
+    const plain = m[2].split(/(?<=\.)\s/)[0].replace(/\.$/, "").trim();
+    const head = m[1].trim();
+    const paren = head.match(/^(.+?)\s*\(([^)]+)\)$/);
+    for (const k of paren ? [paren[1], paren[2]] : [head]) {
+      if (!plainCache.has(k)) plainCache.set(k, plain);
+      if (!plainCache.has(k.toLowerCase())) plainCache.set(k.toLowerCase(), plain);
+    }
+  }
+  return plainCache;
 }
 
 /** True if the words of `s` include a run whose initials spell `abbr` ("Hacker News" for HN). Two letters match by
@@ -183,7 +209,19 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
     );
   if (appendixWords > APPENDIX_MAX) problems.push(`The Evidence/Appendix section has ${appendixWords} words; keep it under ${APPENDIX_MAX}, one line per file:line finding.`);
   if (bannedWords.length) problems.push(`Replace: ${bannedWords.join(", ")} (say what you mean in plain words).`);
-  if (unexplainedTerms.length) problems.push(`Explain on first use, in brackets, or replace: ${unexplainedTerms.join(", ")}.`);
+  const plain = plainGloss();
+  const explainWith = unexplainedTerms.flatMap((term) => {
+    const p = plain.get(term) ?? plain.get(term.toLowerCase());
+    return p ? [{ term, plain: p }] : [];
+  });
+  if (unexplainedTerms.length) {
+    const unknown = unexplainedTerms.filter((t) => !explainWith.some((e) => e.term === t));
+    problems.push(
+      `Readers want to learn these terms: keep the term and explain it in plain words on first use.` +
+        (explainWith.length ? ` From the glossary: ${explainWith.map((e) => `${e.term} = ${e.plain}`).join("; ")}.` : "") +
+        (unknown.length ? ` Terms not in the glossary: ${unknown.join(", ")} (explain them yourself, or replace them).` : "")
+    );
+  }
   const norm = text.replace(/\s+/g, " ").trim();
   const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
   const missingParts = [...PARTS, ...(opts.agentChannel ? [AGENT_CHANNEL] : [])].filter(([, re]) => !re.test(text)).map(([name]) => name);
@@ -203,5 +241,5 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   const reminders: string[] = [];
   const cite = /\b[\w./-]+\.(?!(?:com|org|net|io|dev|ai|co|app)\b)[a-z][a-z0-9]{0,4}:\d+|\bADR[\s-]?\d{2,4}\b/i.exec(text.replace(/https?:\/\/\S+/g, " "));
   if (cite) reminders.push(`Cites the repo (${cite[0]}); run verify_quotes on this exact text, if you haven't.`);
-  return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, considerExplaining, problems, reminders };
+  return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders };
 }
