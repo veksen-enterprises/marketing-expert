@@ -43,40 +43,49 @@ export function paragraphs(): Section[] {
   return paragraphCache;
 }
 
-let searchIndex: { docs: Array<{ s: Section; len: number; tf: Map<string, number> }>; avg: number } | null = null;
+let searchIndex: { docs: Array<{ s: Section; len: number }>; postings: Map<string, Array<[number, number]>>; avg: number } | null = null;
 
 /** searchKnowledge(query, limit, paragraphs()) with each paragraph tokenised once: searchKnowledge tokenises the whole
  * corpus on every call, and check_answer searches once per labelled sentence. Same tokens, weights and ranking. */
 export function searchParagraphs(query: string, limit = 5): SearchHit[] {
   if (!searchIndex) {
-    const docs = paragraphs().map((s) => {
+    // For each token, the paragraphs that hold it (by index) and how often. A query then reads only those paragraphs;
+    // counting each token's paragraphs by reading all of them took 1.3 s for 500 sentences of different words.
+    const postings = new Map<string, Array<[number, number]>>();
+    const docs = paragraphs().map((s, i) => {
       const head = tokenize(`${s.playbookTitle} ${s.heading}`);
       const toks = [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))];
       const tf = new Map<string, number>();
       for (const t of toks) tf.set(t, (tf.get(t) ?? 0) + 1);
-      return { s, len: toks.length, tf };
+      for (const [t, f] of tf) {
+        const list = postings.get(t);
+        if (list) list.push([i, f]);
+        else postings.set(t, [[i, f]]);
+      }
+      return { s, len: toks.length };
     });
-    searchIndex = { docs, avg: docs.reduce((n, d) => n + d.len, 0) / Math.max(1, docs.length) };
+    searchIndex = { docs, postings, avg: docs.reduce((n, d) => n + d.len, 0) / Math.max(1, docs.length) };
   }
-  const { docs, avg } = searchIndex;
+  const { docs, postings, avg } = searchIndex;
   const q = [...new Set(tokenize(query))];
   if (q.length === 0) return [];
   const N = docs.length;
-  const df = new Map(q.map((t) => [t, docs.filter((d) => d.tf.has(t)).length]));
   const k1 = 1.2;
   const b = 0.75;
-  const hits: SearchHit[] = [];
-  for (const d of docs) {
-    let score = 0;
-    for (const t of q) {
-      const f = d.tf.get(t) ?? 0;
-      if (!f) continue;
-      const n = df.get(t) ?? 0;
-      const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
-      score += (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.len) / avg));
-    }
-    if (score > 0) hits.push({ slug: d.s.slug, playbookTitle: d.s.playbookTitle, heading: d.s.heading, score, text: d.s.text });
+  // Added up in query-token order, as searchKnowledge does, so the scores are the same to the last digit.
+  const scores = new Map<number, number>();
+  for (const t of q) {
+    const list = postings.get(t);
+    if (!list) continue;
+    const n = list.length;
+    const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
+    for (const [i, f] of list) scores.set(i, (scores.get(i) ?? 0) + (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * docs[i].len) / avg)));
   }
+  // In paragraph order before the sort, so equal scores rank as in searchKnowledge.
+  const hits: SearchHit[] = [...scores]
+    .filter(([, score]) => score > 0)
+    .sort(([i], [j]) => i - j)
+    .map(([i, score]) => ({ slug: docs[i].s.slug, playbookTitle: docs[i].s.playbookTitle, heading: docs[i].s.heading, score, text: docs[i].s.text }));
   return hits.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 

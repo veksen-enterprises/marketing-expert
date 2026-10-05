@@ -5,7 +5,7 @@
 // Reads local files only, by extension, under the directory given. Returns text as data.
 
 import { readdirSync, readFileSync, statSync, lstatSync, realpathSync } from "node:fs";
-import { join, relative, extname } from "node:path";
+import { join, relative, extname, sep } from "node:path";
 
 export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof";
 
@@ -47,7 +47,9 @@ export interface SourceScan {
 const ADR_FILE = /^(\d{3,4})-[\w.-]+\.md$/;
 
 function decisionStatus(src: string): string | null {
-  const fm = /^---\n[\s\S]*?^status:\s*(.+)$[\s\S]*?^---/m.exec(src);
+  // Frontmatter only at the start of the file. With /m, every "---" line was a start that searched to the end of the file.
+  const block = /^---\r?\n([\s\S]*?)\r?\n---/.exec(src)?.[1];
+  const fm = block && /^status:[ \t]*(.+)$/m.exec(block);
   if (fm) return fm[1].trim();
   // [ \t]*, not \s*, where it meets a newline: \s* takes all the blank lines that follow and backtracks, which on a record
   // with many blank lines is quadratic.
@@ -88,7 +90,8 @@ function readDecisions(root: string, files: string[]): Decision[] {
       const id = /\[?(\d{3,4})\]?/.exec(cells[1] ?? "")?.[1];
       if (!id || cells.length < 5) continue;
       const d = out.get(id);
-      const status = cells[cells.length - 2].replace(/\[(\d+)\]\([^)]*\)/g, "$1");
+      // [^()], not [^)]: from every "[1](" with no ")" after it, the scan ran to the end of the row.
+      const status = cells[cells.length - 2].replace(/\[(\d+)\]\([^()]*\)/g, "$1");
       if (d) d.indexStatus = status;
     }
   }
@@ -99,11 +102,9 @@ const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", 
 const SKIP_DIRS = new Set(["node_modules", "dist", "build", "out", "coverage", "vendor", "target", "__snapshots__"]);
 export const MAX_FILES = 4000;
 const MAX_BYTES = 512 * 1024;
-// Longer lines are minified code or data, not copy; only the start of them is read.
-const MAX_LINE = 2000;
 
-// Tried on every line, so no part may rescan the rest of the line from many starting points ("curl curl curl ...",
-// "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
+// Tried on every line, read in full, so no part may rescan the rest of the line from many starting points ("curl curl
+// curl ...", "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
 const PATTERNS: Record<ClaimKind, RegExp> = {
   data: /\b(stores?|stored|storing|collects?|collected|sends?|sent|uploads?|uploaded|read-only|never (see|read|store|touch|leaves?|sends?)|leaves? (your|the)|locally|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|credentials?|connection strings?|passwords?|encrypt\w*|retain\w*|retention|sample (rows|values)|parameter values|literal values|PII|personal data|GDPR|SOC ?2|HIPAA|rows? of (your )?data|query text|we (never|don't|do not) (see|read|store|access)|your data)\b/i,
   price: /([$€£]\d[\d,]*(\.\d{2})?(?![\d.]))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
@@ -126,7 +127,8 @@ function visibleParts(line: string): string {
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
 }
 
-export function walk(root: string, out: string[], state: { truncated: boolean }, exts: Set<string> = EXTS, names: Set<string> = new Set()) {
+/** `state.links` counts the symbolic links not followed. `top` is the real path of the directory being scanned. */
+export function walk(root: string, out: string[], state: { truncated: boolean; links?: number }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root) {
   let entries: string[];
   try {
     entries = readdirSync(root);
@@ -140,15 +142,26 @@ export function walk(root: string, out: string[], state: { truncated: boolean },
     }
     if (name.startsWith(".") || SKIP_DIRS.has(name)) continue;
     const p = join(root, name);
+    const wanted = (exts.has(extname(name).toLowerCase()) || names.has(name)) && !/\.(test|spec|d)\.[tj]sx?$/.test(name);
     let st;
     try {
-      // lstat, so symbolic links are skipped: one can point outside the directory (/proc/self/environ) or back up the tree, which never ends.
       st = lstatSync(p);
+      // A symbolic link is read only when it points to a file inside the scanned directory (AGENTS.md -> CLAUDE.md), under
+      // its own path. Links to folders are not followed: one can point back up the tree, which never ends. Links out of
+      // the directory could read any file (/proc/self/environ).
+      if (st.isSymbolicLink()) {
+        const real = realpathSync(p);
+        st = statSync(real);
+        if (!st.isFile() || !real.startsWith(top + sep)) {
+          if (st.isDirectory() || wanted) state.links = (state.links ?? 0) + 1;
+          continue;
+        }
+      }
     } catch {
       continue;
     }
-    if (st.isDirectory()) walk(p, out, state, exts, names);
-    else if (st.isFile() && (exts.has(extname(name).toLowerCase()) || names.has(name)) && st.size <= MAX_BYTES && !/\.(test|spec|d)\.[tj]sx?$/.test(name)) out.push(p);
+    if (st.isDirectory()) walk(p, out, state, exts, names, top);
+    else if (st.isFile() && wanted && st.size <= MAX_BYTES) out.push(p);
   }
 }
 
@@ -164,7 +177,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   if (!statSync(root).isDirectory()) throw new RangeError(`${dir} is not a directory`);
   if (root === "/") throw new RangeError("refusing to scan the filesystem root; pass the repo or app directory");
   const files: string[] = [];
-  const state = { truncated: false };
+  const state: { truncated: boolean; links?: number } = { truncated: false };
   walk(root, files, state);
   const claims: Record<ClaimKind, Claim[]> = { data: [], price: [], availability: [], setup: [], proof: [] };
   const counts: Record<ClaimKind, number> = { data: 0, price: 0, availability: 0, setup: 0, proof: 0 };
@@ -180,8 +193,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
     const isCode = /\.(ts|js|mjs)$/.test(f);
     let inStyle = false;
     const recent: string[] = [];
-    src.split("\n").forEach((full, i) => {
-      const raw = full.slice(0, MAX_LINE);
+    src.split("\n").forEach((raw, i) => {
       // Skip CSS and code samples (<pre>, fenced blocks): their "$1" and "select" aren't copy.
       if (/<style[\s>]|<pre[\s>]|^\s*```/i.test(raw) && !inStyle) {
         inStyle = !/<\/style>|<\/pre>/i.test(raw) && !/^\s*```.*```/.test(raw);
@@ -228,6 +240,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
     "Env flags marked affectsOutput appear in routing, head or conditional rendering. Say which value the build you reviewed used.",
   ];
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
+  if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"}: they point to a folder or to a file outside this directory.`);
   for (const k of Object.keys(counts) as ClaimKind[]) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
   const decisions = readDecisions(root, files);
   if (decisions.length) {

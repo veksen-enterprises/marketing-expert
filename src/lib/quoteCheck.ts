@@ -4,7 +4,7 @@
 // this checks it mechanically.
 
 import { readFileSync, realpathSync, statSync } from "node:fs";
-import { relative, basename } from "node:path";
+import { relative, basename, sep } from "node:path";
 import { walk, MAX_FILES } from "./sourceScan.js";
 
 export type QuoteStatus = "verified" | "wrong-line" | "other-file" | "cited-file-missing" | "not-found" | "uncited-found" | "uncited-not-found";
@@ -66,19 +66,27 @@ const MAX_TOTAL = 50 * 1024 * 1024;
 
 function index(dirs: string[], notes: string[]): Indexed[] {
   const out: Indexed[] = [];
-  // Dirs and files already read: the same dir passed twice, or a file reached through two dirs (one inside the other), is read once.
-  const seen = new Set<string>();
-  let total = 0;
-  for (const d of dirs) {
+  const roots = dirs.map((d) => {
     const root = realpathSync(d);
     if (!statSync(root).isDirectory()) throw new RangeError(`${d} is not a directory`);
     if (root === "/") throw new RangeError("refusing to scan the filesystem root");
+    return root;
+  });
+  // Dirs and files already read: the same dir passed twice, or a file reached through two dirs (one inside the other), is read once.
+  const seen = new Set<string>();
+  let total = 0;
+  for (const [i, d] of dirs.entries()) {
+    const root = roots[i];
     if (seen.has(root)) continue;
     seen.add(root);
+    // Paths are relative to the outermost dir listed, whatever the order: with [repo/docs, repo], docs/README.md is
+    // "docs/README.md", not "README.md", which a citation of the top README.md would also match.
+    const base = roots.filter((r) => root.startsWith(r + sep)).sort((a, b) => a.length - b.length)[0] ?? root;
     const files: string[] = [];
-    const state = { truncated: false };
+    const state: { truncated: boolean; links?: number } = { truncated: false };
     walk(root, files, state, EXTS, NAMES);
     if (state.truncated) notes.push(`Only the first ${MAX_FILES} files in ${d} were read. Quotes from other files show as not found; pass a narrower directory.`);
+    if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"} in ${d}: they point to a folder or to a file outside it. Quotes from files behind them show as not found.`);
     for (const f of files) {
       if (seen.has(f)) continue;
       seen.add(f);
@@ -101,7 +109,7 @@ function index(dirs: string[], notes: string[]): Indexed[] {
         starts.push(pos);
         pos += l.length + 1;
       }
-      out.push({ rel: relative(root, f), raw, joined: lines.join(" "), starts });
+      out.push({ rel: relative(base, f), raw, joined: lines.join(" "), starts });
     }
   }
   return out;
@@ -173,16 +181,42 @@ function citationsIn(segment: string): Citation[] {
   return out.sort((a, b) => a.pos - b.pos);
 }
 
-function resolve(files: Indexed[], c: Citation): Indexed[] {
-  if (c.adr) return files.filter((f) => /(^|\/)adr\//i.test(f.rel) && basename(f.rel).startsWith(c.adr!.padStart(4, "0")));
+interface Lookup {
+  /** Files by name. A citation's exact path, or any path ending with it, has the same name. */
+  byName: Map<string, Indexed[]>;
+  /** Decision records under adr/ by their 4-digit number. */
+  byAdr: Map<string, Indexed[]>;
+}
+
+// Built once per call, so a citation is looked up and not compared with every file (5000 citations x 4000 files took 2 s).
+function lookup(files: Indexed[]): Lookup {
+  const byName = new Map<string, Indexed[]>();
+  const byAdr = new Map<string, Indexed[]>();
+  const add = (m: Map<string, Indexed[]>, k: string, f: Indexed) => {
+    const list = m.get(k);
+    if (list) list.push(f);
+    else m.set(k, [f]);
+  };
+  for (const f of files) {
+    const name = basename(f.rel);
+    add(byName, name, f);
+    if (/(^|\/)adr\//i.test(f.rel)) add(byAdr, name.slice(0, 4), f);
+  }
+  return { byName, byAdr };
+}
+
+function resolve(by: Lookup, c: Citation): Indexed[] {
+  if (c.adr) return by.byAdr.get(c.adr.padStart(4, "0")) ?? [];
   const p = c.path.replace(/^\.?\//, "");
-  const exact = files.filter((f) => f.rel === p || f.rel.endsWith("/" + p));
-  return exact.length ? exact : files.filter((f) => basename(f.rel) === basename(p));
+  const same = by.byName.get(basename(p)) ?? [];
+  const exact = same.filter((f) => f.rel === p || f.rel.endsWith("/" + p));
+  return exact.length ? exact : same;
 }
 
 export function checkQuotes(text: string, dirs: string[], lineTolerance = 2): QuoteCheck {
   const notes: string[] = [];
   const files = index(dirs, notes);
+  const filesBy = lookup(files);
   const results: QuoteResult[] = [];
   let skipped = 0;
   // Many quotes in one sentence often cite the same file: resolve each citation once per call.
@@ -190,7 +224,7 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2): Qu
   const targetsOf = (c: Citation) => {
     const key = c.adr ? `adr ${c.adr}` : c.path;
     let t = resolved.get(key);
-    if (!t) resolved.set(key, (t = resolve(files, c)));
+    if (!t) resolved.set(key, (t = resolve(filesBy, c)));
     return t;
   };
   // A segment is a line of the answer (a bullet, table row or paragraph); a citation applies to quotes in the same segment.
