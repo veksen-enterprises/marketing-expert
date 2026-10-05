@@ -207,4 +207,4 @@ Writing rule for everything the agent shows users: plain words for readers whose
 
 ## Not built yet and known weak spots
 
-See [ROADMAP.md](ROADMAP.md). In short: no live data connectors yet (Google Analytics, Search Console, ad platforms, Stripe); three playbooks still missing (founder-led sales, activation and analytics, marketplace and registry listings); evidence qualifiers and bundled moves still slip through the self-checks; and the playbooks outside developer tools haven't been evaluated yet.
+See [ROADMAP.md](ROADMAP.md) (and [VISION.md](VISION.md) for the principles and lessons behind the design). In short: no live data connectors yet (Google Analytics, Search Console, ad platforms, Stripe); three playbooks still missing (founder-led sales, activation and analytics, marketplace and registry listings); evidence qualifiers and bundled moves still slip through the self-checks; and the playbooks outside developer tools haven't been evaluated yet.
