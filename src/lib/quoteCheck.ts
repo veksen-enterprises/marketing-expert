@@ -5,10 +5,10 @@
 
 import { readFileSync, realpathSync, statSync } from "node:fs";
 import { relative, basename, join, sep } from "node:path";
-import { walk, MAX_FILES } from "./sourceScan.js";
+import { walk, MAX_FILES, DOT_DIRS } from "./sourceScan.js";
 import { getPlaybook } from "./knowledge.js";
 
-/** cited-file-not-read: the cited file is in the repo but too large to read, so the quote was not checked. */
+/** cited-file-not-read: the cited file is in the repo but was not read (too large, or the 50 MB limit for the call was reached), so the quote was not checked. */
 export type QuoteStatus = "verified" | "wrong-line" | "other-file" | "cited-file-missing" | "cited-file-not-read" | "not-found" | "uncited-found" | "uncited-not-found";
 
 export interface QuoteResult {
@@ -40,7 +40,7 @@ const NAMES = new Set(["Dockerfile", "Caddyfile", "Makefile", "Procfile"]);
 const TOKEN_RE = /[\w@./$\[\]-]+/g;
 const PATH_RE = /^[\w@./$\[\]-]*(?:[\w\]-]\.(?:astro|html?|mdx?|tsx?|jsx?|mjs|cjs|vue|svelte|json|ya?ml|toml|sql|txt|css)|Dockerfile|Caddyfile|Makefile)(?!\w)/;
 const LINES_RE = /(?::| lines? | L)(\d+)(?:\s?[-–]\s?L?(\d+))?/y;
-const ADR_RE = /\b(?:ADR[- ]?|adr\/|[Rr]ecord )(\d{3,4})\b(?:[^.\n]{0,12}?lines? (\d+)(?:\s?[-–]\s?(\d+))?)?|\((\d{4}) lines? (\d+)(?:\s?[-–]\s?(\d+))?\)/g;
+const ADR_RE = /\b(?:ADR[- ]?|adr\/|[Dd]ecision [Rr]ecord )(\d{3,4})\b(?:[^.\n]{0,12}?lines? (\d+)(?:\s?[-–]\s?(\d+))?)?|\((\d{4}) lines? (\d+)(?:\s?[-–]\s?(\d+))?\)/g;
 
 const PLAYBOOK_RE = /\(([a-z0-9]+(?:-[a-z0-9]+)*) playbook\)|\bplaybook:([a-z0-9]+(?:-[a-z0-9]+)*)/g;
 const ENTITIES: Record<string, string> = {
@@ -149,15 +149,20 @@ function index(dirs: string[], notes: string[], read: { roots: string[]; total: 
   return out;
 }
 
-/** A cited path that exists under one of the dirs but was not indexed: read it, or say why not. Never outside the dirs or in .git. */
-function direct(p: string, read: { roots: string[]; total: number }): Indexed | "too-large" | null {
-  if (p.split("/").includes(".git")) return null;
+/**
+ * A cited path that exists under one of the dirs but was not indexed: read it, or say why not ("too-large" for the file,
+ * "budget" when the 50 MB for this call is used up). Never outside the dirs, and in no dot-folder but those walk reads,
+ * checked on the real path, so ".." or a symbolic link can't reach .git or a credentials file.
+ */
+function direct(p: string, read: { roots: string[]; total: number }): Indexed | "too-large" | "budget" | null {
   for (const root of read.roots) {
     try {
       const real = realpathSync(join(root, p));
       const st = statSync(real);
       if (!real.startsWith(root + sep) || !st.isFile()) continue;
-      if (st.size > MAX_DIRECT || read.total + st.size > MAX_TOTAL) return "too-large";
+      if (relative(root, real).split(sep).some((s) => s.startsWith(".") && !DOT_DIRS.has(s))) continue;
+      if (st.size > MAX_DIRECT) return "too-large";
+      if (read.total + st.size > MAX_TOTAL) return "budget";
       const src = readFileSync(real, "utf8");
       read.total += src.length;
       return indexed(relative(root, join(root, p)), src, root);
@@ -232,11 +237,14 @@ interface Citation {
 function citationsIn(segment: string): Citation[] {
   const out: Citation[] = [];
   for (const t of segment.matchAll(TOKEN_RE)) {
-    const path = PATH_RE.exec(t[0])?.[0];
+    let path = PATH_RE.exec(t[0])?.[0];
     if (!path) continue;
-    LINES_RE.lastIndex = (t.index ?? 0) + path.length;
+    // "[pricing.astro:9]": the bracket opens the citation. A "[" with its "]" in the path is part of it ([slug].astro).
+    const lead = path[0] === "[" && !path.includes("]") ? 1 : 0;
+    path = path.slice(lead);
+    LINES_RE.lastIndex = (t.index ?? 0) + lead + path.length;
     const m = LINES_RE.exec(segment);
-    out.push({ path, start: m ? Number(m[1]) : undefined, end: m?.[2] ? Number(m[2]) : undefined, pos: t.index ?? 0 });
+    out.push({ path, start: m ? Number(m[1]) : undefined, end: m?.[2] ? Number(m[2]) : undefined, pos: (t.index ?? 0) + lead });
   }
   for (const m of segment.matchAll(ADR_RE)) {
     const num = m[1] ?? m[4];
@@ -288,8 +296,8 @@ function resolve(by: Lookup, c: Citation): Indexed[] {
   return (by.byName.get(basename(p)) ?? []).filter((f) => f.rel === p || f.rel.endsWith("/" + p) || above(f));
 }
 
-// A quote: a pair of quotation marks on one line.
-const QUOTE_RE = /["“]([^"”\n]{1,400})["”]/g;
+// A quote: a pair of quotation marks on one line. A mark right after a digit is an inch mark (27"), not an opening quote.
+const QUOTE_RE = /(?<!\d)["“]([^"”\n]{1,400})["”]/g;
 // A citation this close after the closing quote (punctuation, a bracket, a backtick) belongs to that quote.
 const ADJACENT = /^[\s.,;:!?(\[`*—–-]{0,4}$/;
 
@@ -301,7 +309,9 @@ function sentencesOf(line: string): string[] {
   for (const m of line.matchAll(/(?<=[.!?]["”)]?)\s+(?=[`A-Z(*\[])/g)) {
     const at = m.index ?? 0;
     if (spans.some(([s, e]) => at > s && at < e)) continue;
-    if (/["”]$/.test(line.slice(0, at)) && line[at + m[0].length] === "(") continue;
+    // '."' or '".' then "(file:9)", or a citation in backticks or brackets.
+    const next = line.slice(at + m[0].length);
+    if (/["”][.!?]?$/.test(line.slice(0, at)) && (next[0] === "(" || (/^[`\[]/.test(next) && citationsIn(next.slice(1, 200)).some((c) => c.pos === 0)))) continue;
     out.push(line.slice(from, at));
     from = at + m[0].length;
   }
@@ -319,8 +329,10 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
   const skippedList: Array<{ quote: string; reason: string }> = [];
   let skipped = 0;
   const toolRe = [...tools].length ? new RegExp(`\\b(${[...tools].join("|")})\\b`) : null;
-  // Cited files that are in a dir but were not read because they are too large.
-  const tooLarge = new Set<string>();
+  // Cited files that are in a dir but were not read, and why: too large, or the 50 MB for this call was used up.
+  const notRead = new Map<string, "too-large" | "budget">();
+  const budgetHit = new Set<QuoteResult>();
+  const unpaired: string[] = [];
   // Many quotes in one sentence often cite the same file: resolve each citation once per call.
   const resolved = new Map<string, Indexed[]>();
   const targetsOf = (c: Citation) => {
@@ -334,7 +346,7 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
         t = resolve(filesBy, c);
         if (!t.length && !c.adr) {
           const d = direct(c.path.replace(/^\.?\//, ""), read);
-          if (d === "too-large") tooLarge.add(key);
+          if (d === "too-large" || d === "budget") notRead.set(key, d);
           else if (d) t = [d];
         }
       }
@@ -349,8 +361,12 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
     const cites = citationsIn(segment);
     const quotes = [...segment.matchAll(QUOTE_RE)];
     const rest = quotes.reduceRight((s, m) => s.slice(0, m.index) + " ".repeat(m[0].length) + s.slice((m.index ?? 0) + m[0].length), segment);
-    const open = rest.search(/["“”]/);
-    if (open >= 0) skippedList.push({ quote: segment.slice(open, open + 80), reason: "no closing quotation mark within 400 characters on the same line, so it was not checked" });
+    const open = rest.search(/(?<!\d)["“”]/);
+    if (open >= 0) {
+      skippedList.push({ quote: segment.slice(open, open + 80), reason: "no closing quotation mark within 400 characters on the same line, so it was not checked" });
+      // A stray mark shifts the pairs, so a quote with a citation can go unchecked: say so where the advisor looks.
+      if (cites.length) unpaired.push(`${segment.trim().slice(0, 120)}: a quotation mark in this sentence has no partner, so a quote in it may not have been checked. Fix the quotation marks and check again.`);
+    }
     for (const m of quotes) {
       const quote = m[1];
       // Text between two different quotes ("a" (`file`), "b") is not a quote.
@@ -404,8 +420,10 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
       const targets = targetsOf(cite);
       if (!targets.length) {
         const at = everywhere();
-        const missing = tooLarge.has(cite.adr ? `adr ${cite.adr}` : cite.path) ? "cited-file-not-read" : "cited-file-missing";
-        results.push({ quote, cited: label, status: at.length ? "other-file" : missing, foundAt: at });
+        const why = notRead.get(cite.adr ? `adr ${cite.adr}` : cite.path);
+        const r: QuoteResult = { quote, cited: label, status: at.length ? "other-file" : why ? "cited-file-not-read" : "cited-file-missing", foundAt: at };
+        if (why === "budget") budgetHit.add(r);
+        results.push(r);
         continue;
       }
       const inCited = targets.flatMap((f) => findIn(f).map((l) => ({ f, l })));
@@ -441,8 +459,10 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
       if (r.status === "other-file") return `${q}: not in ${r.cited}; found at ${r.foundAt.join(", ")}. Fix the citation.`;
       if (r.status === "cited-file-missing")
         return `${q}: no file matching ${r.cited} in the repo, and the words aren't anywhere else either.${notes.length ? " Some files were not read (see notes)." : ""}`;
+      if (r.status === "cited-file-not-read" && budgetHit.has(r))
+        return `${q}: ${r.cited?.split(":")[0]} was not read because the 50 MB limit for this call was reached, so this quote was not checked. Check it in a call with a narrower directory.`;
       if (r.status === "cited-file-not-read") return `${q}: ${r.cited?.split(":")[0]} is in the repo but too large to read, so this quote was not checked. Check it by hand or drop the quotation marks.`;
       return `${q}: not found verbatim in ${r.cited}. Quote the exact words or drop the quotation marks.`;
     });
-  return { checked: results.length, counts, results, problems, skipped: skippedList, notes };
+  return { checked: results.length, counts, results, problems: [...problems, ...unpaired], skipped: skippedList, notes };
 }

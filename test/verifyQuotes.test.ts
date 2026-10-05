@@ -1,7 +1,7 @@
 // Regression tests for verify_quotes: quotes it dropped or misbound without saying so, files it said were missing
 // when they were only left out of the index, and citations it read wrongly.
 import { describe, it, expect, afterAll } from "vitest";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { checkQuotes } from "../src/lib/quoteCheck.js";
@@ -34,6 +34,19 @@ describe("sentence splitting and binding", () => {
     expect(brief('It says "Read-only connection. We store nothing at all." (pricing.astro:2).', d)).toEqual([["not-found", "pricing.astro:2"]]);
     expect(brief('It says "Read-only connection. Parameter values are not included." (pricing.astro:2).', d)).toEqual([["verified", "pricing.astro:2"]]);
   });
+  it("keeps a citation in backticks or brackets after '.\"', and one after '\".'", () => {
+    expect(brief('The tooltip says "Parameter values are not included." `pricing.astro:9`', d)).toEqual([["wrong-line", "pricing.astro:9"]]);
+    expect(brief('The tooltip says "Parameter values are not included." [pricing.astro:9]', d)).toEqual([["wrong-line", "pricing.astro:9"]]);
+    expect(brief('The tooltip says "Parameter values are not included" [pricing.astro:9]', d)).toEqual([["wrong-line", "pricing.astro:9"]]);
+    expect(brief('The tooltip says "Parameter values are not included". (pricing.astro:9)', d)).toEqual([["wrong-line", "pricing.astro:9"]]);
+  });
+  it("doesn't pair an inch mark with the next quote", () => {
+    expect(brief('The 27" monitor ad. The tooltip says "Parameter values are not included" (pricing.astro:9).', d)).toEqual([["wrong-line", "pricing.astro:9"]]);
+  });
+  it("lists a quote left unchecked by an unpaired mark as a problem when the sentence cites a file", () => {
+    const r = checkQuotes('He said "hi. The tooltip says "Parameter values are not included" (pricing.astro:9).', [d]);
+    expect(r.problems.join(" ")).toMatch(/quotation mark/);
+  });
   it("reports a quote with no closing mark instead of dropping it", () => {
     const r = checkQuotes('It says "Read-only connection and nothing else.', [d]);
     expect(r.skipped.map((s) => s.reason).join(" ")).toMatch(/closing quotation mark/);
@@ -53,6 +66,32 @@ describe("files left out of the index", () => {
     expect(brief('The workflow says "branches: [main]" (.github/workflows/deploy.yml:3).', d)).toEqual([["verified", ".github/workflows/deploy.yml:3"]]);
     expect(brief('The notes say "We never send query text to a server" (.claude/notes.md:1).', d)).toEqual([["verified", ".claude/notes.md:1"]]);
     expect(brief('It says "Words that live only in the git folder".', d)).toEqual([["uncited-not-found", null]]);
+  });
+  it("reads no other dot-folder: caches and credential stores", () => {
+    const h = repo({
+      ".config/gh/hosts.yml": "github.com:\n  oauth_token: gho_FAKESECRET123\n  git_protocol: https\n  user: someone\n",
+      ".docker/config.json": '{\n  "auths": {\n    "ghcr.io": {\n      "auth": "c2VjcmV0OnRva2Vu"\n    }\n  }\n}\n',
+      ".env.json": '{ "token": "the secret token value" }\n',
+    });
+    for (const text of ['It says "git_protocol: https" (.config/gh/hosts.yml:3).', 'It says "ghcr.io" (.docker/config.json:3).', 'It says "the secret token value" (.env.json:1).', 'It says "the secret token value".']) {
+      const r = checkQuotes(text, [h]);
+      expect(JSON.stringify(r)).not.toMatch(/FAKESECRET|c2VjcmV0|"token"/);
+      expect(r.results.map((x) => x.status)).toEqual([text.includes("(") ? "cited-file-missing" : "uncited-not-found"]);
+    }
+  });
+  it("doesn't let a cache dot-folder crowd source files out", () => {
+    const c = repo({ "src/pages/index.astro": "<h1>Ship faster queries today</h1>\n" });
+    for (let i = 0; i < 4100; i++) {
+      mkdirSync(join(c, ".angular", "cache", String(i % 50)), { recursive: true });
+      writeFileSync(join(c, ".angular", "cache", String(i % 50), `${i}.json`), "{}\n");
+    }
+    expect(brief('It says "Ship faster queries today".', c)).toEqual([["uncited-found", null]]);
+  });
+  it("doesn't read a cited path into .git through '..' or a symbolic link", () => {
+    const g = repo({ ".git/notes.md": "Words that live only in the git folder.\n", "docs/a.md": "Nothing.\n" });
+    symlinkSync(join(g, ".git"), join(g, "gitlink"));
+    expect(brief('It says "Words that live only in the git folder" (docs/../.git/notes.md:1).', g)).toEqual([["cited-file-missing", "docs/../.git/notes.md:1"]]);
+    expect(brief('It says "Words that live only in the git folder" (gitlink/notes.md:1).', g)).toEqual([["cited-file-missing", "gitlink/notes.md:1"]]);
   });
   it("reads a cited file that exists but was not indexed (too large, a test file)", () => {
     expect(brief('It says "The last line of a long changelog" (CHANGELOG.md:307201).', d)).toEqual([["verified", "CHANGELOG.md:307201"]]);
@@ -77,6 +116,11 @@ describe("citations", () => {
   it("checks a quote against the citation right after it, not another one in the sentence", () => {
     const r = checkQuotes('The site says "Your saved queries live here" (apps/marketing/src/pages/index.astro:2), unlike the app (apps/app/src/pages/index.astro:1).', [d]);
     expect(r.results.map((x) => [x.status, x.cited])).toEqual([["other-file", "apps/marketing/src/pages/index.astro:2"]]);
+  });
+  it("doesn't read 'a record 1500 signups' as an ADR citation", () => {
+    const r = checkQuotes('Launch week drew a record 1500 signups and the hero says "Ship faster queries today".', [d]);
+    expect(r.results.map((x) => [x.status, x.cited])).toEqual([["uncited-found", null]]);
+    expect(r.problems).toEqual([]);
   });
   it("resolves ADRs under decisions/, with 3-digit ids, and 'record NNNN'", () => {
     expect(brief('ADR 0006 line 5 says "held 141 items on the day".', d)).toEqual([["verified", "ADR 0006:5"]]);
@@ -155,6 +199,15 @@ describe("a cited file too large to read", () => {
     const r = checkQuotes('The seed says "insert into t values" (dump.sql:2).', [d]);
     expect(r.results.map((x) => x.status)).toEqual(["cited-file-not-read"]);
     expect(r.problems[0]).toMatch(/too large to read/);
+  });
+  it("says the 50 MB limit was reached, not that a small cited file is too large", () => {
+    const files: Record<string, string> = { "zz.md": "A short note at the end.\n" };
+    for (let i = 0; i < 101; i++) files[`a/${String(i).padStart(3, "0")}.md`] = "x".repeat(510 * 1024);
+    const d = repo(files);
+    const r = checkQuotes('The note says "A short note at the end" (zz.md:1).', [d]);
+    expect(r.results.map((x) => x.status)).toEqual(["cited-file-not-read"]);
+    expect(r.problems[0]).toMatch(/50 MB/);
+    expect(r.problems[0]).not.toMatch(/too large/);
   });
 });
 

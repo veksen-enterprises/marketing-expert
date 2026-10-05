@@ -93,7 +93,7 @@ The audit and crawl tools fetch URLs chosen by the model, and the model reads te
 - Requests to private, loopback, link-local (including cloud metadata at 169.254.169.254), carrier-NAT and IPv6 local addresses are refused, for every redirect hop and, in render mode, for every request the page itself makes (WebRTC's direct UDP traffic is turned off). Set `MARKETING_EXPERT_ALLOW_PRIVATE=1` to audit a local dev server.
 - Tool results that contain page text are labelled as untrusted, and the server instructions tell the model not to follow instructions found in web content.
 - Limits: DNS can change between the check and the request (DNS rebinding); this is a guard, not a firewall.
-- `scan_source` and `verify_quotes` read files on this machine: only markup, docs and script extensions (`.astro .html .md .mdx .tsx .jsx .ts .js .mjs .vue .svelte`), up to 512 KB each and 4,000 files, skipping dot-folders, `node_modules` and build output. It refuses the filesystem root. Point it at a repo, not at your home folder.
+- `scan_source` and `verify_quotes` read files on this machine: only markup, docs and script extensions (`.astro .html .md .mdx .tsx .jsx .ts .js .mjs .vue .svelte`), up to 512 KB each and 4,000 files, skipping dotfiles, dot-folders, `node_modules` and build output. `verify_quotes` also reads `.json .yaml .yml .toml .sql .txt .css` files and the dot-folders `.github .claude .cursor .vscode .changeset .storybook` (never `.git`, `.config`, `.docker` or other dot-folders), and reads a cited file that was not indexed (too large, a test file) up to 5 MB, with 50 MB in all per call. It refuses the filesystem root. Point it at a repo, not at your home folder.
 
 ## Development
 

@@ -127,12 +127,13 @@ function visibleParts(line: string): string {
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
 }
 
-// Dot-folders that hold version control data or build caches, never copy. Skipped even when `dot` is set.
-const SKIP_DOT = new Set([".git", ".hg", ".svn", ".next", ".nuxt", ".svelte-kit", ".astro", ".output", ".vercel", ".turbo", ".cache", ".parcel-cache", ".venv"]);
+// The only dot-folders read when `dot` is set. A list of what to read, not of what to skip: other dot-folders hold version
+// control data, build caches that fill the file limit before src/ (.angular/cache), or credentials (.config/gh, .docker).
+export const DOT_DIRS = new Set([".github", ".claude", ".cursor", ".vscode", ".changeset", ".storybook"]);
 
 /**
  * `state.links` counts the symbolic links not followed. `top` is the real path of the directory being scanned.
- * `dot` also reads dot-folders and dotfiles (.github, .claude, .cursor), except .git and build caches: verify_quotes
+ * `dot` also reads the dot-folders in DOT_DIRS (.github, .claude, .cursor), never dotfiles: verify_quotes
  * said a correct citation of .github/workflows/deploy.yml was missing from the repo.
  */
 export function walk(root: string, out: string[], state: { truncated: boolean; links?: number }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root, dot = false) {
@@ -147,7 +148,7 @@ export function walk(root: string, out: string[], state: { truncated: boolean; l
       state.truncated = true;
       return;
     }
-    if ((name.startsWith(".") && (!dot || SKIP_DOT.has(name))) || SKIP_DIRS.has(name)) continue;
+    if ((name.startsWith(".") && !(dot && DOT_DIRS.has(name))) || SKIP_DIRS.has(name)) continue;
     const p = join(root, name);
     const wanted = (exts.has(extname(name).toLowerCase()) || names.has(name)) && !/\.(test|spec|d)\.[tj]sx?$/.test(name);
     let st;
