@@ -21,6 +21,16 @@ Public sources: pricing pages (track changes), job postings (direction), changel
 
 Limits: misrepresentation, bribery, inducing breach of confidentiality and theft are "improper means" under US trade-secret law; reverse engineering and independent development are not (18 U.S.C. §1839). Don't pose as a prospect or candidate; don't hire people to bring confidential files.
 
+## Check every claimed difference before you use it [practitioner]
+
+A difference you believe you have ("they don't do X") is the claim most likely to be wrong, and the one buyers test first. Before it goes on a website, in a pitch or in a plan:
+- Read the competitor's own documentation, changelog and release notes, not only the home page. For developer tools these are often public repositories (docs sites built from GitHub, open-source agents and collectors), readable even when the marketing site isn't.
+- Search for the feature by name and by the user's words for it; check the free tools and trials too, which often overlap your entry offer.
+- Write "not found in [sources]" rather than "they don't have it", and date the check.
+- Look for customers building the missing piece themselves (scripts, bots, integrations around the competitor): it shows demand for your difference, and that the competitor may ship it next.
+
+In one session, a model's from-memory comparison said a competitor had no MCP server and no free entry tool; its public docs repository showed both [our experiment; one case].
+
 ## Sources of defensibility: what the evidence says
 
 **Network effects** [research]
