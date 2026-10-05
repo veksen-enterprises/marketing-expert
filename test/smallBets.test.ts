@@ -144,6 +144,10 @@ describe("matchSmallBets", () => {
     expect(videos(["consumers", "businesses"]).ceiling).toBe("lopsided");
     expect(videos(["developers", "businesses"]).score!).toBeLessThan(videos(["consumers"]).score!);
   });
+  it("offers Pinterest only when users make or see something worth pinning", () => {
+    expect(find(matchSmallBets(hobby).fitsLater, "pinterest-pins")!.reason).toMatch(/image/);
+    expect(ids(matchSmallBets({ ...hobby, assets: { ...hobby.assets, visual: "painted figurines" } }).fitsNow)).toContain("pinterest-pins");
+  });
   it("gives a two-sided local business merchant bets, and keeps them from other businesses", () => {
     const local: SmallBetsFacts = { traction: { activeUsers: 0 }, audiences: ["consumers", "local"], surfaces: ["mobile-app"], revenue: "planned", launched: false, avoid: [] };
     expect(ids(matchSmallBets(local).fitsNow)).toContain("merchant-visits");

@@ -739,6 +739,7 @@ export function createServer(): McpServer {
             accounts: z.boolean().optional().describe("You can reach each user one to one (accounts, emails)"),
             communities: z.string().optional().describe("Where the audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups)"),
             season: z.string().optional().describe("When demand peaks, if it is seasonal (e.g. the six weeks before a holiday)"),
+            visual: z.string().optional().describe("What users make or see that is worth showing as an image (finished projects, dishes, rooms)"),
           })
           .nullable()
           .optional()

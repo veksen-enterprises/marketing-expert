@@ -221,6 +221,7 @@ export const BETS: Bet[] = [
     name: "Pin the work people make on Pinterest",
     what: "Post images of finished projects (from your gallery, with makers' permission) as pins with a plain title and description that link back, starting before the season's searches rise.",
     stage: 0,
+    needs: { visual: true },
     audiences: ["consumers", "hobbyists"],
     cost: "Free; about 30 minutes a pin; 2:3 images",
     judgeAfter: "20 pins, then 2–3 months (pins keep getting found)",

@@ -50,6 +50,8 @@ export interface Bet {
     newsworthy?: boolean;
     /** The audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups). */
     communities?: boolean;
+    /** Users make or see something worth showing as an image (a finished project, a dish, a room, an outfit). */
+    visual?: boolean;
   };
   /** "before": only before the product is live (a waitlist); "after": needs a product people can try now. */
   launch?: "before" | "after";
@@ -86,7 +88,7 @@ export interface Bet {
 
 export interface SmallBetsFacts {
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
-  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string };
+  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
   audiences?: Audience[];
   surfaces?: Surface[];
   revenue?: "none" | "planned" | "live";
@@ -232,6 +234,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (n.revenue && f.revenue !== "live") blockers.push("needs something to sell now");
     if (n.budget && budget < n.budget) blockers.push(`needs about $${n.budget} a month`);
     if (n.newsworthy && !a.newsworthy) blockers.push("needs a story others would retell");
+    if (n.visual && !a.visual) blockers.push("needs something users make or see that is worth showing as an image (save it as assets.visual)");
     if (n.communities && !a.communities) blockers.push("needs an audience that gathers in moderated communities (save where, as assets.communities)");
     if (b.launch === "after" && !launched) blockers.push("needs a product people can try now");
 
