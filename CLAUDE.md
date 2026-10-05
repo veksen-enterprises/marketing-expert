@@ -1,6 +1,6 @@
 # Working on marketing-expert-mcp
 
-Read `VISION.md` first (why, principles, lessons), then `ROADMAP.md` (what to work on). `README.md` is the user-facing guide.
+Read `VISION.md` first (why, principles, lessons), then `ROADMAP.md` (what to work on). `README.md` is the user-facing guide. `GLOSSARY.md` holds the project's own terms (advisor, move, small bet, stage, evidence tag, case, run…): use them as defined there. Decisions are in `docs/adr/`.
 
 ## Layout
 
