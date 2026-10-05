@@ -190,9 +190,9 @@ describe("time on hostile input", () => {
     const adrs = Array.from({ length: 9000 }, (_, i) => `ADR ${1000 + i}`).join(", ");
     expect(ms(() => (r = checkQuotes(`It says "quoted words that are nowhere here" (${adrs}).`, [d])))).toBeLessThan(1000);
     expect(r!.results[0].status).toBe("cited-file-missing");
-    // Full path, end of the path, and file name only.
+    // Full path, end of the path, and file name only. A different folder is a different file, even with the same name.
     const status = (text: string) => checkQuotes(text, [d]).results.map((x) => x.status);
-    expect(status('It says "File 7 has some words" (p7/f7.md:1). And "File 7 has some words" (f7.md:1). And "File 7 has some words" (q/f7.md:1).')).toEqual(["verified", "verified", "verified"]);
+    expect(status('It says "File 7 has some words" (p7/f7.md:1). And "File 7 has some words" (f7.md:1). And "File 7 has some words" (q/f7.md:1).')).toEqual(["verified", "verified", "other-file"]);
   });
 
   it("verify_quotes: checks at most 100 quotes and says so", () => {

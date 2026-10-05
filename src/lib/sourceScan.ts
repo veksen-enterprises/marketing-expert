@@ -127,8 +127,15 @@ function visibleParts(line: string): string {
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
 }
 
-/** `state.links` counts the symbolic links not followed. `top` is the real path of the directory being scanned. */
-export function walk(root: string, out: string[], state: { truncated: boolean; links?: number }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root) {
+// Dot-folders that hold version control data or build caches, never copy. Skipped even when `dot` is set.
+const SKIP_DOT = new Set([".git", ".hg", ".svn", ".next", ".nuxt", ".svelte-kit", ".astro", ".output", ".vercel", ".turbo", ".cache", ".parcel-cache", ".venv"]);
+
+/**
+ * `state.links` counts the symbolic links not followed. `top` is the real path of the directory being scanned.
+ * `dot` also reads dot-folders and dotfiles (.github, .claude, .cursor), except .git and build caches: verify_quotes
+ * said a correct citation of .github/workflows/deploy.yml was missing from the repo.
+ */
+export function walk(root: string, out: string[], state: { truncated: boolean; links?: number }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root, dot = false) {
   let entries: string[];
   try {
     entries = readdirSync(root);
@@ -140,7 +147,7 @@ export function walk(root: string, out: string[], state: { truncated: boolean; l
       state.truncated = true;
       return;
     }
-    if (name.startsWith(".") || SKIP_DIRS.has(name)) continue;
+    if ((name.startsWith(".") && (!dot || SKIP_DOT.has(name))) || SKIP_DIRS.has(name)) continue;
     const p = join(root, name);
     const wanted = (exts.has(extname(name).toLowerCase()) || names.has(name)) && !/\.(test|spec|d)\.[tj]sx?$/.test(name);
     let st;
@@ -160,7 +167,7 @@ export function walk(root: string, out: string[], state: { truncated: boolean; l
     } catch {
       continue;
     }
-    if (st.isDirectory()) walk(p, out, state, exts, names, top);
+    if (st.isDirectory()) walk(p, out, state, exts, names, top, dot);
     else if (st.isFile() && wanted && st.size <= MAX_BYTES) out.push(p);
   }
 }

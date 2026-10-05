@@ -343,11 +343,13 @@ export function createServer(): McpServer {
     {
       title: "Verify quotes and file citations in your draft",
       description:
-        "Run on your final answer when it quotes or cites a repository. For every quoted phrase, finds the file and line cited in the same sentence (paths like pricing.astro:263, 'ADR 0006 lines 15–16') and reports whether the words are there verbatim, on a different line, in a different file, or nowhere in the given directories. Fix every problem it lists: correct the citation, quote the exact words, or drop the quotation marks. Read each verified quote's context too: a quote can be verbatim and still be misread (a subtotal used as a total).",
+        "Run on your final answer when it quotes or cites a repository. For every quoted phrase, finds the file and line cited right after the closing quotation mark, or else in the same sentence (paths like pricing.astro:263, 'ADR 0006 lines 15–16', '(developer-tools playbook)'), and reports whether the words are there verbatim, on a different line, in a different file, or nowhere in the given directories. 'cited' in each result is the citation the quote was checked against. Fix every problem it lists: correct the citation, quote the exact words, or drop the quotation marks. Read each verified quote's context too: a quote can be verbatim and still be misread (a subtotal used as a total). 'skipped' lists quotes it did not check and why (one or two words with no file:line right after them, quotes of tool output); check those yourself.",
       inputSchema: { text: z.string().min(1).max(100000), dirs: z.array(z.string().min(1).max(1000)).min(1).max(5) },
       annotations: readOnly,
     },
-    safe((a) => checkQuotes(a.text, a.dirs))
+    // The registered tool names, read at call time so tools registered after this one count too. A quote from a sentence
+    // that names one, with no file cited, quotes tool output and is skipped with a reason.
+    safe((a) => checkQuotes(a.text, a.dirs, 2, Object.keys((server as unknown as { _registeredTools?: Record<string, unknown> })._registeredTools ?? {})))
   );
 
   server.registerTool(
