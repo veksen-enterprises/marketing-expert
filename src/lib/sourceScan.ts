@@ -4,7 +4,7 @@
 // against each other; (2) build-time env flags that change what gets built.
 // Reads local files only, by extension, under the directory given. Returns text as data.
 
-import { readdirSync, readFileSync, statSync, realpathSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, extname } from "node:path";
 
 export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof";
@@ -49,9 +49,11 @@ const ADR_FILE = /^(\d{3,4})-[\w.-]+\.md$/;
 function decisionStatus(src: string): string | null {
   const fm = /^---\n[\s\S]*?^status:\s*(.+)$[\s\S]*?^---/m.exec(src);
   if (fm) return fm[1].trim();
-  const line = /^\s*(?:\*\*)?status(?:\*\*)?\s*:\s*(.+)$/im.exec(src);
+  // [ \t]*, not \s*, where it meets a newline: \s* takes all the blank lines that follow and backtracks, which on a record
+  // with many blank lines is quadratic.
+  const line = /^[ \t]*(?:\*\*)?status(?:\*\*)?\s*:\s*(.+)$/im.exec(src);
   if (line) return line[1].replace(/\*\*/g, "").trim().slice(0, 240);
-  const sec = /^#{2,3}\s*status\s*\n+([\s\S]*?)(?:\n\s*\n|\n#)/im.exec(src);
+  const sec = /^#{2,3}\s*status[ \t\r]*\n+([\s\S]*?)(?:\n\s*\n|\n#)/im.exec(src);
   return sec ? sec[1].replace(/\s+/g, " ").trim().slice(0, 240) : null;
 }
 
@@ -95,15 +97,19 @@ function readDecisions(root: string, files: string[]): Decision[] {
 
 const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte"]);
 const SKIP_DIRS = new Set(["node_modules", "dist", "build", "out", "coverage", "vendor", "target", "__snapshots__"]);
-const MAX_FILES = 4000;
+export const MAX_FILES = 4000;
 const MAX_BYTES = 512 * 1024;
+// Longer lines are minified code or data, not copy; only the start of them is read.
+const MAX_LINE = 2000;
 
+// Tried on every line, so no part may rescan the rest of the line from many starting points ("curl curl curl ...",
+// "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
 const PATTERNS: Record<ClaimKind, RegExp> = {
   data: /\b(stores?|stored|storing|collects?|collected|sends?|sent|uploads?|uploaded|read-only|never (see|read|store|touch|leaves?|sends?)|leaves? (your|the)|locally|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|credentials?|connection strings?|passwords?|encrypt\w*|retain\w*|retention|sample (rows|values)|parameter values|literal values|PII|personal data|GDPR|SOC ?2|HIPAA|rows? of (your )?data|query text|we (never|don't|do not) (see|read|store|access)|your data)\b/i,
   price: /([$€£]\d[\d,]*(\.\d{2})?(?![\d.]))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
   availability: /\b(coming soon|soon|on (our|the) radar|roadmap|planned|in beta|beta|alpha|preview|early access|waitlist|not yet|launching|available now|now available|shipped|deprecated|retired|sunset)\b/i,
-  setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|curl [^|]*\|\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes)\b)/i,
-  proof: /(\b\d+(\.\d+)?\s?(%|x|×)(?![\w-])|\b(fastest|the only|first ever|#1|trusted by|used by|loved by|\d[\d,]*\+? (teams|companies|developers|users|customers)))/i,
+  setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|\|(?<=curl [^|]*\|)\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes)\b)/i,
+  proof: /(\b\d+(\.\d+)?\s?(%|x|×)(?![\w-])|\b(fastest|the only|first ever|#1|trusted by|used by|loved by|(?<![\d,])\d[\d,]*\+? (teams|companies|developers|users|customers)))/i,
 };
 
 // Attributes whose values are visible or read as copy: tooltips, labels, alt text, meta content.
@@ -112,8 +118,9 @@ const TEXT_ATTRS = /\b(data-tip|data-tooltip|title|aria-label|alt|placeholder|co
 function visibleParts(line: string): string {
   const attrs: string[] = [];
   for (const m of line.matchAll(TEXT_ATTRS)) attrs.push(m[3]);
+  // [^<>], not [^>]: from every "<" with no ">" after it, the scan ran to the end of the line.
   const text = line
-    .replace(/<[^>]*>/g, " ")
+    .replace(/<[^<>]*>/g, " ")
     .replace(/\{[^{}]*\}/g, " ")
     .replace(/&[a-z]+;|&#\d+;/gi, " ");
   return [text, ...attrs].join(" ").replace(/\s+/g, " ").trim();
@@ -135,7 +142,8 @@ export function walk(root: string, out: string[], state: { truncated: boolean },
     const p = join(root, name);
     let st;
     try {
-      st = statSync(p);
+      // lstat, so symbolic links are skipped: one can point outside the directory (/proc/self/environ) or back up the tree, which never ends.
+      st = lstatSync(p);
     } catch {
       continue;
     }
@@ -145,6 +153,9 @@ export function walk(root: string, out: string[], state: { truncated: boolean },
 }
 
 const ENV_RE = /import\.meta\.env\.([A-Z][A-Z0-9_]*)|process\.env\.([A-Z][A-Z0-9_]*)|process\.env\[["']([A-Z][A-Z0-9_]*)["']\]|Deno\.env\.get\(["']([A-Z][A-Z0-9_]*)["']\)/g;
+// A keyword, then a quote or "$" anywhere after the first one (one pattern rescanned the line after every keyword).
+const SQL = /\b(select|insert into|order by|where|group by)\b/i;
+const CSS = /^[.#@][\w-].*\{\s*$|^[\w-]+\s*:[^:]+;\s*$/;
 const BUILTIN_ENV = new Set(["NODE_ENV", "DEV", "PROD", "SSR", "MODE", "BASE_URL", "CI", "PORT", "HOME", "PATH", "TZ"]);
 const OUTPUT_HINT = /redirect|navigate|\bto:|<h1|head\(|<head|title|meta|canonical|robots|noindex|route|sitemap|\?\s*["'`/]|&&\s*\(|render/i;
 
@@ -169,7 +180,8 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
     const isCode = /\.(ts|js|mjs)$/.test(f);
     let inStyle = false;
     const recent: string[] = [];
-    src.split("\n").forEach((raw, i) => {
+    src.split("\n").forEach((full, i) => {
+      const raw = full.slice(0, MAX_LINE);
       // Skip CSS and code samples (<pre>, fenced blocks): their "$1" and "select" aren't copy.
       if (/<style[\s>]|<pre[\s>]|^\s*```/i.test(raw) && !inStyle) {
         inStyle = !/<\/style>|<\/pre>/i.test(raw) && !/^\s*```.*```/.test(raw);
@@ -190,7 +202,8 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
       const literals = (raw.match(/(["'`])((?:(?!\1).){2,})\1/g) ?? []).map((l) => l.slice(1, -1)).join(" ");
       const text = isCode ? literals : visibleParts(raw);
       // SQL examples ("$1", "select ...") and CSS rules are not copy.
-      if (/\b(select|insert into|order by|where|group by)\b.*["$]/i.test(text) || /^[.#@][\w-]+.*\{\s*$|^[\w-]+\s*:\s*[^:]+;\s*$/.test(raw.trim())) return;
+      const sql = SQL.exec(text);
+      if ((sql && /["$]/.test(text.slice(sql.index))) || CSS.test(raw.trim())) return;
       const words = (text.match(/[A-Za-z]{2,}/g) ?? []).length;
       const ctx = recent.slice(-2).join(" / ");
       if (words >= 2) {

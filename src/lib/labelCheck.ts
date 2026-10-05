@@ -2,7 +2,7 @@
 // Graders in every eval round marked answers down for labels upgraded ("practitioner" became "research")
 // or qualifiers dropped ("seen via search snippets", "not re-verified", "self-selected sample").
 
-import { sections, searchKnowledge, type Section } from "./knowledge.js";
+import { sections, tokenize, type Section, type SearchHit } from "./knowledge.js";
 
 const STRENGTH: Array<[string, RegExp, number]> = [
   ["research", /\b(controlled )?research\b|\bpeer-reviewed\b|\brct\b|\bpreprint\b/i, 4],
@@ -30,7 +30,7 @@ function strength(label: string): number {
 }
 
 let paragraphCache: Section[] | null = null;
-function paragraphs(): Section[] {
+export function paragraphs(): Section[] {
   if (paragraphCache) return paragraphCache;
   // Search paragraphs and bullets, not whole sections: a section mixes several labels.
   paragraphCache = sections().flatMap((s) =>
@@ -43,14 +43,52 @@ function paragraphs(): Section[] {
   return paragraphCache;
 }
 
+let searchIndex: { docs: Array<{ s: Section; len: number; tf: Map<string, number> }>; avg: number } | null = null;
+
+/** searchKnowledge(query, limit, paragraphs()) with each paragraph tokenised once: searchKnowledge tokenises the whole
+ * corpus on every call, and check_answer searches once per labelled sentence. Same tokens, weights and ranking. */
+export function searchParagraphs(query: string, limit = 5): SearchHit[] {
+  if (!searchIndex) {
+    const docs = paragraphs().map((s) => {
+      const head = tokenize(`${s.playbookTitle} ${s.heading}`);
+      const toks = [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))];
+      const tf = new Map<string, number>();
+      for (const t of toks) tf.set(t, (tf.get(t) ?? 0) + 1);
+      return { s, len: toks.length, tf };
+    });
+    searchIndex = { docs, avg: docs.reduce((n, d) => n + d.len, 0) / Math.max(1, docs.length) };
+  }
+  const { docs, avg } = searchIndex;
+  const q = [...new Set(tokenize(query))];
+  if (q.length === 0) return [];
+  const N = docs.length;
+  const df = new Map(q.map((t) => [t, docs.filter((d) => d.tf.has(t)).length]));
+  const k1 = 1.2;
+  const b = 0.75;
+  const hits: SearchHit[] = [];
+  for (const d of docs) {
+    let score = 0;
+    for (const t of q) {
+      const f = d.tf.get(t) ?? 0;
+      if (!f) continue;
+      const n = df.get(t) ?? 0;
+      const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
+      score += (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.len) / avg));
+    }
+    if (score > 0) hits.push({ slug: d.s.slug, playbookTitle: d.s.playbookTitle, heading: d.s.heading, score, text: d.s.text });
+  }
+  return hits.sort((a, b) => b.score - a.score).slice(0, limit);
+}
+
 export function checkLabels(text: string, minScore = 6): LabelFinding[] {
   const out: LabelFinding[] = [];
   const claims = text.split("\n").flatMap((line) => line.split(/(?<=[.!?])\s+(?=[A-Z*(\[])/));
   for (const claim of claims) {
     const labels = labelsIn(claim);
     if (!labels.length) continue;
-    const query = claim.replace(/\[[^\]]*\]/g, " ").replace(/[*_`]/g, " ");
-    const hits = searchKnowledge(query, 5, paragraphs()).filter((h) => h.score >= minScore);
+    // [^[\]], not [^\]]: from every "[" with no "]" after it, the scan ran to the end of the sentence.
+    const query = claim.replace(/\[[^[\]]*\]/g, " ").replace(/[*_`]/g, " ");
+    const hits = searchParagraphs(query, 5).filter((h) => h.score >= minScore);
     const answerLabel = labels.join("; ");
     if (!hits.length) {
       out.push({ claim: claim.trim().slice(0, 200), answerLabel, source: null, sourceLabels: [], status: "no-source" });
@@ -76,7 +114,7 @@ export function checkLabels(text: string, minScore = 6): LabelFinding[] {
     // Upgraded only when no close passage carries a label that strong (search can miss the true source).
     const strongestNearby = Math.max(-1, ...allLabels.map(strength));
     const srcQualified = sourceLabels.some((l) => QUALIFIER.test(l));
-    const ansQualified = labels.some((l) => QUALIFIER.test(l)) || QUALIFIER.test(claim.replace(/\[[^\]]*\]/g, ""));
+    const ansQualified = labels.some((l) => QUALIFIER.test(l)) || QUALIFIER.test(claim.replace(/\[[^[\]]*\]/g, ""));
     const status: LabelFinding["status"] =
       strongestNearby >= 0 && ansStrength > strongestNearby ? "upgraded" : srcQualified && !ansQualified && strength(sourceLabels.find((l) => QUALIFIER.test(l)) ?? "") === ansStrength ? "qualifier-dropped" : "ok";
     out.push({ claim: claim.trim().slice(0, 200), answerLabel, source: `${hit.slug} › ${hit.heading}`, sourceLabels, status });
