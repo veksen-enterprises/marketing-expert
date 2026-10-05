@@ -177,6 +177,8 @@ export interface LimitCheck {
   field: string;
   text: string;
   length: number;
+  /** Set when the limit counts bytes (Apple's keyword field), not characters. */
+  unit?: "bytes";
   max?: number;
   recommended?: number;
   status: "ok" | "over_recommended" | "over_max" | "unverified_limit" | "no_known_limit";
@@ -193,11 +195,11 @@ export function checkLimits(platform: string, fields: Record<string, string | st
     const lim = Object.hasOwn(spec.fields, field) ? spec.fields[field] : undefined;
     if (!lim) throw new RangeError(`unknown field "${field}" for ${platform}. Known: ${Object.keys(spec.fields).join(", ")}`);
     for (const t of Array.isArray(value) ? value : [value]) {
-      const len = countChars(t, spec.counting);
+      const len = countChars(t, lim.counting ?? spec.counting);
       let status: LimitCheck["status"] = lim.max === undefined && lim.recommended === undefined ? "no_known_limit" : "ok";
       if (lim.max !== undefined && len > lim.max) status = lim.verified ? "over_max" : "unverified_limit";
       else if (lim.recommended !== undefined && len > lim.recommended) status = "over_recommended";
-      checks.push({ platform, field, text: t, length: len, max: lim.max, recommended: lim.recommended, status, note: lim.note });
+      checks.push({ platform, field, text: t, length: len, ...((lim.counting ?? spec.counting) === "utf8-bytes" ? { unit: "bytes" as const } : {}), max: lim.max, recommended: lim.recommended, status, note: lim.note });
     }
   }
   return { checks, source: spec.source, checkedOn: CHECKED_ON };

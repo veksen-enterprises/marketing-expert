@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { analyzeCopy, checkLimits, countSyllables } from "../src/lib/copy.js";
-import { countChars } from "../src/lib/platformLimits.js";
+import { countChars, PLATFORM_LIMITS } from "../src/lib/platformLimits.js";
 import { buildUtm } from "../src/lib/utm.js";
 
 describe("copy analysis", () => {
@@ -37,8 +37,30 @@ describe("limits", () => {
     expect(r.checks.map((c) => c.status)).toEqual(["ok", "over_max"]);
   });
   it("unverified limits never hard-fail", () => {
-    const r = checkLimits("linkedin_single_image", { intro_text: "x".repeat(700) });
-    expect(r.checks[0].status).toBe("unverified_limit");
+    PLATFORM_LIMITS.__test = { label: "test", counting: "plain", source: "", fields: { text: { max: 10, verified: false } } };
+    try {
+      expect(checkLimits("__test", { text: "x".repeat(11) }).checks[0].status).toBe("unverified_limit");
+    } finally {
+      delete PLATFORM_LIMITS.__test;
+    }
+  });
+  it("LinkedIn intro text allows 3,000 characters", () => {
+    expect(checkLimits("linkedin_single_image", { intro_text: "x".repeat(700) }).checks[0].status).toBe("over_recommended");
+    expect(checkLimits("linkedin_single_image", { intro_text: "x".repeat(3001) }).checks[0].status).toBe("over_max");
+  });
+  it("counts Apple's keyword field in UTF-8 bytes and other App Store fields in characters", () => {
+    const ja = "瞑想,睡眠,集中,習慣,タイマー,ポモドーロ,勉強,記録,呼吸法,リラックス"; // 38 characters, 96 bytes: fits
+    const k = checkLimits("app_store", { keywords: ja }).checks[0];
+    expect(k).toMatchObject({ length: 96, unit: "bytes", status: "ok" });
+    expect(checkLimits("app_store", { keywords: ja + ",瞑想アプリ" }).checks[0]).toMatchObject({ length: 112, status: "over_max" });
+    expect(checkLimits("app_store", { keywords: "focus,timer,pomodoro" }).checks[0]).toMatchObject({ length: 20, status: "ok" });
+    const sub = checkLimits("app_store", { subtitle: "集中タイマーと勉強記録" }).checks[0];
+    expect(sub).toMatchObject({ length: 11, status: "ok" });
+    expect(sub.unit).toBeUndefined();
+  });
+  it("Google Play counts full-width characters as 1", () => {
+    expect(checkLimits("google_play", { short_description: "あ".repeat(80) }).checks[0].status).toBe("ok");
+    expect(checkLimits("google_play", { title: "x".repeat(31) }).checks[0].status).toBe("over_max");
   });
   it("rejects unknown field", () => {
     expect(() => checkLimits("google_rsa", { nope: "x" })).toThrow(/Known/);

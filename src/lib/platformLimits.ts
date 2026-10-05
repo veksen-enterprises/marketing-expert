@@ -1,4 +1,5 @@
-// Platform copy limits. Checked 2026-10-04 via searches scoped to official help domains.
+// Platform copy limits. Checked 2026-10-04 via searches scoped to official help domains; app_store and google_play
+// read from Apple's and Google's help pages on 2026-10-05.
 // `max` = platform rejects longer text. `recommended` = truncation / guidance point.
 // `verified: false` means we could not confirm the number from an official source: treat as a warning only.
 // Platforms change these; update `CHECKED_ON` when you re-verify.
@@ -7,13 +8,15 @@ import { X_TLDS } from "./xTlds.js";
 
 export const CHECKED_ON = "2026-10-04";
 
-export type CountingRule = "plain" | "cjk-double" | "x-links-23";
+export type CountingRule = "plain" | "cjk-double" | "x-links-23" | "utf8-bytes";
 
 export interface FieldLimit {
   max?: number;
   recommended?: number;
   verified: boolean;
   note?: string;
+  /** Overrides the platform's counting rule for this field. */
+  counting?: CountingRule;
 }
 
 export interface PlatformSpec {
@@ -94,7 +97,7 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
     counting: "plain",
     source: "https://www.linkedin.com/help/lms/answer/a426534",
     fields: {
-      intro_text: { max: 600, recommended: 150, verified: false, note: "150 to avoid truncation confirmed on linkedin.com 2026-10-04; hard max unresolved: linkedin.com snippets show both 600 and 3,000. 600 kept as the conservative cap" },
+      intro_text: { max: 3000, recommended: 150, verified: true, note: "150 to avoid truncation; up to 10 emojis; URLs over 23 characters become short links (linkedin.com, read 2026-10-05)" },
       headline: { max: 200, recommended: 70, verified: true },
       description: { max: 300, recommended: 100, verified: true, note: "only shown in some placements" },
     },
@@ -134,6 +137,34 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
     fields: {
       ad_text: { max: 100, recommended: 60, verified: true, note: "100 for English; varies by language" },
       display_name: { max: 20, recommended: 10, verified: true },
+    },
+  },
+  app_store: {
+    label: "Apple App Store product page",
+    counting: "plain",
+    source: "https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information",
+    fields: {
+      name: { max: 30, verified: true, note: "at least 2 characters; ranks in search; the company name is searchable too, so don't repeat it in keywords" },
+      subtitle: { max: 30, verified: true, note: "shown under the name; ranks in search" },
+      keywords: {
+        max: 100,
+        verified: true,
+        counting: "utf8-bytes",
+        note: "100 BYTES, not characters: accented letters take 2 bytes and Japanese, Chinese or Korean characters 3. Separate with commas, no spaces; each keyword over 2 characters; no other apps' or companies' names; don't repeat words already in the name",
+      },
+      promotional_text: { max: 170, verified: true, note: "shown above the description; can change without a new app version" },
+      description: { max: 4000, verified: true, note: "plain text; Apple says it is used for web search engine results, and does not say App Store search reads it" },
+      whats_new: { max: 4000, verified: true },
+    },
+  },
+  google_play: {
+    label: "Google Play store listing",
+    counting: "plain",
+    source: "https://support.google.com/googleplay/android-developer/answer/9859152",
+    fields: {
+      title: { max: 30, verified: true, note: "full-width characters count as 1" },
+      short_description: { max: 80, verified: true },
+      full_description: { max: 4000, verified: true, note: "indexed for Play search" },
     },
   },
   serp: {
@@ -186,6 +217,7 @@ function xWeight(text: string): number {
 }
 
 export function countChars(text: string, rule: CountingRule): number {
+  if (rule === "utf8-bytes") return Buffer.byteLength(text, "utf8");
   const chars = Array.from(text);
   if (rule === "cjk-double") return chars.reduce((n, c) => n + (WIDE.test(c) ? 2 : 1), 0);
   if (rule === "x-links-23") {

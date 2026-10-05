@@ -571,7 +571,7 @@ export function createServer(): McpServer {
     {
       title: "Check copy against platform limits",
       description:
-        "Check ad, SERP, email or social copy against platform character limits (Google Ads counts CJK as 2; X counts every URL as 23 and CJK characters and emoji as 2). Fields by platform: " +
+        "Check ad, SERP, email, social or app store copy against platform character limits (Google Ads counts CJK as 2; X counts every URL as 23 and CJK characters and emoji as 2; Apple's App Store keyword field counts UTF-8 bytes). Fields by platform: " +
         Object.entries(PLATFORM_LIMITS)
           .map(([k, v]) => `${k}: ${Object.keys(v.fields).join(", ")}`)
           .join(" | "),
