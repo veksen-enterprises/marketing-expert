@@ -65,10 +65,25 @@ export function parseRobots(txt: string): RobotsRules {
   return { allow, disallow, sitemaps };
 }
 
+// "*" matches any run of characters and a final "$" anchors the end; everything else is literal.
+// Not a RegExp: a site's rule like "/*-*-*-*-…-zz" makes a backtracking regex take minutes.
+// Taking the leftmost match of each piece between stars is always safe, so nothing is retried.
 function ruleMatches(rule: string, path: string): boolean {
   const anchored = rule.endsWith("$");
-  const body = (anchored ? rule.slice(0, -1) : rule).replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
-  return new RegExp("^" + body + (anchored ? "$" : "")).test(path);
+  const parts = (anchored ? rule.slice(0, -1) : rule).split("*");
+  const first = parts[0];
+  if (!path.startsWith(first)) return false;
+  if (parts.length === 1) return !anchored || path.length === first.length;
+  const last = parts[parts.length - 1];
+  const end = anchored ? path.length - last.length : path.length;
+  if (end < first.length || (anchored && !path.endsWith(last))) return false;
+  let pos = first.length;
+  for (const p of anchored ? parts.slice(1, -1) : parts.slice(1)) {
+    const i = path.indexOf(p, pos);
+    if (i < 0 || i + p.length > end) return false;
+    pos = i + p.length;
+  }
+  return true;
 }
 
 /** Longest matching rule wins; Allow wins ties (Google's documented behaviour). */

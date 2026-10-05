@@ -1,8 +1,10 @@
 // Extracts the facts a landing-page / SEO review needs from raw HTML, so the model
 // critiques what is actually on the page rather than what it imagines is there.
 
+import { createServer, request as httpRequest, type IncomingHttpHeaders } from "node:http";
+import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "node:net";
 import { parse, HTMLElement } from "node-html-parser";
-import { guardedFetch, assertPublicUrl } from "./netguard.js";
+import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
 import { visibleText } from "./text.js";
 
 export interface PageFacts {
@@ -43,8 +45,24 @@ function text(el: HTMLElement | null | undefined): string {
   return visibleText(el);
 }
 
+const TOO_LARGE = "The HTML is larger than 5 MB. This audit read only the first 5 MB, so its counts are partial. HTML this large is slow to download and render.";
+
 export function auditHtml(html: string, url?: string): PageFacts {
-  const root = parse(html, { comment: false, blockTextElements: { script: true, style: true, noscript: true } });
+  const truncated = html.length > MAX_HTML_BYTES;
+  try {
+    const facts = readFacts(truncated ? html.slice(0, MAX_HTML_BYTES) : html, url);
+    if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
+    return facts;
+  } catch (e) {
+    // node-html-parser's selector code recurses once per level of nesting.
+    if (e instanceof RangeError) throw new Error("Could not read this HTML: elements are nested too deeply (often many unclosed tags).");
+    throw e;
+  }
+}
+
+function readFacts(html: string, url?: string): PageFacts {
+  // parseNoneClosedTags: the default clean-up of unclosed tags takes cubic time (30 KB of "<div>" took 18 s).
+  const root = parse(html, { comment: false, parseNoneClosedTags: true, blockTextElements: { script: true, style: true, noscript: true } });
   const flags: PageFacts["flags"] = [];
   const meta = (sel: string) => root.querySelector(sel)?.getAttribute("content")?.trim() ?? null;
 
@@ -190,8 +208,9 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
   });
   const ct = res.headers.get("content-type") ?? "";
   if (!ct.includes("html")) throw new Error(`expected HTML, got content-type "${ct}" (status ${res.status})`);
-  const html = await res.text();
+  const { text: html, truncated } = await readCapped(res, MAX_HTML_BYTES);
   const facts = auditHtml(html, res.url || url);
+  if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
   applyResponseChecks(facts, res.status, res.url || url, res.headers.get("x-robots-tag"));
   const chain = (res as Response & { redirectChain?: string[] }).redirectChain ?? [];
   if (chain.length) {
@@ -238,6 +257,80 @@ export interface RenderedAudit extends PageFacts {
   };
 }
 
+// Headers that describe one connection; a proxy does not pass them on.
+const HOP_HEADERS = ["connection", "keep-alive", "proxy-connection", "proxy-authorization", "proxy-authenticate", "te", "trailer", "transfer-encoding", "upgrade"];
+
+/**
+ * A local HTTP proxy for render mode. Chromium sends every request through it: navigations, redirects,
+ * subresources, workers and WebSockets. Each host is resolved once and checked with resolvePublic, and the
+ * proxy connects only to those addresses, so DNS can't change in between. page.route alone is not enough:
+ * Playwright never shows redirected requests to route handlers, nor WebSockets or service worker requests.
+ * Refused requests end as network errors; their messages are added to `blocked`.
+ */
+async function startGuardProxy(blocked: string[]): Promise<{ server: string; close: () => void }> {
+  const sockets = new Set<Socket>();
+  const track = (s: Socket) => {
+    sockets.add(s);
+    s.on("close", () => sockets.delete(s)).on("error", () => s.destroy());
+    return s;
+  };
+  const open = async (host: string, port: number): Promise<Socket> => {
+    const name = host.replace(/^\[|\]$/g, "");
+    const addrs = await resolvePublic(name);
+    const lookup = (_h: string, o: { all?: boolean }, cb: (...a: unknown[]) => void) => (o.all ? cb(null, addrs) : cb(null, addrs[0].address, addrs[0].family));
+    return new Promise((resolve, reject) => {
+      const s = connect({ host: name, port, lookup, autoSelectFamily: true } as NetConnectOpts);
+      s.once("connect", () => resolve(track(s))).once("error", reject);
+    });
+  };
+  const refuse = (e: unknown, socket: Socket) => {
+    if (e instanceof BlockedAddressError && !blocked.includes(e.message)) blocked.push(e.message);
+    socket.destroy();
+  };
+  const server = createServer(async (req, res) => {
+    try {
+      const target = new URL(req.url ?? "");
+      if (target.protocol !== "http:") throw new Error(`not an http proxy request: ${req.url}`);
+      const upstream = await open(target.hostname, Number(target.port) || 80);
+      const headers: IncomingHttpHeaders = { ...req.headers };
+      for (const h of HOP_HEADERS) delete headers[h];
+      const up = httpRequest({ method: req.method, path: target.pathname + target.search, headers: { ...headers, connection: "close" }, setHost: false, createConnection: () => upstream }, (ur) => {
+        const out: IncomingHttpHeaders = { ...ur.headers };
+        for (const h of HOP_HEADERS) delete out[h];
+        res.writeHead(ur.statusCode ?? 502, ur.statusMessage, out);
+        ur.on("error", () => res.destroy()).pipe(res);
+      });
+      up.on("error", () => res.destroy());
+      req.on("error", () => up.destroy()).pipe(up);
+    } catch (e) {
+      refuse(e, req.socket);
+    }
+  });
+  server.on("connection", track);
+  // HTTPS and WebSockets: CONNECT host:port, then a plain byte tunnel.
+  server.on("connect", async (req, client: Socket, head: Buffer) => {
+    try {
+      const i = (req.url ?? "").lastIndexOf(":");
+      const upstream = await open(req.url!.slice(0, i), Number(req.url!.slice(i + 1)));
+      client.write("HTTP/1.1 200 Connection Established\r\n\r\n");
+      upstream.write(head);
+      upstream.pipe(client).pipe(upstream);
+      upstream.on("close", () => client.destroy());
+      client.on("close", () => upstream.destroy());
+    } catch (e) {
+      refuse(e, client);
+    }
+  });
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", () => r()));
+  return {
+    server: `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
+    close: () => {
+      server.close();
+      for (const s of sockets) s.destroy();
+    },
+  };
+}
+
 /**
  * Render the page in headless Chromium (needs the optional `playwright-core` package and a Chromium
  * binary), audit the rendered DOM, and compare it with the server HTML. Content that only exists after
@@ -252,19 +345,23 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
   } catch {
     throw new Error("render mode needs the optional dependency playwright-core: run `npm install playwright-core` and set MARKETING_EXPERT_CHROMIUM to a Chromium binary (or install one with `npx playwright-core install chromium`).");
   }
-  const browser = await chromium.launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true });
+  // Every connection the browser makes goes through the guard proxy; "<-loopback>" stops Chromium from
+  // sending localhost and 127.0.0.1 around it.
+  const blocked: string[] = [];
+  const proxy = await startGuardProxy(blocked);
+  const browser = await chromium
+    .launch({ executablePath: process.env.MARKETING_EXPERT_CHROMIUM || undefined, headless: true, proxy: { server: proxy.server, bypass: "<-loopback>" } })
+    .catch((e: unknown) => {
+      proxy.close();
+      throw e;
+    });
   try {
     await assertPublicUrl(u);
-    const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)" });
-    // Apply the same address guard to every request the page makes (scripts, frames, fetches, redirects).
-    const hostOk = new Map<string, Promise<boolean>>();
-    await page.route("**/*", async (route: any) => {
-      const reqUrl = new URL(route.request().url());
-      if (!/^https?:$/.test(reqUrl.protocol)) return route.continue();
-      if (!hostOk.has(reqUrl.host)) hostOk.set(reqUrl.host, assertPublicUrl(reqUrl).then(() => true, () => false));
-      return (await hostOk.get(reqUrl.host)) ? route.continue() : route.abort("blockedbyclient");
+    const page = await browser.newPage({ userAgent: "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", serviceWorkers: "block" });
+    const res = await page.goto(u.toString(), { waitUntil: "load", timeout: timeoutMs }).catch((e: unknown) => {
+      // A redirect to a refused address ends as a network error; report the refusal instead.
+      throw blocked.length ? new BlockedAddressError(blocked[0]) : e;
     });
-    const res = await page.goto(u.toString(), { waitUntil: "load", timeout: timeoutMs });
     // Give client-side rendering a moment; pages with beacons or polling never go fully idle.
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);
     const serverHtml: string = res ? await res.text() : "";
@@ -303,8 +400,12 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     if (scriptUrl !== finalUrl) {
       facts.flags.push({ severity: "info", message: `Scripts changed the address to ${scriptUrl} after load. If people share that URL, give it a canonical pointing at the clean one.` });
     }
+    if (blocked.length) {
+      facts.flags.push({ severity: "info", message: `The page tried to reach private or local network addresses, which this tool blocks (${blocked.slice(0, 3).join("; ")}). The rendered page may be missing what those requests would have loaded.` });
+    }
     return facts;
   } finally {
     await browser.close();
+    proxy.close();
   }
 }

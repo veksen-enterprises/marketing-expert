@@ -2,9 +2,10 @@
 // steered by text on web pages it has read (prompt injection). Without a guard, a page could get the
 // server to request internal addresses (routers, admin panels, cloud metadata at 169.254.169.254).
 // Private, loopback, link-local and similar ranges are refused unless MARKETING_EXPERT_ALLOW_PRIVATE=1.
-// Limitation: DNS could change between this check and the request (DNS rebinding); this guard
-// raises the bar, it is not a network firewall.
+// Limitation: for fetch(), DNS could change between this check and the request (DNS rebinding); this guard
+// raises the bar, it is not a network firewall. Render mode connects only to the checked addresses.
 
+import type { LookupAddress } from "node:dns";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
@@ -32,6 +33,21 @@ const V4_BLOCKS: Array<[string, number]> = [
   ["240.0.0.0", 4], // reserved, broadcast
 ];
 
+/** The eight 16-bit groups of an IPv6 address. Expands "::" and a dotted IPv4 tail (::ffff:1.2.3.4). */
+function ipv6Groups(ip: string): number[] {
+  let a = ip.toLowerCase().replace(/%.*$/, "");
+  const tail = /(\d+\.\d+\.\d+\.\d+)$/.exec(a);
+  if (tail) {
+    const n = ipv4ToInt(tail[1]);
+    a = a.slice(0, tail.index) + (n >>> 16).toString(16) + ":" + (n & 0xffff).toString(16);
+  }
+  const [head, rest] = a.split("::");
+  const h = head ? head.split(":") : [];
+  const t = rest ? rest.split(":") : [];
+  const zeros = rest === undefined ? [] : Array<string>(8 - h.length - t.length).fill("0");
+  return [...h, ...zeros, ...t].map((x) => parseInt(x, 16));
+}
+
 export function isBlockedIp(ip: string): boolean {
   const v = isIP(ip);
   if (v === 4) {
@@ -42,17 +58,40 @@ export function isBlockedIp(ip: string): boolean {
     });
   }
   if (v === 6) {
-    const a = ip.toLowerCase();
-    if (a === "::" || a === "::1") return true;
-    const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(a);
-    if (mapped) return isBlockedIp(mapped[1]);
-    const first = parseInt(a.split(":")[0] || "0", 16);
-    if ((first & 0xfe00) === 0xfc00) return true; // fc00::/7 unique local
-    if ((first & 0xffc0) === 0xfe80) return true; // fe80::/10 link-local
-    if ((first & 0xff00) === 0xff00) return true; // ff00::/8 multicast
+    // Compare the 16-bit groups, not the text: URL parsing writes [::ffff:127.0.0.1] as [::ffff:7f00:1].
+    const g = ipv6Groups(ip);
+    const v4 = (hi: number, lo: number) => isBlockedIp(`${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`);
+    const zero = (from: number, to: number) => g.slice(from, to).every((x) => x === 0);
+    // Forms that carry an IPv4 address are judged by that address.
+    if (zero(0, 5) && (g[5] === 0xffff || g[5] === 0)) return v4(g[6], g[7]); // ::ffff:0:0/96 mapped, ::/96 compatible (also :: and ::1)
+    if (g[0] === 0x64 && g[1] === 0xff9b && zero(2, 6)) return v4(g[6], g[7]); // 64:ff9b::/96 NAT64
+    if (g[0] === 0x64 && g[1] === 0xff9b && g[2] === 1) return true; // 64:ff9b:1::/48 local-use NAT64
+    if (g[0] === 0x2002) return v4(g[1], g[2]); // 2002::/16 6to4
+    if ((g[0] & 0xfe00) === 0xfc00) return true; // fc00::/7 unique local
+    if ((g[0] & 0xffc0) === 0xfe80) return true; // fe80::/10 link-local
+    if ((g[0] & 0xffc0) === 0xfec0) return true; // fec0::/10 site-local (deprecated)
+    if ((g[0] & 0xff00) === 0xff00) return true; // ff00::/8 multicast
     return false;
   }
   return true; // not an IP: refuse
+}
+
+/**
+ * The addresses of `host` (a name or an IP literal), for connecting to exactly what was checked.
+ * Throws BlockedAddressError for local names or if any address is non-public, unless private addresses are allowed.
+ */
+export async function resolvePublic(host: string): Promise<LookupAddress[]> {
+  const h = host.replace(/^\[|\]$/g, "");
+  const check = !privateAllowed();
+  if (check && (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local") || h.endsWith(".internal"))) {
+    throw new BlockedAddressError(`refusing to fetch ${h}: local/internal hostname (set MARKETING_EXPERT_ALLOW_PRIVATE=1 to allow)`);
+  }
+  const addrs: LookupAddress[] = isIP(h) ? [{ address: h, family: isIP(h) }] : await lookup(h, { all: true, verbatim: true });
+  const bad = check && addrs.find((a) => isBlockedIp(a.address));
+  if (bad) {
+    throw new BlockedAddressError(`refusing to fetch ${h}: resolves to non-public address ${bad.address} (set MARKETING_EXPERT_ALLOW_PRIVATE=1 to allow)`);
+  }
+  return addrs;
 }
 
 /** Throws BlockedAddressError if the URL is not http(s) or resolves to a non-public address. */
@@ -60,14 +99,32 @@ export async function assertPublicUrl(url: string | URL): Promise<void> {
   const u = typeof url === "string" ? new URL(url) : url;
   if (!/^https?:$/.test(u.protocol)) throw new BlockedAddressError(`only http(s) URLs are allowed (got ${u.protocol})`);
   if (privateAllowed()) return;
-  const host = u.hostname.replace(/^\[|\]$/g, "");
-  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")) {
-    throw new BlockedAddressError(`refusing to fetch ${host}: local/internal hostname (set MARKETING_EXPERT_ALLOW_PRIVATE=1 to allow)`);
-  }
-  const addrs = isIP(host) ? [{ address: host }] : await lookup(host, { all: true, verbatim: true });
-  const bad = addrs.find((a) => isBlockedIp(a.address));
-  if (bad) {
-    throw new BlockedAddressError(`refusing to fetch ${host}: resolves to non-public address ${bad.address} (set MARKETING_EXPERT_ALLOW_PRIVATE=1 to allow)`);
+  await resolvePublic(u.hostname);
+}
+
+/** The most HTML the audit and crawl tools read from one page (parsing 5 MB of tags takes about 0.7 GB of memory). */
+export const MAX_HTML_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Reads at most maxBytes of a response body (after gzip/brotli decoding) as UTF-8, like res.text(), then
+ * stops the download. A few KB of gzip can inflate to gigabytes, and parsing that would crash the server.
+ */
+export async function readCapped(res: Response, maxBytes: number): Promise<{ text: string; truncated: boolean }> {
+  if (!res.body) return { text: "", truncated: false };
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  let bytes = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) return { text: text + decoder.decode(), truncated: false };
+    if (bytes + value.byteLength > maxBytes) {
+      text += decoder.decode(value.subarray(0, maxBytes - bytes), { stream: true });
+      reader.cancel().catch(() => undefined);
+      return { text, truncated: true };
+    }
+    bytes += value.byteLength;
+    text += decoder.decode(value, { stream: true });
   }
 }
 

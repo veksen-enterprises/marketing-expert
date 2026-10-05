@@ -4,7 +4,7 @@
 // canonical problems, link depth and hreflang errors.
 
 import { parse } from "node-html-parser";
-import { guardedFetch } from "./netguard.js";
+import { guardedFetch, readCapped, MAX_HTML_BYTES } from "./netguard.js";
 import { countWords } from "./text.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
@@ -40,6 +40,8 @@ export interface CrawledPage {
   inlinks: number;
   hreflang: Array<{ lang: string; href: string }>;
   scriptCount?: number;
+  /** HTML was larger than MAX_HTML_BYTES; only the first part was read. */
+  truncated?: boolean;
 }
 
 export interface Issue {
@@ -64,6 +66,11 @@ export interface CrawlResult {
 
 const UA = "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; site crawl)";
 const HREFLANG_RE = /^(x-default|[a-z]{2,3}(-[A-Za-z]{4})?(-([A-Za-z]{2}|\d{3}))?)$/;
+// Body limits. Google reads the first 500 KiB of robots.txt; the sitemap protocol allows 50 MB per file.
+// The URL total bounds memory when a sitemap index lists many large sitemaps.
+const MAX_ROBOTS_BYTES = 500 * 1024;
+const MAX_SITEMAP_BYTES = 50 * 1024 * 1024;
+const MAX_SITEMAP_URLS = 100_000;
 
 function normalize(href: string, base: string): string | null {
   try {
@@ -76,8 +83,8 @@ function normalize(href: string, base: string): string | null {
   }
 }
 
-function extractLocs(xml: string): string[] {
-  return [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1].replace(/&amp;/g, "&"));
+function* extractLocs(xml: string): Generator<string> {
+  for (const m of xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)) yield m[1].replace(/&amp;/g, "&");
 }
 
 export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
@@ -131,8 +138,12 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   let robots: RobotsRules = { allow: [], disallow: [], sitemaps: [] };
   try {
     const { res: r } = await getFollow(new URL("/robots.txt", start).toString());
-    if (r.ok) robots = parseRobots(await r.text());
-    else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
+    if (r.ok) {
+      const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
+      // Drop the cut-off last line so half a rule isn't read as a shorter one.
+      robots = parseRobots(truncated ? text.slice(0, text.lastIndexOf("\n") + 1) : text);
+      if (truncated) notes.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this crawl did the same.");
+    } else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
   } catch {
     notes.push("robots.txt could not be fetched.");
   }
@@ -141,34 +152,70 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   // Sitemaps (one level of sitemap index).
   const sitemapSet = new Set<string>();
   let sitemapSource: string | null = null;
+  // True when some sitemap URLs were not read, so "missing from the sitemap" can't be judged.
+  let sitemapPartial = false;
+  let urlLimitHit = false;
+  const notFullUrls: string[] = [];
+  const readSitemap = async (r: Response, url: string): Promise<string> => {
+    const { text, truncated } = await readCapped(r, MAX_SITEMAP_BYTES);
+    if (truncated) {
+      sitemapPartial = true;
+      notes.push(`Sitemap ${url} is larger than 50 MB, the most search engines accept. Only the first 50 MB was read.`);
+    }
+    return text;
+  };
+  // <loc> values must be full URLs. Read relative ones against the sitemap's address; skip the rest.
+  const addLocs = (xml: string, base: string) => {
+    for (const l of extractLocs(xml)) {
+      const abs = normalize(l, l);
+      if (!abs) notFullUrls.push(l);
+      const n = abs ?? normalize(l, base);
+      if (!n || sitemapSet.has(n)) continue;
+      if (sitemapSet.size >= MAX_SITEMAP_URLS) {
+        sitemapPartial = urlLimitHit = true;
+        return;
+      }
+      sitemapSet.add(n);
+    }
+  };
   if (opts.useSitemap ?? true) {
     const candidates = robots.sitemaps.length ? robots.sitemaps : [new URL("/sitemap.xml", start).toString()];
     for (const sm of candidates.slice(0, 5)) {
+      if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
       try {
-        const { res: r } = await getFollow(sm);
+        const { res: r, url: smUrl } = await getFollow(sm);
         if (!r.ok) {
           notes.push(`Sitemap ${sm} returned HTTP ${r.status}${r.status >= 500 ? " (server error: crawlers can't read it until it recovers)" : ""}.`);
           continue;
         }
-        const xml = await r.text();
+        const xml = await readSitemap(r, sm);
         sitemapSource ??= sm;
         if (/<sitemapindex/i.test(xml)) {
-          for (const child of extractLocs(xml).slice(0, 20)) {
+          const children: string[] = [];
+          for (const c of extractLocs(xml)) if (children.push(c) >= 20) break;
+          for (const child of children) {
+            if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
             try {
-              const { res: cr } = await getFollow(child);
-              if (cr.ok) extractLocs(await cr.text()).forEach((l) => sitemapSet.add(normalize(l, l) ?? l));
+              const { res: cr, url: crUrl } = await getFollow(child);
+              if (cr.ok) addLocs(await readSitemap(cr, child), crUrl);
             } catch {
               notes.push(`Child sitemap failed: ${child}`);
             }
           }
         } else {
-          extractLocs(xml).forEach((l) => sitemapSet.add(normalize(l, l) ?? l));
+          addLocs(xml, smUrl);
         }
       } catch {
         notes.push(`Sitemap could not be fetched: ${sm}`);
       }
     }
     if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines and /sitemap.xml).");
+    if (urlLimitHit) notes.push("Read only the first 100,000 sitemap URLs. Sitemap counts are partial, and pages were not checked against the rest.");
+    if (notFullUrls.length) {
+      notes.push(
+        `${notFullUrls.length} sitemap <loc> values are not full URLs (e.g. "${notFullUrls[0]}"). The sitemap rules require full URLs such as ${new URL("/page", start)}, and Google may ignore these entries. This crawl read relative ones against the sitemap's address and skipped the rest.`
+      );
+    }
   }
 
   const pages = new Map<string, CrawledPage>();
@@ -234,12 +281,22 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     if (!res!.ok || !ct.includes("html") || new URL(current).host !== host) return { page, links: [] };
     let html: string;
     try {
-      html = await res!.text();
+      ({ text: html, truncated: page.truncated } = await readCapped(res!, MAX_HTML_BYTES));
     } catch (e) {
       page.error = `body download failed: ${e instanceof Error ? e.message : String(e)}`;
       return { page, links: [] };
     }
-    const root = parse(html, { blockTextElements: { script: true, style: true, noscript: true } });
+    // One page that can't be read (e.g. tags nested too deeply for the selector code) must not end the crawl.
+    try {
+      return readPage(html, page, current);
+    } catch (e) {
+      page.error = `could not read the HTML: ${e instanceof RangeError ? "elements are nested too deeply (often many unclosed tags)" : e instanceof Error ? e.message : String(e)}`;
+      return { page, links: [] };
+    }
+  };
+  const readPage = (html: string, page: CrawledPage, current: string): { page: CrawledPage; links: string[] } => {
+    // parseNoneClosedTags: the default clean-up of unclosed tags takes cubic time (30 KB of "<div>" took 18 s).
+    const root = parse(html, { parseNoneClosedTags: true, blockTextElements: { script: true, style: true, noscript: true } });
     page.title = root.querySelector("title")?.text.trim() || null;
     page.metaDescription = root.querySelector('meta[name="description"]')?.getAttribute("content")?.trim() || null;
     page.h1Count = root.querySelectorAll("h1").length;
@@ -299,7 +356,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     p.depth = depthOf.get(p.url) ?? null;
   }
 
-  const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host);
+  const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial);
   if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${pending()} more URLs were queued. Site-wide counts are partial.`);
   if (robotsDisallowed) notes.push(`${robotsDisallowed} URL(s) skipped because robots.txt disallows them.`);
 
@@ -318,13 +375,14 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   };
 }
 
-function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, sitemap: Set<string>, host: string): Issue[] {
+function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, sitemap: Set<string>, host: string, sitemapPartial: boolean): Issue[] {
   const issues: Issue[] = [];
   const add = (id: string, severity: Issue["severity"], message: string, examples: string[]) => {
     if (examples.length) issues.push({ id, severity, message, count: examples.length, examples: examples.slice(0, 10) });
   };
   const byUrl = new Map(pages.map((p) => [p.url, p]));
-  const ok = pages.filter((p) => p.status === 200 && !p.redirectChain.length);
+  // Pages that could not be read are reported once, under fetch-errors.
+  const ok = pages.filter((p) => p.status === 200 && !p.redirectChain.length && !p.error);
   const indexable = ok.filter((p) => !p.noindex);
 
   const broken = pages.filter((p) => p.status !== null && p.status >= 400);
@@ -334,7 +392,13 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
     "Internal URLs returning 4xx/5xx. Fix or remove the links pointing to them.",
     broken.map((p) => `${p.url} (${p.status}) ← linked from ${[...(inlinks.get(p.url) ?? [])].slice(0, 3).join(", ") || "sitemap only"}`)
   );
-  add("fetch-errors", "error", "URLs that failed to load (timeout, DNS, connection).", pages.filter((p) => p.error).map((p) => `${p.url}: ${p.error}`));
+  add("fetch-errors", "error", "URLs that failed to load or whose HTML could not be read (timeout, DNS, connection, HTML nested too deeply).", pages.filter((p) => p.error).map((p) => `${p.url}: ${p.error}`));
+  add(
+    "large-html",
+    "warning",
+    "Pages with more than 5 MB of HTML. Only the first 5 MB was checked, so their links and word counts are partial. HTML this large is slow to download and render.",
+    pages.filter((p) => p.truncated).map((p) => p.url)
+  );
 
   const linkedRedirects = pages.filter((p) => p.redirectChain.length && (inlinks.get(p.url)?.size ?? 0) > 0);
   add("links-to-redirects", "warning", "Internal links pointing at redirects. Link straight to the final URL.", linkedRedirects.map((p) => `${p.url} ${p.redirectChain.join(" ")}`));
@@ -376,7 +440,7 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
     "Sitemap pages with no internal links pointing to them (orphans). Google finds and values pages largely through internal links.",
     indexable.filter((p) => p.inSitemap && (inlinks.get(p.url)?.size ?? 0) === 0 && p.depth !== 0).map((p) => p.url)
   );
-  add("not-in-sitemap", "info", "Indexable pages found by links but missing from the sitemap.", sitemap.size ? indexable.filter((p) => !p.inSitemap).map((p) => p.url) : []);
+  add("not-in-sitemap", "info", "Indexable pages found by links but missing from the sitemap.", sitemap.size && !sitemapPartial ? indexable.filter((p) => !p.inSitemap).map((p) => p.url) : []);
 
   add(
     "canonical-elsewhere",
