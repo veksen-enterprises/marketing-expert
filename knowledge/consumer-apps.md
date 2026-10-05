@@ -16,7 +16,7 @@ Before spending on growth, check whether people stay. Paying to acquire users wh
 
 ## App store optimization (ASO)
 
-ASO means improving how an app ranks in store search and how many store visitors install it. Two levers: being found (metadata) and converting the visit (product page).
+ASO means improving how an app ranks in store search and how many store visitors install it. Two levers: being found (metadata) and converting the visit (product page). The full discovery picture (what each store's search reads, keyword-matched store pages, featuring, charts and launch timing, creators and communities) is in **app-store-discovery**; this section keeps the basics.
 
 **Apple App Store** [first-party]:
 - Name, subtitle and the hidden keyword field drive search ranking; limits are 30 characters, 30 characters and 100 bytes (fewer characters in non-Latin scripts). [first-party]

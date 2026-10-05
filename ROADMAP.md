@@ -8,7 +8,7 @@ What isn't built yet, what's weak in what is built, and what can't be measured o
 2. **Three playbooks the evaluations showed are needed:**
    - **Founder-led sales:** discovery calls, demos, pilot agreements that turn into contracts, answering security questionnaires, negotiating price.
    - **Activation and product analytics in practice:** what to track first, event naming, a tracking plan, privacy-friendly tools, and how to define activation for a product whose value needs setup.
-   - **Getting listed and found in marketplaces and registries:** the MCP Registry, GitHub Marketplace, VS Code and Chrome stores, app stores, and review sites such as G2 (which also feed AI answers).
+   - **Getting listed and found in marketplaces and registries:** the MCP Registry, GitHub Marketplace, VS Code and Chrome stores, and review sites such as G2 (which also feed AI answers). Mobile app stores are covered by app-store-discovery since 2026-10-05.
 3. **The agent channel in strategy answers.** For developer tools that ship an MCP server, the strategy prompt doesn't yet require a line on coding agents as a channel. In the latest evaluation, two of three strategy runs for such a product ignored it.
 
 ## Known weak spots

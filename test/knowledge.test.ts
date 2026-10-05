@@ -45,6 +45,8 @@ describe("knowledge base", () => {
     ["google business profile reviews local pack", "local-seo"],
     ["dentist plumber local business rebooking", "local-services"],
     ["app store optimization retention d30 paywall", "consumer-apps"],
+    ["get my app featured on the app store launch day charts", "app-store-discovery"],
+    ["custom product page keywords google play crash rate", "app-store-discovery"],
     ["hreflang cctld subdirectory", "international-seo"],
     ["programmatic seo internal linking faceted navigation", "seo-content-and-architecture"],
     ["newsletter original research thought leadership", "content-marketing"],
