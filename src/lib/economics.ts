@@ -44,6 +44,7 @@ export interface LifetimeDealResult {
   breakEvenMonthlyChurn: number | null;
   /** Month in which the serving cost of a buyer who keeps using it passes the price; null if serving is free. */
   monthServingCostExceedsPrice: number | null;
+  /** servingCost is discounted and churn-adjusted; worstCaseServingCost is every unit used for the whole horizon, undiscounted. */
   exposureAtCap: { units: number; servingCost: number; worstCaseServingCost: number; netValue: number } | null;
 }
 
@@ -56,6 +57,9 @@ export interface ScenarioRow {
   paybackMonthsChurnAdjusted: number | null;
   maxCacForPayback: number;
   minArpaForPayback: number | null;
+  /** Lifetime deal net value per unit under this scenario's inputs; null without oneTimePrice. */
+  lifetimeDealNetValuePerUnit: number | null;
+  warnings: string[];
 }
 
 export interface UnitEconomicsResult {
@@ -219,6 +223,8 @@ export function unitEconomics(i: UnitEconomicsInput): UnitEconomicsResult {
         paybackMonthsChurnAdjusted: r.paybackMonthsChurnAdjusted,
         maxCacForPayback: r.affordableCac.maxCacForPayback,
         minArpaForPayback: r.minArpaForPayback,
+        lifetimeDealNetValuePerUnit: r.lifetimeDeal?.netValuePerUnit ?? null,
+        warnings: r.warnings,
       };
     });
   }
@@ -259,7 +265,7 @@ export interface PaidMediaInput {
   budget?: number;
   /** Target CPA, if already decided. */
   targetCpa?: number;
-  /** "subscription": aov is one billing period's revenue. Inferred when monthlyChurn is given. */
+  /** "subscription": aov is one month's revenue (payback and churn are monthly). Inferred when monthlyChurn is given. */
   billingModel?: "one-time" | "subscription";
   /** Subscription mode: monthly churn 0–1, for payback months at the implied CPA. */
   monthlyChurn?: number;
@@ -278,7 +284,7 @@ export interface PaidMediaResult {
   /** Conversion rate at which the given CPC just breaks even (CPC / break-even CPA). */
   requiredCvrAtCpc: number | null;
   billingModel: "one-time" | "subscription";
-  /** Subscription mode: the first-order figures, labelled for one billing period. */
+  /** Subscription mode: the first-order figures, labelled for the first month. */
   breakEvenCpaFirstPeriod?: number | null;
   breakEvenRoasFirstPeriod?: number | null;
   /** Subscription mode: months of gross profit (with churn) to recover the implied CPA; null if not within 240 months. */
@@ -329,8 +335,16 @@ export function paidMediaMath(i: PaidMediaInput): PaidMediaResult {
       }
     }
   }
-  if (impliedCpa !== null && limit !== null) {
-    const basis = beCpaLtv !== null ? "lifetime gross profit" : subscription ? "first-period gross profit" : "first-order gross profit";
+  const months = (n: number) => `${n} month${n === 1 ? "" : "s"}`;
+  const paybackText = paybackMonths !== null ? `At this CPA a customer pays back in ${months(paybackMonths)} of gross profit.` : "At this CPA a customer does not pay back within 240 months.";
+  if (impliedCpa !== null && limit !== null && subscription && beCpaLtv === null) {
+    // Without a lifetime figure, one month's gross profit is not a break-even for a subscription: lead with payback.
+    verdict =
+      `If CPC is ${cpc!.toFixed(2)} and CVR is ${pctLabel(i.cvr!)}: ${paybackText} ` +
+      `Implied CPA ${impliedCpa.toFixed(2)}, first-month gross profit ${limit.toFixed(2)}. ` +
+      `It pays back within the first month at CVR ≥ ${pctLabel(requiredCvr!)} at this CPC, or CPC ≤ ${(limit * i.cvr!).toFixed(2)} at this CVR.`;
+  } else if (impliedCpa !== null && limit !== null) {
+    const basis = beCpaLtv !== null ? "lifetime gross profit" : "first-order gross profit";
     // The verdict holds only if the CPC and CVR it rests on hold, so say so and give both thresholds.
     verdict =
       `If CPC is ${cpc!.toFixed(2)} and CVR is ${pctLabel(i.cvr!)}: ` +
@@ -338,13 +352,12 @@ export function paidMediaMath(i: PaidMediaInput): PaidMediaResult {
         ? `Implied CPA ${impliedCpa.toFixed(2)} is within break-even (${limit.toFixed(2)}, ${basis}); margin per conversion ${(limit - impliedCpa).toFixed(2)}.`
         : `Implied CPA ${impliedCpa.toFixed(2)} exceeds break-even (${limit.toFixed(2)}, ${basis}) by ${(impliedCpa - limit).toFixed(2)}. Each conversion loses money on this basis.`) +
       ` It breaks even at CVR ≥ ${pctLabel(requiredCvr!)} at this CPC, or CPC ≤ ${(limit * i.cvr!).toFixed(2)} at this CVR.`;
-    if (subscription && firstOrderGp)
-      verdict += paybackMonths !== null ? ` At this CPA a customer pays back in ${paybackMonths} months of gross profit.` : " At this CPA a customer does not pay back within 240 months.";
+    if (subscription && firstOrderGp) verdict += ` ${paybackText}`;
   }
   if (requiredCvr !== null && requiredCvr > 1) warnings.push("Break-even would need a conversion rate above 100% at this CPC: no conversion rate makes this channel pay on this basis.");
   if (subscription) {
     warnings.push(
-      "Subscription: aov is treated as one billing period's revenue, so the first-order break-even CPA and ROAS cover the first billing period only (breakEvenCpaFirstPeriod). Use paybackMonthsAtImpliedCpa or ltvGrossProfit to judge the channel."
+      "Subscription: aov is treated as one month's revenue per customer (for an annual plan, divide the price by 12), so the first-order break-even CPA and ROAS cover the first month only (breakEvenCpaFirstPeriod). Use paybackMonthsAtImpliedCpa or ltvGrossProfit to judge the channel."
     );
     if (i.monthlyChurn === undefined && impliedCpa !== null) warnings.push("No monthlyChurn given, so payback assumes no customer leaves.");
   }

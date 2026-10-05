@@ -98,7 +98,7 @@ describe("paid_media_math", () => {
     expect(r.breakEvenRoasFirstPeriod).toBeCloseTo(1.25);
     // CPA 50, 16 a month of gross profit decaying 5% a month: 16+15.2+14.44+13.72 = 59.4 ≥ 50 at month 4.
     expect(r.paybackMonthsAtImpliedCpa).toBe(4);
-    expect(r.warnings.join(" ")).toMatch(/one billing period/);
+    expect(r.warnings.join(" ")).toMatch(/one month.s revenue/);
     expect(r.verdict).toMatch(/pays back in 4 months/);
   });
 });

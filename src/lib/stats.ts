@@ -162,7 +162,8 @@ export function twoProportionTest(control: ArmData, variant: ArmData, alpha = 0.
   const sePooled = Math.sqrt(pooled * (1 - pooled) * (1 / control.visitors + 1 / variant.visitors));
   const z = sePooled === 0 ? 0 : (p2 - p1) / sePooled;
   // erfc directly, not 2*(1-normCdf): the subtraction rounds to 0 once |z| > ~8.3.
-  const pValue = erfc(Math.abs(z) / Math.SQRT2);
+  // Clamp: the erfc approximation gives 1.00000003 at z = 0.
+  const pValue = Math.min(1, erfc(Math.abs(z) / Math.SQRT2));
   let seUnpooled = Math.sqrt((p1 * (1 - p1)) / control.visitors + (p2 * (1 - p2)) / variant.visitors);
   // Both arms at 0% or both at 100%: the Wald SE is 0, which would claim certainty of no difference.
   // Use the Agresti-Caffo SE instead (one success and one failure added to each arm).

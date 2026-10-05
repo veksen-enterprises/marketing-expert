@@ -20,6 +20,8 @@ export interface SequentialResult {
   alpha: number;
   mixingSd: number;
   decision: "stop: variant better" | "stop: variant worse" | "keep running";
+  /** False until each arm has 10 conversions and 10 non-conversions; until then the decision is "keep running" whatever p says. */
+  enoughData: boolean;
   notes: string[];
 }
 
@@ -43,16 +45,14 @@ export function sequentialTest(control: ArmData, variant: ArmData, alpha = 0.05,
   // stop after 3 visitors per arm and broke the always-valid guarantee at small samples.
   const pb = (control.conversions + variant.conversions + 1) / (n1 + n2 + 2);
   const V = pb * (1 - pb) * (1 / n1 + 1 / n2);
-  // Interval: unpooled variance with each rate smoothed, (c+0.5)/(n+1), so it never collapses at 0% or 100%.
-  const sm = (a: ArmData) => (a.conversions + 0.5) / (a.visitors + 1);
-  const Vci = (sm(control) * (1 - sm(control))) / n1 + (sm(variant) * (1 - sm(variant))) / n2;
   const tau = expectedEffect ?? Math.max(0.1 * Math.max(p1, 1e-4), 1e-4);
   if (!(tau > 0 && tau <= 1)) throw new RangeError("expectedEffect must be > 0 and at most 1 (a difference in conversion rates)");
   const t2 = tau * tau;
   const logLambda = 0.5 * Math.log(V / (V + t2)) + (t2 * diff * diff) / (2 * V * (V + t2));
   const lambda = Math.exp(Math.min(logLambda, 700));
   const p = Math.min(1, 1 / lambda);
-  const half = Math.sqrt(((Vci * (Vci + t2)) / t2) * (Math.log((Vci + t2) / Vci) + 2 * Math.log(1 / alpha)));
+  // Interval: the same test inverted with the same V, so it excludes 0 exactly when p <= alpha.
+  const half = Math.sqrt(((V * (V + t2)) / t2) * (Math.log((V + t2) / V) + 2 * Math.log(1 / alpha)));
   if (!Number.isFinite(logLambda) || !Number.isFinite(half)) throw new RangeError("sequential test could not be computed for these inputs");
   const ci: [number, number] = [Math.max(-1, diff - half), Math.min(1, diff + half)];
   // The normal approximation behind the test needs some successes and failures in each arm before a stop.
@@ -77,6 +77,7 @@ export function sequentialTest(control: ArmData, variant: ArmData, alpha = 0.05,
     alpha,
     mixingSd: tau,
     decision: significant ? (diff > 0 ? "stop: variant better" : "stop: variant worse") : "keep running",
+    enoughData: enough,
     notes,
   };
 }

@@ -16,7 +16,7 @@ tags: a/b testing, ab test, experiment, split test, statistical significance, sa
 
 Use ab_test_evaluate for conversion rates, or ab_test_means_evaluate for revenue-type metrics (give raw per-visitor values if you can, and also run it with capPercentile 0.99: a few large orders can decide a revenue test). In order:
 1. **Sample ratio mismatch** first. If a 50/50 test's split differs significantly (p < 0.001), randomisation or tracking is broken (bots, redirects, a variant that errors, tracking differences). Don't interpret the result until it's found.
-2. **Was the planned sample reached?** Stopping when it "looks significant" invalidates the p-value. Checking 10 times inflates a nominal 5% false-positive rate to ~26% (Evan Miller).
+2. **Was the planned sample reached?** Stopping when it "looks significant" invalidates the p-value. Checking 10 times inflates a nominal 5% false-positive rate to about 19% (Armitage, McPherson & Rowe 1969; 5 looks ≈ 14%, 20 looks ≈ 25%).
 3. **Effect and interval**, not just p. Plan around the lower end of the confidence interval (CI, the range of effects consistent with the data): winners' observed lifts are biased upward (winner's curse), so expect regression on rollout.
 4. **Twyman's law**: any figure that looks interesting or different is usually wrong. Lifts above ~30% from a UI change are rare; check for bugs before celebrating.
 5. **Guardrails** didn't degrade.

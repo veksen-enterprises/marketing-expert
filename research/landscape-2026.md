@@ -53,7 +53,7 @@ Method caveat: the research proxy blocked many primary domains (Google support, 
 - Klaviyo 2026: campaign click 1.69% (top decile 3.38%), flow click 5.58% (top decile 10.48%) [verified-search: klaviyo.com, 2026-10-04]. Placed-order 0.16% campaigns / 2.11% flows **not confirmed**: klaviyo.com snippets give only industry ranges (campaigns ~0.08–0.26%, flows ~1.85–2.46%) and "flows ≈13× campaigns", which is consistent with but does not confirm the overall figures. Mailchimp: open 35.63%, click 2.62%, all industries, data "as of December 2023" (MPP-inflated opens) [verified-search: mailchimp.com, 2026-10-04]. Platform-specific populations.
 
 ## 8. A/B testing statistics
-- Peeking: checking a fixed-horizon test 10 times inflates nominal 5% false positive rate to ~26%. (Evan Miller 2010; sequential testing 2015)
+- Peeking: checking a fixed-horizon test 10 times inflates nominal 5% false positive rate to about 19% (Armitage, McPherson & Rowe 1969; 20 looks ≈ 25%). (Evan Miller 2010; sequential testing 2015)
 - Continuous monitoring → sequential / always-valid methods (group sequential, mSPRT, confidence sequences). Bayesian tests are not immune to peeking.
 - CUPED (Deng, Xu, Kohavi, Walker, WSDM 2013): pre-period covariate adjustment; ~50% variance reduction on some Bing metrics.
 - Kohavi, Tang & Xu, Trustworthy Online Controlled Experiments (2020): power analysis up front, SRM checks, Twyman's law, OEC + guardrails, full weeks, most ideas fail.

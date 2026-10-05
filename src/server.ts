@@ -175,7 +175,13 @@ export function createServer(): McpServer {
       if (t.significant && ci && ci[0] > 0) warnings.push(`Plan around the low end of the interval (${(ci[0] * 100).toFixed(1)}%), not the point estimate. Significant winners' observed lifts are biased upward.`);
       else if (t.significant && ci && ci[1] < 0)
         warnings.push(`The variant is significantly worse: don't ship it. The true loss is probably smaller than observed; the end of the interval nearest zero is ${(ci[1] * 100).toFixed(1)}%.`);
-      else if (t.significant && ci)
+      else if (t.significant && !ci) {
+        // No relative interval (an arm has 0 conversions, or both convert 100%): use the absolute difference instead.
+        const [lo, hi] = t.diffCI;
+        if (lo > 0) warnings.push(`Plan around the low end of the interval (${pp(lo)}), not the point estimate. Significant winners' observed lifts are biased upward.`);
+        else if (hi < 0) warnings.push(`The variant is significantly worse: don't ship it. The true loss is probably smaller than observed; the end of the interval nearest zero is ${pp(hi)}.`);
+        else warnings.push(`Borderline: p is below alpha, but the interval for the difference (${pp(lo)} to ${pp(hi)}) includes no effect. Treat it as not proven; collect more data before deciding.`);
+      } else if (t.significant && ci)
         warnings.push(`Borderline: p is below alpha, but the interval for the relative lift (${(ci[0] * 100).toFixed(1)}% to ${(ci[1] * 100).toFixed(1)}%) includes no effect. Treat it as not proven; collect more data before deciding.`);
       const arm = (x: { visitors: number; conversions: number }) => `${num(x.conversions)}/${num(x.visitors)}`;
       const lift = Number.isFinite(t.relativeLift) ? `lift ${signedPct(t.relativeLift)}` : `difference ${pp(t.absoluteDiff)}`;
@@ -207,7 +213,7 @@ export function createServer(): McpServer {
       const r = sequentialTest(a.control, a.variant, a.alpha ?? 0.05, a.expectedEffect);
       const arm = (x: { visitors: number; conversions: number }) => `${num(x.conversions)}/${num(x.visitors)}`;
       const inputs = `control ${arm(a.control)}, variant ${arm(a.variant)}, alpha ${num(r.alpha)}, expectedEffect ${num(r.mixingSd)}${a.expectedEffect === undefined ? " (default)" : ""}`;
-      return cited(r, "ab_test_sequential", inputs, `diff ${pp(r.absoluteDiff)}, always-valid p ${r.alwaysValidP.toPrecision(2)}, ${r.decision}`, a.assumedInputs);
+      return cited(r, "ab_test_sequential", inputs, `diff ${pp(r.absoluteDiff)}, always-valid p ${r.alwaysValidP.toPrecision(2)}, ${r.decision}${r.enoughData ? "" : " (too few conversions or non-conversions to stop)"}`, a.assumedInputs);
     })
   );
 
@@ -342,9 +348,9 @@ export function createServer(): McpServer {
     {
       title: "Paid media break-even",
       description:
-        "Break-even ROAS and CPA, max affordable CPC, the conversion rate needed at a given CPC, implied CPA/ROAS from CPC or CPM+CTR, and budget projections. For subscriptions (billingModel 'subscription', or monthlyChurn given) aov is one billing period's revenue and it returns payback months at the implied CPA. Use to sanity-check a paid channel before or while spending." + CITE,
+        "Break-even ROAS and CPA, max affordable CPC, the conversion rate needed at a given CPC, implied CPA/ROAS from CPC or CPM+CTR, and budget projections. For subscriptions (billingModel 'subscription', or monthlyChurn given) aov is one month's revenue (divide an annual price by 12) and it returns payback months at the implied CPA. Use to sanity-check a paid channel before or while spending." + CITE,
       inputSchema: {
-        aov: z.number().positive().optional().describe("Average order value / first-period revenue per conversion"),
+        aov: z.number().positive().optional().describe("Average order value; for a subscription, one month's revenue per customer"),
         margin: z.number().gt(0).lte(1).optional().describe("Contribution margin 0–1"),
         ltvGrossProfit: z.number().positive().optional().describe("Lifetime gross profit per customer"),
         cvr: rate.optional().describe("Click → conversion rate"),
@@ -374,11 +380,14 @@ export function createServer(): McpServer {
       if (r.billingModel === "subscription") parts.push(`subscription${a.monthlyChurn !== undefined ? `, churn ${pct(a.monthlyChurn)}/month` : ""}`);
       const limit = r.breakEvenCpaLtv ?? r.breakEvenCpaFirstOrder;
       let result: string;
-      if (r.impliedCpa !== null && limit !== null) result = `implied CPA ${num(r.impliedCpa)} vs break-even ${num(limit)} (${r.impliedCpa <= limit ? "within" : "over"})`;
+      const subNoLtv = r.billingModel === "subscription" && r.breakEvenCpaLtv === null;
+      if (r.impliedCpa !== null && limit !== null && subNoLtv)
+        result = `implied CPA ${num(r.impliedCpa)}, ` + (r.paybackMonthsAtImpliedCpa != null ? `payback ${r.paybackMonthsAtImpliedCpa} month${r.paybackMonthsAtImpliedCpa === 1 ? "" : "s"}` : "no payback within 240 months");
+      else if (r.impliedCpa !== null && limit !== null) result = `implied CPA ${num(r.impliedCpa)} vs break-even ${num(limit)} (${r.impliedCpa <= limit ? "within" : "over"})`;
       else if (limit !== null) result = `break-even CPA ${num(limit)}` + (r.breakEvenRoasFirstOrder !== null ? `, break-even ROAS ${num(r.breakEvenRoasFirstOrder)}` : "");
       else if (r.impliedCpa !== null) result = `implied CPA ${num(r.impliedCpa)}`;
       else result = r.breakEvenRoasFirstOrder !== null ? `break-even ROAS ${num(r.breakEvenRoasFirstOrder)}` : "not enough inputs for a break-even";
-      if (r.paybackMonthsAtImpliedCpa != null) result += `, payback ${r.paybackMonthsAtImpliedCpa} months`;
+      if (r.paybackMonthsAtImpliedCpa != null && !subNoLtv) result += `, payback ${r.paybackMonthsAtImpliedCpa} month${r.paybackMonthsAtImpliedCpa === 1 ? "" : "s"}`;
       return cited(r, "paid_media_math", parts.join(", "), result, assumed);
     })
   );
@@ -405,11 +414,13 @@ export function createServer(): McpServer {
       if (a.stepRates || a.targetOutput !== undefined) {
         if (a.stages) throw new RangeError("give either stages, or stepRates with targetOutput, not both");
         if (!a.stepRates || a.targetOutput === undefined) throw new RangeError("inverse mode needs both stepRates and targetOutput");
+        if (a.spend !== undefined || a.improvement !== undefined) throw new RangeError("spend and improvement work only with stages, not with stepRates and targetOutput");
         const r = reverseFunnel(a.stepRates, a.targetOutput, a.stageNames);
         const inputs = `step rates ${a.stepRates.map(pct).join(", ")}, target ${num(a.targetOutput)}`;
         return cited(r, "funnel_analysis", inputs, `need ${num(r.topOfFunnelNeeded)} at the top (${r.stages[0].name})`, a.assumedInputs);
       }
       if (!a.stages) throw new RangeError("give stages (at least 2), or stepRates with targetOutput");
+      if (a.stageNames) throw new RangeError("stageNames works only with stepRates and targetOutput; with stages, name each stage in stages");
       const r = analyzeFunnel(a.stages, a.spend, a.improvement);
       const inputs = a.stages.map((s) => `${s.name} ${num(s.count)}`).join(" -> ") + (a.spend !== undefined ? `, spend ${num(a.spend)}` : "");
       const low = r.lowestStepRate ? r.stages.find((s, k) => k > 0 && `${r.stages[k - 1].name} → ${s.name}` === r.lowestStepRate) : undefined;
