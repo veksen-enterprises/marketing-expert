@@ -15,6 +15,12 @@ function user(text: string) {
 
 const opt = (s: string | undefined, label: string) => (s ? `\n${label}: ${s}` : "");
 
+// One move format for the instructions and every prompt that asks for moves; check_answer (src/lib/moveCheck.ts)
+// looks for these labels.
+export const MAX_MOVES = 3;
+export const MOVE_FORMAT =
+  'each move is one action (no "and", no "in the same change"), with the lines "Mechanism:", "Cheapest test:" (smaller than the move, with its cost), "Metric:", "Time box:" and "Stop:" (the number that means drop or change it)';
+
 export function registerPrompts(server: McpServer): void {
   server.registerPrompt(
     "technical_seo_review",
@@ -49,7 +55,7 @@ Work in this order:
 1. Restate the business model in one line: who pays, for what, how much, how often, and how they buy (self-serve, sales-assisted, retail).
 2. List what you need to know and don't, as specific questions with the numbers you need (traffic, conversion by stage, CAC by channel, retention by cohort, margin, ACV, sales cycle). Ask them. If the user can't answer, state the assumption you'll make and how it would change the conclusion.
 3. Identify the constraint. It is usually one of: nobody outside the team has reached the product's value yet (activation and proof: the usual constraint below ~10 paying customers, see first-customers); nobody understands what it is or who it's for (positioning); not enough of the right people see it (reach/channel); they see it but don't act (offer, page, friction); they act but don't stay (retention/product, so stop buying acquisition); the numbers don't work (unit economics). Use funnel_analysis and unit_economics if numbers exist. Name the evidence for your call and what would falsify it.
-4. Recommend at most two moves against that constraint: the mechanism, the cost, the metric to watch, and the result by which you'd call it a failure. search_playbooks for the relevant playbook and cite it.
+4. Recommend at most ${MAX_MOVES} moves against that constraint; ${MOVE_FORMAT}. search_playbooks for the relevant playbook and cite it.
 5. Say what NOT to do yet, and why.`)
   );
 
@@ -74,8 +80,8 @@ Business: ${business}
 2b. Alternatives: name what the target users do today instead (specific competitors, adjacent tools, communities, "do nothing"), from your own knowledge if needed, labelled unverified. The strategy has to beat those, not an abstract market.
 3. Constraint: what limits growth right now (see the marketing_diagnosis order: activation and proof, positioning, reach, conversion, retention, unit economics)? Strategy targets that constraint; if retention or positioning is broken, fixing that comes before spending on acquisition. If the product touches customer data, credentials or production systems, check the site's data and credential claims against the docs (scan_source) and list contradictions as a short "Fix first" list, one line each, outside the moves.
 4. Economics: run unit_economics or paid_media_math with their numbers, or with labelled assumptions, to show what customer acquisition cost the business can afford (unit_economics returns it without a CAC). This rules channels in or out.
-5. Channels. With fewer than ~10 paying customers, skip the channel shortlist: use first-customers to plan the first ten instead (who exactly, as a named segment or list of 20–50 accounts or communities; how each is reached; the offer, agreement and price; the success test), and say how money will actually be collected in the 90 days (existing checkout, invoice, or a build task the billing code needs). Otherwise shortlist 3 using channel-strategy (Bullseye, channel-model fit) and the channel playbooks (seo-and-ai-search, ai-assistant-visibility, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm). If retention is the constraint, use retention-and-expansion; check budget realism with marketing-budget-and-team and legal limits with privacy-and-marketing-law. For each: why it fits this business, the cheapest test, the cost, the metric and the result that would make you stop.
-6. The plan: the first 90 days in order, with calendar dates, founder or owner hours per week for each move, and owners if a team was described. At most 2–3 things at once; no move may depend on the output of one that starts later.
+5. Channels. With fewer than ~10 paying customers, skip the channel shortlist: use first-customers to plan the first ten instead (who exactly, as a named segment or list of 20–50 accounts or communities; how each is reached; the offer, agreement and price; the success test), and say how money will actually be collected in the 90 days (existing checkout, invoice, or a build task the billing code needs). Otherwise shortlist 3 using channel-strategy (Bullseye, channel-model fit) and the channel playbooks (seo-and-ai-search, ai-assistant-visibility, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm). If retention is the constraint, use retention-and-expansion; check budget realism with marketing-budget-and-team and legal limits with privacy-and-marketing-law. For each: why it fits this business, then the cheapest test, metric and stop line as in step 6.
+6. The plan: at most ${MAX_MOVES} moves; ${MOVE_FORMAT}. Then the first 90 days in order, with calendar dates, founder or owner hours per week for each move, and owners if a team was described. At most 2–3 things at once; no move may depend on the output of one that starts later.
 7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
 8. What not to do yet, and why.
 Offer to save the confirmed facts with save_business_profile.`)
@@ -132,7 +138,7 @@ Structure:
 5. Proof and objections: what objections would this audience have (price, switching cost, risk, credibility), and where are they answered?
 6. Friction: forms, steps, speed, mobile. Use the audit flags.
 7. Technical/SEO flags from the audit that matter for this page's job (ignore the rest).
-Finish with at most 3 changes ranked by expected impact × confidence, each with a hypothesis in the form "Because [evidence], changing [X] for [audience] will improve [metric]", and say which deserve an A/B test versus just shipping. Use ab_test_sample_size if traffic numbers are known.`)
+Finish with at most ${MAX_MOVES} changes ranked by expected impact × confidence, each with a hypothesis in the form "Because [evidence], changing [X] for [audience] will improve [metric]"; ${MOVE_FORMAT}. Say which deserve an A/B test and which a smaller check (5 people shown the new page). Use ab_test_sample_size if traffic numbers are known.`)
   );
 
   server.registerPrompt(

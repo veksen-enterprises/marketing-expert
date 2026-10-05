@@ -30,3 +30,21 @@ describe("cross-references", () => {
     expect(unknown).toEqual([]);
   });
 });
+
+describe("instructions and move format", () => {
+  it("INSTRUCTIONS stays within its word budget", async () => {
+    // A new rule replaces text, or goes into a tool's output or a check_answer check. Lower this when INSTRUCTIONS shrinks.
+    const { INSTRUCTIONS } = await import("../src/server.js");
+    expect(INSTRUCTIONS.split(/\s+/).filter(Boolean).length).toBeLessThanOrEqual(774);
+  });
+  it("no prompt or instruction states a different move count", async () => {
+    const { INSTRUCTIONS } = await import("../src/server.js");
+    const { MAX_MOVES } = await import("../src/prompts.js");
+    const words: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+    for (const text of [INSTRUCTIONS, prompts]) {
+      const counts = [...text.matchAll(/\b(?:at most|up to|max(?:imum)?(?: of)?)\s+(\w+)\s+(?:moves|changes)\b|\b(one|two|three|four|five|\d)\s+moves\b/gi)].map((m) => m[1] ?? m[2]);
+      // "at most ${MAX_MOVES} moves" doesn't match: only counts written out are checked.
+      expect(counts.map((c) => words[c.toLowerCase()] ?? Number(c))).toEqual(counts.map(() => MAX_MOVES));
+    }
+  });
+});

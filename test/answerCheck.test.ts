@@ -34,4 +34,59 @@ describe("checkAnswer", () => {
     expect(r.missingParts).toHaveLength(3);
     expect(r.problems.join(" ")).toMatch(/ignore if it's there in other words/);
   });
+
+  it("finds plural abbreviations, and '(' before a term isn't an explanation", () => {
+    // repo:correctness#11
+    const r = checkAnswer("Track MQLs and SQLs weekly. Cut SKUs. Your CTRs are fine. Cut spend (CAC is too high).");
+    expect(r.unexplainedTerms).toEqual(expect.arrayContaining(["MQL", "SKU", "CTR", "CAC"]));
+    expect(checkAnswer("Your ideal customer profile (ICP) is too broad.").unexplainedTerms).toEqual([]);
+  });
+  it("matches lower-case terms in any case", () => {
+    expect(checkAnswer("North star: weekly active projects.").unexplainedTerms).toEqual(["north star"]);
+  });
+  it("finds abbreviations not on any list, and terms graders flagged in round 5", () => {
+    const r = checkAnswer("If no server accepts it, the overlay model is the problem. Record it as an ADR. Add SSO later. Mapping guides cover Node-ORM. Add a CI gate.");
+    expect(r.unexplainedTerms).toEqual(expect.arrayContaining(["overlay model", "ADR", "SSO", "ORM", "CI gate"]));
+    expect(checkAnswer("Use the API, a URL and the CLI from the US or EU.").unexplainedTerms).toEqual([]);
+  });
+  it("counts a dash gloss, a gloss in the next sentence, or the expansion in the same sentence as explained", () => {
+    expect(checkAnswer("Add a CI gate — a check that runs on every pull request.").unexplainedTerms).toEqual([]);
+    expect(checkAnswer("Use an ORM. That means a library that maps tables to code.").unexplainedTerms).toEqual([]);
+    expect(checkAnswer('Post once on Hacker News as a "Show HN".').unexplainedTerms).toEqual([]);
+    expect(checkAnswer("Your customer acquisition cost is high, so CAC payback is long.").unexplainedTerms).toEqual([]);
+  });
+  it("lists common words with a marketing meaning separately, not as problems", () => {
+    const r = checkAnswer("Churn is high. Fix the price first. I'm wrong if buyers never see the pricing page. Open questions: which price is current? I can save these facts as a business profile.");
+    expect(r.considerExplaining).toEqual(["churn"]);
+    expect(r.problems).toEqual([]);
+  });
+  it("needs an offer to save a profile, not any 'profile'", () => {
+    // repo:correctness#11: "ideal customer profile" passed as the offer.
+    expect(checkAnswer("Your ideal customer profile is too broad. Open questions: what is churn? This is wrong if trials convert.").missingParts).toEqual(["the offer to save confirmed facts as a business profile"]);
+    // \bprofile\b fails after the underscore.
+    expect(checkAnswer("Once you confirm these, I'll call save_business_profile.").missingParts).not.toContain("the offer to save confirmed facts as a business profile");
+  });
+  it("counts words the way wc -w does too, and reports the larger overrun", () => {
+    // 1,000 reader words; a code span, a URL and 250 em dashes add 252 wc -w words.
+    const t = "word ".repeat(998) + "`a b c` https://example.com/x " + "— ".repeat(250);
+    const r = checkAnswer(t);
+    expect(r.words).toBe(1000);
+    expect(r.whitespaceWords).toBe(1252);
+    expect(r.overBy).toBe(52);
+    expect(r.problems[0]).toMatch(/^1252 words, 52 over the 1200-word limit.*Never cut privacy or private-page-indexing findings/);
+  });
+  it("doesn't count an Evidence or Appendix section, and sets the limit by deliverable", () => {
+    const t = "word ".repeat(1100) + "\n\n## Evidence\n" + "- pricing.astro:12 says $20\n".repeat(100) + "\n## Open questions\nWhich price?";
+    const r = checkAnswer(t);
+    expect(r.appendixWords).toBe(402);
+    expect(r.words).toBe(1100 + 4);
+    expect(r.overBy).toBe(0);
+    expect(checkAnswer("word ".repeat(1500)).overBy).toBe(300);
+    expect(checkAnswer("word ".repeat(1500), undefined, "plan")).toMatchObject({ maxWords: 1800, overBy: 0 });
+  });
+  it("reminds to run verify_quotes when the text cites the repo", () => {
+    expect(checkAnswer("The homepage says $20 (pricing.astro:263).").problems.join(" ")).toMatch(/run verify_quotes/);
+    expect(checkAnswer("ADR 0006 rules this out.").problems.join(" ")).toMatch(/run verify_quotes/);
+    expect(checkAnswer("See https://example.com:8080 now.").problems.join(" ")).not.toMatch(/verify_quotes/);
+  });
 });
