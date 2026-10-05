@@ -14,6 +14,23 @@ With fewer than about 10 paying customers there are no numbers to tune, so the u
 - Use liquidity_math for products where users wait for a match (marketplaces, alerts, saved searches).
 - Founder time is the real cost at this stage. Count founder hours per move per week, and check they add up.
 
+## Base rates from 31 developer-tool cases
+
+Coded from founders' own accounts and investor write-ups of 31 developer tools that survived (database, CI and pull-request, observability and developer-experience tools) [our coding; survivors only; self-told stories; 17 of 31 rows rest partly on snippets; 10 rows spot-checked, 5 needed a correction]. These describe this set; they are not forecasts.
+
+- **Months from launch to first revenue:** median 9 where known (n=17; middle half about 2–17; range 0–30). Most unknowns are enterprise or database-infrastructure companies, so the known median probably flatters the set. Counted from the start of work, most figures grow.
+- **First payers:** self-serve 52%, sales-led or founder-sold 29%, mixed 16%. Sales-led first revenue clustered where the product holds production data or needs uptime guarantees, and where the user is not the buyer.
+- **First channel:** founder-driven (network, one-to-one outreach, the founder's audience) 39%; a Hacker News launch 29%, usually after a hand-recruited first group; an existing open-source community 23%.
+- **Open source at the start:** open core 42%, only a client or CLI open 29%, closed 29%.
+- **CI and pull-request tools (n=10):** 7 were free for open-source repositories and charged for private repos or teams; per-private-repo pricing was common early.
+- **Developer-facing database tools grew slowly:** one took about a year after billing went live to reach 10 payers, another three years from its first subscriber to its 100th [first-party; founder podcast and company site; snippet-only].
+
+Patterns seen in several cases [first-party; founder interviews; mixed access]:
+- Users asked how to pay before there was a way to pay. Log every "how do I pay?" message as a demand signal.
+- The first paid feature was often a professional need (private repositories, custom domains, removing branding), not more usage.
+- A self-serve paywall stalled when the user was not the buyer; revenue came after selling to the budget holder [vendor; investor write-up; snippet-only].
+- A founder stayed in the loop even in self-serve: a calendar link on the pricing page, one-to-one invitations, the founder doing early sales.
+
 ## Validate with commitments, and decide in advance what kills the idea
 
 - What people say they would pay runs about 21% above what they pay when money is at stake [research; meta-analysis of 77 studies; consumer goods only; snippet-only]. Stated purchase intent is least reliable for new products [research; snippet-only]. Ask for a commitment: a paid pilot, a signed agreement, a pre-order, time on a call with their real data.

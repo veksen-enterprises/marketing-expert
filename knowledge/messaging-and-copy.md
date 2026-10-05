@@ -32,6 +32,8 @@ Most B2B SaaS categories are at stage 3–5. "Save time" no longer lands. Show t
 
 LLM-clustered reviews are fine for sorting; always check phrases against the raw text.
 
+Users and experts use different words for the same problem. Write headlines, outreach and agent-facing descriptions in the words users type (often a symptom plus a number: "takes 4 seconds"), and keep the expert terms for docs and results. Mine them from support threads and issue trackers (see customer-research).
+
 ## What makes copy work (rules with mechanisms)
 
 - **Specific beats general.** "Close your books in 3 days, not 10" vs "faster close". Specific claims are checkable, which makes them more credible, and they tell the reader whether it applies to them.

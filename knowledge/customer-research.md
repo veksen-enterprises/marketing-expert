@@ -68,6 +68,15 @@ Pull from the CRM / billing data, not opinions:
 - Losses to "no decision" are about urgency and risk, not features.
 - Churn exit surveys over-report price. Price is the polite reason; probe for value not realised (often onboarding/activation).
 
+## Mining public issue trackers and forums [practitioner]
+
+When you can't interview yet, read how people describe the problem where they ask for help: issue trackers, Q&A sites, forum threads.
+- Collect short excerpts with link and date; mark each as verbatim or paraphrase.
+- Code each for the trigger (what made them look), the workaround, the words used, and context (production, CI, data size).
+- Keep users' words apart from maintainers' and experts' words: in one coding of 40 database-performance issues, "missing index" and "EXPLAIN" came almost only from maintainers, while users wrote "slow" plus a time [our coding; small n].
+- Name the source's bias (a library's tracker over-represents "the library is at fault"), and count how often your product's context comes up at all.
+- Use the words for headlines and outreach; use the trigger events to time and target outreach.
+
 ## Common mistakes
 
 - Pitching during discovery and then counting the compliments.

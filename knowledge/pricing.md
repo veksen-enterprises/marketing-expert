@@ -56,6 +56,10 @@ OpenView surveys: companies using some usage-based pricing rose from 34% (2020) 
 - Raise for new customers first, measure conversion by segment, then migrate existing customers.
 - Expect churn on price increases to concentrate among customers who weren't getting value; check activation and usage before blaming price.
 
+## Flat team prices: check the per-seat equivalent [practitioner]
+
+Convert a flat team or organisation price into a per-seat price at the smallest and largest team you target, and compare it with per-seat tools the buyer already pays for. A flat price that is fair at 20 seats can read as steep at 5. For always-on monitoring tools, one buyer objection is that returns fade once the obvious problems are fixed; pricing tied to change (per repository, per pull request) may hold up better, but that is untested inference.
+
 ## Lifetime deals [rule-of-thumb]
 
 A one-off "lifetime" price (often sold through deal sites) brings early cash and users, but those buyers never pay again, tend to be deal-hunters rather than your target customer, and still cost support and hosting. Treat one as a financing decision, not a pricing tier:
