@@ -136,6 +136,14 @@ describe("matchSmallBets", () => {
     expect(r.howToReport).toMatch(/checkAgainst/);
     expect(matchSmallBets(hobby).checkAgainst).toEqual([]);
   });
+  it("judges a bet's ceiling by the audience: short videos are lopsided for consumers, capped for B2B buyers", () => {
+    const videos = (audiences: SmallBetsFacts["audiences"]) => matchSmallBets({ ...devtool, audiences, avoid: [] }).fitsNow.find((v) => v.id === "founder-videos")!;
+    expect(videos(["developers", "businesses"]).ceiling).toBe("capped");
+    expect(videos(["consumers"]).ceiling).toBe("lopsided");
+    // A mixed audience takes the best ceiling any of its audiences gets.
+    expect(videos(["consumers", "businesses"]).ceiling).toBe("lopsided");
+    expect(videos(["developers", "businesses"]).score!).toBeLessThan(videos(["consumers"]).score!);
+  });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);
     expect(scores).toEqual([...scores].sort((a, b) => b - a));
@@ -148,7 +156,7 @@ describe("matchSmallBets", () => {
     expect(betScore({ ceiling: "lopsided", evidence: "anecdote", effortHours: 10 })).toBeGreaterThan(betScore({ ceiling: "steady", evidence: "some", effortHours: 10 }));
   });
   it("tells the advisor to judge a lopsided bet on the best of its tries", () => {
-    const r = matchSmallBets(devtool);
+    const r = matchSmallBets({ ...devtool, audiences: ["consumers"] });
     expect(r.fitsNow.find((v) => v.id === "founder-videos")).toMatchObject({ ceiling: "lopsided", tries: 20 });
     expect(r.howToReport).toMatch(/best one/);
   });

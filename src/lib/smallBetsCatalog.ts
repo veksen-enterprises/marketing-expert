@@ -201,6 +201,7 @@ export const BETS: Bet[] = [
     id: "founder-videos",
     effortHours: 10,
     ceiling: "lopsided",
+    ceilingFor: { businesses: "capped", developers: "capped" },
     tries: 20,
     name: "Short videos of the product doing its job",
     what: "Founder-made 15–60 second videos showing one result, posted on the short-video platform the audience uses.",

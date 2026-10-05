@@ -69,6 +69,9 @@ export interface Bet {
   /** What it can do if it works: capped (a small, predictable gain), steady (slow, compounding), lopsided (usually
    * nothing, now and then a lot). A judgment call per bet, not a measurement. */
   ceiling: "capped" | "steady" | "lopsided";
+  /** The ceiling for some audiences, where it differs from `ceiling` (short video is lopsided for consumers, capped
+   * for B2B buyers). A profile's effective ceiling is the best one among its audiences. */
+  ceilingFor?: Partial<Record<Audience, Bet["ceiling"]>>;
   /** For lopsided bets: how many tries to run before judging, judged on the best one, not the average. */
   tries?: number;
   cost: string;
@@ -159,6 +162,11 @@ export const HOW_TO_REPORT =
 // square root of its effort, so a 1-hour bet doesn't beat everything just for being quick.
 export const CEILING_WEIGHT = { capped: 1, steady: 2, lopsided: 3 } as const;
 export const EVIDENCE_WEIGHT = { strong: 1, some: 0.85, anecdote: 0.7 } as const;
+/** The bet's ceiling for these audiences: the best among them, each audience taking its override or the default. */
+export function ceilingFor(b: Pick<Bet, "ceiling" | "ceilingFor">, audiences?: Audience[]): Bet["ceiling"] {
+  if (!b.ceilingFor || !audiences?.length) return b.ceiling;
+  return audiences.map((a) => b.ceilingFor![a] ?? b.ceiling).reduce((best, c) => (CEILING_WEIGHT[c] > CEILING_WEIGHT[best] ? c : best));
+}
 export const betScore = (b: Pick<Bet, "ceiling" | "evidence" | "effortHours">) =>
   Math.round(((CEILING_WEIGHT[b.ceiling] * EVIDENCE_WEIGHT[b.evidence]) / Math.sqrt(Math.max(1, b.effortHours))) * 1000) / 1000;
 
@@ -238,9 +246,9 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
         stop: b.stop,
         evidence: b.evidence,
         effortHours: b.effortHours,
-        ceiling: b.ceiling,
+        ceiling: ceilingFor(b, f.audiences),
         ...(b.tries ? { tries: b.tries } : {}),
-        score: betScore(b),
+        score: betScore({ ...b, ceiling: ceilingFor(b, f.audiences) }),
         playbookSection: b.section,
       });
   }
