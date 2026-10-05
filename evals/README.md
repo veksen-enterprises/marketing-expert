@@ -5,7 +5,7 @@ Realistic cases run through the MCP server by an agent playing the AI assistant 
 - `cases.md`: the cases (business, user message, what the assistant may look at).
 - `rubric.md`: grading checklist.
 - `runs/<case>.md`: the assistant's answer plus its tool-call log.
-- `grades/<case>.md`: the grader's scores and the fixes it attributes to the server.
+- `grades/<case>.md`: the grader's scores and the fixes it attributes to the server, with `errors.json` beside it (format in `rubric.md`): each error with the verbatim claim and source, so it can become a failing test. Round 6 had no such file, and its top error class couldn't be reproduced.
 
 ## Results
 

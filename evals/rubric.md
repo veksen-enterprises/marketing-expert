@@ -16,3 +16,22 @@ Score each 0–2 (0 = absent/wrong, 1 = partial, 2 = good). Quote the answer as 
 Also list:
 - **Errors**: factual errors, wrong tool use, wrong numbers.
 - **Server attribution**: for each weakness, whether the cause is the server's instructions, a prompt, a playbook (which), a tool, or the assistant itself; and the concrete fix.
+
+## Errors as data
+
+Besides the prose grade, write `errors.json` next to each grade: one object per error, so each one can become a failing test.
+
+```json
+[
+  {
+    "class": "qualifier-dropped",
+    "claim": "the sentence from the answer, verbatim",
+    "answerLine": 42,
+    "source": "knowledge/<playbook>.md:<line> or research/<note>.md:<line> or <repo file>:<line>",
+    "sourceText": "the passage the claim misstates, verbatim",
+    "fix": "what the server should change: instructions, a prompt, a playbook, a tool, or the advisor"
+  }
+]
+```
+
+Classes: misquote, wrong-line, wrong-file, qualifier-dropped, label-upgraded, bundled-move, missing-test-or-stop, unexplained-jargon, invented-number, wrong-tool-use, other (say what). An error with no verbatim `claim` can't be reproduced; leave it out of the file and mention it in the prose.
