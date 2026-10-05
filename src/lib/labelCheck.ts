@@ -195,7 +195,7 @@ export function searchParagraphs(query: string, limit = 5, slug?: string): Searc
   const hits: SearchHit[] = [...scores]
     .filter(([i, score]) => score > 0 && (!slug || docs[i].s.slug === slug))
     .sort(([i], [j]) => i - j)
-    .map(([i, score]) => ({ slug: docs[i].s.slug, playbookTitle: docs[i].s.playbookTitle, heading: docs[i].s.heading, score, text: docs[i].s.text }));
+    .map(([i, score]) => ({ slug: docs[i].s.slug, playbookTitle: docs[i].s.playbookTitle, heading: docs[i].s.heading, score, text: docs[i].s.text, summary: docs[i].s.summary, pointer: docs[i].s.pointer }));
   return hits.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 

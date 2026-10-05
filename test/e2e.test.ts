@@ -30,7 +30,7 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     const tools = (await client.listTools()).tools.map((t) => t.name).sort();
     expect(tools).toEqual([
       "ab_test_evaluate", "ab_test_means_evaluate", "ab_test_means_sample_size", "ab_test_sample_size", "ab_test_sequential", "analyze_copy",
-      "audit_page", "build_utm_link", "check_ai_crawler_access", "check_answer", "check_copy_limits", "crawl_site", "funnel_analysis", "get_business_profile", "get_playbook",
+      "audit_page", "build_utm_link", "check_ai_crawler_access", "check_answer", "check_copy_limits", "crawl_site", "funnel_analysis", "get_business_profile", "get_playbook", "learn_more",
       "liquidity_math", "list_business_profiles", "market_size", "match_small_bets", "paid_media_math", "save_business_profile", "scan_source", "search_playbooks", "unit_economics", "verify_quotes",
     ]);
     const prompts = (await client.listPrompts()).prompts.map((p) => p.name);

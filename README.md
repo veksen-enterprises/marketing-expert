@@ -148,7 +148,8 @@ Every calculator returns its inputs and headline result in one line (`citeAs`), 
 | Tool | What it does |
 |---|---|
 | `list_business_profiles` / `get_business_profile` / `save_business_profile` | Your business facts, stored as JSON on your machine; flags missing fields and stale numbers |
-| `search_playbooks` / `get_playbook` | Search and read the playbooks (also available as `marketing://playbook/{slug}` resources) |
+| `search_playbooks` / `get_playbook` | Search the playbooks (each result is a short plain summary with a pointer) and read one in full (also available as `marketing://playbook/{slug}` resources) |
+| `learn_more` | Expands one pointer: a playbook section, a whole playbook, one small bet, a glossary term, or plain words. Returns the detail, the plain meaning of the business terms in it, its evidence and sources, and where to go next |
 
 ## Where the data comes from
 

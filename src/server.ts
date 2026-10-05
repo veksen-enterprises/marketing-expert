@@ -18,6 +18,7 @@ import { sequentialTest } from "./lib/sequential.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
 import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
 import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
+import { learnMore } from "./lib/learnMore.js";
 import { registerPrompts, MAX_MOVES, MOVE_FORMAT } from "./prompts.js";
 
 export const INSTRUCTIONS = `You are acting as a senior marketing and business strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
@@ -784,11 +785,23 @@ export function createServer(): McpServer {
     {
       title: "Search marketing playbooks",
       description:
-        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, developer tools (APIs, CLIs, SDKs, MCP servers), e-commerce/DTC, marketplaces, local services, consumer apps, community and hobby products, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, getting an app noticed on the App Store and Google Play, marketplace, registry and review-site listings, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: small bets (cheap tests by stage), founder-led sales, activation and product analytics, positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
+        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, developer tools (APIs, CLIs, SDKs, MCP servers), e-commerce/DTC, marketplaces, local services, consumer apps, community and hobby products, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, getting an app noticed on the App Store and Google Play, marketplace, registry and review-site listings, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: small bets (cheap tests by stage), founder-led sales, activation and product analytics, positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections as a short plain summary each, with a learnMore pointer; learn_more expands one.",
       inputSchema: { query: z.string().min(2).max(500), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },
-    safe((a) => searchKnowledge(a.query, a.limit ?? 4).map((h) => ({ playbook: h.slug, section: h.heading, score: h.score, text: h.text })))
+    safe((a) => searchKnowledge(a.query, a.limit ?? 4).map((h) => ({ playbook: h.slug, section: h.heading, score: h.score, inShort: h.summary, learnMore: h.pointer })))
+  );
+
+  server.registerTool(
+    "learn_more",
+    {
+      title: "Learn more about one topic",
+      description:
+        "Expand one pointer into the detail behind a summary: a playbook section (playbook:<slug>#<heading>, from search_playbooks), a whole playbook (playbook:<slug>), one small bet (bet:<id>, from match_small_bets), a glossary term (term:<term>), or plain words (matched to the best section). Returns a plain summary, the detail, the business terms it uses with their plain meaning, its evidence tags and sources, and pointers to go deeper. Use it when the reader asks to learn more, and to back the 'Learn more' lines that end each section of an answer.",
+      inputSchema: { pointer: z.string().min(2).max(300).describe("e.g. playbook:pricing#Free trial or freemium, bet:founder-emails, term:CAC, or plain words") },
+      annotations: readOnly,
+    },
+    safe((a) => learnMore(a.pointer))
   );
 
   server.registerTool(

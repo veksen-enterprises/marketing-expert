@@ -241,5 +241,9 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   const reminders: string[] = [];
   const cite = /\b[\w./-]+\.(?!(?:com|org|net|io|dev|ai|co|app)\b)[a-z][a-z0-9]{0,4}:\d+|\bADR[\s-]?\d{2,4}\b/i.exec(text.replace(/https?:\/\/\S+/g, " "));
   if (cite) reminders.push(`Cites the repo (${cite[0]}); run verify_quotes on this exact text, if you haven't.`);
+  // An answer with sections should end each one with something the reader can ask to expand (learn_more).
+  if ((text.match(/^#{2,3} /gm) ?? []).length >= 2 && !/learn more/i.test(text)) {
+    reminders.push("End each section with one or two 'Learn more:' lines naming topics the reader can ask to expand (learn_more expands a section, a small bet or a term).");
+  }
   return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders };
 }

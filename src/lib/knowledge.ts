@@ -21,6 +21,33 @@ export interface Section {
   text: string;
   /** Playbook-level tags from frontmatter; they describe what the whole playbook is about. */
   tags: string[];
+  /** The section's "_In short:_" line, or else its first sentence: what a newcomer reads before choosing to go deeper. */
+  summary: string;
+  /** What learn_more takes to expand this section: playbook:<slug>#<heading>. */
+  pointer: string;
+}
+
+const SUMMARY_MAX_WORDS = 40;
+/** The written "_In short:_" line, or the section's first sentence of prose, cut at SUMMARY_MAX_WORDS. */
+export function summaryOf(text: string): string {
+  const written = /^_In short:_\s*(.+)$/m.exec(text);
+  if (written) return written[1].trim();
+  const prose = text
+    .replace(/^## .*$/m, "")
+    .split("\n")
+    .map((l) => l.replace(/^\s*(?:[-*]|\d+\.)\s+/, "").trim())
+    .filter((l) => l && !l.startsWith("|") && !l.startsWith("#"))
+    .join(" ")
+    .replace(/\*\*|__|`/g, "")
+    .replace(/\s*\[[^\]\n]{3,120}\]/g, "");
+  let first = prose.split(/(?<=[.!?])\s+(?=[A-Z])/)[0] ?? "";
+  // A section that is only a table: its first data row, cells joined.
+  if (!first.trim()) {
+    const rows = text.split("\n").filter((l) => l.trim().startsWith("|") && !/^\s*\|[\s:|-]+\|\s*$/.test(l));
+    first = (rows[1] ?? rows[0] ?? "").split("|").map((c) => c.replace(/\*\*/g, "").trim()).filter(Boolean).join("; ");
+  }
+  const words = first.split(/\s+/).filter(Boolean);
+  return words.length > SUMMARY_MAX_WORDS ? `${words.slice(0, SUMMARY_MAX_WORDS).join(" ")}…` : first;
 }
 
 export const KNOWLEDGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "knowledge");
@@ -69,7 +96,9 @@ export function sections(books = loadPlaybooks()): Section[] {
     const parts = b.body.split(/^(?=## )/m);
     for (const part of parts) {
       const h = /^## (.+)$/m.exec(part);
-      out.push({ slug: b.slug, playbookTitle: b.title, heading: h ? h[1].trim() : b.title, text: part.trim(), tags: b.tags });
+      const heading = h ? h[1].trim() : b.title;
+      const text = part.trim();
+      out.push({ slug: b.slug, playbookTitle: b.title, heading, text, tags: b.tags, summary: summaryOf(text), pointer: `playbook:${b.slug}#${heading}` });
     }
   }
   return out.filter((s) => s.text.length > 0);
@@ -94,6 +123,8 @@ export interface SearchHit {
   heading: string;
   score: number;
   text: string;
+  summary: string;
+  pointer: string;
 }
 
 /** Query terms beyond this are ignored: each one costs a scan of the whole corpus. */
@@ -124,7 +155,7 @@ export function searchKnowledge(query: string, limit = 5, corpus = sections()): 
         const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
         score += (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.toks.length) / avg));
       }
-      return { slug: d.s.slug, playbookTitle: d.s.playbookTitle, heading: d.s.heading, score, text: d.s.text };
+      return { slug: d.s.slug, playbookTitle: d.s.playbookTitle, heading: d.s.heading, score, text: d.s.text, summary: d.s.summary, pointer: d.s.pointer };
     })
     .filter((h) => h.score > 0)
     .sort((a, b) => b.score - a.score)

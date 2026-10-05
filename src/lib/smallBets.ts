@@ -130,6 +130,8 @@ export interface Verdict {
   /** ceiling × evidence ÷ √effort; fitsNow is sorted by it, highest first. */
   score?: number;
   playbookSection?: string;
+  /** What learn_more takes to expand this bet. */
+  learnMore: string;
 }
 
 export interface MatchResult {
@@ -173,7 +175,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   const fitsNow: Verdict[] = [];
   const fitsLater: Verdict[] = [];
   const doesntFit: Verdict[] = [];
-  const base = (b: Bet) => ({ id: b.id, name: b.name, what: b.what });
+  const base = (b: Bet) => ({ id: b.id, name: b.name, what: b.what, learnMore: `bet:${b.id}` });
 
   for (const b of bets) {
     // Permanent mismatches first: who it's for, what the product is, what the business refuses.
