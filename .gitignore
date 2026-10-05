@@ -2,3 +2,6 @@ node_modules
 dist
 *.log
 evals/data/
+
+# Names that must never be committed (see docs/adr/0001); read by test/privateNames.test.ts
+.private-names
