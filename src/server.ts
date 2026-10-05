@@ -9,7 +9,7 @@ import { checkQuotes } from "./lib/quoteCheck.js";
 import { analyzeCopy, checkLimits } from "./lib/copy.js";
 import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
-import { auditHtml, fetchAndAudit, renderAndAudit } from "./lib/pageAudit.js";
+import { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } from "./lib/pageAudit.js";
 import { crawlSite } from "./lib/crawl.js";
 import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
 import { marketSize } from "./lib/marketSize.js";
@@ -406,7 +406,7 @@ export function createServer(): McpServer {
     {
       title: "Audit a landing page",
       description:
-        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side.",
+        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side. If no HTML could be read (the URL can't be reached, or the answer isn't an HTML page), it returns checked: false with the reason and what to do instead.",
       inputSchema: {
         url: z.string().optional().describe("http(s) URL to fetch"),
         html: z.string().optional().describe("Raw HTML instead of fetching"),
@@ -417,7 +417,13 @@ export function createServer(): McpServer {
     safe(async (a) => {
       if (a.html) return { untrustedContent: UNTRUSTED, ...auditHtml(a.html, a.url) };
       if (!a.url) throw new Error("provide url or html");
-      return { untrustedContent: UNTRUSTED, ...(a.render ? await renderAndAudit(a.url) : await fetchAndAudit(a.url)) };
+      try {
+        return { untrustedContent: UNTRUSTED, ...(a.render ? await renderAndAudit(a.url) : await fetchAndAudit(a.url)) };
+      } catch (e) {
+        // Nothing was read: return that as data ({ checked: false, ... }), so it isn't taken for a broken tool or a clean page.
+        if (e instanceof NotCheckedError) return { untrustedContent: UNTRUSTED, ...e.result };
+        throw e;
+      }
     })
   );
 
@@ -443,18 +449,18 @@ export function createServer(): McpServer {
     {
       title: "Check AI crawler access",
       description:
-        "Read a site's robots.txt and report which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl, ByteDance and others) are allowed or blocked, grouped by purpose: model training, AI search/answers, or user-triggered fetching. Flags blocks that keep a site out of AI answers. Also checks for llms.txt and sitemaps.",
+        "Read a site's robots.txt and report which AI bots (OpenAI, Anthropic, Perplexity, Google, Microsoft, Apple, Meta, Amazon, Common Crawl, ByteDance and others) are allowed or blocked, grouped by purpose: model training, AI search/answers, or user-triggered fetching. Flags blocks that keep a site out of AI answers. Also checks for llms.txt and sitemaps. If robots.txt can't be read from here (for example a firewall's 403), each bot's allowed is null and its status is \"unknown\".",
       inputSchema: {
         url: z.string().describe("Site URL"),
-        paths: z.array(z.string()).optional().describe('Paths to check, default ["/"], e.g. ["/", "/blog/", "/pricing"]'),
+        paths: z.array(z.string()).min(1).optional().describe('Paths to check, default ["/"], e.g. ["/", "/blog/", "/pricing"]'),
         robotsTxt: z.string().optional().describe("robots.txt contents to evaluate instead of fetching (e.g. from the repo's public/ folder when the site can't be reached)"),
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    safe((a) =>
+    safe(async (a) =>
       a.robotsTxt !== undefined
-        ? { ...evaluateAiAccess(a.robotsTxt, a.url, a.paths), llmsTxtFound: null, note: "Evaluated the robots.txt text you supplied; the live site was not fetched. Firewall/CDN rules and the live file may differ." }
-        : checkAiCrawlerAccess(a.url, a.paths)
+        ? { untrustedContent: UNTRUSTED, ...evaluateAiAccess(a.robotsTxt, a.url, a.paths), llmsTxtFound: null, note: "Evaluated the robots.txt text you supplied; the live site was not fetched. Firewall/CDN rules and the live file may differ." }
+        : { untrustedContent: UNTRUSTED, ...(await checkAiCrawlerAccess(a.url, a.paths)) }
     )
   );
 

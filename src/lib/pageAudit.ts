@@ -5,7 +5,7 @@ import { createServer, request as httpRequest, type IncomingHttpHeaders } from "
 import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "node:net";
 import { parse, HTMLElement } from "node-html-parser";
 import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
-import { visibleText, elementsOf } from "./text.js";
+import { visibleText, elementsOf, wordCount as countWordsIn, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
 
 export interface PageFacts {
   url?: string;
@@ -95,17 +95,22 @@ function readFacts(html: string, url?: string): PageFacts {
   // One walk of the tree instead of querySelectorAll, whose time grows with the square of the number of matches.
   const all = elementsOf(root);
   const first = (tag: string, attr?: string, value?: string) => all.find((e) => e.tagName === tag && (!attr || e.getAttribute(attr) === value)) ?? null;
-  const meta = (name: string) => first("META", "name", name)?.getAttribute("content")?.trim() ?? null;
+  // Meta names are case-insensitive: <meta name="Description"> is the description.
+  const metaTag = (name: string) => all.find((e) => e.tagName === "META" && e.getAttribute("name")?.trim().toLowerCase() === name) ?? null;
+  const meta = (name: string) => metaTag(name)?.getAttribute("content")?.trim() ?? null;
   // Text of the headings, links and buttons the audit quotes. The parser ignores an end tag that doesn't close the
   // innermost open element, so in "<h1><span>X</h1>" the h1 would run to the end of the page. Ending the text where
   // a browser ends the element fixes that, and keeps the work linear when unclosed <a> tags nest thousands deep.
   const endOf = textEnds(html);
   const quote = (el: HTMLElement) => text(el, endOf(el));
 
-  const title = text(first("TITLE")) || null;
+  const title = text(documentTitle(root)) || null;
   const description = meta("description");
   const canonical = first("LINK", "rel", "canonical")?.getAttribute("href") ?? null;
-  const robots = meta("robots");
+  // Every robots and googlebot tag counts; Google obeys the most restrictive.
+  const robotsTags = robotsMetaTags(all);
+  const robots = robotsTags.map((t) => (t.name === "googlebot" ? `googlebot: ${t.content}` : t.content)).join(", ") || null;
+  const noindexTag = robotsTags.find((t) => robotsDirectives(t.content).has("noindex"));
   const lang = first("HTML")?.getAttribute("lang") ?? null;
 
   const headings = all.filter((h) => /^H[1-3]$/.test(h.tagName)).map((h) => ({ level: Number(h.tagName[1]), text: quote(h) })).filter((h) => h.text);
@@ -131,7 +136,8 @@ function readFacts(html: string, url?: string): PageFacts {
           if (o["@graph"]) collect(o["@graph"]);
         }
       };
-      collect(JSON.parse(s.text));
+      // The script text as served: .text would decode "&quot;", which browsers and Google leave as it is.
+      collect(JSON.parse(s.rawText));
     } catch {
       flags.push({ severity: "warning", message: "A JSON-LD block failed to parse; search engines will ignore it." });
     }
@@ -139,7 +145,7 @@ function readFacts(html: string, url?: string): PageFacts {
 
   const body = first("BODY") ?? root;
   const bodyText = text(body);
-  const wordCount = (bodyText.match(/\S+/g) ?? []).length;
+  const wordCount = countWordsIn(bodyText);
   const els = elementsOf(body, NOT_CONTENT);
 
   const imgs = els.filter((e) => e.tagName === "IMG");
@@ -212,9 +218,9 @@ function readFacts(html: string, url?: string): PageFacts {
   if (h1s.length === 0) flags.push({ severity: "warning", message: "No <h1>. Usually means the main promise isn't marked up as the main heading, or isn't there." });
   if (h1s.length > 1) flags.push({ severity: "info", message: `${h1s.length} <h1> elements. Not an SEO penalty, but check there is one clear primary message.` });
   if (!canonical) flags.push({ severity: "info", message: "No canonical link." });
-  if (robots && /noindex/i.test(robots)) flags.push({ severity: "error", message: `meta robots="${robots}": page is excluded from search.` });
+  if (noindexTag) flags.push({ severity: "error", message: `meta ${noindexTag.name}="${noindexTag.content}": page is excluded from ${noindexTag.name === "googlebot" ? "Google Search" : "search"}.` });
   if (!lang) flags.push({ severity: "info", message: "No lang attribute on <html>." });
-  if (!first("META", "name", "viewport")) flags.push({ severity: "warning", message: "No viewport meta; page will render poorly on mobile." });
+  if (!metaTag("viewport")) flags.push({ severity: "warning", message: "No viewport meta; page will render poorly on mobile." });
   if (!og["og:image"]) flags.push({ severity: "info", message: "No og:image; shared links show no picture (or one the platform picks)." });
   else if (!/^https?:\/\//i.test(og["og:image"])) flags.push({ severity: "warning", message: `og:image is relative (${og["og:image"]}); most link previews need an absolute URL.` });
   if (!og["og:title"] && !title) flags.push({ severity: "info", message: "No og:title or <title>; shared links have no headline." });
@@ -236,7 +242,7 @@ function readFacts(html: string, url?: string): PageFacts {
     metaDescriptionLength: description?.length ?? 0,
     canonical,
     robots,
-    viewport: !!first("META", "name", "viewport"),
+    viewport: !!metaTag("viewport"),
     headings: headings.slice(0, 60),
     h1s,
     openGraph: og,
@@ -253,15 +259,54 @@ function readFacts(html: string, url?: string): PageFacts {
   };
 }
 
+/** audit_page's answer when it read no HTML: the URL could not be reached, or did not answer with an HTML page. */
+export interface NotChecked {
+  /** False when no answer came back, or the answer was an error status (often a firewall or proxy). */
+  reachable: boolean;
+  status: number | null;
+  contentType: string | null;
+  checked: false;
+  reason: string;
+  hint: string;
+}
+
+/** Thrown by fetchAndAudit when it read no HTML. `result` says so as data, for audit_page to return. */
+export class NotCheckedError extends Error {
+  constructor(readonly result: NotChecked) {
+    super(result.reason);
+  }
+}
+
+const BLOCKED_HINT =
+  "This tool could not read the page from here: a firewall, proxy or login may block it, or the site may not be live yet. Pass the page's HTML as html= (for example a file from the repo's build output), or run scan_source on the repo.";
+
 export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<PageFacts> {
   const u = new URL(url);
   if (!/^https?:$/.test(u.protocol)) throw new RangeError("only http(s) URLs are supported");
-  const res = await guardedFetch(u, {
-    signal: AbortSignal.timeout(timeoutMs),
-    headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", accept: "text/html,*/*;q=0.8" },
-  });
+  let res: Response;
+  try {
+    res = await guardedFetch(u, {
+      signal: AbortSignal.timeout(timeoutMs),
+      headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", accept: "text/html,*/*;q=0.8" },
+    });
+  } catch (e) {
+    // A refused private address is this tool's rule, not an unreachable site.
+    if (e instanceof BlockedAddressError) throw e;
+    const why = e instanceof Error ? e.message + (e.cause instanceof Error ? ` (${e.cause.message})` : "") : String(e);
+    throw new NotCheckedError({ reachable: false, status: null, contentType: null, checked: false, reason: `Could not reach ${url}: ${why}. Nothing on the page was checked.`, hint: BLOCKED_HINT });
+  }
   const ct = res.headers.get("content-type") ?? "";
-  if (!ct.includes("html")) throw new Error(`expected HTML, got content-type "${ct}" (status ${res.status})`);
+  if (!ct.includes("html")) {
+    // The content type is the site's text; it stays in its own field, out of this sentence.
+    throw new NotCheckedError({
+      reachable: res.ok,
+      status: res.status,
+      contentType: ct || null,
+      checked: false,
+      reason: `The answer was not an HTML page (HTTP ${res.status}; see contentType). Nothing on the page was checked.`,
+      hint: res.ok ? "This URL is not an HTML page, and audit_page checks only HTML pages. Audit the HTML page that links to it instead." : BLOCKED_HINT,
+    });
+  }
   const { text: html, truncated } = await readCapped(res, MAX_HTML_BYTES);
   const facts = auditHtml(html, res.url || url);
   if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
@@ -283,7 +328,7 @@ function applyResponseChecks(facts: PageFacts, status: number | undefined, final
   facts.finalUrl = finalUrl;
   facts.xRobotsTag = xRobotsTag;
   if (status !== undefined && status >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${status}.` });
-  if (xRobotsTag && /noindex/i.test(xRobotsTag)) facts.flags.unshift({ severity: "error", message: `X-Robots-Tag: ${xRobotsTag}` });
+  if (xRobotsTag && robotsDirectives(xRobotsTag).has("noindex")) facts.flags.unshift({ severity: "error", message: `X-Robots-Tag: ${xRobotsTag}` });
   if (facts.canonical && normalize(facts.canonical, finalUrl) !== normalize(finalUrl, finalUrl)) {
     facts.flags.push({ severity: "info", message: `Canonical (${facts.canonical}) differs from the fetched URL (${finalUrl}). Fine if intentional.` });
   }

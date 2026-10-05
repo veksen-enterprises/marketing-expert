@@ -47,7 +47,26 @@ export function visibleText(el: HTMLElement | null | undefined, end = Infinity):
 }
 
 export function countWords(el: HTMLElement | null | undefined): number {
-  return (visibleText(el).match(/\S+/g) ?? []).length;
+  return wordCount(visibleText(el));
+}
+
+// Scripts written without spaces between words. Korean uses spaces, so it is not here.
+const UNSPACED = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Thai}\p{Script=Lao}\p{Script=Khmer}\p{Script=Myanmar}]/u;
+const wordSegmenter = new Intl.Segmenter(undefined, { granularity: "word" });
+
+/**
+ * Words in `text`: the runs between spaces, except that Chinese, Japanese, Thai and similar text, which has no
+ * spaces between words, is split into words by Intl.Segmenter. Counting runs made a whole Japanese paragraph one word.
+ */
+export function wordCount(text: string): number {
+  const runs = text.match(/\S+/g) ?? [];
+  if (!UNSPACED.test(text)) return runs.length;
+  let n = 0;
+  for (const run of runs) {
+    if (!UNSPACED.test(run)) n++;
+    else for (const s of wordSegmenter.segment(run)) if (s.isWordLike) n++;
+  }
+  return n;
 }
 
 /**
@@ -62,6 +81,38 @@ export function elementsOf(root: HTMLElement, skip: ReadonlySet<string> = new Se
     if (n.nodeType !== 1 || skip.has((n as HTMLElement).rawTagName?.toLowerCase() ?? "")) continue;
     out.push(n as HTMLElement);
     for (let i = n.childNodes.length - 1; i >= 0; i--) stack.push(n.childNodes[i]);
+  }
+  return out;
+}
+
+const SVG = new Set(["svg"]);
+
+/** The page's <title>: the first one outside inline <svg>, where <title> is an icon's tooltip. */
+export function documentTitle(root: HTMLElement): HTMLElement | null {
+  return elementsOf(root, SVG).find((e) => e.tagName === "TITLE") ?? null;
+}
+
+/**
+ * Directives in a robots meta tag's content or an X-Robots-Tag header, in lower case. "none" means noindex and
+ * nofollow. A crawler name before a directive ("googlebot: noindex", X-Robots-Tag only) is dropped; the value of
+ * "max-image-preview:none" is not a directive.
+ */
+export function robotsDirectives(value: string): Set<string> {
+  const out = new Set<string>();
+  for (const part of value.toLowerCase().split(",")) {
+    const d = part.trim().replace(/^(?!max-|unavailable_after)[\w-]+\s*:\s*/, "");
+    if (d === "none") out.add("noindex").add("nofollow");
+    else out.add(d);
+  }
+  return out;
+}
+
+/** The robots meta tags Google obeys, in `elements`: every <meta name="robots"> and <meta name="googlebot">, name in any case. */
+export function robotsMetaTags(elements: HTMLElement[]): Array<{ name: "robots" | "googlebot"; content: string }> {
+  const out: Array<{ name: "robots" | "googlebot"; content: string }> = [];
+  for (const e of elements) {
+    const name = e.tagName === "META" ? e.getAttribute("name")?.trim().toLowerCase() : undefined;
+    if (name === "robots" || name === "googlebot") out.push({ name, content: e.getAttribute("content")?.trim() ?? "" });
   }
   return out;
 }

@@ -48,13 +48,16 @@ export const AI_BOTS: AiBot[] = [
 ];
 
 export interface BotAccess extends AiBot {
-  allowed: boolean;
+  /** null when robots.txt could not be read from here (status "unknown"). */
+  allowed: boolean | null;
+  status: "allowed" | "blocked" | "unknown";
   matchedGroup: string | null;
 }
 
 export interface AiAccessReport {
   site: string;
-  robotsTxtFound: boolean;
+  /** null when robots.txt could not be read from here. */
+  robotsTxtFound: boolean | null;
   checkedPaths: string[];
   bots: BotAccess[];
   blockedSearchBots: string[];
@@ -63,12 +66,19 @@ export interface AiAccessReport {
   sitemaps: string[];
   findings: string[];
   checkedOn: string;
+  /** The x-deny-reason header of a 4xx answer for robots.txt: the site's or a proxy's text, shortened. */
+  denyReason?: string;
 }
 
 /** Pure part: evaluate robots.txt text for every AI bot on the given paths (blocked if any path is blocked). */
 export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: string[] = ["/"]): Omit<AiAccessReport, "llmsTxtFound"> {
   const base = new URL(site);
   const findings: string[] = [];
+  // With no paths, every bot would be "allowed" with nothing checked.
+  if (!paths.length) {
+    paths = ["/"];
+    findings.push('No paths were given, so only "/" was checked.');
+  }
   // A catch-all route serving the app's HTML at /robots.txt: crawlers find no rules at all.
   if (robotsTxt && /^\s*(<!doctype html|<html|<head|<body)/i.test(robotsTxt)) {
     findings.push("The robots.txt content is an HTML page (probably the app's catch-all route), not a robots file. Crawlers find no rules, so every bot is allowed, and unknown URLs on this site may return 200 pages (soft 404s). Serve a real text/plain robots.txt.");
@@ -78,7 +88,7 @@ export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: 
   const bots: BotAccess[] = AI_BOTS.map((b) => {
     const rules = rulesFor(file, b.token);
     const allowed = paths.every((p) => robotsAllows(rules, new URL(p, base).toString()));
-    return { ...b, allowed, matchedGroup: rules.matchedGroup };
+    return { ...b, allowed, status: allowed ? "allowed" : "blocked", matchedGroup: rules.matchedGroup };
   });
   const blockedSearch = bots.filter((b) => !b.allowed && (b.purpose === "search" || b.purpose === "search-and-training")).map((b) => b.token);
   const blockedTraining = bots.filter((b) => !b.allowed && b.purpose === "training").map((b) => b.token);
@@ -120,6 +130,8 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
     guardedFetch(new URL(path, base), { headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1)" }, signal: AbortSignal.timeout(timeoutMs) });
   let robotsTxt: string | null = null;
   let serverError: number | null = null;
+  let unverified = false;
+  let denyReason: string | undefined;
   let r: Response;
   try {
     r = await get("/robots.txt");
@@ -133,15 +145,17 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
     // Capped: a few KB of gzip can inflate to gigabytes and crash the server.
     const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
     // Drop the cut-off last line so half a rule isn't read as a shorter one.
-    robotsTxt = truncated ? text.slice(0, text.lastIndexOf("\n") + 1) : text;
+    robotsTxt = truncated ? text.slice(0, Math.max(text.lastIndexOf("\n"), text.lastIndexOf("\r")) + 1) : text;
     if (truncated) caveats.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this check did the same.");
   } else if (r.ok) caveats.push("robots.txt is served as an HTML page (probably the app's catch-all route), so crawlers find no valid rules and treat everything as allowed. Serve a real text/plain robots.txt.");
   else if (r.status >= 500) serverError = r.status;
   else if (r.status === 404 || r.status === 410) caveats.push(`No robots.txt (HTTP ${r.status}): crawlers treat this as "everything allowed".`);
   else {
-    const deny = r.headers.get("x-deny-reason");
+    unverified = true;
+    // The header is the site's (or a proxy's) text: kept short, without control characters, and out of the findings.
+    denyReason = r.headers.get("x-deny-reason")?.replace(/[\x00-\x1f\x7f]+/g, " ").trim().slice(0, 200) || undefined;
     caveats.push(
-      `robots.txt returned HTTP ${r.status}${deny ? ` (x-deny-reason: ${deny})` : ""}. This may be a firewall, CDN or proxy blocking this checker rather than the site's real answer, so the result below is NOT verified. (Google treats a genuine 4xx on robots.txt as "no restrictions".) Check from another network or pass the file's contents as robotsTxt.`
+      `robots.txt returned HTTP ${r.status}${denyReason ? " with a reason header (see denyReason)" : ""}. This may be a firewall, CDN or proxy blocking this checker rather than the site's real answer, so nothing was checked: every bot's access is unknown (allowed: null). (Google treats a genuine 4xx on robots.txt as "no restrictions".) Check from another network or pass the file's contents as robotsTxt.`
     );
   }
   let llms: boolean | null = null;
@@ -159,6 +173,10 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
     report.findings = report.findings.filter((f) => !f.startsWith("No robots.txt found"));
     report.findings.unshift(...caveats);
   }
+  if (unverified) {
+    report.robotsTxtFound = null;
+    report.bots = report.bots.map((b) => ({ ...b, allowed: null, status: "unknown" }));
+  }
   if (serverError) {
     report.robotsTxtFound = false;
     report.findings.unshift(`robots.txt returned HTTP ${serverError}. Crawlers that follow Google's rules treat this as "block everything", so every bot is reported as blocked. Fix the server error.`);
@@ -170,5 +188,5 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
         ? "llms.txt found. Harmless, but there is no evidence major assistants use it (see seo-and-ai-search)."
         : "No llms.txt. Not a problem: there is no evidence major assistants use it (see seo-and-ai-search)."
   );
-  return { ...report, llmsTxtFound: llms };
+  return { ...report, llmsTxtFound: llms, ...(denyReason ? { denyReason } : {}) };
 }

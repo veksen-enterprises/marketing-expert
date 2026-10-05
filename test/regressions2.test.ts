@@ -115,7 +115,9 @@ describe("robots.txt edge cases (devtool-site grade)", () => {
     vi.stubEnv("MARKETING_EXPERT_ALLOW_PRIVATE", "1");
     vi.stubGlobal("fetch", async () => new Response("denied", { status: 403, headers: { "content-type": "text/plain", "x-deny-reason": "egress blocked" } }));
     const r = await checkAiCrawlerAccess("https://f.test");
-    expect(r.findings[0]).toMatch(/HTTP 403 \(x-deny-reason: egress blocked\).*NOT verified/);
+    expect(r.findings[0]).toMatch(/HTTP 403 with a reason header \(see denyReason\).*nothing was checked/);
+    expect(r.denyReason).toBe("egress blocked");
+    expect(r.bots.every((b) => b.allowed === null)).toBe(true);
     expect(r.findings.join(" ")).not.toMatch(/No robots.txt found/);
     expect(r.llmsTxtFound).toBeNull();
   });

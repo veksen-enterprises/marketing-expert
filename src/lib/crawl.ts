@@ -5,7 +5,7 @@
 
 import { parse } from "node-html-parser";
 import { guardedFetch, readCapped, MAX_HTML_BYTES, MAX_ROBOTS_BYTES } from "./netguard.js";
-import { countWords, elementsOf } from "./text.js";
+import { countWords, elementsOf, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
 export { parseRobots, robotsAllows };
@@ -83,7 +83,8 @@ function normalize(href: string, base: string): string | null {
 }
 
 function* extractLocs(xml: string): Generator<string> {
-  for (const m of xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)) yield m[1].replace(/&amp;/g, "&");
+  // A <loc> may wrap its URL in CDATA, which is read as it is.
+  for (const m of xml.matchAll(/<loc>\s*(?:<!\[CDATA\[\s*([^<\s\]]+)\s*\]\]>|([^<\s]+))\s*<\/loc>/gi)) yield m[1] ?? m[2].replace(/&amp;/g, "&");
 }
 
 export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
@@ -140,7 +141,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     if (r.ok) {
       const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
       // Drop the cut-off last line so half a rule isn't read as a shorter one.
-      robots = parseRobots(truncated ? text.slice(0, text.lastIndexOf("\n") + 1) : text);
+      robots = parseRobots(truncated ? text.slice(0, Math.max(text.lastIndexOf("\n"), text.lastIndexOf("\r")) + 1) : text);
       if (truncated) notes.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this crawl did the same.");
     } else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
   } catch {
@@ -172,16 +173,21 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     const firstPart = l.split(/[/?#]/)[0];
     return firstPart.includes(".") && firstPart !== "." && firstPart !== ".." ? null : normalize(l, base);
   };
-  const addLocs = (xml: string, base: string) => {
+  /** Adds the sitemap's page URLs; returns how many it lists. */
+  const addLocs = (xml: string, base: string): number => {
+    let found = 0;
     for (const l of extractLocs(xml)) {
       const n = locUrl(l, base);
-      if (!n || sitemapSet.has(n)) continue;
+      if (!n) continue;
+      found++;
+      if (sitemapSet.has(n)) continue;
       if (sitemapSet.size >= MAX_SITEMAP_URLS) {
         sitemapPartial = urlLimitHit = true;
-        return;
+        return found;
       }
       sitemapSet.add(n);
     }
+    return found;
   };
   if (opts.useSitemap ?? true) {
     const candidates = robots.sitemaps.length ? robots.sitemaps : [new URL("/sitemap.xml", start).toString()];
@@ -194,7 +200,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
           continue;
         }
         const xml = await readSitemap(r, sm);
-        sitemapSource ??= sm;
+        let found = 0;
         if (/<sitemapindex/i.test(xml)) {
           const children: string[] = [];
           for (const c of extractLocs(xml)) {
@@ -205,14 +211,18 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
             if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
             try {
               const { res: cr, url: crUrl } = await getFollow(child);
-              if (cr.ok) addLocs(await readSitemap(cr, child), crUrl);
+              if (cr.ok) found += addLocs(await readSitemap(cr, child), crUrl);
             } catch {
               notes.push(`Child sitemap failed: ${child}`);
             }
           }
         } else {
-          addLocs(xml, smUrl);
+          found = addLocs(xml, smUrl);
         }
+        // A sitemap counts only if it gave page URLs. A catch-all route that serves the app's HTML gives none.
+        if (found) sitemapSource ??= sm;
+        else if (/^\s*(<!doctype html|<html|<head|<body)/i.test(xml)) notes.push(`Sitemap ${sm} is an HTML page (probably the app's catch-all route), not an XML sitemap. Crawlers find no URLs in it.`);
+        else notes.push(`Sitemap ${sm} lists no page URLs.`);
       } catch {
         notes.push(`Sitemap could not be fetched: ${sm}`);
       }
@@ -228,9 +238,10 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
 
   const pages = new Map<string, CrawledPage>();
   const inlinkSources = new Map<string, Set<string>>();
-  const depthOf = new Map<string, number>([[start, 0]]);
-  // Two FIFO queues: link-discovered URLs first (breadth-first, so depth = shortest click path),
-  // then sitemap-only URLs.
+  // The links found on each page, and where each same-host redirect leads; click depth is computed from them.
+  const outlinks = new Map<string, string[]>();
+  const redirects = new Map<string, string>();
+  // Two FIFO queues: link-discovered URLs first (breadth-first), then sitemap-only URLs.
   const linkQueue: string[] = [start];
   const sitemapQueue: string[] = [];
   const queued = new Set<string>([start]);
@@ -250,7 +261,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
       status: null,
       redirectChain: [],
       finalUrl: url,
-      depth: depthOf.get(url) ?? null,
+      depth: null,
       inSitemap: sitemapSet.has(url),
       title: null,
       metaDescription: null,
@@ -284,9 +295,10 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     page.status = res!.status;
     page.finalUrl = current;
     const xr = res!.headers.get("x-robots-tag");
-    if (xr && /noindex/i.test(xr)) page.noindex = true;
+    if (xr && robotsDirectives(xr).has("noindex")) page.noindex = true;
     const ct = res!.headers.get("content-type") ?? "";
-    if (!res!.ok || !ct.includes("html") || new URL(current).host !== host) return { page, links: [] };
+    // A redirect's target is crawled as its own page. Reading its HTML here would credit its links to this URL.
+    if (!res!.ok || !ct.includes("html") || page.redirectChain.length) return { page, links: [] };
     let html: string;
     try {
       ({ text: html, truncated: page.truncated } = await readCapped(res!, MAX_HTML_BYTES));
@@ -308,31 +320,36 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     // One walk of the tree instead of querySelectorAll, whose time grows with the square of the number of matches.
     const all = elementsOf(root);
     const first = (tag: string, attr?: string, value?: string) => all.find((e) => e.tagName === tag && (!attr || e.getAttribute(attr) === value));
-    page.title = first("TITLE")?.text.trim() || null;
-    page.metaDescription = first("META", "name", "description")?.getAttribute("content")?.trim() || null;
+    // Relative URLs resolve against <base href> when the page has one, as in browsers.
+    const baseHref = all.find((e) => e.tagName === "BASE" && e.hasAttribute("href"))?.getAttribute("href");
+    const base = (baseHref && normalize(baseHref, current)) || current;
+    page.title = documentTitle(root)?.text.trim() || null;
+    page.metaDescription = all.find((e) => e.tagName === "META" && e.getAttribute("name")?.trim().toLowerCase() === "description")?.getAttribute("content")?.trim() || null;
     page.h1Count = all.filter((e) => e.tagName === "H1").length;
     const can = first("LINK", "rel", "canonical")?.getAttribute("href");
-    page.canonical = can ? normalize(can, current) : null;
-    const robotsMeta = first("META", "name", "robots")?.getAttribute("content") ?? "";
-    if (/noindex/i.test(robotsMeta)) page.noindex = true;
+    page.canonical = can ? normalize(can, base) : null;
+    // Every robots and googlebot meta tag counts; "none" means noindex and nofollow.
+    const robotsMeta = robotsMetaTags(all).map((t) => robotsDirectives(t.content));
+    if (robotsMeta.some((d) => d.has("noindex"))) page.noindex = true;
     page.hreflang = all
       .filter((l) => l.tagName === "LINK" && l.getAttribute("rel") === "alternate" && l.hasAttribute("hreflang"))
-      .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", current) ?? "" }));
+      .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", base) ?? "" }));
     // Count in the whole page, body included; frameworks often put their module scripts there.
     page.scriptCount = all.filter(
       (e) => (e.tagName === "SCRIPT" && (e.hasAttribute("src") || e.getAttribute("type") === "module")) || (e.tagName === "LINK" && e.getAttribute("rel") === "modulepreload")
     ).length;
     const body = first("BODY") ?? root;
     page.wordCount = countWords(body);
-    const nofollowPage = /nofollow/i.test(robotsMeta);
+    const nofollowPage = robotsMeta.some((d) => d.has("nofollow"));
     const links = new Set<string>();
     if (!nofollowPage) {
       // Links inside script, style, noscript, svg and template are not part of the page.
       for (const a of elementsOf(body, new Set(["script", "style", "noscript", "svg", "template"]))) {
         if (a.tagName !== "A" || !a.hasAttribute("href")) continue;
         if (/nofollow/i.test(a.getAttribute("rel") ?? "")) continue;
-        const n = normalize(a.getAttribute("href") ?? "", current);
-        if (n && new URL(n).host === host) links.add(n);
+        const n = normalize(a.getAttribute("href") ?? "", base);
+        // A link to the page itself ("#main" skip links, href="#") is not an inlink.
+        if (n && n !== current && new URL(n).host === host) links.add(n);
       }
     }
     page.internalLinksOut = links.size;
@@ -352,19 +369,46 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     const results = await Promise.all(batch.map(fetchPage));
     for (const { page, links } of results) {
       pages.set(page.url, page);
-      const d = depthOf.get(page.url);
-      for (const l of links) {
-        if (!inlinkSources.has(l)) inlinkSources.set(l, new Set());
-        inlinkSources.get(l)!.add(page.url);
-        if (d !== undefined && !depthOf.has(l)) depthOf.set(l, d + 1);
+      outlinks.set(page.url, links);
+      // A same-host redirect to a working URL: crawl the target as well.
+      const target = page.redirectChain.length && page.status !== null && page.status < 300 && new URL(page.finalUrl).host === host ? page.finalUrl : null;
+      if (target) redirects.set(page.url, target);
+      for (const l of target ? [...links, target] : links) {
         if (!queued.has(l)) {
           queued.add(l);
           linkQueue.push(l);
         }
       }
+      for (const l of links) {
+        if (!inlinkSources.has(l)) inlinkSources.set(l, new Set());
+        inlinkSources.get(l)!.add(page.url);
+      }
     }
   }
   const limitReached = pending() > 0;
+  // A link to a redirect also leads to its target.
+  for (const [from, to] of redirects) {
+    for (const s of inlinkSources.get(from) ?? []) {
+      if (s === to) continue;
+      if (!inlinkSources.has(to)) inlinkSources.set(to, new Set());
+      inlinkSources.get(to)!.add(s);
+    }
+  }
+  // Click depth: the shortest path from the start URL over the links found, breadth-first. Computed after the crawl
+  // because pages also listed in the sitemap are fetched in sitemap order. A redirect adds no click.
+  const depthOf = new Map<string, number>([[start, 0]]);
+  const reached = [start];
+  for (let i = 0; i < reached.length; i++) {
+    const d = depthOf.get(reached[i])! + 1;
+    for (const l of outlinks.get(reached[i]) ?? []) {
+      for (const u of [l, redirects.get(l)]) {
+        if (u && !depthOf.has(u)) {
+          depthOf.set(u, d);
+          reached.push(u);
+        }
+      }
+    }
+  }
   for (const p of pages.values()) {
     p.inlinks = inlinkSources.get(p.url)?.size ?? 0;
     p.depth = depthOf.get(p.url) ?? null;

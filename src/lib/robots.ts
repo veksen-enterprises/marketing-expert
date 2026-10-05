@@ -14,11 +14,23 @@ export interface RobotsFile {
   sitemaps: string[];
 }
 
+const utf8 = new TextEncoder();
+
+// Rules and URL paths are compared in one form, as RFC 9309 asks: characters outside ASCII are percent-encoded
+// as UTF-8, and %xx escapes are in upper case. So "Disallow: /café" and "Disallow: /caf%c3%a9" both match the
+// URL path "/caf%C3%A9".
+function encodePath(s: string): string {
+  return s
+    .replace(/[^\x00-\x7f]+/g, (c) => [...utf8.encode(c)].map((b) => `%${b.toString(16).toUpperCase().padStart(2, "0")}`).join(""))
+    .replace(/%[0-9a-f]{2}/gi, (e) => e.toUpperCase());
+}
+
 export function parseRobotsFile(txt: string): RobotsFile {
   const file: RobotsFile = { groups: [], sitemaps: [] };
   let current: RobotsFile["groups"][number] | null = null;
   let lastWasAgent = false;
-  for (const raw of txt.split(/\r?\n/)) {
+  // A line may end with CR, LF or CR LF (RFC 9309).
+  for (const raw of txt.split(/\r\n|\r|\n/)) {
     const line = raw.replace(/#.*/, "").trim();
     if (!line) continue;
     const i = line.indexOf(":");
@@ -34,14 +46,15 @@ export function parseRobotsFile(txt: string): RobotsFile {
         current = { agents: [], allow: [], disallow: [] };
         file.groups.push(current);
       }
-      current.agents.push(val.toLowerCase());
+      // Only the product token counts, as in Google's parser: "GPTBot/1.1" is "gptbot". "*" is every crawler.
+      current.agents.push(/^\*(\s|$)/.test(val) ? "*" : (val.match(/^[A-Za-z_-]+/)?.[0] ?? "").toLowerCase());
       lastWasAgent = true;
       continue;
     }
     lastWasAgent = false;
     if (!current) continue;
-    if (key === "disallow" && val) current.disallow.push(val);
-    if (key === "allow" && val) current.allow.push(val);
+    if (key === "disallow" && val) current.disallow.push(encodePath(val));
+    if (key === "allow" && val) current.allow.push(encodePath(val));
   }
   return file;
 }
@@ -89,7 +102,7 @@ function ruleMatches(rule: string, path: string): boolean {
 /** Longest matching rule wins; Allow wins ties (Google's documented behaviour). */
 export function robotsAllows(rules: Pick<RobotsRules, "allow" | "disallow">, url: string): boolean {
   const u = new URL(url);
-  const path = u.pathname + u.search;
+  const path = encodePath(u.pathname + u.search);
   let best: { len: number; allow: boolean } | null = null;
   for (const r of rules.disallow) if (ruleMatches(r, path) && (!best || r.length > best.len)) best = { len: r.length, allow: false };
   for (const r of rules.allow) if (ruleMatches(r, path) && (!best || r.length >= best.len)) best = { len: r.length, allow: true };
