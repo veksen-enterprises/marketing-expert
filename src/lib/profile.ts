@@ -31,7 +31,7 @@ export interface BusinessProfile {
   constraints?: string[];
   /** Facts match_small_bets uses to decide which bets fit. */
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
-  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean };
+  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string };
   audiences?: Audience[];
   surfaces?: Surface[];
   revenue?: "none" | "planned" | "live";

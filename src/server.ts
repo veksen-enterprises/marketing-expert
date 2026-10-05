@@ -737,6 +737,8 @@ export function createServer(): McpServer {
             newsworthy: z.string().optional().describe("A story or numbers others would retell"),
             monthlyBudget: z.number().min(0).optional().describe("Dollars a month available for marketing"),
             accounts: z.boolean().optional().describe("You can reach each user one to one (accounts, emails)"),
+            communities: z.string().optional().describe("Where the audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups)"),
+            season: z.string().optional().describe("When demand peaks, if it is seasonal (e.g. the six weeks before a holiday)"),
           })
           .nullable()
           .optional()

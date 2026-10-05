@@ -53,7 +53,7 @@ describe("matchSmallBets", () => {
   // A free hobby site that collects public posts from a chat platform, with no users yet.
   const hobby: SmallBetsFacts = {
     traction: { activeUsers: 0, asOf: "2026-10" },
-    assets: { data: "items parsed from public trade channels", expertise: "the game's item rules" },
+    assets: { data: "items parsed from public trade channels", expertise: "the game's item rules", communities: "trade servers on a chat platform" },
     audiences: ["hobbyists"],
     surfaces: ["website", "bot"],
     revenue: "none",
@@ -117,6 +117,18 @@ describe("matchSmallBets", () => {
     const s = r.fitsNow.find((v) => v.id === "newsletter-sponsorship")!;
     expect(s.reason).toMatch(/budget buys the reach.*keeps people/);
     expect(ids(matchSmallBets({ ...early, assets: { ...early.assets, monthlyBudget: 0 } }).fitsLater)).toContain("newsletter-sponsorship");
+  });
+  it("offers the moderator tool only where the audience gathers in moderated communities", () => {
+    expect(find(matchSmallBets(devtool).fitsLater, "moderator-tool")!.reason).toMatch(/communities/);
+    expect(ids(matchSmallBets({ ...devtool, assets: { ...devtool.assets, communities: "two subreddits and a Discord server" } }).fitsNow)).toContain("moderator-tool");
+  });
+  it("lets a seasonal business plan its season from day one", () => {
+    const early = { ...hobby, traction: { activeUsers: 0 } };
+    expect(ids(matchSmallBets(early).fitsLater)).toContain("calendar-events");
+    expect(ids(matchSmallBets({ ...early, assets: { ...early.assets, season: "demand peaks in the six weeks before a holiday" } }).fitsNow)).toContain("calendar-events");
+  });
+  it("keeps open-sourcing code to developer audiences", () => {
+    expect(find(matchSmallBets(hobby).doesntFit, "open-source")!.reason).toMatch(/developers/);
   });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);

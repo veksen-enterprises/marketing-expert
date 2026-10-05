@@ -48,6 +48,8 @@ export interface Bet {
     budget?: number;
     /** A story the press or a community would retell. */
     newsworthy?: boolean;
+    /** The audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups). */
+    communities?: boolean;
   };
   /** "before": only before the product is live (a waitlist); "after": needs a product people can try now. */
   launch?: "before" | "after";
@@ -55,6 +57,8 @@ export interface Bet {
   budgetSkipsStage?: number;
   /** Data lets the bet start at stage 0. */
   dataSkipsStage?: boolean;
+  /** A seasonal business can start the bet at stage 0: the season, not the user count, sets the timing. */
+  seasonSkipsStage?: boolean;
   /** Only for these audiences; omitted = any. */
   audiences?: Audience[];
   /** Needs one of these product surfaces; omitted = any. */
@@ -79,7 +83,7 @@ export interface Bet {
 
 export interface SmallBetsFacts {
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
-  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean };
+  assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string };
   audiences?: Audience[];
   surfaces?: Surface[];
   revenue?: "none" | "planned" | "live";
@@ -206,6 +210,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     let need = b.stage;
     if (b.dataSkipsStage && a.data) need = 0;
     if (b.budgetSkipsStage !== undefined && budget >= b.budgetSkipsStage) need = 0;
+    if (b.seasonSkipsStage && a.season) need = 0;
     if (stage.stage < need) blockers.push(`needs ${STAGE_LABEL[need]}; now ${STAGE_LABEL[stage.stage]}`);
     const n = b.needs ?? {};
     if (n.data && !a.data) blockers.push("needs data you hold that nobody else has published");
@@ -215,6 +220,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (n.revenue && f.revenue !== "live") blockers.push("needs something to sell now");
     if (n.budget && budget < n.budget) blockers.push(`needs about $${n.budget} a month`);
     if (n.newsworthy && !a.newsworthy) blockers.push("needs a story others would retell");
+    if (n.communities && !a.communities) blockers.push("needs an audience that gathers in moderated communities (save where, as assets.communities)");
     if (b.launch === "after" && !launched) blockers.push("needs a product people can try now");
 
     if (blockers.length) fitsLater.push({ ...base(b), reason: blockers.join("; ") });
@@ -241,6 +247,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
 function fitReason(b: Bet, f: SmallBetsFacts, stage: Stage): string {
   const parts: string[] = [];
   if (b.dataSkipsStage && f.assets?.data && b.stage > stage) parts.push(`your data (${f.assets.data}) stands in for users`);
+  else if (b.seasonSkipsStage && f.assets?.season && b.stage > stage) parts.push(`your season (${f.assets.season}) sets the timing`);
   else if (b.budgetSkipsStage !== undefined && (f.assets?.monthlyBudget ?? 0) >= b.budgetSkipsStage && b.stage > stage) parts.push("budget buys the reach users would bring; check the product keeps people first");
   else parts.push(b.stage === 0 ? "works with no users" : `works at your stage (${STAGE_LABEL[stage]})`);
   if (b.needs?.expertise) parts.push("uses your expertise");
