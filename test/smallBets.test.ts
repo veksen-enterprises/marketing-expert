@@ -130,6 +130,12 @@ describe("matchSmallBets", () => {
   it("keeps open-sourcing code to developer audiences", () => {
     expect(find(matchSmallBets(hobby).doesntFit, "open-source")!.reason).toMatch(/developers/);
   });
+  it("returns the business's principles, written in plain words, for checking each fitting bet", () => {
+    const r = matchSmallBets({ ...hobby, principles: ["never ask traders to leave the chat platform", "no price data"] });
+    expect(r.checkAgainst).toEqual(["never ask traders to leave the chat platform", "no price data"]);
+    expect(r.howToReport).toMatch(/checkAgainst/);
+    expect(matchSmallBets(hobby).checkAgainst).toEqual([]);
+  });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);
     expect(scores).toEqual([...scores].sort((a, b) => b - a));

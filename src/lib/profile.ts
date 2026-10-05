@@ -37,6 +37,8 @@ export interface BusinessProfile {
   revenue?: "none" | "planned" | "live";
   /** People can use the product now. */
   launched?: boolean;
+  /** What the business refuses to do, in its own words (its non-goals). */
+  principles?: string[];
   /** Things the business rules out (its non-goals and principles), as fixed tags. */
   avoid?: AvoidTag[];
   openQuestions?: string[];

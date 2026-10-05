@@ -90,6 +90,8 @@ export interface SmallBetsFacts {
   /** People can use the product now. */
   launched?: boolean;
   avoid?: AvoidTag[];
+  /** What the business refuses to do, in its own words; avoid holds the checkable part. */
+  principles?: string[];
 }
 
 export interface StageReading {
@@ -145,11 +147,13 @@ export interface MatchResult {
   doesntFit: Verdict[];
   /** Facts the match had to guess; say these in one line so the user can correct them. */
   assumptions: string[];
+  /** The business's principles in its own words: check each fitting bet against them before proposing it. */
+  checkAgainst: string[];
   howToReport: string;
 }
 
 export const HOW_TO_REPORT =
-  "Show only fitsNow, in score order (what it can do if it works, evidence, effort; a rule of thumb), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them.";
+  "Show only fitsNow, in score order (what it can do if it works, evidence, effort; a rule of thumb), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them. Before proposing a bet, check it against checkAgainst, the business's own principles; drop any it would break.";
 
 // Ranking weights, a rule of thumb: what a bet can do if it works, discounted a little for weak evidence and by the
 // square root of its effort, so a 1-hour bet doesn't beat everything just for being quick.
@@ -159,7 +163,7 @@ export const betScore = (b: Pick<Bet, "ceiling" | "evidence" | "effortHours">) =
   Math.round(((CEILING_WEIGHT[b.ceiling] * EVIDENCE_WEIGHT[b.evidence]) / Math.sqrt(Math.max(1, b.effortHours))) * 1000) / 1000;
 
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid };
+  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles };
 }
 
 export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
@@ -241,7 +245,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       });
   }
   fitsNow.sort((x, y) => y.score! - x.score!);
-  return { stage, fitsNow, fitsLater, doesntFit, assumptions, howToReport: HOW_TO_REPORT };
+  return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], howToReport: HOW_TO_REPORT };
 }
 
 function fitReason(b: Bet, f: SmallBetsFacts, stage: Stage): string {

@@ -747,6 +747,7 @@ export function createServer(): McpServer {
         surfaces: z.array(z.enum(SURFACES)).nullable().optional(),
         revenue: z.enum(["none", "planned", "live"]).nullable().optional(),
         launched: z.boolean().nullable().optional().describe("People can use the product now"),
+        principles: strList.describe("What the business refuses to do, in its own words (its non-goals); match_small_bets returns them to check each bet against"),
         avoid: z
           .array(z.enum(AVOID_TAGS))
           .nullable()
