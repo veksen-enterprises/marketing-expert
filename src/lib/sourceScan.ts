@@ -68,6 +68,20 @@ export interface ClaimConflict {
   modeHint: string | null;
 }
 
+export type Entity = "user" | "team" | "project";
+
+/** Plans, limits and upgrade copy in the app's code, to check the pricing page's promises against. */
+export interface BillingScan {
+  /** Code lines about subscriptions, plans, seats, quotas, limits or entitlements, with the entity they name. */
+  hits: Array<ClaimRef & { entity: Entity | null }>;
+  /** How many of those lines name each entity: a "team plan" on the site needs a plan stored on a team. */
+  planAttachesTo: Record<Entity, number>;
+  /** Plan checks and limit constants, with the places outside tests that use them. 0 means not enforced in the product. */
+  gates: Array<{ name: string; definedAt: string; callsOutsideTests: number; callers: string[] }>;
+  /** Upgrade and limit messages shown in the app. */
+  upgradeCopy: Claim[];
+}
+
 export interface SourceScan {
   dir: string;
   filesScanned: number;
@@ -83,6 +97,8 @@ export interface SourceScan {
   licenseState: LicenseState;
   /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
   decisions: Decision[];
+  /** null when no billing code was found. */
+  billing: BillingScan | null;
   /** Set when no records were under dir and they were read from this folder higher up in the same git repo. */
   decisionsFrom?: string;
   decisionIssues: DecisionIssue[];
@@ -499,6 +515,36 @@ function pairClaims(claims: Record<ClaimKind, Claim[]>, titles: Claim[]): ClaimC
   return out.slice(0, 40);
 }
 
+const APP_CODE = /\.(ts|tsx|js|jsx|mjs|vue|svelte|astro)$/;
+const TEST_PATH = /(^|\/)(test|tests|__tests__|spec|e2e|fixtures?)\//;
+const BILLING = /\b(stripe|subscriptions?|premium|entitle(ment|d)?s?|quotas?|seats?|(is|has)(Premium|Pro|Paid|Plan)\w*|\w*(Plan|Seat|Usage|Project|Member|Free|Pro)Limits?\w*|\w*_LIMIT\w*)\b|\bplan(Id|Tier|_id|_tier)?\s*(===?|!==?|:)/i;
+const ENTITY = /(user|account|member)|(team|org|workspace|company)|(project|repo|site)/i;
+// Plan checks (isPremium, hasProPlan, checkSeatLimit) and constants (FREE_PROJECT_LIMIT, MAX_PRO_SEATS).
+const GATE = /\b(?:is|has|can|check|require|assert|enforce|ensure|within|exceeds?)(?=[A-Z])\w*?(?:Premium|Pro|Plan|Paid|Seat|Quota|Limit|Entitle|Subscri|Tier|Trial)\w*|\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g;
+const GATE_CONST = /(LIMIT|QUOTA|SEATS?|MAX)/;
+const GATE_PLAN = /(FREE|PRO|PLAN|PREMIUM|TRIAL|PAID|TEAM|SEAT|QUOTA|TIER)/;
+const UPGRADE = /\b(upgrade|unlock|go pro|pro gives|premium (feature|plan)|requires? (a |the )?(pro|paid|premium|team|business) plan|(plan|usage|seat|project) limit|limit reached|out of (credits|quota)|available on (the )?(pro|paid|premium|team|business))\b/i;
+
+function entityOf(s: string): Entity | null {
+  const m = ENTITY.exec(s);
+  return m ? (m[1] ? "user" : m[2] ? "team" : "project") : null;
+}
+
+function billingOf(hits: BillingScan["hits"], uses: Map<string, Array<{ at: string; def: boolean; test: boolean }>>, upgradeCopy: Claim[]): BillingScan | null {
+  const gates: BillingScan["gates"] = [];
+  for (const [name, list] of uses) {
+    const def = list.find((u) => u.def);
+    if (!def) continue;
+    const callers = list.filter((u) => !u.def && !u.test).map((u) => u.at);
+    gates.push({ name, definedAt: def.at, callsOutsideTests: callers.length, callers: callers.slice(0, 3) });
+  }
+  gates.sort((a, b) => a.callsOutsideTests - b.callsOutsideTests || a.name.localeCompare(b.name));
+  if (!hits.length && !gates.length && !upgradeCopy.length) return null;
+  const planAttachesTo: Record<Entity, number> = { user: 0, team: 0, project: 0 };
+  for (const h of hits) if (h.entity) planAttachesTo[h.entity]++;
+  return { hits: hits.slice(0, 40), planAttachesTo, gates: gates.slice(0, 20), upgradeCopy: upgradeCopy.slice(0, 20) };
+}
+
 function realDir(dir: string): string {
   const root = realpathSync(dir);
   if (!statSync(root).isDirectory()) throw new RangeError(`${dir} is not a directory`);
@@ -519,6 +565,9 @@ function collect(root: string) {
   const env = new Map<string, EnvFlag["uses"]>();
   // Docs page titles and top headings, to pair with features the site calls upcoming.
   const titles: Claim[] = [];
+  const hits: BillingScan["hits"] = [];
+  const gateUses = new Map<string, Array<{ at: string; def: boolean; test: boolean }>>();
+  const upgradeCopy: Claim[] = [];
   for (const f of files) {
     let src: string;
     try {
@@ -529,6 +578,8 @@ function collect(root: string) {
     const rel = relative(root, f);
     const isCode = /\.(ts|js|mjs)$/.test(f);
     const isDoc = /\.mdx?$/.test(f);
+    const isApp = APP_CODE.test(f);
+    const inTest = TEST_PATH.test(rel);
     let inStyle = false;
     const recent: string[] = [];
     let upcoming: string | null = null;
@@ -541,6 +592,22 @@ function collect(root: string) {
       if (inStyle) {
         if (/<\/style>|<\/pre>|^\s*```/i.test(raw)) inStyle = false;
         return;
+      }
+      if (isApp && !/^\s*(import|export \{[^}]*\} from)\b/.test(raw)) {
+        if (!inTest && hits.length < KEEP && BILLING.test(raw)) hits.push({ file: rel, line: i + 1, text: raw.trim().slice(0, 200), entity: entityOf(raw) ?? entityOf(rel) });
+        let seen = 0;
+        for (const m of raw.matchAll(GATE)) {
+          const name = m[0];
+          if (/^[A-Z]/.test(name) && !(GATE_CONST.test(name) && GATE_PLAN.test(name))) continue;
+          // At most 20 names a line, and only the 40 characters before each: a line of 80,000 names was read 80,000 times.
+          if (++seen > 20) break;
+          const before = raw.slice(Math.max(0, m.index - 40), m.index);
+          const after = raw.length < 400 ? raw.slice(m.index + name.length) : "";
+          const def = /(function\*?|const|let|var|class)\s+$/.test(before) || (m.index < 40 && /^\s*((public|private|protected|static|async|export|readonly)\s+)*$/.test(before) && /^\s*\(.*\)\s*(:[^=;]*)?\{\s*$/.test(after));
+          const list = gateUses.get(name) ?? [];
+          if (list.length < 50 || def) list.push({ at: `${rel}:${i + 1}`, def, test: inTest });
+          if (gateUses.size < 500 || gateUses.has(name)) gateUses.set(name, list);
+        }
       }
       for (const m of raw.matchAll(ENV_RE)) {
         const name = m[1] ?? m[2] ?? m[3] ?? m[4];
@@ -567,6 +634,7 @@ function collect(root: string) {
         const t = (/^title:[ \t]*(.+)$/.exec(raw)?.[1] ?? text.replace(/^#+\s*/, "")).replace(/^["']|["']$/g, "").trim();
         if (t) titles.push({ file: rel, line: i + 1, text: t.slice(0, 120) });
       }
+      if (isApp && !inTest && words >= 2 && upgradeCopy.length < KEEP && UPGRADE.test(text)) upgradeCopy.push({ file: rel, line: i + 1, text: text.slice(0, 200) });
       const listed = !heading && upcoming !== null && words > 0 && (/^\s*([-*+]|\d+\.)\s+\S/.test(raw) || /<li[\s>]/i.test(raw));
       // Access rules are often only in code comments ("connects as a superuser").
       const comment = isCode ? (/^\s*(?:\/\/|\/?\*+)\s?(.*)$/.exec(raw)?.[1] ?? /\s\/\/\s?(.*)$/.exec(raw)?.[1] ?? "") : "";
@@ -589,12 +657,12 @@ function collect(root: string) {
       }
     });
   }
-  return { files, state, claims, counts, env, licenseState, titles };
+  return { files, state, claims, counts, env, licenseState, titles, billing: billingOf(hits, gateUses, upgradeCopy) };
 }
 
 export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] = []): SourceScan {
   const root = realDir(dir);
-  const { files, state, claims, counts, env, licenseState, titles } = collect(root);
+  const { files, state, claims, counts, env, licenseState, titles, billing } = collect(root);
   // Claims from the other folders, with paths relative to dir, so each pair reads the same way.
   const compared: SourceScan["compared"] = [];
   const pool = Object.fromEntries(KINDS.map((k) => [k, [...claims[k]]])) as unknown as Record<ClaimKind, Claim[]>;
@@ -634,9 +702,10 @@ export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] =
       notes.push(`No decision records under this folder; read ${decisions.length} from ${above}. Their paths are relative to this folder.`);
     }
   }
+  if (billing) notes.push("billing: planAttachesTo counts the code lines about plans that name a user, team or project; a team plan on the site needs a plan stored on a team. A gate with callsOutsideTests 0 is defined but not used in the product. Compare upgradeCopy with the pricing page.");
   if (decisionIssues.some((x) => x.conflict)) notes.push("decisionIssues: records or index rows disagree about the same issue (one says open, another built). Check the issue and the code.");
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
+  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, billing, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
 }

@@ -228,6 +228,15 @@ describe("time on hostile input", () => {
     expect(ms(() => scanSource(d))).toBeLessThan(1000);
   });
 
+  it("scan_source: lines of 500 KB in app code (billing and plan checks)", () => {
+    const d = tmp("hugets-");
+    const n = 500000;
+    const lines = ["isA" + "a".repeat(n), "A_".repeat(n / 2) + "a", "x".repeat(n), "plan " + " ".repeat(n) + "x", "a".repeat(n) + "Limit", "  isPro(" + "(".repeat(n), "const " + " ".repeat(n), "<p>" + "upgrade ".repeat(n / 8), "isPro ".repeat(n / 6), "FREE_LIMIT ".repeat(n / 11)];
+    lines.forEach((l, i) => writeFileSync(join(d, `line${i}.ts`), l + "\n"));
+    writeFileSync(join(d, "line9.tsx"), lines.join("\n") + "\n");
+    expect(ms(() => scanSource(d))).toBeLessThan(1000);
+  });
+
   it("scan_source: a long one-line <style> block, and a claim far along a line", () => {
     // Only the first 2000 characters of a line were read. The "</style>" after them was missed, so every later line of
     // the page was skipped as CSS, and the README claim at character 2450 was not seen.

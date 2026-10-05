@@ -291,3 +291,33 @@ describe("scanSource conflicts across the site and the docs", () => {
     expect(scanSource(join(base, "docs")).conflicts).toEqual([]);
   });
 });
+
+describe("scanSource billing", () => {
+  it("finds what a plan attaches to, which plan checks code outside tests calls, and upgrade copy", () => {
+    const d = mkdtempSync(join(tmpdir(), "bill-"));
+    mkdirSync(join(d, "routes"));
+    mkdirSync(join(d, "test"));
+    mkdirSync(join(d, "components"));
+    writeFileSync(
+      join(d, "users.repository.ts"),
+      'export async function setPremium(userId: string) {\n  return db.users.update({ where: { id: userId }, data: { plan: "pro" } });\n}\nexport function isPremium(user: User): boolean {\n  return user.plan === "pro";\n}\nexport const FREE_PROJECT_LIMIT = 3;\n'
+    );
+    writeFileSync(join(d, "routes", "projects.ts"), 'import { isPremium } from "../users.repository";\nexport function create(user: User) {\n  if (!isPremium(user)) throw new Error("Upgrade to Pro to create more projects.");\n}\n');
+    writeFileSync(join(d, "test", "limits.ts"), 'import { FREE_PROJECT_LIMIT } from "../users.repository";\nexpect(count).toBe(FREE_PROJECT_LIMIT);\n');
+    writeFileSync(join(d, "components", "Paywall.tsx"), "export const P = () => <p>Unlock unlimited projects with the Pro plan.</p>;\n");
+    const b = scanSource(d).billing!;
+    expect(b.planAttachesTo).toEqual({ user: 4, team: 0, project: 1 });
+    expect(b.gates).toEqual([
+      { name: "FREE_PROJECT_LIMIT", definedAt: "users.repository.ts:7", callsOutsideTests: 0, callers: [] },
+      { name: "isPremium", definedAt: "users.repository.ts:4", callsOutsideTests: 1, callers: [join("routes", "projects.ts") + ":3"] },
+    ]);
+    expect(b.upgradeCopy.map((c) => `${c.file}:${c.line}`)).toEqual([join("components", "Paywall.tsx") + ":1", join("routes", "projects.ts") + ":3"]);
+    expect(b.hits.every((h) => !h.file.startsWith("test"))).toBe(true);
+  });
+
+  it("is null when there is no billing code", () => {
+    const d = mkdtempSync(join(tmpdir(), "bill-"));
+    writeFileSync(join(d, "a.ts"), 'export const LIMIT = 10;\nconst rows = db.query("select * from t limit 10");\n');
+    expect(scanSource(d).billing).toBeNull();
+  });
+});
