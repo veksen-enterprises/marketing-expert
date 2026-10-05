@@ -40,8 +40,8 @@ describe("scanSource decisions", () => {
     writeFileSync(join(d, "adr", "README.md"), "| # | Decision | Date | Status |\n| --- | --- | --- | --- |\n| [0002](0002-b.md) | Use B | 2026-01-01 | Accepted; monitor mode open |\n");
     const r = scanSource(d);
     expect(r.decisions).toEqual([
-      { id: "0001", title: "Use A", status: "proposed", indexStatus: null, file: join("adr", "0001-a.md") },
-      { id: "0002", title: "2. Use B", status: "Accepted, not fully built.", indexStatus: "Accepted; monitor mode open", file: join("adr", "0002-b.md") },
+      { id: "0001", title: "Use A", status: "proposed", datedStatus: [], indexStatus: null, statusConflict: false, file: join("adr", "0001-a.md") },
+      { id: "0002", title: "2. Use B", status: "Accepted, not fully built.", datedStatus: [], indexStatus: "Accepted; monitor mode open", statusConflict: false, file: join("adr", "0002-b.md") },
     ]);
     expect(r.notes.join(" ")).toMatch(/not fully built/);
   });
@@ -103,5 +103,81 @@ describe("scanSource review fixes", () => {
     const r = scanSource(d);
     expect(r.claims.price.map((c) => c.text)).toEqual(["The Pro plan costs $20.", "Team is $49.99."]);
     expect(r.claims.data.map((c) => `${c.file}:${c.line}`)).toEqual(["Faq.tsx:1", "Faq.tsx:2"]);
+  });
+});
+
+describe("scanSource decision records (folder, dates, conflicts)", () => {
+  it("finds records when the ADR folder itself is scanned, and numbered records with a status anywhere", () => {
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    mkdirSync(join(d, "docs", "adr"), { recursive: true });
+    mkdirSync(join(d, "rfcs"));
+    writeFileSync(join(d, "docs", "adr", "0001-a.md"), "# A\n\nStatus: Accepted\n");
+    writeFileSync(join(d, "docs", "adr", "0002-b.md"), "# B\n\nStatus: Proposed\n");
+    writeFileSync(join(d, "rfcs", "0007-c.md"), "# C\n\n## Status\n\nAccepted\n");
+    writeFileSync(join(d, "rfcs", "0008-notes.md"), "# Notes without a status\n");
+    expect(scanSource(join(d, "docs", "adr")).decisions.map((x) => [x.file, x.status])).toEqual([
+      ["0001-a.md", "Accepted"],
+      ["0002-b.md", "Proposed"],
+    ]);
+    expect(scanSource(d).decisions.map((x) => x.file)).toEqual([join("docs", "adr", "0001-a.md"), join("docs", "adr", "0002-b.md"), join("rfcs", "0007-c.md")]);
+  });
+
+  it("says so when numbered files have no status", () => {
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    for (const n of ["0001", "0002", "0003"]) writeFileSync(join(d, `${n}-x.md`), "# Chapter\n\nText.\n");
+    const r = scanSource(d);
+    expect(r.decisions).toEqual([]);
+    expect(r.notes.join(" ")).toMatch(/3 files are numbered like decision records .* no decision records found/);
+  });
+
+  it("looks up to the git root for docs/adr when there are none under the folder", () => {
+    const d = mkdtempSync(join(tmpdir(), "repo-"));
+    mkdirSync(join(d, ".git"));
+    mkdirSync(join(d, "docs", "adr"), { recursive: true });
+    mkdirSync(join(d, "apps", "docs"), { recursive: true });
+    writeFileSync(join(d, "docs", "adr", "0001-a.md"), "# A\n\nStatus: Accepted\n");
+    writeFileSync(join(d, "apps", "docs", "intro.md"), "# Intro\n");
+    const r = scanSource(join(d, "apps", "docs"));
+    expect(r.decisionsFrom).toBe(join(r.dir, "..", "..", "docs", "adr"));
+    expect(r.decisions.map((x) => [x.file, x.status])).toEqual([[join("..", "..", "docs", "adr", "0001-a.md"), "Accepted"]]);
+    expect(r.notes.join(" ")).toMatch(/No decision records under this folder; read 1 from .*docs\/adr/);
+    // Not past the git root.
+    const e = mkdtempSync(join(tmpdir(), "outer-"));
+    mkdirSync(join(e, "docs", "adr"), { recursive: true });
+    mkdirSync(join(e, "repo", ".git"), { recursive: true });
+    mkdirSync(join(e, "repo", "app"));
+    writeFileSync(join(e, "docs", "adr", "0001-a.md"), "# A\n\nStatus: Accepted\n");
+    expect(scanSource(join(e, "repo", "app")).decisionsFrom).toBeUndefined();
+    expect(scanSource(join(e, "repo", "app")).decisions).toEqual([]);
+  });
+
+  it("reads the whole Status section, lists dated lines newest first, and flags conflicts with the index and between records", () => {
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    mkdirSync(join(d, "adr"));
+    writeFileSync(join(d, "adr", "0019-monitor.md"), "# Monitor mode\n\n## Status\n\nAccepted 2026-03-02.\n\nMonitor mode open, tracked in #4037.\n\n## Context\n");
+    writeFileSync(join(d, "adr", "0024-monitor-alerts.md"), "# Monitor alerts\n\n## Status\n\nAccepted 2026-05-10. Deferred 2026-06-01.\n\nMonitor mode built 2026-08-21 (#4037).\n\n## Context\n\nSee 2025-01-01.\n");
+    writeFileSync(join(d, "adr", "README.md"), "| # | Decision | Status |\n| --- | --- | --- |\n| 0019 | Monitor mode | Accepted; monitor mode open (#4037) |\n| 0024 | Monitor alerts | Accepted; monitor mode open |\n");
+    const r = scanSource(d);
+    const a = r.decisions.find((x) => x.id === "0024")!;
+    expect(a.status).toBe("Accepted 2026-05-10. Deferred 2026-06-01. Monitor mode built 2026-08-21 (#4037).");
+    expect(a.datedStatus).toEqual([
+      { text: "Monitor mode built 2026-08-21 (#4037).", date: "2026-08-21" },
+      { text: "Deferred 2026-06-01.", date: "2026-06-01" },
+      { text: "Accepted 2026-05-10.", date: "2026-05-10" },
+    ]);
+    expect(a.statusConflict).toBe(true);
+    expect(r.decisions.find((x) => x.id === "0019")!.statusConflict).toBe(false);
+    expect(r.decisionIssues).toEqual([
+      {
+        issue: "#4037",
+        conflict: true,
+        mentions: [
+          { file: join("adr", "0019-monitor.md"), line: 7, text: "Monitor mode open, tracked in #4037.", state: "open" },
+          { file: join("adr", "0024-monitor-alerts.md"), line: 7, text: "Monitor mode built 2026-08-21 (#4037).", state: "done" },
+          { file: join("adr", "README.md"), line: 3, text: "| 0019 | Monitor mode | Accepted; monitor mode open (#4037) |", state: "open" },
+        ],
+      },
+    ]);
+    expect(r.notes.join(" ")).toMatch(/report both; settle it from the feature's docs and code; the newest dated line usually wins/);
   });
 });

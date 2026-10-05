@@ -4,7 +4,7 @@
 // against each other; (2) build-time env flags that change what gets built.
 // Reads local files only, by extension, under the directory given. Returns text as data.
 
-import { readdirSync, readFileSync, statSync, lstatSync, realpathSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, lstatSync, realpathSync, existsSync } from "node:fs";
 import { join, relative, extname, sep, dirname } from "node:path";
 
 export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof";
@@ -25,11 +25,23 @@ export interface EnvFlag {
 export interface Decision {
   id: string;
   title: string;
-  /** From the record itself: frontmatter "status:", a "Status:" line, or the first paragraph under "## Status". */
+  /** From the record itself: frontmatter "status:", a "Status:" line, or the whole "## Status" section. */
   status: string | null;
-  /** From the decision index table (e.g. docs/adr/README.md), when there is one. */
+  /** Sentences of the status that carry a date (2026-08-21), newest first: later lines often amend the first one. */
+  datedStatus: Array<{ text: string; date: string }>;
+  /** From the decision index table (e.g. docs/adr/README.md) in the same folder, when there is one. */
   indexStatus: string | null;
+  /** The record and the index give different statuses (open vs built, proposed vs accepted). */
+  statusConflict: boolean;
   file: string;
+}
+
+/** An issue number (#4037) named by more than one decision record or index row. */
+export interface DecisionIssue {
+  issue: string;
+  /** One line says it is open or not built, another says it is built or done. */
+  conflict: boolean;
+  mentions: Array<{ file: string; line: number; text: string; state: "open" | "done" | null }>;
 }
 
 export interface SourceScan {
@@ -41,22 +53,61 @@ export interface SourceScan {
   envFlags: EnvFlag[];
   /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
   decisions: Decision[];
+  /** Set when no records were under dir and they were read from this folder higher up in the same git repo. */
+  decisionsFrom?: string;
+  decisionIssues: DecisionIssue[];
   notes: string[];
 }
 
 const ADR_FILE = /^(\d{3,4})-[\w.-]+\.md$/;
+const ADR_DIR = /(^|\/)(adr|adrs|decisions)\//i;
 
-function decisionStatus(src: string): string | null {
+function decisionStatus(src: string): { status: string; body: string } | null {
   // Frontmatter only at the start of the file. With /m, every "---" line was a start that searched to the end of the file.
   const block = /^---\r?\n([\s\S]*?)\r?\n---/.exec(src)?.[1];
   const fm = block && /^status:[ \t]*(.+)$/m.exec(block);
-  if (fm) return fm[1].trim();
+  if (fm) return { status: fm[1].trim(), body: fm[1] };
   // [ \t]*, not \s*, where it meets a newline: \s* takes all the blank lines that follow and backtracks, which on a record
   // with many blank lines is quadratic.
   const line = /^[ \t]*(?:\*\*)?status(?:\*\*)?\s*:\s*(.+)$/im.exec(src);
-  if (line) return line[1].replace(/\*\*/g, "").trim().slice(0, 240);
-  const sec = /^#{2,3}\s*status[ \t\r]*\n+([\s\S]*?)(?:\n\s*\n|\n#)/im.exec(src);
-  return sec ? sec[1].replace(/\s+/g, " ").trim().slice(0, 240) : null;
+  if (line) return { status: line[1].replace(/\*\*/g, "").trim().slice(0, 240), body: line[1] };
+  // The whole section, up to the next heading: amendments ("Monitor mode built 2026-08-21") often follow the first paragraph.
+  const head = /^#{2,3}[ \t]*status[ \t\r]*$/im.exec(src);
+  if (!head) return null;
+  const rest = src.slice(head.index + head[0].length);
+  const end = rest.search(/\n#/);
+  const body = end < 0 ? rest : rest.slice(0, end);
+  const status = body.replace(/\s+/g, " ").trim().slice(0, 600);
+  return status ? { status, body } : null;
+}
+
+function datedLines(body: string): Decision["datedStatus"] {
+  const out: Decision["datedStatus"] = [];
+  for (const part of body.split(/(?<=[.!?])\s+|\n\s*\n|\n\s*[-*]\s+/)) {
+    const date = /\b(\d{4}-\d{2}-\d{2})\b/.exec(part)?.[1];
+    if (date && out.length < 10) out.push({ text: part.replace(/\s+/g, " ").trim().slice(0, 200), date });
+  }
+  return out.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+// Status words, folded so "not fully built" and "open" compare equal.
+const STATUS_WORDS = /\b(not (?:fully |yet )?(?:built|implemented|done)|partial(?:ly built)?|in progress|open|built|shipped|done|implemented|complete[d]?|accepted|proposed|draft|rejected|superseded|deprecated|deferred|withdrawn)\b/gi;
+function statusWords(s: string): string {
+  const fold = (w: string) => (/^(not|partial|in progress|open)/.test(w) ? "open" : /^(built|shipped|done|implemented|complete)/.test(w) ? "built" : w);
+  return [...new Set([...s.toLowerCase().matchAll(STATUS_WORDS)].map((m) => fold(m[1])))].sort().join(",");
+}
+function statusesDiffer(a: string, b: string): boolean {
+  const wa = statusWords(a);
+  const wb = statusWords(b);
+  if (wa && wb) return wa !== wb;
+  const n = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return !n(a).includes(n(b)) && !n(b).includes(n(a));
+}
+
+const ISSUE = /#(\d{2,6})(?![\w-])/g;
+function issueState(line: string): "open" | "done" | null {
+  if (/\b(open|todo|pending|not (?:fully |yet )?(?:built|done|started|implemented)|planned|deferred|in progress|blocked)\b/i.test(line)) return "open";
+  return /\b(built|shipped|done|closed|fixed|implemented|merged|released|landed)\b/i.test(line) ? "done" : null;
 }
 
 // Table cells, with or without the outer pipes: "| a | b |" and "a | b" are both rows.
@@ -68,35 +119,54 @@ function tableCells(row: string): string[] | null {
   return cells;
 }
 
-function readDecisions(root: string, files: string[]): Decision[] {
+function readDecisions(root: string, files: string[]): { decisions: Decision[]; issues: DecisionIssue[]; numbered: number } {
   // Keyed by file: two folders (docs/adr, billing/adr) can both have a 0001.
   const out = new Map<string, Decision>();
+  const mentions = new Map<string, DecisionIssue["mentions"]>();
+  const noteIssues = (rel: string, src: string) => {
+    src.split("\n").forEach((line, i) => {
+      for (const m of line.matchAll(ISSUE)) {
+        const list = mentions.get(m[1]) ?? [];
+        if (list.length < 6 && !list.some((x) => x.file === rel && x.line === i + 1)) list.push({ file: rel, line: i + 1, text: line.trim().slice(0, 200), state: issueState(line) });
+        mentions.set(m[1], list);
+      }
+    });
+  };
+  let numbered = 0;
   for (const f of files) {
     const rel = relative(root, f);
     const name = rel.split("/").pop() ?? "";
     const m = ADR_FILE.exec(name);
-    if (!m || !/(^|\/)(adr|adrs|decisions)\//i.test(rel)) continue;
+    if (!m) continue;
+    numbered++;
     let src = "";
     try {
       src = readFileSync(f, "utf8");
     } catch {
       continue;
     }
+    // Outside an adr/ or decisions/ folder (or when that folder is the one scanned, which the full path shows), a
+    // numbered file is a record only when it has a status.
+    const st = decisionStatus(src);
+    if (!st && !ADR_DIR.test(f)) continue;
     const title = (/^#\s+(.+)$/m.exec(src)?.[1] ?? name).trim();
-    out.set(rel, { id: m[1], title, status: decisionStatus(src), indexStatus: null, file: rel });
+    out.set(rel, { id: m[1], title, status: st?.status ?? null, datedStatus: st ? datedLines(st.body) : [], indexStatus: null, statusConflict: false, file: rel });
+    noteIssues(rel, src);
   }
   const byFolder = new Map([...out.values()].map((d) => [`${dirname(d.file)}/${d.id}`, d]));
+  const folders = new Set([...out.values()].map((d) => dirname(d.file)));
   // Index tables: | [0003](0003-....md) | Decision | Date | Status |. The status is the column headed "Status", and a
   // table applies only to the records in its own folder.
   for (const f of files) {
     const rel = relative(root, f);
-    if (!/(^|\/)(adr|adrs|decisions)\/(README|index)\.md$/i.test(rel)) continue;
+    if (!/^(README|index)\.md$/i.test(rel.split("/").pop() ?? "") || !folders.has(dirname(rel))) continue;
     let src = "";
     try {
       src = readFileSync(f, "utf8");
     } catch {
       continue;
     }
+    noteIssues(rel, src);
     const folder = dirname(rel);
     let statusCol = -1;
     let inTable = false;
@@ -117,10 +187,47 @@ function readDecisions(root: string, files: string[]): Decision[] {
       const d = byFolder.get(`${folder}/${id}`);
       // [^()], not [^)]: from every "[1](" with no ")" after it, the scan ran to the end of the row.
       const status = cells[statusCol].replace(/\[(\d+)\]\([^()]*\)/g, "$1");
-      if (d) d.indexStatus = status;
+      if (d) {
+        d.indexStatus = status;
+        d.statusConflict = d.status !== null && statusesDiffer(d.status, status);
+      }
     }
   }
-  return [...out.values()].sort((a, b) => a.file.localeCompare(b.file));
+  const issues = [...mentions.entries()]
+    .filter(([, list]) => new Set(list.map((x) => x.file)).size > 1)
+    .map(([n, list]) => ({
+      issue: `#${n}`,
+      conflict: list.some((x) => x.state === "open") && list.some((x) => x.state === "done"),
+      mentions: list.sort((a, b) => a.file.localeCompare(b.file) || a.line - b.line),
+    }))
+    .sort((a, b) => Number(b.conflict) - Number(a.conflict) || a.issue.localeCompare(b.issue))
+    .slice(0, 20);
+  return { decisions: [...out.values()].sort((a, b) => a.file.localeCompare(b.file)), issues, numbered };
+}
+
+// When the scanned folder has no decision records (apps/docs), the repo's own docs/adr is often higher up.
+const ADR_HOMES = ["docs/adr", "docs/adrs", "docs/decisions", "doc/adr", "adr", "adrs", "decisions"];
+function findDecisionsAbove(root: string): string | null {
+  let git: string | null = null;
+  for (let p = root; ; p = dirname(p)) {
+    if (existsSync(join(p, ".git"))) {
+      git = p;
+      break;
+    }
+    if (dirname(p) === p) return null;
+  }
+  for (let p = root; p !== git; ) {
+    p = dirname(p);
+    for (const h of ADR_HOMES) {
+      const d = join(p, h);
+      try {
+        if (statSync(d).isDirectory()) return d;
+      } catch {
+        // not there
+      }
+    }
+  }
+  return null;
 }
 
 const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte"]);
@@ -279,9 +386,22 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
   if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"}: they point to a folder or to a file outside this directory.`);
   for (const k of Object.keys(counts) as ClaimKind[]) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
-  const decisions = readDecisions(root, files);
+  let { decisions, issues: decisionIssues, numbered } = readDecisions(root, files);
+  let decisionsFrom: string | undefined;
+  if (!decisions.length && numbered >= 3) notes.push(`${numbered} files are numbered like decision records (0001-name.md) but none has a status line, so no decision records found in ${root}.`);
+  const above = decisions.length ? null : findDecisionsAbove(root);
+  if (above) {
+    const adrFiles: string[] = [];
+    walk(above, adrFiles, { truncated: false }, new Set([".md"]), new Set(), realpathSync(above));
+    ({ decisions, issues: decisionIssues } = readDecisions(root, adrFiles));
+    if (decisions.length) {
+      decisionsFrom = above;
+      notes.push(`No decision records under this folder; read ${decisions.length} from ${above}. Their paths are relative to this folder.`);
+    }
+  }
+  if (decisionIssues.some((x) => x.conflict)) notes.push("decisionIssues: records or index rows disagree about the same issue (one says open, another built). Check the issue and the code.");
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, decisions, notes };
+  return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
 }
