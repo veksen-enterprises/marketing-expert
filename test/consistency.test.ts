@@ -47,4 +47,10 @@ describe("instructions and move format", () => {
       expect(counts.map((c) => words[c.toLowerCase()] ?? Number(c))).toEqual(counts.map(() => MAX_MOVES));
     }
   });
+  it("tells the model to check a 90-day plan against the plan word limit", async () => {
+    // Without deliverable "plan", check_answer applies the 1,200-word answer limit to a plan.
+    const { INSTRUCTIONS } = await import("../src/server.js");
+    expect(INSTRUCTIONS).toMatch(/deliverable "plan"/);
+    expect(prompts).toMatch(/check_answer with deliverable "plan"/);
+  });
 });

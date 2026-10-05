@@ -49,4 +49,12 @@ describe("checkLabels", () => {
     const r = checkLabels("Perplexity's top commercial sources include G2, Gartner, NerdWallet and Yelp (ai-assistant-visibility playbook).");
     expect(r[0]).toMatchObject({ status: "qualifier-dropped", matchedBy: "named-playbook", sourceLabels: ["vendor, not re-verified"] });
   });
+  it("takes a parenthesis as a label only when it starts with an evidence tag", () => {
+    expect(checkLabels("Most vendors publish case studies (the vendor's own research, so read it with care).").map((l) => l.status)).not.toContain("merged");
+    expect(checkLabels("Treat moderators as your first customers (practitioner rule of thumb).")[0].status).toBe("merged");
+  });
+  it("needs a clear search lead before calling a sentence an unlabelled reuse", () => {
+    // devtool-competition, round 5: matched the third search hit, on the words "tool agents call not their".
+    expect(checkLabels("Be the tool agents call, not their rival.")).toEqual([]);
+  });
 });

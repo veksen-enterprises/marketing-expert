@@ -103,4 +103,30 @@ Mechanism: x. Cheapest test: 5 calls. Metric: signups. Time box: 2 weeks. Stop: 
     expect(a.moveIssues).toHaveLength(1);
     expect(a.problems.join(" ")).toMatch(/cheapest test is the move itself/);
   });
+  it("takes 'none of 10' in a stop line as a threshold", () => {
+    expect(lintMoves("## Moves\n\n1. **Show the page to 10 buyers.** Mechanism: x. Cheapest test: 10 calls. Metric: replies. Time box: 2 weeks. Stop: none of 10 buyers can say what it does.").issues).toEqual([]);
+    expect(lintMoves("## Moves\n\n1. **Fix the price.** Mechanism: x. Cheapest test: 1 call. Metric: y. Time box: 1 week. Stop: none, it's hygiene.").issues.join(" ")).toMatch(/has no stop condition/);
+  });
+
+  it("reads the move count only from a number before 'moves', not from a week range", () => {
+    const move = (n: number) => `${n}. **Interview ${n} users.** Mechanism: x. Metric: y. Time box: 2 weeks. Stop: fewer than 3 of 10.`;
+    expect(lintMoves(`## Moves (weeks 1–6)\n\n${[1, 2, 3].map(move).join("\n")}`).issues).toEqual([]);
+    expect(lintMoves(`## The two key moves (weeks 1–6)\n\n${[1, 2, 3].map(move).join("\n")}`).issues).toEqual(["The heading says 2 moves but 3 are listed."]);
+  });
+
+  it("flags a falsifier with no number, on its line or the line under its heading", () => {
+    expect(lintMoves("What would prove me wrong: interviews show buyers want production monitoring, not a pre-merge gate.").issues.join(" ")).toMatch(/has no number/);
+    expect(lintMoves("## What would prove me wrong\n\nBuyers want production monitoring instead.").issues.join(" ")).toMatch(/has no number \(".*Buyers want production monitoring/);
+    expect(lintMoves("## What would prove me wrong\n\nFewer than 3 of 10 buyers ask for a pre-merge gate.").issues).toEqual([]);
+  });
+
+  it("doesn't read two verbs in a relative clause as two actions", () => {
+    expect(lintMoves("## Moves\n\n1. **Interview developers who build and ship agents.** Mechanism: x. Cheapest test: 10 calls. Metric: replies. Time box: 2 weeks. Stop: fewer than 3 of 10.").issues).toEqual([]);
+  });
+
+  it("checks a long action in time that grows with the text", () => {
+    const start = Date.now();
+    lintMoves(`## Moves\n\n1. **${"add ".repeat(24000)}**`);
+    expect(Date.now() - start).toBeLessThan(1000);
+  });
 });

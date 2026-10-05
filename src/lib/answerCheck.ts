@@ -32,6 +32,8 @@ export interface AnswerCheck {
   /** Moves that bundle actions, lack a field of the move format, or have a stop line with no number. */
   moveIssues: string[];
   problems: string[];
+  /** Steps to take once, such as verify_quotes for repo citations. Not in problems: the check can't see that they were done. */
+  reminders: string[];
 }
 
 /** Default word limits: a direct answer, and a 90-day plan, which has more required parts. */
@@ -41,8 +43,9 @@ const APPENDIX_MAX = 600;
 const PARTS: Array<[string, RegExp]> = [
   ["what would prove the diagnosis wrong", /prove[sd]? (me|this|it|that) wrong|I'?m wrong if|I'?d be wrong|would change my mind|this is wrong if|disprove|falsif/i],
   ["open questions for the founder", /open questions|questions for you|what I need from you|to confirm:/i],
-  // An offer, not any "profile": "ideal customer profile" isn't one. \b fails inside save_business_profile, so it is named.
-  ["the offer to save confirmed facts as a business profile", /save_business_profile|\b(save|store|keep|record)\b[^.?!\n]{0,40}\bprofile\b/i],
+  // An offer of the business profile, not any "profile": "keep your ideal customer profile narrow" isn't one.
+  // \b fails inside save_business_profile, so it is named.
+  ["the offer to save confirmed facts as a business profile", /save_business_profile|\b(save|store)\b[^.?!\n]{0,40}\b(business|your) profile\b|\bbusiness profile\b/i],
 ];
 
 const BANNED = ["moat", "moats", "flywheel", "synergy", "game-changer", "game changer", "best-in-class", "world-class"];
@@ -52,8 +55,10 @@ const JARGON = ["ICP", "LTV", "CAC", "ARR", "MRR", "NRR", "GRR", "SAM", "SOM", "
   "overlay model", "aggregator", "liquidity", "webhook", "OCR", "UTM", "ORM", "CI gate", "DM", "gzip", "lastmod", "switch interview", "win/loss", "re:Invent", "absorption", "301 redirect", "302 redirect", "307 redirect", "308 redirect"];
 // Common words with a marketing meaning: worth a gloss, but too common to list as problems.
 const CONSIDER = ["positioning", "activation", "churn", "cohort", "sustaining"];
-// All-caps words most readers know. Any other 2-5 capital letters (ADR, SSO, MCP) count as an abbreviation.
-const KNOWN = new Set(["API", "URL", "CI", "PR", "AI", "SQL", "JSON", "CLI", "SDK", "US", "EU", "UK", "HTML", "CSS", "PDF", "CSV", "FAQ", "ID", "HTTP", "KB", "MB", "GB", "OK", "TV", "NOT", "NO", "DO", "OR", "AND", "ALL", "ONLY"]);
+// All-caps words most readers know, emphasis words, times and currency codes. Any other 2-5 capital letters
+// (ADR, SSO, MCP) count as an abbreviation.
+const KNOWN = new Set(["API", "URL", "CI", "PR", "AI", "SQL", "JSON", "CLI", "SDK", "US", "EU", "UK", "HTML", "CSS", "PDF", "CSV", "FAQ", "ID", "HTTP", "KB", "MB", "GB", "OK", "TV", "NOT", "NO", "DO", "OR", "AND", "ALL", "ONLY",
+  "MUST", "NEVER", "NOTE", "TL", "DR", "AM", "PM", "USD", "EUR", "GBP", "SEO", "CEO", "CTO", "UI", "UX", "AWS"]);
 const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 let glossaryCache: Map<string, string> | null = null;
@@ -76,49 +81,59 @@ function glossary(): Map<string, string> {
   return glossaryCache;
 }
 
-/** True if the words of `s` include a run whose initials spell `abbr` ("Hacker News" for HN). */
+/** True if the words of `s` include a run whose initials spell `abbr` ("Hacker News" for HN). Two letters match by
+ * chance ("directly mentioning" for DM), so those need capitalised words. */
 function initialsIn(s: string, abbr: string): boolean {
-  const initials = (s.match(/[\p{L}\p{N}]+/gu) ?? []).map((w) => w[0].toUpperCase()).join("");
-  return abbr.length > 1 && initials.includes(abbr.toUpperCase());
+  const words = s.match(/[\p{L}\p{N}]+/gu) ?? [];
+  const a = abbr.toUpperCase();
+  for (let i = 0; a.length > 1 && i + a.length <= words.length; i++)
+    if (words.slice(i, i + a.length).every((w, j) => w[0].toUpperCase() === a[j] && (a.length > 2 || /^\p{Lu}/u.test(w)))) return true;
+  return false;
 }
 
 /** A use counts as explained when a gloss follows it in the same sentence ("ORM (a database library)", "LTV: meaning…",
- * "CI gate — a check…"), when it is the whole bracket after its expansion ("… (ICP)"), when the expansion or the
- * initials' words are in the same sentence, or when the next sentence starts "That means". */
+ * "CI gate — a check…"), when it is the whole bracket after its expansion ("… (ICP)"), when the expansion is near it in
+ * the same sentence or the initials' words come up to 12 words before it, or when the next sentence starts "That means".
+ * Only text near the use is read, so a long sentence with many uses doesn't take time growing with its square. */
 function explained(sentence: string, idx: number, len: number, expansion: string | undefined, next: string, abbr: boolean): boolean {
-  const before = sentence.slice(0, idx);
-  const after = sentence.slice(idx + len);
+  const before = sentence.slice(Math.max(0, idx - 300), idx);
+  const after = sentence.slice(idx + len, idx + len + 300);
   if (/\(\s*$/.test(before) && /^\s*\)/.test(after)) return true;
   if (/^(?:[\s-]+[\p{L}\p{N}'’-]+)?\s*(?:\(|[—–]\s|-\s|,?\s*(?:meaning|which means|means|i\.e\.|that is)\b|:\s*(?:meaning|the|a|an)\b)/iu.test(after)) return true;
   const rest = (before + " " + after).toLowerCase();
   if (expansion && rest.includes(expansion.toLowerCase().replace(/\s*\(.*$/, ""))) return true;
-  if (abbr && initialsIn(before + " " + after, sentence.slice(idx, idx + len).replace(/e?s$/, ""))) return true;
+  if (abbr && initialsIn(before.split(/\s+/).slice(-13).join(" "), sentence.slice(idx, idx + len).replace(/e?s$/, ""))) return true;
   return /^(that|this|it) means\b|^i\.e\.|^in other words\b/i.test(next.trim());
 }
 
 /** Terms used with no explanation at any use. */
 function unexplained(text: string): { terms: string[]; consider: string[] } {
-  // Code, URLs and file paths aren't prose.
-  const prose = text.replace(/```[\s\S]*?```/g, " ").replace(/`[^`]*`/g, " ").replace(/https?:\/\/\S+/g, " ").replace(/\b[\w-]+(?:\/[\w.-]+)+/g, " ");
+  // Code, URLs and file paths aren't prose. A path has a file extension or two slashes; "win/loss" has neither.
+  const prose = text
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/\b[\w-]+(?:\/[\w.-]+)+/g, (p) => (/\.\w|\/.*\//.test(p) ? " " : p));
   const sentences = prose.split(/\n+|(?<=[.!?])\s+/);
   const gloss = glossary();
   const found = new Set<string>();
-  // Not a name like "OAI-SearchBot".
-  for (const m of prose.matchAll(/(?<![\p{L}\p{N}_])([A-Z]{2,5})s?(?![\p{L}\p{N}_]|-\p{L})/gu)) if (!KNOWN.has(m[1])) found.add(m[1]);
+  // Not a name like "OAI-SearchBot". Each term is looked up in the whole text, so stop at 50.
+  for (const m of prose.matchAll(/(?<![\p{L}\p{N}_])([A-Z]{2,5})s?(?![\p{L}\p{N}_]|-\p{L})/gu)) if (!KNOWN.has(m[1]) && found.size < 50) found.add(m[1]);
   const candidates = [...new Set([...JARGON, ...gloss.keys(), ...found])];
   const check = (terms: string[]) =>
     terms.filter((t) => {
       const abbr = /^[A-Z0-9&]+$/.test(t);
       // Abbreviations match case-sensitively; other terms in any case. Either may be plural ("MQLs").
       const re = new RegExp(`(?<![\\p{L}\\p{N}_])${esc(t)}(?:s|es)?(?![\\p{L}\\p{N}_])`, abbr ? "gu" : "giu");
-      let used = false;
+      let uses = 0;
       for (let i = 0; i < sentences.length; i++) {
         for (const m of sentences[i].matchAll(re)) {
-          used = true;
           if (explained(sentences[i], m.index!, m[0].length, gloss.get(t), sentences[i + 1] ?? "", abbr)) return false;
+          // An explanation comes at or near the first use; reading every use of a common term is slow on long text.
+          if (++uses === 20) return true;
         }
       }
-      return used;
+      return uses > 0;
     });
   return { terms: check(candidates), consider: check(CONSIDER) };
 }
@@ -178,8 +193,9 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   }
   const { issues: moveIssues } = lintMoves(body);
   problems.push(...moveIssues);
-  // A repo citation (pricing.astro:263, ADR 0006) means quotes to check.
-  const cite = /\b[\w./-]+\.[a-z][a-z0-9]{0,4}:\d+|\bADR[\s-]?\d{2,4}\b/i.exec(text.replace(/https?:\/\/\S+/g, " "));
-  if (cite) problems.push(`Cites the repo (${cite[0]}); run verify_quotes on this exact text, if you haven't.`);
-  return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, considerExplaining, problems };
+  // A repo citation (pricing.astro:263, ADR 0006) means quotes to check; a host and port (api.example.com:443) doesn't.
+  const reminders: string[] = [];
+  const cite = /\b[\w./-]+\.(?!(?:com|org|net|io|dev|ai|co|app)\b)[a-z][a-z0-9]{0,4}:\d+|\bADR[\s-]?\d{2,4}\b/i.exec(text.replace(/https?:\/\/\S+/g, " "));
+  if (cite) reminders.push(`Cites the repo (${cite[0]}); run verify_quotes on this exact text, if you haven't.`);
+  return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, considerExplaining, problems, reminders };
 }

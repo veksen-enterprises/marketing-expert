@@ -84,6 +84,7 @@ Business: ${business}
 6. The plan: at most ${MAX_MOVES} moves; ${MOVE_FORMAT}. Then the first 90 days in order, with calendar dates, founder or owner hours per week for each move, and owners if a team was described. At most 2–3 things at once; no move may depend on the output of one that starts later.
 7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
 8. What not to do yet, and why.
+Before sending, run check_answer with deliverable "plan" (a 1,800-word limit).
 Offer to save the confirmed facts with save_business_profile.`)
   );
 

@@ -40,9 +40,10 @@ const REQUIRED: Array<[string, string]> = [
 const NUMBER_WORDS = ["zero", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "twenty", "fifty", "hundred"];
 const HAS_NUMBER = new RegExp(`\\d|\\b(${NUMBER_WORDS.join("|")}|half|a third|a quarter|twice|double|both|none of|(less|more) than|below|above)\\b`, "i");
 const VAGUE = /\b(most|mostly|few|many|some|often|rarely|enough|no change|doesn'?t move|don'?t move|no new)\b/i;
-// Verbs that start a piece of work. Two of them joined by "and" or ";" in one action is two moves.
+// Verbs that start a piece of work. Two of them joined by "and" or ";" in one action is two moves, but not inside
+// "who build and ship". The gap is bounded: an unbounded lazy scan grew with the square of the action's length.
 const VERBS = "add|build|post|ship|write|ask|list|run|fix|offer|publish|pin|help|rewrite|make|create|launch|send|remove|change|interview|record|register|connect|update";
-const BUNDLE = new RegExp(`\\b(${VERBS})\\b[^.;:]*?(?:,?\\s+and|;)\\s+(?:then\\s+|also\\s+|\\w+ly\\s+)?(${VERBS})\\b`, "i");
+const BUNDLE = new RegExp(`(?<!\\b(?:who|that|which)\\s+)\\b(${VERBS})\\b(?:(?!\\b(?:who|that|which)\\b)[^.;:]){0,120}?(?:,?\\s+and|;)\\s+(?:then\\s+|also\\s+|\\w+ly\\s+)?(${VERBS})\\b`, "i");
 // "Run a pilot, with a simple expiry rule": a second piece of build work hung on the first.
 const WITH_BUILD = /,\s*with (?:a|an|the)\s+(?:[\w-]+\s+){0,3}?(rule|feature|filter|page|form|flow|check|integration|setting|opt-out|button|endpoint|template|export)s?\b/i;
 const SECOND_ACTION_START = /^(before\b|beforehand\b|in the same (change|pass|edit|release|pr|commit)\b|also\b|at the same time\b|while you'?re at it\b|do it in the same\b)/i;
@@ -115,7 +116,8 @@ export function lintMoves(text: string): MoveLint {
       strayList = null;
       heading = strip(line.replace(/^#+/, ""));
       inSection = MOVES_HEADING.test(heading) && !NOT_MOVES.test(heading);
-      const w = /\b(one|two|three|four|five|[1-5])\b/i.exec(heading);
+      // "Three moves", "the 2 key moves"; not "(weeks 1–6)".
+      const w = /\b(one|two|three|four|five|[1-5])\s+(?:\w+\s+)?moves?\b/i.exec(heading);
       sectionCount = inSection && w ? COUNT_WORD[w[1].toLowerCase()] : null;
       afterBlank = false;
       continue;
@@ -175,7 +177,7 @@ export function lintMoves(text: string): MoveLint {
     else if (test && RECURRING.test(test)) issues.push(`${label}: the cheapest test repeats ("${snip(test)}"). A test is one check with an end date.`);
 
     const stop = fields.get("stop");
-    if (stop !== undefined && /^(none|n\/a)\b|hygiene/i.test(stop)) issues.push(`${label} has no stop condition ("${snip(stop)}"). A fix with nothing to test goes under "Fix first", one line.`);
+    if (stop !== undefined && /^(none|n\/a)\b(?!\s+of\b)|hygiene/i.test(stop)) issues.push(`${label} has no stop condition ("${snip(stop)}"). A fix with nothing to test goes under "Fix first", one line.`);
     else if (stop !== undefined && !HAS_NUMBER.test(stop)) {
       const vague = VAGUE.exec(stop);
       issues.push(`${label}: the stop line has no number ("${snip(stop)}")${vague ? `; "${vague[0]}" is not a threshold` : ""}. Say the result that means drop or change it as a number ("fewer than 5 of 20 agree").`);
@@ -194,6 +196,10 @@ export function lintMoves(text: string): MoveLint {
   }
 
   const fals = FALSIFIER.exec(text);
-  if (fals && !HAS_NUMBER.test(fals[0]) && VAGUE.test(fals[0])) issues.push(`"What would prove me wrong" has no number ("${snip(fals[0], 90)}"). Give the result that would change your mind as a number.`);
+  if (fals) {
+    // The falsifier follows the phrase on its line, or is the next line under a "What would prove me wrong" heading.
+    const said = `${fals[1]}${/^[^\p{L}\p{N}]*[^\n.!?]*/u.exec(text.slice(fals.index + fals[1].length))![0]}`;
+    if (!HAS_NUMBER.test(said)) issues.push(`"What would prove me wrong" has no number ("${snip(said, 90)}"). Give the result that would change your mind as a number.`);
+  }
   return { moves, issues };
 }

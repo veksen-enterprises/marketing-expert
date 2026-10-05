@@ -30,9 +30,15 @@ export interface LabelFinding {
   status: "ok" | "upgraded" | "qualifier-dropped" | "no-source" | "merged" | "unlabelled-reuse";
 }
 
-// Labels in brackets, or in parentheses when they name an evidence level ("(practitioner rule of thumb)").
+// Parentheses that start with an evidence level ("(practitioner rule of thumb)"); not prose that mentions one
+// ("(the vendor's own research, …)").
+const PAREN_LABEL = /^\s*((controlled )?research|peer-reviewed|first-party|platform documentation|official docs?|practitioner|vendor|rule[- ]of[- ]thumb)\b/i;
+// Labels in brackets, or in parentheses that start with an evidence level.
 function labelsIn(s: string): string[] {
-  return [...s.matchAll(/\[([^\]\n]{3,80})\]|\(([^()\n]{3,80})\)/g)].map((m) => m[1] ?? m[2]).filter((l) => STRENGTH.some(([, re]) => re.test(l)));
+  return [...s.matchAll(/\[([^\]\n]{3,80})\]|\(([^()\n]{3,80})\)/g)]
+    .filter((m) => m[1] !== undefined || PAREN_LABEL.test(m[2]))
+    .map((m) => m[1] ?? m[2])
+    .filter((l) => STRENGTH.some(([, re]) => re.test(l)));
 }
 
 const norm = (l: string) => l.toLowerCase().replace(/[*_`]/g, "").replace(/\s+/g, " ").trim();
@@ -95,7 +101,13 @@ function unlabelled(claim: string, minScore: number): LabelFinding | null {
   const cw = words(bare);
   const content = [...new Set(tokenize(bare))].filter((t) => t.length > 2);
   if (cw.length < 5) return null;
-  const hits: Array<{ slug: string; heading: string; text: string }> = quoted ? [quoted] : searchParagraphs(bare, 3, slug ?? undefined).filter((h) => h.score >= (slug ? minScore / 2 : minScore));
+  const found = quoted ? [] : searchParagraphs(bare, 3, slug ?? undefined).filter((h) => h.score >= (slug ? minScore / 2 : minScore));
+  // From search alone, only the top hit, and only with a clear lead, as for labelled sentences.
+  const hits: Array<{ slug: string; heading: string; text: string }> = quoted
+    ? [quoted]
+    : slug
+      ? found
+      : found.slice(0, 1).filter((h) => found.length < 2 || h.score >= LEAD * found[1].score);
   for (const h of hits) {
     // Find the passage sentence it repeats, then take the first label at or after it.
     const sentences = h.text.split(/(?<=[.!?\]])\s+(?=[A-Z*(\[])/);

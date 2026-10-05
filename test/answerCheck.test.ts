@@ -26,7 +26,7 @@ describe("checkAnswer", () => {
     expect(a.fingerprint).toMatch(/^[0-9a-f]{10} "Fix the price first\. Then the…"$/);
   });
   it("passes a clean short answer that has the required parts", () => {
-    const t = "Fix the homepage price first. It says $20; the pricing page says $16. I'm wrong if buyers never see the pricing page. Open questions: which price is current? I can save these facts as a business profile.";
+    const t = "Fix the homepage price first. It says $20; the pricing page says $16. I'm wrong if fewer than 1 in 10 buyers see the pricing page. Open questions: which price is current? I can save these facts as a business profile.";
     expect(checkAnswer(t).problems).toEqual([]);
   });
   it("lists required parts it can't find", () => {
@@ -56,7 +56,7 @@ describe("checkAnswer", () => {
     expect(checkAnswer("Your customer acquisition cost is high, so CAC payback is long.").unexplainedTerms).toEqual([]);
   });
   it("lists common words with a marketing meaning separately, not as problems", () => {
-    const r = checkAnswer("Churn is high. Fix the price first. I'm wrong if buyers never see the pricing page. Open questions: which price is current? I can save these facts as a business profile.");
+    const r = checkAnswer("Churn is high. Fix the price first. I'm wrong if fewer than 1 in 10 buyers see the pricing page. Open questions: which price is current? I can save these facts as a business profile.");
     expect(r.considerExplaining).toEqual(["churn"]);
     expect(r.problems).toEqual([]);
   });
@@ -85,8 +85,44 @@ describe("checkAnswer", () => {
     expect(checkAnswer("word ".repeat(1500), undefined, "plan")).toMatchObject({ maxWords: 1800, overBy: 0 });
   });
   it("reminds to run verify_quotes when the text cites the repo", () => {
-    expect(checkAnswer("The homepage says $20 (pricing.astro:263).").problems.join(" ")).toMatch(/run verify_quotes/);
-    expect(checkAnswer("ADR 0006 rules this out.").problems.join(" ")).toMatch(/run verify_quotes/);
-    expect(checkAnswer("See https://example.com:8080 now.").problems.join(" ")).not.toMatch(/verify_quotes/);
+    expect(checkAnswer("The homepage says $20 (pricing.astro:263).").reminders.join(" ")).toMatch(/run verify_quotes/);
+    expect(checkAnswer("ADR 0006 rules this out.").reminders.join(" ")).toMatch(/run verify_quotes/);
+    expect(checkAnswer("See https://example.com:8080 now.").reminders.join(" ")).not.toMatch(/verify_quotes/);
+  });
+  it("checks jargon in time that grows with the text, not its square", () => {
+    // 96 KB of one abbreviation, or of different ones, with no sentence break: 76 s before the uses were capped.
+    const distinct = Array.from({ length: 12000 }, (_, i) => "Q" + String.fromCharCode(65 + (i % 26), 65 + ((i / 26) % 26 | 0), 65 + ((i / 676) % 26 | 0))).join(" ");
+    for (const t of ["ABC ".repeat(24000), "CAC ".repeat(24000), distinct]) {
+      const start = Date.now();
+      checkAnswer(t);
+      expect(Date.now() - start).toBeLessThan(3000);
+    }
+  });
+  it("doesn't take a profile mentioned in advice as the profile offer", () => {
+    const offer = "the offer to save confirmed facts as a business profile";
+    expect(checkAnswer("Keep your ideal customer profile narrow.").missingParts).toContain(offer);
+    expect(checkAnswer("Record the buyer profile in your CRM.").missingParts).toContain(offer);
+    expect(checkAnswer("I can store these facts in your business profile.").missingParts).not.toContain(offer);
+    expect(checkAnswer("Want me to save this as your profile?").missingParts).not.toContain(offer);
+  });
+  it("reads initials only from capitalised or adjacent words before the term", () => {
+    expect(checkAnswer("Send a DM to each maintainer directly, mentioning the bug.").unexplainedTerms).toEqual(["DM"]);
+    expect(checkAnswer("Add SSO so security officers stop asking.").unexplainedTerms).toEqual(["SSO"]);
+    expect(checkAnswer("Record each architecture decision record as an ADR.").unexplainedTerms).toEqual([]);
+  });
+  it("finds 'win/loss', and still skips file paths", () => {
+    expect(checkAnswer("Run win/loss interviews with 5 buyers.").unexplainedTerms).toEqual(["win/loss"]);
+    expect(checkAnswer("See src/lib/ICP.ts and docs/CAC/x for details.").unexplainedTerms).toEqual([]);
+  });
+  it("doesn't flag emphasis words, times, currency codes or abbreviations most readers know", () => {
+    const r = checkAnswer("TL;DR: You MUST fix SEO first. NEVER pay in USD. The CEO and CTO agree. Ship at 9 AM. Use AWS. The UI and UX need a CTA.");
+    expect(r.unexplainedTerms).toEqual(["CTA"]);
+  });
+  it("keeps the verify_quotes reminder out of problems, and doesn't read host:port as a citation", () => {
+    const r = checkAnswer("The homepage says $20 (pricing.astro:263). I'm wrong if 3 of 5 buyers pay. Open questions: which price? I can save these facts as a business profile.");
+    expect(r.problems).toEqual([]);
+    expect(r.reminders.join(" ")).toMatch(/run verify_quotes/);
+    expect(checkAnswer("Point it at api.example.com:443 first.").reminders).toEqual([]);
+    expect(checkAnswer("Open the docs at docs.stripe.com:1 now.").reminders).toEqual([]);
   });
 });
