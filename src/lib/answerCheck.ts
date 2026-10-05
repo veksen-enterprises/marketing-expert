@@ -3,6 +3,7 @@
 // models don't count words reliably. This counts them.
 
 import { createHash } from "node:crypto";
+import { checkLabels, type LabelFinding } from "./labelCheck.js";
 
 export interface AnswerCheck {
   /** Identifies the checked text: first words plus a hash of the whitespace-normalised text. Log it, so a reviewer can confirm the text sent is the text checked. */
@@ -14,6 +15,8 @@ export interface AnswerCheck {
   unexplainedTerms: string[];
   /** Parts the server instructions ask for that weren't found by keyword. Phrasing varies, so treat these as reminders. */
   missingParts: string[];
+  /** Evidence labels that look stronger than, or less qualified than, the playbook passage they come from. */
+  labelIssues: LabelFinding[];
   problems: string[];
 }
 
@@ -50,5 +53,13 @@ export function checkAnswer(text: string, maxWords = 1200): AnswerCheck {
   const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
   const missingParts = PARTS.filter(([, re]) => !re.test(text)).map(([name]) => name);
   if (missingParts.length) problems.push(`Not found (ignore if it's there in other words): ${missingParts.join("; ")}.`);
-  return { fingerprint, words, maxWords, overBy, bannedWords, missingParts, unexplainedTerms, problems };
+  const labelIssues = checkLabels(text).filter((l) => l.status === "upgraded" || l.status === "qualifier-dropped");
+  for (const l of labelIssues) {
+    problems.push(
+      l.status === "upgraded"
+        ? `Label [${l.answerLabel}] is stronger than the source (${l.source}: [${l.sourceLabels.join("], [")}]): "${l.claim.slice(0, 80)}…"`
+        : `Label [${l.answerLabel}] drops the source's qualifier (${l.source}: [${l.sourceLabels.join("], [")}]): "${l.claim.slice(0, 80)}…". Copy the whole bracket.`
+    );
+  }
+  return { fingerprint, words, maxWords, overBy, bannedWords, missingParts, labelIssues, unexplainedTerms, problems };
 }
