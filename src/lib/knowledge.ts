@@ -161,3 +161,35 @@ export function searchKnowledge(query: string, limit = 5, corpus = sections()): 
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
+
+// Everyday words a reader new to business uses, and the business terms they stand for. Applied by searchPlain only:
+// the evidence-label checker needs exact matching. Keep entries to words with one clear business meaning here.
+const EVERYDAY: Array<[RegExp, string]> = [
+  [/\b(charge|charging|cost to the customer|how much to ask)\b/i, "pricing price plans"],
+  [/\b(pay|paying|paid users?)\b/i, "pricing price willingness to pay"],
+  [/\b(stop using|stops using|quit|leave|leaving|drop off|come back)\b/i, "retention churn"],
+  [/\b(ads?|adverts?|advertising)\b/i, "paid acquisition advertising roas"],
+  [/\b(making money|lose money|losing money|worth it|profitable)\b/i, "roas unit economics break-even"],
+  [/\b(works?|working|is it working|know if)\b/i, "measurement attribution incrementality"],
+  [/\b(website|homepage|landing page|site)\b/i, "landing page conversion copy"],
+  [/\b(idea|any good|worth building)\b/i, "opportunity startup risk validation"],
+  [/\b(first customers?|first users?|first ten)\b/i, "first customers design partners"],
+  [/\b(get customers|find customers|find users|get users)\b/i, "acquisition channel"],
+  [/\b(no money|no budget|cheap|free ways?|small budget)\b/i, "small bets budget"],
+  [/\b(salesperson|sales person|sales rep|sell to companies)\b/i, "founder-led sales hiring"],
+  [/\b(competitors?|copy us|big company)\b/i, "competition incumbents competitive"],
+  [/\b(get noticed|be found|discover(ed)?)\b/i, "discovery seo listings"],
+];
+
+/** The query plus the business terms its everyday words stand for. */
+export function expandQuery(query: string): string {
+  const extra = EVERYDAY.filter(([re]) => re.test(query)).map(([, terms]) => terms);
+  return extra.length ? `${query} ${extra.join(" ")}` : query;
+}
+
+/** Search for readers who use everyday words: expands the query and leaves out the glossary's letter sections. */
+export function searchPlain(query: string, limit = 5): SearchHit[] {
+  return searchKnowledge(expandQuery(query), limit + 6)
+    .filter((h) => h.slug !== "glossary")
+    .slice(0, limit);
+}

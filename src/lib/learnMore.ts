@@ -5,7 +5,7 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { KNOWLEDGE_DIR, loadPlaybooks, sections, searchKnowledge, tokenize, type Section } from "./knowledge.js";
+import { KNOWLEDGE_DIR, loadPlaybooks, sections, searchKnowledge, searchPlain, tokenize, type Section } from "./knowledge.js";
 import { plainGloss } from "./answerCheck.js";
 import { BETS } from "./smallBetsCatalog.js";
 
@@ -166,7 +166,7 @@ export function learnMore(pointer: string): Expansion {
     }
     return expandSection(s);
   }
-  const [hit, ...rest] = searchKnowledge(p, 4).filter((h) => !/^sources?$/i.test(h.heading));
+  const [hit, ...rest] = searchPlain(p, 6).filter((h) => !/^sources?$/i.test(h.heading)).slice(0, 4);
   if (!hit) throw new RangeError(`nothing in the playbooks matches "${p}". Try other words, or a pointer from search_playbooks.`);
   const s = sections().find((x) => x.pointer === hit.pointer)!;
   const e = expandSection(s, `"${p}" was read as plain words; this is the best match. Other matches are in learnMore.`);

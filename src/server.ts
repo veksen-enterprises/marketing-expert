@@ -17,7 +17,7 @@ import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
 import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
-import { loadPlaybooks, getPlaybook, searchKnowledge } from "./lib/knowledge.js";
+import { loadPlaybooks, getPlaybook, searchPlain } from "./lib/knowledge.js";
 import { learnMore } from "./lib/learnMore.js";
 import { registerPrompts, MAX_MOVES, MOVE_FORMAT } from "./prompts.js";
 
@@ -789,7 +789,7 @@ export function createServer(): McpServer {
       inputSchema: { query: z.string().min(2).max(500), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },
-    safe((a) => searchKnowledge(a.query, a.limit ?? 4).map((h) => ({ playbook: h.slug, section: h.heading, score: h.score, inShort: h.summary, learnMore: h.pointer })))
+    safe((a) => searchPlain(a.query, a.limit ?? 4).map((h) => ({ playbook: h.slug, section: h.heading, score: h.score, inShort: h.summary, learnMore: h.pointer })))
   );
 
   server.registerTool(
