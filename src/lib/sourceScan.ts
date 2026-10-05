@@ -7,13 +7,15 @@
 import { readdirSync, readFileSync, statSync, lstatSync, realpathSync, existsSync } from "node:fs";
 import { join, relative, extname, sep, dirname } from "node:path";
 
-export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof";
+export type ClaimKind = "data" | "price" | "availability" | "setup" | "proof" | "oss" | "access";
+const KINDS: ClaimKind[] = ["data", "price", "availability", "setup", "proof", "oss", "access"];
 
 export interface Claim {
   file: string;
   line: number;
   text: string;
-  /** For short lines (a bare price), the nearest preceding copy, usually the plan or heading it belongs to. */
+  /** For short lines (a bare price), the nearest preceding copy, usually the plan or heading it belongs to. For items
+   * listed under a roadmap or "on our radar" heading, that heading. */
   context?: string;
 }
 
@@ -44,6 +46,11 @@ export interface DecisionIssue {
   mentions: Array<{ file: string; line: number; text: string; state: "open" | "done" | null }>;
 }
 
+export interface LicenseState {
+  files: Array<{ file: string; license: string }>;
+  packages: Array<{ file: string; name: string | null; license: string | null; private: boolean }>;
+}
+
 export interface SourceScan {
   dir: string;
   filesScanned: number;
@@ -53,6 +60,8 @@ export interface SourceScan {
   envFlags: EnvFlag[];
   /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
   decisions: Decision[];
+  /** LICENSE files and each package.json's license and private fields, to check open-source claims against. */
+  licenseState: LicenseState;
   /** Set when no records were under dir and they were read from this folder higher up in the same git repo. */
   decisionsFrom?: string;
   decisionIssues: DecisionIssue[];
@@ -239,11 +248,75 @@ const MAX_BYTES = 512 * 1024;
 // curl ...", "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
 const PATTERNS: Record<ClaimKind, RegExp> = {
   data: /\b(stores?|stored|storing|collects?|collected|sends?|sent|uploads?|uploaded|read-only|never (see|read|store|touch|leaves?|sends?)|leaves? (your|the)|locally|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|credentials?|connection strings?|passwords?|encrypt\w*|retain\w*|retention|sample (rows|values)|parameter values|literal values|PII|personal data|GDPR|SOC ?2|HIPAA|rows? of (your )?data|query text|we (never|don't|do not) (see|read|store|access)|your data)\b/i,
-  price: /([$€£]\d[\d,]*(\.\d{2})?(?!\d|\.\d))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
-  availability: /\b(coming soon|soon|on (our|the) radar|roadmap|planned|in beta|beta|alpha|preview|early access|waitlist|not yet|launching|available now|now available|shipped|deprecated|retired|sunset)\b/i,
-  setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|\|(?<=curl [^|]*\|)\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes)\b)/i,
+  // A currency amount needs 2 or more digits, cents, or a period after it ("$9/mo"): "$1" is a SQL parameter or a
+  // shell variable. Never after "=", and not as "($1)" or "ANY($1, ...)".
+  price: /((?<!=[ \t]*)(?:(?<!\()|(?![$€£]\d+[),]))[$€£](?:\d[\d,]*\d(?:\.\d{2})?|\d\.\d{2}|\d(?=[ \t]?(?:\/|per\b|a month)))(?!\d|\.\d))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
+  availability: /\b(coming soon|soon|on (our|the) radar|roadmap|shipping next|planned|in beta|beta|alpha|preview|early access|waitlist|not yet|launching|available now|now available|shipped|deprecated|retired|sunset)\b/i,
+  setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|\|(?<=curl [^|]*\|)\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes|agents? to install)\b)/i,
   proof: /(\b\d+(\.\d+)?\s?(%|x|×)(?![\w-])|\b(fastest|the only|first ever|#1|trusted by|used by|loved by|(?<![\d,])\d[\d,]*\+? (teams|companies|developers|users|customers)))/i,
+  // Case matters for the license names: "mit" and "osi" are parts of other words.
+  oss: /\b([Oo]pen[- ][Ss]ource[d]?|MIT|Apache[- ]2(\.0)?|A?GPL(v\d)?|BU?SL|OSI|[Ll]icen[cs](e[ds]?|ing)|[Ss]ource[- ]available|[Ff]air[- ]source|read the code)\b/,
+  access: /\b(anonymous(ly)?|no (sign-?in|sign-?up|login|account) (needed|required)|without (signing|logging) in|unauthenticated|open instance|public (link|page|instance|url|dashboard|demo)s?|publicly|shareable links?|invite-only|OAuth|super ?user|least privilege|privileges?|admin rights|RBAC|roles? and permissions)\b/i,
 };
+
+// Under a heading like these, each list item is something not shipped yet.
+const UPCOMING_HEADING = /radar|roadmap|coming|planned|soon|next/i;
+const LICENSE_FILE = /^(LICEN[CS]E|COPYING|UNLICENSE)([-.][\w.-]+)?$/i;
+const META_NAMES = new Set(["package.json", "LICENSE", "LICENSE.txt", "LICENSE.md", "LICENCE", "LICENCE.txt", "LICENCE.md", "COPYING", "COPYING.txt", "LICENSE-MIT", "LICENSE-APACHE", "UNLICENSE"]);
+// "UNLICENSED" in package.json means not licensed for use; "Unlicense" is public domain.
+const OSI = /(^|[(\s])(MIT|Apache|0?BSD|ISC|MPL|A?GPL|LGPL|EPL|CC0|Unlicense(?!d))/i;
+
+function licenseOf(text: string): string {
+  const t = text.slice(0, 4000);
+  if (/MIT License|Permission is hereby granted, free of charge/i.test(t)) return "MIT";
+  if (/Apache License/i.test(t)) return "Apache-2.0";
+  if (/GNU AFFERO/i.test(t)) return "AGPL-3.0";
+  if (/GNU LESSER/i.test(t)) return "LGPL";
+  if (/GNU GENERAL PUBLIC/i.test(t)) return "GPL";
+  if (/Business Source License/i.test(t)) return "BUSL-1.1";
+  if (/Elastic License/i.test(t)) return "Elastic";
+  if (/Mozilla Public License/i.test(t)) return "MPL-2.0";
+  if (/Functional Source License/i.test(t)) return "FSL";
+  if (/Redistribution and use in source and binary forms/i.test(t)) return "BSD";
+  if (/ISC License/i.test(t)) return "ISC";
+  if (/unlicense\.org|This is free and unencumbered software/i.test(t)) return "Unlicense";
+  return /all rights reserved|proprietary/i.test(t) ? "proprietary" : "not recognized";
+}
+
+function readLicenseState(root: string, meta: string[]): LicenseState {
+  const state: LicenseState = { files: [], packages: [] };
+  for (const f of meta) {
+    let src = "";
+    try {
+      src = readFileSync(f, "utf8");
+    } catch {
+      continue;
+    }
+    const file = relative(root, f);
+    if (LICENSE_FILE.test(file.split(sep).pop() ?? "")) {
+      if (state.files.length < 20) state.files.push({ file, license: licenseOf(src) });
+      continue;
+    }
+    let pkg: { name?: unknown; license?: unknown; private?: unknown };
+    try {
+      pkg = JSON.parse(src);
+    } catch {
+      continue;
+    }
+    const license = typeof pkg.license === "string" ? pkg.license : null;
+    if (state.packages.length < 20) state.packages.push({ file, name: typeof pkg.name === "string" ? pkg.name : null, license, private: pkg.private === true });
+  }
+  return state;
+}
+
+// Notes for open-source claims that the license files and package.json fields don't back.
+function licenseNotes(oss: Claim[], ls: LicenseState): string[] {
+  const named = [...ls.files.map((f) => `${f.file}: ${f.license}`), ...ls.packages.map((p) => `${p.file}: ${p.license ?? "no license field"}${p.private ? ", private" : ""}`)];
+  const open = oss.filter((c) => /open[- ]source/i.test(c.text) && !/not open[- ]source/i.test(c.text));
+  const osi = [...ls.files.map((f) => f.license), ...ls.packages.map((p) => p.license ?? "")].some((l) => OSI.test(l));
+  if (!open.length || osi) return [];
+  return [`The copy says open source (${open.slice(0, 3).map((c) => `${c.file}:${c.line}`).join(", ")}), but no open-source license was found: ${named.slice(0, 6).join("; ") || "no LICENSE file and no package.json license"}. Source-available licenses (BUSL, Elastic, FSL) are not open source.`];
+}
 
 // Attributes whose values are visible or read as copy: tooltips, labels, alt text, meta content.
 const TEXT_ATTRS = /\b(data-tip|data-tooltip|title|aria-label|alt|placeholder|content|description|label|tooltip|summary)\s*=\s*(["'`])(.*?)\2/gi;
@@ -321,11 +394,15 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   const root = realpathSync(dir);
   if (!statSync(root).isDirectory()) throw new RangeError(`${dir} is not a directory`);
   if (root === "/") throw new RangeError("refusing to scan the filesystem root; pass the repo or app directory");
-  const files: string[] = [];
+  const all: string[] = [];
   const state: { truncated: boolean; links?: number } = { truncated: false };
-  walk(root, files, state);
-  const claims: Record<ClaimKind, Claim[]> = { data: [], price: [], availability: [], setup: [], proof: [] };
-  const counts: Record<ClaimKind, number> = { data: 0, price: 0, availability: 0, setup: 0, proof: 0 };
+  walk(root, all, state, EXTS, META_NAMES);
+  // package.json and LICENSE files give the license state; they are not copy.
+  const isMeta = (f: string) => /(^|\/)package\.json$/.test(f) || LICENSE_FILE.test(f.split(sep).pop() ?? "");
+  const files = all.filter((f) => !isMeta(f));
+  const licenseState = readLicenseState(root, all.filter(isMeta));
+  const claims = Object.fromEntries(KINDS.map((k) => [k, []])) as unknown as Record<ClaimKind, Claim[]>;
+  const counts = Object.fromEntries(KINDS.map((k) => [k, 0])) as unknown as Record<ClaimKind, number>;
   const env = new Map<string, EnvFlag["uses"]>();
   for (const f of files) {
     let src: string;
@@ -338,6 +415,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
     const isCode = /\.(ts|js|mjs)$/.test(f);
     let inStyle = false;
     const recent: string[] = [];
+    let upcoming: string | null = null;
     src.split("\n").forEach((raw, i) => {
       // Skip CSS and code samples (<pre>, fenced blocks): their "$1" and "select" aren't copy.
       if (/<style[\s>]|<pre[\s>]|^\s*```/i.test(raw) && !inStyle) {
@@ -366,12 +444,28 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
         recent.push(text.slice(0, 120));
         if (recent.length > 4) recent.shift();
       }
-      for (const kind of Object.keys(PATTERNS) as ClaimKind[]) {
-        if (!PATTERNS[kind].test(text)) continue;
+      // List items under "On our radar", "Roadmap" or "Coming soon" are not shipped, whatever their words.
+      const heading = !isCode && (/^\s*#{1,6}\s/.test(raw) || /<h[1-6][\s>]/i.test(raw));
+      if (heading) upcoming = UPCOMING_HEADING.test(text) ? text.replace(/^#+\s*/, "").slice(0, 120) : null;
+      const listed = !heading && upcoming !== null && words > 0 && (/^\s*([-*+]|\d+\.)\s+\S/.test(raw) || /<li[\s>]/i.test(raw));
+      // Access rules are often only in code comments ("connects as a superuser").
+      const comment = isCode ? (/^\s*(?:\/\/|\/?\*+)\s?(.*)$/.exec(raw)?.[1] ?? /\s\/\/\s?(.*)$/.exec(raw)?.[1] ?? "") : "";
+      for (const kind of KINDS) {
+        let t = text;
+        let w = words;
+        if (kind === "access" && !PATTERNS.access.test(text) && comment) {
+          t = comment.trim();
+          w = (t.match(/[A-Za-z]{2,}/g) ?? []).length;
+        }
+        // Inline code (`$5`, `= $1`) is not a price.
+        const hit = kind === "price" ? PATTERNS.price.test(t.replace(/`[^`]*`/g, " ")) : PATTERNS[kind].test(t);
+        const item = kind === "availability" && listed;
+        if (!hit && !item) continue;
         // A bare price on its own line counts; anything else needs a few words to be a claim.
-        if (words < 3 && kind !== "price") continue;
+        if (w < 3 && kind !== "price" && !item) continue;
         counts[kind]++;
-        if (claims[kind].length < maxPerKind) claims[kind].push({ file: rel, line: i + 1, text: text.slice(0, 300), ...(words < 3 && ctx ? { context: ctx } : {}) });
+        const context = item ? upcoming : w < 3 && ctx ? ctx : null;
+        if (claims[kind].length < maxPerKind) claims[kind].push({ file: rel, line: i + 1, text: t.slice(0, 300), ...(context ? { context } : {}) });
       }
     });
   }
@@ -385,7 +479,8 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   ];
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
   if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"}: they point to a folder or to a file outside this directory.`);
-  for (const k of Object.keys(counts) as ClaimKind[]) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
+  notes.push(...licenseNotes(claims.oss, licenseState));
+  for (const k of KINDS) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
   let { decisions, issues: decisionIssues, numbered } = readDecisions(root, files);
   let decisionsFrom: string | undefined;
   if (!decisions.length && numbered >= 3) notes.push(`${numbered} files are numbered like decision records (0001-name.md) but none has a status line, so no decision records found in ${root}.`);
@@ -403,5 +498,5 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated, claims, claimCounts: counts, envFlags, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
+  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims, claimCounts: counts, envFlags, licenseState, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
 }

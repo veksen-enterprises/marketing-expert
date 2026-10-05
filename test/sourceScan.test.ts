@@ -181,3 +181,69 @@ describe("scanSource decision records (folder, dates, conflicts)", () => {
     expect(r.notes.join(" ")).toMatch(/report both; settle it from the feature's docs and code; the newest dated line usually wins/);
   });
 });
+
+describe("scanSource claim kinds, license and prices", () => {
+  it("finds open-source and access claims, 'no agents to install' and 'shipping next'", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(join(d, "index.md"), "DBTool is open source under the MIT license.\n\nAnyone can try it anonymously, no sign-in needed.\n\nThere are no agents to install on your hosts.\n\nShipping next: Slack alerts for slow queries.\n");
+    writeFileSync(join(d, "db.ts"), "// The analyzer connects as a superuser to read pg_stat_statements.\nexport const q = 1;\n");
+    const r = scanSource(d);
+    expect(r.claims.oss.map((c) => `${c.file}:${c.line}`)).toEqual(["index.md:1"]);
+    expect(r.claims.access.map((c) => `${c.file}:${c.line}`)).toEqual(["db.ts:1", "index.md:3"]);
+    expect(r.claims.setup.map((c) => c.line)).toEqual([5]);
+    expect(r.claims.availability.map((c) => c.line)).toEqual([7]);
+  });
+
+  it("lists items under a radar or roadmap heading as availability, with the heading as context", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(join(d, "roadmap.md"), "## On our radar\n\n- Slack alerts\n- SSO\n\n## Plans\n\n- Free plan for one database\n");
+    writeFileSync(join(d, "home.astro"), "<h2>Coming next</h2>\n<ul>\n  <li>MCP server</li>\n</ul>\n");
+    const r = scanSource(d);
+    expect(r.claims.availability.map((c) => [c.file, c.text, c.context])).toEqual([
+      ["home.astro", "MCP server", "Coming next"],
+      ["roadmap.md", "## On our radar", undefined],
+      ["roadmap.md", "- Slack alerts", "On our radar"],
+      ["roadmap.md", "- SSO", "On our radar"],
+    ]);
+  });
+
+  it("reports the license state and says when open-source claims disagree with it", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    mkdirSync(join(d, "packages", "cli"), { recursive: true });
+    writeFileSync(join(d, "README.md"), "DBTool is fully open source.\n");
+    writeFileSync(join(d, "package.json"), JSON.stringify({ name: "dt", private: true }));
+    writeFileSync(join(d, "packages", "cli", "package.json"), JSON.stringify({ name: "dt-cli", license: "UNLICENSED" }));
+    const r = scanSource(d);
+    expect(r.licenseState).toEqual({
+      files: [],
+      packages: [
+        { file: "package.json", name: "dt", license: null, private: true },
+        { file: join("packages", "cli", "package.json"), name: "dt-cli", license: "UNLICENSED", private: false },
+      ],
+    });
+    expect(r.filesScanned).toBe(1);
+    expect(r.notes.join(" ")).toMatch(/says open source \(README\.md:1\), but no open-source license was found/);
+
+    writeFileSync(join(d, "LICENSE"), "Business Source License 1.1\n\nLicensor: DBTool\n");
+    const s = scanSource(d);
+    expect(s.licenseState.files).toEqual([{ file: "LICENSE", license: "BUSL-1.1" }]);
+    expect(s.notes.join(" ")).toMatch(/no open-source license was found: LICENSE: BUSL-1\.1/);
+
+    writeFileSync(join(d, "LICENSE"), "MIT License\n\nPermission is hereby granted, free of charge\n");
+    expect(scanSource(d).notes.join(" ")).not.toMatch(/open-source license/);
+  });
+
+  it("does not count SQL parameters or code as prices, and needs 2 digits, cents or a period suffix", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(join(d, "docs.md"), "We look for queries such as where id = $1 in your logs.\n\nIt rewrites ANY($1) and IN ($2, $3) lists for you.\n\nRun it with `--cost $5` in the shell to test.\n\nStarter is $9/mo, Pro is $5.00 more, Team ($49/mo).\n\nPick any of $1 to $3 tips.\n");
+    const r = scanSource(d);
+    expect(r.claims.price.map((c) => c.line)).toEqual([7]);
+  });
+
+  it("sets truncated when a kind is cut at maxPerKind", () => {
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(join(d, "a.md"), Array.from({ length: 8 }, (_, i) => `We never store your query text, part ${i}.`).join("\n\n") + "\n");
+    expect(scanSource(d, 5).truncated).toBe(true);
+    expect(scanSource(d, 10).truncated).toBe(false);
+  });
+});

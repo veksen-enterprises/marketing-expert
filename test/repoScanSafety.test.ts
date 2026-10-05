@@ -235,7 +235,7 @@ describe("time on hostile input", () => {
     writeFileSync(join(d, "index.html"), "<head><style>" + "a{color:red}".repeat(270) + "</style></head>\n<p>We never store your credentials or connection strings.</p>\n<p>Pro plan costs $49/month for the whole team.</p>\n<p>Used by 1,200+ teams across the world.</p>\n");
     writeFileSync(join(d, "README.md"), "x ".repeat(1225) + "We never store your query text anywhere at all.\n");
     const r = scanSource(d);
-    expect(r.claimCounts).toEqual({ data: 2, price: 1, availability: 0, setup: 0, proof: 1 });
+    expect(r.claimCounts).toEqual({ data: 2, price: 1, availability: 0, setup: 0, proof: 1, oss: 0, access: 0 });
     expect(r.claims.data.map((c) => `${c.file}:${c.line}`)).toEqual(["README.md:1", "index.html:2"]);
   });
 
