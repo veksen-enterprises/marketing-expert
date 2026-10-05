@@ -204,6 +204,6 @@ Layout: `src/lib/` holds the tested logic; `src/server.ts` registers tools and t
 
 Writing rule for everything the agent shows users: plain words for readers whose first language may not be English. Never "moat"; say what stops competitors.
 
-## Not built yet
+## Not built yet and known weak spots
 
-- Live data connectors (Google Analytics, Search Console, ad platforms), so diagnosis runs on your real numbers instead of assumptions.
+See [ROADMAP.md](ROADMAP.md). In short: no live data connectors yet (Google Analytics, Search Console, ad platforms, Stripe); three playbooks still missing (founder-led sales, activation and analytics, marketplace and registry listings); evidence qualifiers and bundled moves still slip through the self-checks; and the playbooks outside developer tools haven't been evaluated yet.
