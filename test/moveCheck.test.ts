@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { lintMoves } from "../src/lib/moveCheck.js";
 import { checkAnswer } from "../src/lib/answerCheck.js";
+import { cpuNow } from "./cpuTime.js";
 
 // The moves below are from round-5 eval answers, cut to the lines the graders marked down.
 const clean = `**Moves, in order**
@@ -125,8 +126,8 @@ Mechanism: x. Cheapest test: 5 calls. Metric: signups. Time box: 2 weeks. Stop: 
   });
 
   it("checks a long action in time that grows with the text", () => {
-    const start = Date.now();
+    const start = cpuNow();
     lintMoves(`## Moves\n\n1. **${"add ".repeat(24000)}**`);
-    expect(Date.now() - start).toBeLessThan(1000);
+    expect(cpuNow() - start).toBeLessThan(1000);
   });
 });

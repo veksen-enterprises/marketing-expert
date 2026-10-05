@@ -10,6 +10,7 @@ import { checkQuotes } from "../src/lib/quoteCheck.js";
 import { checkAnswer } from "../src/lib/answerCheck.js";
 import { checkLabels, paragraphs, searchParagraphs } from "../src/lib/labelCheck.js";
 import { searchKnowledge } from "../src/lib/knowledge.js";
+import { cpuNow } from "./cpuTime.js";
 
 // Removed after the run: some hold link loops (a -> .) that other tools walking the temp folder could follow.
 const dirs: string[] = [];
@@ -23,9 +24,9 @@ afterAll(() => {
 });
 
 function ms(fn: () => unknown): number {
-  const t = performance.now();
+  const t = cpuNow();
   fn();
-  return performance.now() - t;
+  return cpuNow() - t;
 }
 
 describe("symbolic links in the scanned directory", () => {

@@ -12,6 +12,7 @@ import { countChars } from "../src/lib/platformLimits.js";
 import { buildUtm } from "../src/lib/utm.js";
 import { loadPlaybooks, searchKnowledge } from "../src/lib/knowledge.js";
 import { dataDir, getProfile, listProfiles, saveProfile, staleMetrics } from "../src/lib/profile.js";
+import { cpuNow } from "./cpuTime.js";
 
 const connect = async () => {
   const [a, b] = InMemoryTransport.createLinkedPair();
@@ -197,9 +198,9 @@ describe("search_playbooks with a very long query (server:robustness#0)", () => 
   });
   it("searchKnowledge caps the query tokens", () => {
     const q = Array.from({ length: 20000 }, (_, i) => "w" + i.toString(36)).join(" ");
-    const t = Date.now();
+    const t = cpuNow();
     searchKnowledge(q);
-    expect(Date.now() - t).toBeLessThan(2000);
+    expect(cpuNow() - t).toBeLessThan(2000);
   });
 });
 

@@ -8,6 +8,7 @@ import { auditHtml, fetchAndAudit } from "../src/lib/pageAudit.js";
 import { crawlSite, type FetchFn } from "../src/lib/crawl.js";
 import { parseRobots, robotsAllows } from "../src/lib/robots.js";
 import { checkAiCrawlerAccess } from "../src/lib/aiCrawlers.js";
+import { cpuNow } from "./cpuTime.js";
 
 const B = "https://example.com";
 const page = (title: string, body: string) => `<html><head><title>${title}</title></head><body>${body}</body></html>`;
@@ -216,18 +217,18 @@ describe("HTML parsing stays fast on large and malformed pages", () => {
   const unclosed = page("t", "<h1>Hello</h1>" + "<div>".repeat(4000) + "hi").replace("</body></html>", "");
 
   it("auditHtml", () => {
-    const t = Date.now();
+    const t = cpuNow();
     const r = auditHtml(unclosed, `${B}/`);
-    expect(Date.now() - t).toBeLessThan(1500);
+    expect(cpuNow() - t).toBeLessThan(1500);
     expect(r.title).toBe("t");
     expect(r.h1s).toEqual(["Hello"]);
     expect(r.wordCount).toBe(2);
   });
 
   it("crawl_site", async () => {
-    const t = Date.now();
+    const t = cpuNow();
     const r = await crawlSite({ startUrl: `${B}/`, useSitemap: false, fetchFn: siteFetch({ "/": [200, "text/html", unclosed] }) });
-    expect(Date.now() - t).toBeLessThan(1500);
+    expect(cpuNow() - t).toBeLessThan(1500);
     expect(r.pages[0].title).toBe("t");
   });
 
@@ -235,9 +236,9 @@ describe("HTML parsing stays fast on large and malformed pages", () => {
   const linkPage = page("Links", "<h1>Links</h1>" + '<a href="/x">a</a>'.repeat(30_000) + '<img src="x.png">'.repeat(10_000) + "<button>Go</button>".repeat(5_000));
 
   it("auditHtml reads a large page of plain links and images quickly", () => {
-    const t = Date.now();
+    const t = cpuNow();
     const r = auditHtml(linkPage, `${B}/`);
-    expect(Date.now() - t).toBeLessThan(2000);
+    expect(cpuNow() - t).toBeLessThan(2000);
     expect(r.links.internal).toBe(30_000);
     expect(r.images).toBe(10_000);
     expect(r.imagesMissingAlt).toBe(10_000);
@@ -245,9 +246,9 @@ describe("HTML parsing stays fast on large and malformed pages", () => {
   });
 
   it("crawl_site reads a large page of plain links quickly", async () => {
-    const t = Date.now();
+    const t = cpuNow();
     const r = await crawlSite({ startUrl: `${B}/`, maxPages: 1, useSitemap: false, fetchFn: siteFetch({ "/": [200, "text/html", linkPage] }) });
-    expect(Date.now() - t).toBeLessThan(2000);
+    expect(cpuNow() - t).toBeLessThan(2000);
     expect(r.pages[0].title).toBe("Links");
     expect(r.limitReached).toBe(true);
   });
@@ -259,9 +260,9 @@ describe("HTML parsing stays fast on large and malformed pages", () => {
   });
 
   it("stays fast on links and headings nested inside each other", () => {
-    const t = Date.now();
+    const t = cpuNow();
     const r = auditHtml(page("t", '<a href="/x">Start now'.repeat(20_000) + "<h2><b>Plan".repeat(20_000)), `${B}/`);
-    expect(Date.now() - t).toBeLessThan(2000);
+    expect(cpuNow() - t).toBeLessThan(2000);
     expect(r.links.internal).toBe(20_000);
     expect(r.ctaCandidates).toEqual(["Start now"]);
     expect(r.headings.slice(0, 2)).toEqual([
@@ -290,9 +291,9 @@ describe("HTML parsing stays fast on large and malformed pages", () => {
 describe("robots.txt matching", () => {
   it("is linear in the number of wildcards", () => {
     const rules = parseRobots("User-agent: *\nDisallow: /" + "*-".repeat(22) + "zz\n");
-    const t = Date.now();
+    const t = cpuNow();
     expect(robotsAllows(rules, `${B}/` + "a-".repeat(30))).toBe(true);
-    expect(Date.now() - t).toBeLessThan(200);
+    expect(cpuNow() - t).toBeLessThan(200);
     expect(robotsAllows(rules, `${B}/` + "a-".repeat(30) + "zz")).toBe(false);
   });
 

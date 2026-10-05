@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { checkAnswer } from "../src/lib/answerCheck.js";
+import { cpuNow } from "./cpuTime.js";
 
 describe("checkAnswer", () => {
   it("counts words and reports the overrun", () => {
@@ -93,9 +94,9 @@ describe("checkAnswer", () => {
     // 96 KB of one abbreviation, or of different ones, with no sentence break: 76 s before the uses were capped.
     const distinct = Array.from({ length: 12000 }, (_, i) => "Q" + String.fromCharCode(65 + (i % 26), 65 + ((i / 26) % 26 | 0), 65 + ((i / 676) % 26 | 0))).join(" ");
     for (const t of ["ABC ".repeat(24000), "CAC ".repeat(24000), distinct]) {
-      const start = Date.now();
+      const start = cpuNow();
       checkAnswer(t);
-      expect(Date.now() - start).toBeLessThan(3000);
+      expect(cpuNow() - start).toBeLessThan(3000);
     }
   });
   it("doesn't take a profile mentioned in advice as the profile offer", () => {

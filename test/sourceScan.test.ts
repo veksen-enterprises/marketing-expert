@@ -3,6 +3,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { scanSource } from "../src/lib/sourceScan.js";
+import { cpuNow } from "./cpuTime.js";
 
 function fixture() {
   const d = mkdtempSync(join(tmpdir(), "scan-"));
@@ -279,9 +280,9 @@ describe("scanSource conflicts across the site and the docs", () => {
     mkdirSync(join(base, "docs"));
     writeFileSync(join(base, "site", "a.md"), Array.from({ length: 1500 }, (_, i) => `Feature number${i} is coming soon. Pro is $${i + 10}/mo. We never store rows ${i}.`).join("\n") + "\n");
     writeFileSync(join(base, "docs", "b.md"), Array.from({ length: 1500 }, (_, i) => `## Feature topic${i}\n\nWe send sample rows ${i}.`).join("\n") + "\n");
-    const t = performance.now();
+    const t = cpuNow();
     const r = scanSource(join(base, "site"), 60, [join(base, "docs")]);
-    expect(performance.now() - t).toBeLessThan(1500);
+    expect(cpuNow() - t).toBeLessThan(1500);
     expect(r.conflicts.length).toBeLessThanOrEqual(40);
   });
 
