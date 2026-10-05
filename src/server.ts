@@ -22,7 +22,7 @@ import { registerPrompts, MAX_MOVES, MOVE_FORMAT } from "./prompts.js";
 export const INSTRUCTIONS = `You are acting as a senior marketing and business strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
 
 0. Context first. Call list_business_profiles; if a profile matches the business, call get_business_profile and use it. If you have the business's own material (repo, vision doc, product docs, decision records, site source), read it before advising, and check facts there instead of listing them as assumptions. For each capability you rely on, say whether the docs show it as shipped, partial or planned. Contradictions between the marketing site, the docs and the product are findings in their own right; check data-handling and credential claims (what is sent, stored, kept local, who holds credentials) line by line, tooltips and FAQs included, and report docs that disagree with each other. With a repo, run scan_source on the marketing site with compareWith set to the docs, on the app, and on the decision-record folder, and check what it lists, including in-product upgrade copy and the code that enforces plans; when a record and its index disagree, report both. Every claim about what a file or the code says needs the file (and line) you actually opened. Search the whole repo, not one folder; if you only searched, say "I found no X in <where>", not "there is no X". Offer to save confirmed facts with save_business_profile.
-1. Diagnose before prescribing. Establish the product, the customer (ICP), the founder's goal when it changes the advice (hobby, side income, lifestyle business, venture-scale), the current numbers, and the actual constraint (positioning, reach, conversion, retention, unit economics) before recommending tactics. Ask for the numbers you need; never invent them. If the user can't answer, state labelled assumptions and what would change if they're wrong.
+1. Diagnose before prescribing. Establish the product, the customer (ICP), the founder's goal if it changes the advice (hobby to venture-scale), the current numbers, and the actual constraint (activation and proof, the usual one below ~10 paying customers; positioning; reach; conversion; retention; unit economics) before tactics. Ask for missing numbers; never invent them. Without them, label assumptions and say what changes if they're wrong.
 2. Name the competitive alternatives yourself. List what buyers actually use instead (named competitors, adjacent tools, spreadsheets, "do nothing"), from your own knowledge if necessary, labelled unverified. Don't only ask the user.
 3. Use the tools for anything numeric. Never present a hand-calculated figure (sample size, significance, LTV, affordable CAC, break-even, market size, funnel effect) as a result: run the tool and quote its output and warnings. Never contradict a tool's verdict without quoting it and saying why.
 4. Look before critiquing. For a live page, run audit_page (render=true if the site builds content with JavaScript) and crawl_site; for copy, analyze_copy; for ads, check_copy_limits. If a tool couldn't reach something, say nothing was checked; don't fill the gap with a guess.
@@ -37,19 +37,26 @@ function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, round, 2) }] };
 }
 
+/** For user data (business profiles): values are returned exactly as stored, never rounded. */
+function okExact(data: unknown) {
+  return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
+}
+
 function fail(e: unknown) {
   return { isError: true, content: [{ type: "text" as const, text: e instanceof Error ? e.message : String(e) }] };
 }
 
+// Computed floats: 5 significant digits below 1,000; from 1,000 up (money, counts), 2 decimals, so
+// 12,283,971.5 is not cut to 12,284,000.
 function round(_k: string, v: unknown) {
-  if (typeof v === "number" && Number.isFinite(v) && !Number.isInteger(v)) return Number(v.toPrecision(5));
+  if (typeof v === "number" && Number.isFinite(v) && !Number.isInteger(v)) return Math.abs(v) >= 1000 ? Math.round(v * 100) / 100 : Number(v.toPrecision(5));
   return v;
 }
 
-function safe<A>(fn: (args: A) => unknown | Promise<unknown>) {
+function safe<A>(fn: (args: A) => unknown | Promise<unknown>, out = ok) {
   return async (args: A) => {
     try {
-      return ok(await fn(args));
+      return out(await fn(args));
     } catch (e) {
       return fail(e);
     }
@@ -564,7 +571,7 @@ export function createServer(): McpServer {
     {
       title: "Check copy against platform limits",
       description:
-        "Check ad, SERP, email or social copy against platform character limits (Google Ads counts CJK as 2; X counts URLs as 23). Fields by platform: " +
+        "Check ad, SERP, email or social copy against platform character limits (Google Ads counts CJK as 2; X counts every URL as 23 and CJK characters and emoji as 2). Fields by platform: " +
         Object.entries(PLATFORM_LIMITS)
           .map(([k, v]) => `${k}: ${Object.keys(v.fields).join(", ")}`)
           .join(" | "),
@@ -669,7 +676,7 @@ export function createServer(): McpServer {
       inputSchema: {},
       annotations: readOnly,
     },
-    safe(() => listProfiles())
+    safe(() => listProfiles(), okExact)
   );
 
   server.registerTool(
@@ -684,7 +691,7 @@ export function createServer(): McpServer {
       const p = getProfile(a.name);
       if (!p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
       return { profile: p, missingFields: missingFields(p), staleMetrics: staleMetrics(p) };
-    })
+    }, okExact)
   );
 
   const strList = z.array(z.string()).nullable().optional();
@@ -709,9 +716,10 @@ export function createServer(): McpServer {
         channels: strList,
         metrics: z
           .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional() }).nullable())
+          .nullable()
           .optional()
           .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe"}}'),
-        voice: z.object({ do: z.array(z.string()).optional(), dont: z.array(z.string()).optional() }).optional(),
+        voice: z.object({ do: strList, dont: strList }).nullable().optional(),
         constraints: strList,
         openQuestions: strList,
         notes: z.string().nullable().optional(),
@@ -720,9 +728,10 @@ export function createServer(): McpServer {
     },
     safe((a) => {
       const { name, ...patch } = a;
-      const p = saveProfile(name, patch);
-      return { saved: p, missingFields: missingFields(p) };
-    })
+      const warnings: string[] = [];
+      const p = saveProfile(name, patch, warnings);
+      return { saved: p, missingFields: missingFields(p), ...(warnings.length ? { warnings } : {}) };
+    }, okExact)
   );
 
   // ── Knowledge ─────────────────────────────────────────────────────────────
@@ -731,8 +740,8 @@ export function createServer(): McpServer {
     {
       title: "Search marketing playbooks",
       description:
-        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, e-commerce/DTC, marketplaces, local services, consumer apps, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
-      inputSchema: { query: z.string().min(2), limit: z.number().int().min(1).max(10).optional() },
+        "Keyword search over the playbooks. Business types: sales-led B2B SaaS, self-serve SaaS, developer tools (APIs, CLIs, SDKs, MCP servers), e-commerce/DTC, marketplaces, local services, consumer apps, community and hobby products, professional services, retail/CPG. Channels: SEO (general, local, international, content and site structure), AI assistant visibility, content, organic social and community, PR and influencers, events and webinars, video and YouTube, paid, email and lifecycle, partnerships and affiliates, referral programs, outbound and ABM. Foundations: positioning, messaging, customer research, landing pages, experimentation, metrics, channel strategy, pricing, brand, launches, retention and expansion, behavioural science, privacy and marketing law, budget and team, AI in marketing, glossary. Strategy: market sizing and timing, startup risk, competing with incumbents, platform and feature risk, competitive analysis, acquisitions and exits. Returns the best-matching sections.",
+      inputSchema: { query: z.string().min(2).max(500), limit: z.number().int().min(1).max(10).optional() },
       annotations: readOnly,
     },
     safe((a) => searchKnowledge(a.query, a.limit ?? 4).map((h) => ({ playbook: h.slug, section: h.heading, score: h.score, text: h.text })))
@@ -772,9 +781,14 @@ export function createServer(): McpServer {
   server.registerResource(
     "business-profile",
     new ResourceTemplate("marketing://profile/{name}", {
-      list: async () => ({
-        resources: listProfiles().map((p) => ({ uri: `marketing://profile/${p.name}`, name: p.name, description: p.product, mimeType: "application/json" })),
-      }),
+      // A bad MARKETING_EXPERT_DATA_DIR must not hide the playbook resources too; the profile tools report it.
+      list: async () => {
+        let profiles: ReturnType<typeof listProfiles> = [];
+        try {
+          profiles = listProfiles();
+        } catch {}
+        return { resources: profiles.map((p) => ({ uri: `marketing://profile/${p.name}`, name: p.name, description: p.product, mimeType: "application/json" })) };
+      },
     }),
     { title: "Business profile", description: "Stored business context", mimeType: "application/json" },
     async (uri, { name }) => {

@@ -26,6 +26,8 @@ export interface Section {
 export const KNOWLEDGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "knowledge");
 
 function parseFrontmatter(raw: string): { meta: Record<string, string>; body: string } {
+  // A Windows checkout (core.autocrlf) has CRLF line ends; some editors add a BOM.
+  raw = raw.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
   const m = /^---\n([\s\S]*?)\n---\n?/.exec(raw);
   if (!m) return { meta: {}, body: raw };
   const meta: Record<string, string> = {};
@@ -94,8 +96,11 @@ export interface SearchHit {
   text: string;
 }
 
+/** Query terms beyond this are ignored: each one costs a scan of the whole corpus. */
+export const MAX_QUERY_TERMS = 32;
+
 export function searchKnowledge(query: string, limit = 5, corpus = sections()): SearchHit[] {
-  const q = [...new Set(tokenize(query))];
+  const q = [...new Set(tokenize(query))].slice(0, MAX_QUERY_TERMS);
   if (q.length === 0) return [];
   const docs = corpus.map((s) => {
     const head = tokenize(`${s.playbookTitle} ${s.heading}`);

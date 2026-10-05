@@ -50,6 +50,11 @@ const VAGUE_TERMS: Record<string, string> = {
 const SOFT_TERMS = new Set(["simple", "easy", "fast", "powerful", "leading", "optimize", "solution"]);
 
 const HEDGES = ["may help", "can help", "helps you", "could potentially", "might", "aims to", "strives to", "designed to help"];
+const HEDGE_RES = HEDGES.map((h) => [h, new RegExp(`(?<![a-z])${h}(?![a-z])`)] as const);
+
+// Reader and writer pronouns, contractions included (you'll, you've, we'd, yourself).
+const YOU_RE = /^(?:you(?:['’](?:re|ll|ve|d))?|yours?|yourself|yourselves)$/;
+const WE_RE = /^(?:we(?:['’](?:re|ll|ve|d))?|us|our|ours|ourselves)$/;
 
 const PASSIVE_RE = /\b(is|are|was|were|be|been|being)\s+(\w+ed|built|made|done|given|shown|known|seen|taken|written|chosen)\b/gi;
 
@@ -67,20 +72,23 @@ export interface Readability {
   sentences: number;
   avgWordsPerSentence: number;
   longestSentenceWords: number;
-  fleschReadingEase: number;
-  fleschKincaidGrade: number;
+  /** null when the text is mostly not in Latin script: Flesch formulas are for English. */
+  fleschReadingEase: number | null;
+  fleschKincaidGrade: number | null;
+  note?: string;
 }
 
 export function splitSentences(text: string): string[] {
+  // Lines first: headlines and bullets usually have no end punctuation.
   return text
-    .replace(/\s+/g, " ")
-    .split(/(?<=[.!?])\s+|\n+/)
+    .split(/\n+/)
+    .flatMap((l) => l.replace(/\s+/g, " ").split(/(?<=[.!?])\s+|(?<=[。！？])/))
     .map((s) => s.trim())
-    .filter((s) => /[A-Za-z0-9]/.test(s));
+    .filter((s) => /[\p{L}\p{N}]/u.test(s));
 }
 
 export function words(text: string): string[] {
-  return text.match(/[A-Za-z0-9][A-Za-z0-9'’-]*/g) ?? [];
+  return text.match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}'’-]*/gu) ?? [];
 }
 
 export function readability(text: string): Readability {
@@ -89,13 +97,16 @@ export function readability(text: string): Readability {
   const nW = Math.max(1, ws.length);
   const nS = Math.max(1, sents.length);
   const syl = ws.reduce((s, w) => s + countSyllables(w), 0);
+  const letters = (text.match(/\p{L}/gu) ?? []).length;
+  const latin = letters > 0 && (text.match(/\p{Script=Latin}/gu) ?? []).length / letters >= 0.5;
   return {
     words: ws.length,
     sentences: sents.length,
     avgWordsPerSentence: ws.length / nS,
     longestSentenceWords: sents.reduce((m, s) => Math.max(m, words(s).length), 0),
-    fleschReadingEase: 206.835 - 1.015 * (nW / nS) - 84.6 * (syl / nW),
-    fleschKincaidGrade: 0.39 * (nW / nS) + 11.8 * (syl / nW) - 15.59,
+    fleschReadingEase: latin ? 206.835 - 1.015 * (nW / nS) - 84.6 * (syl / nW) : null,
+    fleschKincaidGrade: latin ? 0.39 * (nW / nS) + 11.8 * (syl / nW) - 15.59 : null,
+    ...(latin ? {} : { note: "Most of this text is not in Latin script. Flesch scores work for English only, so they are not given; word counts are rough." }),
   };
 }
 
@@ -124,8 +135,8 @@ export function analyzeCopy(text: string): CopyAnalysis {
     const m = lower.match(re);
     if (m) flags.push({ type: "vague", severity: SOFT_TERMS.has(term) ? "info" : "warning", message: `"${term}" ×${m.length}: ${why}`, excerpt: excerptAround(text, re) });
   }
-  for (const h of HEDGES) {
-    if (lower.includes(h)) flags.push({ type: "hedge", severity: "info", message: `Hedge "${h}" weakens the claim; state what happens, or drop it.` });
+  for (const [h, re] of HEDGE_RES) {
+    if (re.test(lower)) flags.push({ type: "hedge", severity: "info", message: `Hedge "${h}" weakens the claim; state what happens, or drop it.` });
   }
   const passives = text.match(PASSIVE_RE) ?? [];
   if (passives.length) {
@@ -135,8 +146,8 @@ export function analyzeCopy(text: string): CopyAnalysis {
   if (excl > 1) flags.push({ type: "punctuation", severity: "info", message: `${excl} exclamation marks. Enthusiasm in punctuation reads as low confidence.` });
 
   const ws = words(lower);
-  const you = ws.filter((w) => ["you", "your", "you're", "yours", "you’re"].includes(w)).length;
-  const we = ws.filter((w) => ["we", "our", "we're", "us", "ours", "we’re"].includes(w)).length;
+  const you = ws.filter((w) => YOU_RE.test(w)).length;
+  const we = ws.filter((w) => WE_RE.test(w)).length;
   if (we > you && we >= 3) {
     flags.push({ type: "framing", severity: "warning", message: `Writer-centric: ${we} we/our vs ${you} you/your. Copy is about the company, not the reader's problem.` });
   }
@@ -165,20 +176,22 @@ export interface LimitCheck {
   length: number;
   max?: number;
   recommended?: number;
-  status: "ok" | "over_recommended" | "over_max" | "unverified_limit";
+  status: "ok" | "over_recommended" | "over_max" | "unverified_limit" | "no_known_limit";
   note?: string;
 }
 
 export function checkLimits(platform: string, fields: Record<string, string | string[]>): { checks: LimitCheck[]; source: string; checkedOn: string } {
-  const spec = PLATFORM_LIMITS[platform];
+  // Own properties only: "constructor" or "toString" are not platforms or fields.
+  const spec = Object.hasOwn(PLATFORM_LIMITS, platform) ? PLATFORM_LIMITS[platform] : undefined;
   if (!spec) throw new RangeError(`unknown platform "${platform}". Known: ${Object.keys(PLATFORM_LIMITS).join(", ")}`);
+  if (Object.keys(fields).length === 0) throw new RangeError(`no fields to check. Known fields for ${platform}: ${Object.keys(spec.fields).join(", ")}`);
   const checks: LimitCheck[] = [];
   for (const [field, value] of Object.entries(fields)) {
-    const lim = spec.fields[field];
+    const lim = Object.hasOwn(spec.fields, field) ? spec.fields[field] : undefined;
     if (!lim) throw new RangeError(`unknown field "${field}" for ${platform}. Known: ${Object.keys(spec.fields).join(", ")}`);
     for (const t of Array.isArray(value) ? value : [value]) {
       const len = countChars(t, spec.counting);
-      let status: LimitCheck["status"] = "ok";
+      let status: LimitCheck["status"] = lim.max === undefined && lim.recommended === undefined ? "no_known_limit" : "ok";
       if (lim.max !== undefined && len > lim.max) status = lim.verified ? "over_max" : "unverified_limit";
       else if (lim.recommended !== undefined && len > lim.recommended) status = "over_recommended";
       checks.push({ platform, field, text: t, length: len, max: lim.max, recommended: lim.recommended, status, note: lim.note });

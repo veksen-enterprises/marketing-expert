@@ -19,7 +19,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 | `ab_test_evaluate` | z-test, p-value, CI on absolute and relative lift, P(variant > control), sample ratio mismatch, peeking / Twyman's law warnings |
 | `ab_test_sequential` | Always-valid test (mSPRT) for conversion rates that stays valid however often you check; reports stop / keep running. In simulation: 0.8% false positives over 50 looks vs 33% for a repeatedly checked z-test |
 | `ab_test_means_sample_size` / `ab_test_means_evaluate` | Same for revenue per visitor, order value and other continuous metrics: Welch's t-test from raw values or summary stats, optional outlier capping at a percentile, skew warnings, CUPED-style variance reduction in sample size |
-| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Persistent business context (product, best-fit customers, alternatives, differentiators, pricing, dated metrics, voice) stored as JSON in `~/.marketing-expert/profiles/` (override with `MARKETING_EXPERT_DATA_DIR`). Reports missing fields and stale metrics. Also exposed as `marketing://profile/{name}` |
+| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Persistent business context (product, best-fit customers, alternatives, differentiators, pricing, dated metrics, voice) stored as JSON in `~/.marketing-expert/profiles/` (override with `MARKETING_EXPERT_DATA_DIR`, an absolute path). Reports missing fields and stale metrics. Also exposed as `marketing://profile/{name}` |
 | `unit_economics` | LTV (simple and horizon-bounded), LTV:CAC, simple and churn-adjusted CAC payback, with warnings where the formulas mislead |
 | `paid_media_math` | Break-even ROAS/CPA, max CPC, implied CPA/ROAS from CPC or CPM+CTR, budget projection, verdict |
 | `market_size` | Bottom-up TAM/SAM by segment, obtainable market bounded by sales capacity / acquisition budget with churn, top-down cross-check, and the share of the market a revenue target requires |
@@ -39,7 +39,7 @@ The model already knows the textbook frameworks. This server doesn't repeat them
 Prompts: `technical_seo_review` (text in `prompts/seo-site-review-v2.md`), `marketing_strategy`, `marketing_diagnosis`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`.
 
 Playbooks:
-- Business types: b2b-saas-sales-led, self-serve-saas, ecommerce-dtc, marketplaces, local-services, consumer-apps, professional-services, retail-cpg.
+- Business types: b2b-saas-sales-led, self-serve-saas, developer-tools, ecommerce-dtc, marketplaces, local-services, consumer-apps, community-and-hobby-products, professional-services, retail-cpg.
 - Channels: seo-and-ai-search, ai-assistant-visibility, local-seo, international-seo, seo-content-and-architecture, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm.
 - Foundations: positioning, messaging-and-copy, customer-research, brand-and-demand, channel-strategy, pricing, landing-pages-and-cro, experimentation, metrics-and-measurement, launches-and-gtm, retention-and-expansion, behavioral-science, privacy-and-marketing-law, marketing-budget-and-team, ai-in-marketing, glossary.
 - Strategy: market-sizing-and-timing, startup-risk-and-opportunity, competing-with-incumbents, platform-and-feature-risk, competitive-analysis, acquisition-and-exits.
@@ -57,6 +57,12 @@ Claude Code:
 
 ```bash
 claude mcp add marketing-expert -- node /absolute/path/to/marketing-expert/dist/index.js
+```
+
+Or run it straight from GitHub; the `prepare` script builds it on install:
+
+```bash
+claude mcp add marketing-expert -- npx -y github:veksen/marketing-expert
 ```
 
 Claude Desktop (`claude_desktop_config.json`):

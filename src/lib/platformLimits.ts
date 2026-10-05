@@ -121,7 +121,7 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
     counting: "x-links-23",
     source: "https://business.x.com/en/help/campaign-setup/creative-ad-specifications",
     fields: {
-      text: { max: 280, verified: true, note: "each URL counts as 23" },
+      text: { max: 280, verified: true, note: "each URL counts as 23, bare domains like acme.io too; CJK characters and each emoji count as 2" },
       card_title: { max: 70, verified: true },
     },
   },
@@ -164,16 +164,40 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
 };
 
 // Wide (CJK, fullwidth) characters count as 2 in Google Ads.
-const WIDE = /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
-const URL_RE = /\bhttps?:\/\/\S+|\bwww\.\S+/gi;
+const WIDE = /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
+
+// X (twitter-text): every URL counts 23, including bare domains such as acme.io. Trailing punctuation is not
+// part of the URL. Bare domains are matched only for the common TLDs below, so "node.js" stays text.
+const URL_RE = /\bhttps?:\/\/\S+|(?<![\w@.\/-])(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,})(?::\d+)?(?:\/\S*)?/gi;
+const TLDS = new Set(
+  ("com net org edu gov info biz app dev xyz tech shop store online site blog cloud io ai co me tv ly gg " +
+    "us uk de fr es it nl be ch at se no dk fi pl pt ie ca mx br ar au nz jp cn kr tw hk sg in id za eu").split(" ")
+);
+const TRAILING = /[.,;:!?'"’”)\]]+$/;
+// Weight 1 in these code point ranges, 2 everywhere else; an emoji sequence counts 2 in all.
+const LIGHT = /[\u0000-\u10FF\u2000-\u200D\u2010-\u201F\u2032-\u2037]/u;
+const EMOJI = /\p{Extended_Pictographic}|\p{Regional_Indicator}/u;
+
+function xWeight(text: string): number {
+  let n = 0;
+  for (const { segment } of new Intl.Segmenter("en", { granularity: "grapheme" }).segment(text)) {
+    if (EMOJI.test(segment)) n += 2;
+    else for (const c of segment) n += LIGHT.test(c) ? 1 : 2;
+  }
+  return n;
+}
 
 export function countChars(text: string, rule: CountingRule): number {
   const chars = Array.from(text);
   if (rule === "cjk-double") return chars.reduce((n, c) => n + (WIDE.test(c) ? 2 : 1), 0);
   if (rule === "x-links-23") {
-    const urls = text.match(URL_RE) ?? [];
-    const stripped = text.replace(URL_RE, "");
-    return Array.from(stripped).length + urls.length * 23;
+    let urls = 0;
+    const rest = text.normalize("NFC").replace(URL_RE, (m: string, tld: string | undefined) => {
+      if (tld !== undefined && !TLDS.has(tld.toLowerCase())) return m;
+      urls++;
+      return TRAILING.exec(m)?.[0] ?? "";
+    });
+    return xWeight(rest) + urls * 23;
   }
   return chars.length;
 }
