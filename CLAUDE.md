@@ -45,5 +45,6 @@ Evaluation outputs go under `evals/runs/` and `evals/grades/`; check with the ow
 
 ## Environment notes
 
-- Sandboxed sessions often can't reach publishers, journals or company sites. Mark research taken from search snippets as `snippet-only`, and say when a site couldn't be fetched.
+- Sandboxed sessions often can't reach publishers, journals or company sites; local sessions usually can. Mark research taken from search snippets as `snippet-only`, and say when a site couldn't be fetched.
+- Never put the owner's name, email or other identifying details in a request (User-Agent, headers, query strings). Skip sources that demand a contact header.
 - `MARKETING_EXPERT_ALLOW_PRIVATE=1` is needed to audit a local server; `MARKETING_EXPERT_CHROMIUM` enables render mode and its tests.
