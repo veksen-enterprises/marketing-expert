@@ -62,24 +62,31 @@ export function listProfiles(): Array<{ name: string; product?: string; updatedA
     .map((f) => {
       const name = f.slice(0, -5);
       try {
-        const p = JSON.parse(readFileSync(join(dir, f), "utf8")) as Record<string, unknown> | null;
+        const p = readObject(join(dir, f));
         const str = (v: unknown) => (typeof v === "string" ? v : undefined);
-        return { name, product: str(p?.product), updatedAt: str(p?.updatedAt) };
+        return { name, product: str(p.product), updatedAt: str(p.updatedAt) };
       } catch (e) {
         return { name, product: `UNREADABLE: ${e instanceof Error ? e.message : String(e)}` };
       }
     });
 }
 
+// A hand-edited file can hold valid JSON that is not a profile, such as null, a list or a string.
+function readObject(file: string): Record<string, unknown> {
+  const v: unknown = JSON.parse(readFileSync(file, "utf8"));
+  if (typeof v !== "object" || v === null || Array.isArray(v)) throw new SyntaxError(`the file is valid JSON but not a JSON object (got ${JSON.stringify(v)?.slice(0, 40)})`);
+  return v as Record<string, unknown>;
+}
+
 export function getProfile(name: string): BusinessProfile | null {
   const p = pathFor(name);
-  return existsSync(p) ? (JSON.parse(readFileSync(p, "utf8")) as BusinessProfile) : null;
+  return existsSync(p) ? (readObject(p) as unknown as BusinessProfile) : null;
 }
 
 /**
  * Merge `patch` into the stored profile. Scalars replace; arrays replace (send the full list);
  * metrics and voice merge by key. Pass null for a field to delete it. If the stored file can't be read,
- * it is moved to <name>.json.bak, the save starts from an empty profile, and a message is added to `warnings`.
+ * it is moved to <name>.json.bak (or a name with the time, if that exists), the save starts from an empty profile, and a message is added to `warnings`.
  */
 export function saveProfile(name: string, patch: Partial<Record<keyof BusinessProfile, unknown>>, warnings: string[] = []): BusinessProfile {
   let existing: BusinessProfile;
@@ -87,8 +94,11 @@ export function saveProfile(name: string, patch: Partial<Record<keyof BusinessPr
     existing = getProfile(name) ?? { name };
   } catch (e) {
     if (!(e instanceof SyntaxError)) throw e;
-    renameSync(pathFor(name), `${pathFor(name)}.bak`);
-    warnings.push(`The stored profile could not be read (${e instanceof Error ? e.message : String(e)}). It was moved to ${pathFor(name)}.bak and this save started from an empty profile; copy back any facts you still need.`);
+    // Never overwrite an earlier backup: the second one gets the time in its name.
+    let bak = `${pathFor(name)}.bak`;
+    if (existsSync(bak)) bak = `${pathFor(name)}.${new Date().toISOString().replace(/[:.]/g, "-")}.bak`;
+    renameSync(pathFor(name), bak);
+    warnings.push(`The stored profile could not be read (${e instanceof Error ? e.message : String(e)}). It was moved to ${bak} and this save started from an empty profile; copy back any facts you still need.`);
     existing = { name };
   }
   const merged: Record<string, unknown> = { ...existing };

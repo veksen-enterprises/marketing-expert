@@ -3,6 +3,8 @@
 // `verified: false` means we could not confirm the number from an official source: treat as a warning only.
 // Platforms change these; update `CHECKED_ON` when you re-verify.
 
+import { X_TLDS } from "./xTlds.js";
+
 export const CHECKED_ON = "2026-10-04";
 
 export type CountingRule = "plain" | "cjk-double" | "x-links-23";
@@ -166,13 +168,9 @@ export const PLATFORM_LIMITS: Record<string, PlatformSpec> = {
 // Wide (CJK, fullwidth) characters count as 2 in Google Ads.
 const WIDE = /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
 
-// X (twitter-text): every URL counts 23, including bare domains such as acme.io. Trailing punctuation is not
-// part of the URL. Bare domains are matched only for the common TLDs below, so "node.js" stays text.
+// X (twitter-text): every URL counts 23, including bare domains such as acme.io or acme.studio. Trailing
+// punctuation is not part of the URL. Bare domains count only on a TLD X knows (X_TLDS), so "node.js" stays text.
 const URL_RE = /\bhttps?:\/\/\S+|(?<![\w@.\/-])(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,})(?::\d+)?(?:\/\S*)?/gi;
-const TLDS = new Set(
-  ("com net org edu gov info biz app dev xyz tech shop store online site blog cloud io ai co me tv ly gg " +
-    "us uk de fr es it nl be ch at se no dk fi pl pt ie ca mx br ar au nz jp cn kr tw hk sg in id za eu").split(" ")
-);
 const TRAILING = /[.,;:!?'"’”)\]]+$/;
 // Weight 1 in these code point ranges, 2 everywhere else; an emoji sequence counts 2 in all.
 const LIGHT = /[\u0000-\u10FF\u2000-\u200D\u2010-\u201F\u2032-\u2037]/u;
@@ -193,7 +191,7 @@ export function countChars(text: string, rule: CountingRule): number {
   if (rule === "x-links-23") {
     let urls = 0;
     const rest = text.normalize("NFC").replace(URL_RE, (m: string, tld: string | undefined) => {
-      if (tld !== undefined && !TLDS.has(tld.toLowerCase())) return m;
+      if (tld !== undefined && !X_TLDS.has(tld.toLowerCase())) return m;
       urls++;
       return TRAILING.exec(m)?.[0] ?? "";
     });

@@ -284,3 +284,63 @@ describe("package.json builds on install from git", () => {
     expect(JSON.parse(readFileSync("package.json", "utf8")).scripts.prepare).toBe("tsc");
   });
 });
+
+describe("second review of the server, profile, copy and UTM fixes", () => {
+  it("x_post: every bare domain on a TLD X knows counts as 23, ccTLDs included (twitter-text 3.1.0)", () => {
+    for (const d of ["acme.studio", "acme.agency", "acme.design", "a.co", "Hello.Me", "acme.io"]) expect(countChars(d, "x-links-23"), d).toBe(23);
+    expect(countChars("app.js and file.txt", "x-links-23")).toBe(19);
+  });
+  it("build_utm_link skips optional values that are only spaces", () => {
+    const r = buildUtm({ url: "https://ex.com/", source: "nl", medium: "email", campaign: "q4", term: "   ", content: " ", id: "\t" });
+    expect(r.url).toBe("https://ex.com/?utm_source=nl&utm_medium=email&utm_campaign=q4");
+  });
+  it("build_utm_link only suggests adding https:// when the address has no scheme", () => {
+    const base = { source: "nl", medium: "email", campaign: "q4" };
+    const msg = (url: string) => {
+      try {
+        buildUtm({ url, ...base });
+      } catch (e) {
+        return String(e);
+      }
+      return "";
+    };
+    for (const url of ["javascript:alert(1)", "data:text/html,x", "file:///etc/passwd"]) expect(msg(url), url).not.toMatch(/Add https:\/\/ in front/);
+    for (const url of ["localhost:3000/pricing", "www.acme.io:8080/x"]) expect(msg(url), url).toMatch(/Add https:\/\/ in front/);
+  });
+  it("a profile file holding JSON that is not an object is treated as unreadable", () => {
+    mkdirSync(join(dir, "profiles"), { recursive: true });
+    writeFileSync(join(dir, "profiles", "s.json"), '"abc"');
+    writeFileSync(join(dir, "profiles", "nul.json"), "null");
+    writeFileSync(join(dir, "profiles", "arr.json"), "[]");
+    for (const n of ["s", "nul", "arr"]) {
+      expect(listProfiles().find((p) => p.name === n)!.product, n).toMatch(/^UNREADABLE/);
+      expect(() => getProfile(n), n).toThrow(/not a JSON object/);
+    }
+    const w: string[] = [];
+    const p = saveProfile("s", { product: "x" }, w);
+    expect(Object.keys(p).sort()).toEqual(["name", "product", "updatedAt"]);
+    expect(w.join(" ")).toMatch(/s\.json\.bak/);
+  });
+  it("a second unreadable save does not overwrite the first backup", () => {
+    mkdirSync(join(dir, "profiles"), { recursive: true });
+    writeFileSync(join(dir, "profiles", "acme.json"), "{first");
+    saveProfile("acme", { product: "x" });
+    writeFileSync(join(dir, "profiles", "acme.json"), "{second");
+    const w: string[] = [];
+    saveProfile("acme", { product: "y" }, w);
+    const baks = readdirSync(join(dir, "profiles")).filter((f) => f.endsWith(".bak"));
+    expect(baks).toHaveLength(2);
+    expect(baks.map((f) => readFileSync(join(dir, "profiles", f), "utf8")).sort()).toEqual(["{first", "{second"]);
+    expect(w.join(" ")).toContain(baks.find((f) => f !== "acme.json.bak")!);
+  });
+  it("readability: text with no letters gets no Flesch score and no note about Latin script", () => {
+    const r = analyzeCopy("2026 — 100%").readability;
+    expect(r.fleschReadingEase).toBeNull();
+    expect(r.note ?? "").not.toMatch(/Latin/);
+  });
+  it("readability: Flesch scores stay in their usual range on very short text", () => {
+    const r = analyzeCopy("50% off. $20.").readability;
+    expect(r.fleschReadingEase).toBeLessThanOrEqual(100);
+    expect(r.fleschKincaidGrade).toBeGreaterThanOrEqual(0);
+  });
+});

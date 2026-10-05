@@ -29,7 +29,10 @@ export function buildUtm(i: UtmInput): { url: string; warnings: string[] } {
   }
   // "localhost:3000/x" and "www.acme.io:8080/x" parse with "localhost:" or "www.acme.io:" as the scheme;
   // javascript:, data: and file: links must never come out as campaign links.
-  if (u.protocol !== "http:" && u.protocol !== "https:") throw new RangeError(`url must start with https:// or http:// (got "${i.url}"). Add https:// in front of the address.`);
+  if (u.protocol !== "http:" && u.protocol !== "https:") {
+    const hostLike = u.protocol.includes(".") || u.protocol === "localhost:";
+    throw new RangeError(`url must start with https:// or http:// (got "${i.url}"). ${hostLike ? "Add https:// in front of the address." : `Links starting with ${u.protocol} are not allowed.`}`);
+  }
   for (const k of ["source", "medium", "campaign"] as const) {
     if (!i[k].trim()) throw new RangeError(`${k} is empty; GA4 would show it as "(not set)".`);
   }
@@ -42,8 +45,8 @@ export function buildUtm(i: UtmInput): { url: string; warnings: string[] } {
     ["utm_id", i.id],
   ];
   for (const [k, raw] of params) {
-    if (raw === undefined || raw === "") continue;
-    const v = raw.trim();
+    const v = raw?.trim();
+    if (!v) continue;
     if (v !== v.toLowerCase()) warnings.push(`${k}="${v}" has uppercase; GA4 is case-sensitive, so "Email" and "email" become separate rows. Lowercased.`);
     if (/\s/.test(v)) warnings.push(`${k}="${v}" contains spaces; replaced with "-".`);
     if (u.searchParams.has(k)) warnings.push(`${k} already present in the URL; overwritten.`);

@@ -72,8 +72,9 @@ export interface Readability {
   sentences: number;
   avgWordsPerSentence: number;
   longestSentenceWords: number;
-  /** null when the text is mostly not in Latin script: Flesch formulas are for English. */
+  /** null when the text has no letters or is mostly not in Latin script: Flesch formulas are for English. 0–100. */
   fleschReadingEase: number | null;
+  /** US school grade, 0 or more. */
   fleschKincaidGrade: number | null;
   note?: string;
 }
@@ -99,14 +100,16 @@ export function readability(text: string): Readability {
   const syl = ws.reduce((s, w) => s + countSyllables(w), 0);
   const letters = (text.match(/\p{L}/gu) ?? []).length;
   const latin = letters > 0 && (text.match(/\p{Script=Latin}/gu) ?? []).length / letters >= 0.5;
+  const note = letters === 0 ? "This text has no letters, only numbers and symbols, so Flesch scores are not given." : "Most of this text is not in Latin script. Flesch scores work for English only, so they are not given; word counts are rough.";
+  // Very short text can fall outside the usual 0–100 ease and grade 0+ ranges; keep it inside them.
   return {
     words: ws.length,
     sentences: sents.length,
     avgWordsPerSentence: ws.length / nS,
     longestSentenceWords: sents.reduce((m, s) => Math.max(m, words(s).length), 0),
-    fleschReadingEase: latin ? 206.835 - 1.015 * (nW / nS) - 84.6 * (syl / nW) : null,
-    fleschKincaidGrade: latin ? 0.39 * (nW / nS) + 11.8 * (syl / nW) - 15.59 : null,
-    ...(latin ? {} : { note: "Most of this text is not in Latin script. Flesch scores work for English only, so they are not given; word counts are rough." }),
+    fleschReadingEase: latin ? Math.min(100, Math.max(0, 206.835 - 1.015 * (nW / nS) - 84.6 * (syl / nW))) : null,
+    fleschKincaidGrade: latin ? Math.max(0, 0.39 * (nW / nS) + 11.8 * (syl / nW) - 15.59) : null,
+    ...(latin ? {} : { note }),
   };
 }
 
