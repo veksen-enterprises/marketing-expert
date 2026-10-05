@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { matchSmallBets, readStage, type SmallBetsFacts } from "../src/lib/smallBets.js";
+import { matchSmallBets, readStage, betScore, type SmallBetsFacts } from "../src/lib/smallBets.js";
 import { BETS } from "../src/lib/smallBetsCatalog.js";
 
 const ids = (vs: Array<{ id: string }>) => vs.map((v) => v.id);
@@ -11,6 +11,13 @@ describe("catalog", () => {
     expect(new Set(BETS.map((b) => b.id)).size).toBe(BETS.length);
     const book = readFileSync("knowledge/small-bets.md", "utf8");
     for (const s of new Set(BETS.map((b) => b.section))) expect(book, s).toContain(`## ${s}`);
+  });
+  it("weights every bet: effort, ceiling, and tries only for lopsided bets", () => {
+    for (const b of BETS) {
+      expect(b.effortHours, b.id).toBeGreaterThan(0);
+      expect(["capped", "steady", "lopsided"], b.id).toContain(b.ceiling);
+      if (b.tries) expect(b.ceiling === "lopsided" || b.budgetSkipsStage !== undefined || b.needs?.budget, b.id).toBeTruthy();
+    }
   });
   it("names every bet in the playbook", () => {
     const book = readFileSync("knowledge/small-bets.md", "utf8");
@@ -111,9 +118,20 @@ describe("matchSmallBets", () => {
     expect(s.reason).toMatch(/budget buys the reach.*keeps people/);
     expect(ids(matchSmallBets({ ...early, assets: { ...early.assets, monthlyBudget: 0 } }).fitsLater)).toContain("newsletter-sponsorship");
   });
-  it("ranks better evidence first", () => {
-    const order = { strong: 0, some: 1, anecdote: 2 };
-    const ev = matchSmallBets(devtool).fitsNow.map((v) => order[v.evidence!]);
-    expect(ev).toEqual([...ev].sort((a, b) => a - b));
+  it("ranks by score, highest first", () => {
+    const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);
+    expect(scores).toEqual([...scores].sort((a, b) => b - a));
+  });
+  it("scores a cheap lopsided bet above an equally cheap capped one, and discounts effort by its square root", () => {
+    expect(betScore({ ceiling: "lopsided", evidence: "anecdote", effortHours: 4 })).toBeGreaterThan(betScore({ ceiling: "capped", evidence: "anecdote", effortHours: 4 }));
+    // Four times the effort halves the score.
+    expect(betScore({ ceiling: "steady", evidence: "some", effortHours: 16 })).toBeCloseTo(betScore({ ceiling: "steady", evidence: "some", effortHours: 4 }) / 2, 2);
+    // Weak evidence discounts, but doesn't outweigh a higher ceiling.
+    expect(betScore({ ceiling: "lopsided", evidence: "anecdote", effortHours: 10 })).toBeGreaterThan(betScore({ ceiling: "steady", evidence: "some", effortHours: 10 }));
+  });
+  it("tells the advisor to judge a lopsided bet on the best of its tries", () => {
+    const r = matchSmallBets(devtool);
+    expect(r.fitsNow.find((v) => v.id === "founder-videos")).toMatchObject({ ceiling: "lopsided", tries: 20 });
+    expect(r.howToReport).toMatch(/best one/);
   });
 });

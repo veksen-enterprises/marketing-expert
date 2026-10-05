@@ -60,6 +60,13 @@ export interface Bet {
   /** Needs one of these product surfaces; omitted = any. */
   surfaces?: Surface[];
   involves?: AvoidTag[];
+  /** Hours of work until the bet can be judged (all tries included). */
+  effortHours: number;
+  /** What it can do if it works: capped (a small, predictable gain), steady (slow, compounding), lopsided (usually
+   * nothing, now and then a lot). A judgment call per bet, not a measurement. */
+  ceiling: "capped" | "steady" | "lopsided";
+  /** For lopsided bets: how many tries to run before judging, judged on the best one, not the average. */
+  tries?: number;
   cost: string;
   /** How long before you can judge it. */
   judgeAfter: string;
@@ -117,6 +124,11 @@ export interface Verdict {
   measure?: string;
   stop?: string;
   evidence?: Bet["evidence"];
+  effortHours?: number;
+  ceiling?: Bet["ceiling"];
+  tries?: number;
+  /** ceiling × evidence ÷ √effort; fitsNow is sorted by it, highest first. */
+  score?: number;
   playbookSection?: string;
 }
 
@@ -131,9 +143,14 @@ export interface MatchResult {
 }
 
 export const HOW_TO_REPORT =
-  "Show only fitsNow, ranked, within the usual limit on moves; each with its first test, how to measure it and when to stop. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them.";
+  "Show only fitsNow, in score order (what it can do if it works, evidence, effort; a rule of thumb), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them.";
 
-const EVIDENCE_ORDER = { strong: 0, some: 1, anecdote: 2 } as const;
+// Ranking weights, a rule of thumb: what a bet can do if it works, discounted a little for weak evidence and by the
+// square root of its effort, so a 1-hour bet doesn't beat everything just for being quick.
+export const CEILING_WEIGHT = { capped: 1, steady: 2, lopsided: 3 } as const;
+export const EVIDENCE_WEIGHT = { strong: 1, some: 0.85, anecdote: 0.7 } as const;
+export const betScore = (b: Pick<Bet, "ceiling" | "evidence" | "effortHours">) =>
+  Math.round(((CEILING_WEIGHT[b.ceiling] * EVIDENCE_WEIGHT[b.evidence]) / Math.sqrt(Math.max(1, b.effortHours))) * 1000) / 1000;
 
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
   return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid };
@@ -208,11 +225,14 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
         measure: b.measure,
         stop: b.stop,
         evidence: b.evidence,
+        effortHours: b.effortHours,
+        ceiling: b.ceiling,
+        ...(b.tries ? { tries: b.tries } : {}),
+        score: betScore(b),
         playbookSection: b.section,
       });
   }
-  // Better evidence first; the catalog order (cheapest first within a group) breaks ties.
-  fitsNow.sort((x, y) => EVIDENCE_ORDER[x.evidence!] - EVIDENCE_ORDER[y.evidence!]);
+  fitsNow.sort((x, y) => y.score! - x.score!);
   return { stage, fitsNow, fitsLater, doesntFit, assumptions, howToReport: HOW_TO_REPORT };
 }
 

@@ -13,6 +13,8 @@ export const BETS: Bet[] = [
   // ── Stage 0 ─────────────────────────────────────────────────────────────
   {
     id: "listings",
+    effortHours: 3,
+    ceiling: "capped",
     name: "List it where people already look",
     what: "Free listings in app stores, developer registries (MCP Registry, GitHub Marketplace, VS Code, Chrome Web Store, package registries), integration directories and curated lists.",
     stage: 0,
@@ -25,6 +27,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "answer-questions",
+    effortHours: 32,
+    ceiling: "steady",
     name: "Answer where the problem is already discussed",
     what: "Answer questions on Stack Overflow, Reddit, Discord servers, forums and nearby projects' GitHub issues, linking only when the link answers the question.",
     stage: 0,
@@ -38,6 +42,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "comparison-pages",
+    effortHours: 10,
+    ceiling: "steady",
     name: "Comparison and 'alternative to X' pages",
     what: "Honest pages comparing you with known rivals, and help docs written as answers to search queries.",
     stage: 0,
@@ -50,6 +56,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "error-pages",
+    effortHours: 15,
+    ceiling: "steady",
     name: "One page per painful error message",
     what: "A page titled with the exact error text, explaining the cause and the fix.",
     stage: 0,
@@ -64,6 +72,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "teardowns",
+    effortHours: 24,
+    ceiling: "lopsided",
+    tries: 2,
     name: "Teardowns of well-known things",
     what: "Apply your method or tool to something famous and publish what you found.",
     stage: 0,
@@ -77,6 +88,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "free-tool",
+    effortHours: 40,
+    ceiling: "lopsided",
     name: "A free tool or calculator",
     what: "A small standalone tool that solves one narrow, searchable problem and links to the product.",
     stage: 0,
@@ -89,6 +102,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "one-command-try",
+    effortHours: 24,
+    ceiling: "capped",
     name: "A one-command try with no sign-up",
     what: "An npx, pipx or docker one-shot that gives a result on the user's own input and prints a link.",
     stage: 0,
@@ -103,6 +118,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "open-source",
+    effortHours: 60,
+    ceiling: "lopsided",
     name: "Open-source a useful piece",
     what: "Publish a CLI, GitHub Action, library or dataset that is useful without the paid product, with a README that works as a landing page.",
     stage: 0,
@@ -118,6 +135,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "upstream-fixes",
+    effortHours: 10,
+    ceiling: "capped",
     name: "Fix things in projects your users use",
     what: "Pull requests and docs fixes to nearby open-source projects, for credibility rather than promotion.",
     stage: 0,
@@ -132,6 +151,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "moderator-tool",
+    effortHours: 24,
+    ceiling: "lopsided",
     name: "A tool for the community's moderators",
     what: "Build a small bot or tool that solves a known pain for the moderators of a community where your users gather.",
     stage: 0,
@@ -145,6 +166,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "social-presence",
+    effortHours: 36,
+    ceiling: "lopsided",
+    tries: 24,
     name: "Post regularly as the founder",
     what: "A founder account on the one platform where buyers already talk, posting findings and the build at least twice a week.",
     stage: 0,
@@ -157,6 +181,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "founder-videos",
+    effortHours: 10,
+    ceiling: "lopsided",
+    tries: 20,
     name: "Short videos of the product doing its job",
     what: "Founder-made 15–60 second videos showing one result, posted on the short-video platform the audience uses.",
     stage: 0,
@@ -170,6 +197,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "cold-one-to-one",
+    effortHours: 20,
+    ceiling: "capped",
     name: "Personal messages to clearly fitting people",
     what: "Research 20–50 people who visibly have the problem (public issues, posts, job ads) and write to each one personally.",
     stage: 0,
@@ -183,6 +212,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "own-data-report",
+    effortHours: 40,
+    ceiling: "lopsided",
+    tries: 2,
     name: "Publish your own data",
     what: "A report, index or benchmark from data nobody else has published, including public data you collected and organised.",
     stage: 2,
@@ -197,6 +229,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "data-pages",
+    effortHours: 24,
+    ceiling: "steady",
     name: "Public pages built from your data",
     what: "One indexable page per item, error or record, each with something unique and useful on it.",
     stage: 2,
@@ -211,6 +245,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "weekly-digest",
+    effortHours: 16,
+    ceiling: "steady",
     name: "A weekly digest generated from your data",
     what: "An automated weekly summary posted where the audience is, with the community's permission.",
     stage: 2,
@@ -225,6 +261,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "waitlist-referral",
+    effortHours: 16,
+    ceiling: "lopsided",
     name: "A waitlist where referrals move people up",
     what: "A pre-launch sign-up where each person gets a link, and referrals move them up the line or earn a reward.",
     stage: 0,
@@ -238,6 +276,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "integration",
+    effortHours: 80,
+    ceiling: "steady",
     name: "An integration or plugin inside another product",
     what: "A bot, plugin or CI integration that does a clear job inside a platform your users already use.",
     stage: 0,
@@ -253,6 +293,8 @@ export const BETS: Bet[] = [
   // ── Stage 1 ─────────────────────────────────────────────────────────────
   {
     id: "founder-emails",
+    effortHours: 5,
+    ceiling: "steady",
     name: "Email every new sign-up, payer and canceller yourself",
     what: "A short plain-text email from the founder to each new user asking what they hoped to do, and to each canceller asking why.",
     stage: 1,
@@ -266,6 +308,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "onboarding-calls",
+    effortHours: 10,
+    ceiling: "steady",
     name: "Onboarding calls and free audits",
     what: "Offer new users a short setup call, or offer a free review of the prospect's own problem.",
     stage: 1,
@@ -279,6 +323,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "ask-happy-users",
+    effortHours: 2,
+    ceiling: "capped",
     name: "Ask happy users for an introduction, a review or a quote",
     what: "Right after a success moment, ask for one introduction, a review or a testimonial. Ask every customer for reviews, not only happy ones (Google's rule).",
     stage: 1,
@@ -291,6 +337,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "launch-sites",
+    effortHours: 16,
+    ceiling: "lopsided",
     name: "One launch-site post",
     what: "Product Hunt, Show HN, a fitting subreddit or BetaList, with a working product people can try now.",
     stage: 0,
@@ -304,6 +352,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "changelog",
+    effortHours: 4,
+    ceiling: "capped",
     name: "A public changelog and 'what's new' emails",
     what: "A dated page of what changed, and short update emails to opted-in users.",
     stage: 1,
@@ -316,6 +366,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "curator-submissions",
+    effortHours: 1,
+    ceiling: "lopsided",
+    tries: 10,
     name: "Send something useful to niche newsletters",
     what: "Submit a useful post or tool to the 'tools' or 'links' sections of newsletters your audience reads.",
     stage: 0,
@@ -329,6 +382,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "guest-spots",
+    effortHours: 24,
+    ceiling: "steady",
     name: "Podcasts, meetups and guest posts",
     what: "Appear on small podcasts and local meetups, or write for someone else's newsletter or blog.",
     stage: 1,
@@ -342,6 +397,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "journalist-requests",
+    effortHours: 10,
+    ceiling: "lopsided",
     name: "Answer journalists' source requests",
     what: "Reply quickly to reporters asking for expert sources on matching sites.",
     stage: 1,
@@ -355,6 +412,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "calendar-events",
+    effortHours: 12,
+    ceiling: "lopsided",
+    tries: 2,
     name: "Show up on the audience's calendar",
     what: "Have something ready for the dates that matter to your audience: a season reset, a framework release, a conference week, a holiday.",
     stage: 1,
@@ -367,6 +427,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "browser-extension",
+    effortHours: 80,
+    ceiling: "steady",
     name: "A browser extension on the sites your audience uses",
     what: "An extension that adds your data or feature to a site your audience already visits often.",
     stage: 1,
@@ -380,6 +442,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "small-sponsorship",
+    effortHours: 2,
+    ceiling: "capped",
     name: "Sponsor something small the audience cares about",
     what: "Pay tens to hundreds of dollars to sponsor a community event, tournament or open-source maintainer.",
     stage: 1,
@@ -395,6 +459,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "founder-thanks",
+    effortHours: 3,
+    ceiling: "capped",
     name: "Thank the first users personally",
     what: "A personal note or short video to each early user. Research found no effect on later behaviour, so do it because it's right, not as growth.",
     stage: 1,
@@ -408,6 +474,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "hiring-post",
+    effortHours: 1,
+    ceiling: "capped",
     name: "A hiring post that explains the product",
     what: "A post in a hiring thread (for example HN's monthly 'Who is hiring') that describes what you build. Only with a real open role.",
     stage: 1,
@@ -423,6 +491,8 @@ export const BETS: Bet[] = [
   // ── Stage 2 ─────────────────────────────────────────────────────────────
   {
     id: "shareable-outputs",
+    effortHours: 24,
+    ceiling: "lopsided",
     name: "Outputs people want to share",
     what: "A share link or image card for the results users are proud of or surprised by.",
     stage: 2,
@@ -435,6 +505,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "embeds",
+    effortHours: 24,
+    ceiling: "steady",
     name: "Embeddable widgets that link back",
     what: "A widget, tooltip or badge other sites embed, with a link back (Google says to nofollow links in distributed widgets).",
     stage: 1,
@@ -447,6 +519,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "building-in-public",
+    effortHours: 18,
+    ceiling: "lopsided",
+    tries: 12,
     name: "Build in public",
     what: "Share progress, decisions and numbers openly as you go.",
     stage: 1,
@@ -461,6 +536,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "co-marketing",
+    effortHours: 20,
+    ceiling: "steady",
     name: "Co-marketing with an adjacent tool or creator",
     what: "A joint post, integration launch or webinar with a product or creator serving the same people.",
     stage: 2,
@@ -473,6 +550,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "own-community",
+    effortHours: 36,
+    ceiling: "steady",
     name: "Your own community or newsletter",
     what: "A Discord or Slack for users, or a newsletter, once people already talk to you.",
     stage: 2,
@@ -485,6 +564,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "newsletter-sponsorship",
+    effortHours: 3,
+    ceiling: "capped",
+    tries: 3,
     name: "Sponsor a niche newsletter",
     what: "Buy a slot in a newsletter your audience reads.",
     stage: 2,
@@ -500,6 +582,9 @@ export const BETS: Bet[] = [
   },
   {
     id: "paid-tutorial",
+    effortHours: 2,
+    ceiling: "steady",
+    tries: 2,
     name: "Pay a user to write a tutorial",
     what: "Commission a real user to write about solving a problem with your product.",
     stage: 2,
@@ -515,6 +600,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "affiliate",
+    effortHours: 10,
+    ceiling: "steady",
     name: "An affiliate or referral link with a commission",
     what: "A link that pays users or creators a share of the sales they bring.",
     stage: 2,
@@ -528,6 +615,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "perk-programmes",
+    effortHours: 6,
+    ceiling: "capped",
     name: "Startup and student perk listings",
     what: "Offer credits or a free tier through startup perk catalogues and student developer bundles.",
     stage: 2,
@@ -541,6 +630,8 @@ export const BETS: Bet[] = [
   },
   {
     id: "lifetime-deal",
+    effortHours: 10,
+    ceiling: "capped",
     name: "A lifetime deal on a deal site",
     what: "Sell lifetime access for a one-time price. Brings cash and users who expect support forever; often the wrong customers.",
     stage: 2,
@@ -558,6 +649,8 @@ export const BETS: Bet[] = [
   // ── Stage 3 ─────────────────────────────────────────────────────────────
   {
     id: "press",
+    effortHours: 20,
+    ceiling: "lopsided",
     name: "Pitch the press",
     what: "Pitch a story with numbers or a finding that others would retell.",
     stage: 3,
