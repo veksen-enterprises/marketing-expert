@@ -321,3 +321,109 @@ describe("scanSource billing", () => {
     expect(scanSource(d).billing).toBeNull();
   });
 });
+
+describe("scanSource review fixes (pairing, issue states, license, billing)", () => {
+  it("pairs one plan's prices from real card markup, keeps a lifetime price apart, and reads a suffix on the next line", () => {
+    // A one-word "Pro" name was never kept as context, so "$16" had no plan, and "Lifetime · $100 once" was filed under
+    // pro because a "Go Pro" button was the nearest copy.
+    const d = mkdtempSync(join(tmpdir(), "scan-"));
+    writeFileSync(
+      join(d, "index.astro"),
+      ['<div class="price-card pro">', "  <h3>Pro</h3>", '  <span class="amount">$20</span>', '  <span class="per">/ month</span>', '  <a class="btn">Go Pro</a>', '  <a class="btn">Full comparison</a>', "</div>", '<span class="tag">Lifetime · $100 once</span>'].join("\n") + "\n"
+    );
+    writeFileSync(
+      join(d, "pricing.astro"),
+      ['<span class="dt-card-name">Starter</span>', '<span class="dt-price">$9</span>', "", '<span class="dt-price-suffix">/mo</span>', '<span class="dt-card-name">Pro</span>', '<p class="dt-card-pitch">For when two projects is not enough.</p>', '<span class="dt-price">$16</span>', '<span class="dt-price-suffix">/mo</span>'].join("\n") + "\n"
+    );
+    writeFileSync(join(d, "plans.md"), "Pro ($49) gives you everything.\n\nStarter: $9\n");
+    const r = scanSource(d);
+    expect(r.conflicts.filter((c) => c.topic === "price").map((c) => [c.subject, `${c.a.file}:${c.a.line}`, `${c.b.file}:${c.b.line}`])).toEqual([
+      ["pro", "index.astro:3", "plans.md:1"],
+      ["pro", "index.astro:3", "pricing.astro:7"],
+    ]);
+    expect(r.claims.price.find((c) => c.file === "pricing.astro" && c.line === 2)).toMatchObject({ text: "$9 /mo", plan: "Starter" });
+    expect(r.notes.join(" ")).toMatch(/one-digit amount with no "\/mo" or "per" after it \(plans\.md:3\)/);
+  });
+
+  it("gives each issue on a line the state of its own clause, and flags a status conflict only when the states contradict", () => {
+    const d = mkdtempSync(join(tmpdir(), "adr-"));
+    mkdirSync(join(d, "adr"));
+    writeFileSync(join(d, "adr", "0019-monitor.md"), "# Monitor\n\n## Status\n\nAccepted 2026-03-01. Monitor mode is open (#4037).\n\n## Context\n");
+    writeFileSync(join(d, "adr", "0024-ingest.md"), "# Ingest\n\n## Status\n\nAccepted. CI mode built (#4035, #4036).\n\n## Context\n");
+    writeFileSync(join(d, "adr", "0025-relay.md"), "# Relay\n\n## Status\n\nAccepted, built.\n\n## Context\n");
+    writeFileSync(
+      join(d, "adr", "README.md"),
+      "| # | Decision | Status |\n| --- | --- | --- |\n| 0019 | Monitor | Open (#4037) |\n| 0024 | Ingest | Accepted, built for CI (#4035, #4036); monitor mode open (#4037) |\n| 0025 | Relay | Accepted; open |\n"
+    );
+    const r = scanSource(d);
+    expect(r.decisionIssues.map((x) => [x.issue, x.conflict])).toEqual([
+      ["#4035", false],
+      ["#4036", false],
+      ["#4037", false],
+    ]);
+    expect(r.decisionIssues[0].mentions.find((m) => m.file.endsWith("README.md"))?.state).toBe("done");
+    expect(r.decisions.map((x) => [x.id, x.statusConflict])).toEqual([
+      ["0019", false],
+      ["0024", false],
+      ["0025", true],
+    ]);
+  });
+
+  it("reads the LICENSE and package.json at the git root when scanning an app folder in a monorepo", () => {
+    const d = mkdtempSync(join(tmpdir(), "repo-"));
+    mkdirSync(join(d, ".git"));
+    mkdirSync(join(d, "apps", "web"), { recursive: true });
+    writeFileSync(join(d, "LICENSE"), "MIT License\n\nPermission is hereby granted, free of charge\n");
+    writeFileSync(join(d, "package.json"), JSON.stringify({ name: "root", license: "MIT" }));
+    writeFileSync(join(d, "apps", "web", "package.json"), JSON.stringify({ private: true }));
+    writeFileSync(join(d, "apps", "web", "index.html"), "<p>DBTool is fully open source.</p>\n");
+    const r = scanSource(join(d, "apps", "web"));
+    expect(r.licenseState.files).toEqual([{ file: join("..", "..", "LICENSE"), license: "MIT" }]);
+    expect(r.licenseState.packages.map((p) => [p.file, p.license])).toEqual([
+      ["package.json", null],
+      [join("..", "..", "package.json"), "MIT"],
+    ]);
+    expect(r.notes.join(" ")).not.toMatch(/no open-source license was found/);
+    // Not past the git root.
+    const e = mkdtempSync(join(tmpdir(), "outer-"));
+    writeFileSync(join(e, "LICENSE"), "MIT License\n");
+    mkdirSync(join(e, "repo", ".git"), { recursive: true });
+    mkdirSync(join(e, "repo", "app"));
+    expect(scanSource(join(e, "repo", "app")).licenseState.files).toEqual([]);
+  });
+
+  it("pairs upcoming claims only with page titles and H1s whose words appear together in the claim", () => {
+    const base = mkdtempSync(join(tmpdir(), "pair-"));
+    mkdirSync(join(base, "site"));
+    mkdirSync(join(base, "docs"));
+    writeFileSync(join(base, "site", "index.md"), "Coming soon. Select it now and delivery starts later.\n\nNot yet. We are figuring out what teams actually need.\n\nCompare runs, coming soon to the app.\n\nThe MCP server is coming soon.\n\nSSO is coming soon.\n");
+    writeFileSync(join(base, "docs", "select-star.md"), "---\ntitle: SELECT *\n---\n\nText.\n");
+    writeFileSync(join(base, "docs", "self-hosting.md"), "# Self-hosting\n\n## What you need\n\nText.\n");
+    writeFileSync(join(base, "docs", "skill.md"), "# 8. Connect the database\n\n# Run compare\n\nText.\n");
+    writeFileSync(join(base, "docs", "mcp.md"), "# MCP server\n\nText.\n");
+    writeFileSync(join(base, "docs", "sso.md"), "# SSO\n\nText.\n");
+    const r = scanSource(join(base, "site"), 60, [join(base, "docs")]);
+    expect(r.conflicts.filter((c) => c.topic === "availability").map((c) => [c.a.line, c.subject])).toEqual([
+      [7, "MCP server"],
+      [9, "SSO"],
+    ]);
+  });
+
+  it("names the entity only from whole words or identifier parts, and reads billing hits only from the script parts of pages", () => {
+    const d = mkdtempSync(join(tmpdir(), "bill-"));
+    writeFileSync(join(d, "billing.ts"), "const q = remember(quota);\nconst s = steam.seats;\nconst w = website.quota;\nconst t = seats.get(teamId);\n");
+    writeFileSync(join(d, "pricing.astro"), "---\nconst seats = user.seats;\n---\n<p>Shared dashboards, RBAC, SSO, seat billing.</p>\n<script>\nconst quota = org.quota;\n</script>\n");
+    writeFileSync(join(d, "Plans.tsx"), "export const P = () => (\n  <ul>\n    <li>Unlimited seats on the Team plan</li>\n  </ul>\n);\nconst seats = account.seats;\n");
+    const b = scanSource(d).billing!;
+    expect(b.hits.map((h) => [`${h.file}:${h.line}`, h.entity])).toEqual([
+      ["Plans.tsx:6", "user"],
+      ["billing.ts:1", null],
+      ["billing.ts:2", null],
+      ["billing.ts:3", null],
+      ["billing.ts:4", "team"],
+      ["pricing.astro:2", "user"],
+      ["pricing.astro:6", "team"],
+    ]);
+    expect(b.planAttachesTo).toEqual({ user: 2, team: 2, project: 0 });
+  });
+});

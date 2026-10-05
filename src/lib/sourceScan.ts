@@ -17,6 +17,8 @@ export interface Claim {
   /** For short lines (a bare price), the nearest preceding copy, usually the plan or heading it belongs to. For items
    * listed under a roadmap or "on our radar" heading, that heading. */
   context?: string;
+  /** For a price, the nearest heading or card name above it that names a plan ("Pro"). */
+  plan?: string;
 }
 
 export interface EnvFlag {
@@ -93,7 +95,8 @@ export interface SourceScan {
   conflicts: ClaimConflict[];
   /** The compareWith folders, as read. */
   compared: Array<{ dir: string; filesScanned: number; claimCounts: Record<ClaimKind, number> }>;
-  /** LICENSE files and each package.json's license and private fields, to check open-source claims against. */
+  /** LICENSE files and each package.json's license and private fields, to check open-source claims against. Includes
+   * those in the folders above dir up to the git root (paths starting with ../). */
   licenseState: LicenseState;
   /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
   decisions: Decision[];
@@ -138,22 +141,42 @@ function datedLines(body: string): Decision["datedStatus"] {
 
 // Status words, folded so "not fully built" and "open" compare equal.
 const STATUS_WORDS = /\b(not (?:fully |yet )?(?:built|implemented|done)|partial(?:ly built)?|in progress|open|built|shipped|done|implemented|complete[d]?|accepted|proposed|draft|rejected|superseded|deprecated|deferred|withdrawn)\b/gi;
-function statusWords(s: string): string {
-  const fold = (w: string) => (/^(not|partial|in progress|open)/.test(w) ? "open" : /^(built|shipped|done|implemented|complete)/.test(w) ? "built" : w);
-  return [...new Set([...s.toLowerCase().matchAll(STATUS_WORDS)].map((m) => fold(m[1])))].sort().join(",");
+function statusWords(s: string): Set<string> {
+  const fold = (w: string) => (/^(not|partial|in progress|open)/.test(w) ? "open" : /^(built|shipped|done|implemented|complete)/.test(w) ? "built" : w === "draft" ? "proposed" : w === "deprecated" ? "superseded" : w === "withdrawn" ? "rejected" : w);
+  return new Set([...s.toLowerCase().matchAll(STATUS_WORDS)].map((m) => fold(m[1])));
 }
+// Two questions a status answers: is it decided (proposed, accepted, rejected, superseded), and is it built (open, built).
+// "Accepted. Monitor mode is open" and "Open" agree: one side not answering a question is not a conflict, and a side that
+// says both open and built ("not fully built; the rename shipped") agrees with either.
+const STATUS_AXES = [["proposed", "accepted", "rejected", "superseded"], ["open", "built"]];
 function statusesDiffer(a: string, b: string): boolean {
   const wa = statusWords(a);
   const wb = statusWords(b);
-  if (wa && wb) return wa !== wb;
+  if (wa.size && wb.size) return STATUS_AXES.some((axis) => {
+    const xa = axis.filter((w) => wa.has(w));
+    const xb = axis.filter((w) => wb.has(w));
+    return xa.length > 0 && xb.length > 0 && !xa.some((w) => xb.includes(w));
+  });
   const n = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   return !n(a).includes(n(b)) && !n(b).includes(n(a));
 }
 
 const ISSUE = /#(\d{2,6})(?![\w-])/g;
-function issueState(line: string): "open" | "done" | null {
-  if (/\b(open|todo|pending|not (?:fully |yet )?(?:built|done|started|implemented)|planned|deferred|in progress|blocked)\b/i.test(line)) return "open";
-  return /\b(built|shipped|done|closed|fixed|implemented|merged|released|landed)\b/i.test(line) ? "done" : null;
+const OPEN_WORDS = /\b(open|todo|pending|not (?:fully |yet )?(?:built|done|started|implemented)|planned|deferred|in progress|blocked)\b/i;
+const DONE_WORDS = /\b(built|shipped|done|closed|fixed|implemented|merged|released|landed)\b/i;
+function stateOf(s: string): "open" | "done" | null {
+  return OPEN_WORDS.test(s) ? "open" : DONE_WORDS.test(s) ? "done" : null;
+}
+// The state of the clause the issue is in ("built for CI (#4035); monitor mode open (#4037)"), split at ";", "|" and the
+// end of a sentence. With no status word there, the line's state when it has only one kind.
+function issueState(line: string, at: number): "open" | "done" | null {
+  const start = Math.max(line.lastIndexOf(";", at), line.lastIndexOf("|", at), line.slice(0, at).search(/\.\s(?!.*\.\s)/)) + 1;
+  const rest = line.slice(at).search(/[;|]|\.(\s|$)/);
+  const own = stateOf(line.slice(start, rest < 0 ? line.length : at + rest));
+  if (own) return own;
+  const open = OPEN_WORDS.test(line);
+  const done = DONE_WORDS.test(line);
+  return open === done ? null : open ? "open" : "done";
 }
 
 // Table cells, with or without the outer pipes: "| a | b |" and "a | b" are both rows.
@@ -173,7 +196,7 @@ function readDecisions(root: string, files: string[]): { decisions: Decision[]; 
     src.split("\n").forEach((line, i) => {
       for (const m of line.matchAll(ISSUE)) {
         const list = mentions.get(m[1]) ?? [];
-        if (list.length < 6 && !list.some((x) => x.file === rel && x.line === i + 1)) list.push({ file: rel, line: i + 1, text: line.trim().slice(0, 200), state: issueState(line) });
+        if (list.length < 6 && !list.some((x) => x.file === rel && x.line === i + 1)) list.push({ file: rel, line: i + 1, text: line.trim().slice(0, 200), state: issueState(line, m.index) });
         mentions.set(m[1], list);
       }
     });
@@ -253,17 +276,26 @@ function readDecisions(root: string, files: string[]): { decisions: Decision[]; 
 
 // When the scanned folder has no decision records (apps/docs), the repo's own docs/adr is often higher up.
 const ADR_HOMES = ["docs/adr", "docs/adrs", "docs/decisions", "doc/adr", "adr", "adrs", "decisions"];
-function findDecisionsAbove(root: string): string | null {
-  let git: string | null = null;
+function gitRoot(root: string): string | null {
   for (let p = root; ; p = dirname(p)) {
-    if (existsSync(join(p, ".git"))) {
-      git = p;
-      break;
-    }
+    if (existsSync(join(p, ".git"))) return p;
     if (dirname(p) === p) return null;
   }
-  for (let p = root; p !== git; ) {
+}
+
+// The folders above root, up to and including the git root; none outside a git repo.
+function foldersAbove(root: string): string[] {
+  const git = gitRoot(root);
+  const out: string[] = [];
+  for (let p = root; git && p !== git; ) {
     p = dirname(p);
+    out.push(p);
+  }
+  return out;
+}
+
+function findDecisionsAbove(root: string): string | null {
+  for (const p of foldersAbove(root)) {
     for (const h of ADR_HOMES) {
       const d = join(p, h);
       try {
@@ -282,8 +314,8 @@ export const MAX_FILES = 4000;
 const MAX_BYTES = 512 * 1024;
 
 // A currency amount needs 2 or more digits, cents, or a period after it ("$9/mo"): "$1" is a SQL parameter or a
-// shell variable. Never after "=", and not as "($1)" or "ANY($1, ...)".
-const AMOUNT = /(?<!=[ \t]*)(?:(?<!\()|(?![$€£]\d+[),]))[$€£](?:\d[\d,]*\d(?:\.\d{2})?|\d\.\d{2}|\d(?=[ \t]?(?:\/|per\b|a month)))(?!\d|\.\d)/;
+// shell variable. Never after "=", and not as "f($10)" or "ANY ($10, ...)"; "Pro ($49)" is a price.
+const AMOUNT = /(?<!=[ \t]*)(?:(?<![\w$]\(|\b(?:IN|ANY|ALL|VALUES|in|any|all|values)[ \t]*\()|(?![$€£]\d+[),]))[$€£](?:\d[\d,]*\d(?:\.\d{2})?|\d\.\d{2}|\d(?=[ \t]?(?:\/|per\b|a month)))(?!\d|\.\d)/;
 
 // Tried on every line, read in full, so no part may rescan the rest of the line from many starting points ("curl curl
 // curl ...", "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
@@ -432,6 +464,10 @@ const OUTPUT_HINT = /redirect|navigate|\bto:|<h1|head\(|<head|title|meta|canonic
 // Claims kept per kind for pairing; only maxPerKind of them are returned.
 const KEEP = 1000;
 
+// A one-time price is its own plan: "Lifetime · $100 once" is not the monthly Pro price.
+const ONCE = /\b(lifetime|once|one[- ]time)\b/i;
+// An element that names a pricing card: <span class="card-name">Pro</span>.
+const NAME_CLASS = /\bclass(?:Name)?=["'][^"']*(name|tier|plan)/i;
 const PLAN = /\b(free|hobby|starter|basic|personal|indie|developer|pro|plus|premium|teams?|business|growth|scale|startup|enterprise)\b/i;
 const UPCOMING = /\b(soon|radar|coming|not yet|planned|roadmap|shipping next|waitlist|early access)\b/i;
 // Words a claim can name a mode with: the claim may be true in that mode only.
@@ -446,6 +482,8 @@ const SUBJECTS: Array<[string, RegExp]> = [
   ["open source", /open[- ]source|source[- ]available/i],
 ];
 const STOP = new Set("the and for with your our you how use using all any can get new now set via from into this that are was will docs guide overview introduction about coming soon radar roadmap planned next shipping yet not beta preview".split(" "));
+
+const SQL_WORDS = /^(select|insert|update|delete|from|where|join|order|group|limit|index|table|create|drop|alter|with|union|having|vacuum|analyze|explain)$/;
 
 function tokens(s: string): string[] {
   return (s.match(/[A-Za-z0-9]+/g) ?? []).filter((w) => (w.length >= 3 || /^[A-Z0-9]{2}$/.test(w)) && !STOP.has(w.toLowerCase())).map((w) => w.toLowerCase());
@@ -476,7 +514,8 @@ function pairClaims(claims: Record<ClaimKind, Claim[]>, titles: Claim[]): ClaimC
   const plans = new Map<string, Map<string, Claim>>();
   for (const c of claims.price) {
     const amount = amountOf(c.text);
-    const plan = (PLAN.exec(c.text) ?? PLAN.exec(c.context?.split(" / ").pop() ?? "") ?? PLAN.exec(c.context ?? ""))?.[1].toLowerCase().replace(/^teams$/, "team");
+    const named = ONCE.test(c.text) ? ["", "lifetime"] : PLAN.exec(c.text) ?? (c.plan ? PLAN.exec(c.plan) : PLAN.exec(c.context?.split(" / ").pop() ?? "") ?? PLAN.exec(c.context ?? ""));
+    const plan = named?.[1].toLowerCase().replace(/^teams$/, "team");
     if (!amount || !plan) continue;
     const byAmount = plans.get(plan) ?? new Map<string, Claim>();
     if (!byAmount.has(amount)) byAmount.set(amount, c);
@@ -488,13 +527,19 @@ function pairClaims(claims: Record<ClaimKind, Claim[]>, titles: Claim[]): ClaimC
   }
   // (b) Marketed as upcoming, but a docs page or section has its name.
   let found = 0;
-  // A title of two or more words, or one name like "SSO": one ordinary word ("Pricing") matches too much.
-  const named = titles.map((h) => ({ h, tw: tokens(h.text) })).filter(({ h, tw }) => !UPCOMING.test(h.text) && (tw.length >= 2 || (tw.length === 1 && /\b[A-Z]{2,}\b/.test(h.text))));
+  // A title of two or more words, or one name like "SSO": one ordinary word ("Pricing") or a SQL keyword ("SELECT *")
+  // matches too much. Its words must stand together in the claim: "What you need" is not "what teams actually need".
+  const named = titles
+    .map((h) => ({ h, tw: ` ${tokens(h.text.replace(/^\d+[.)]\s*/, "")).join(" ")} ` }))
+    .filter(({ h, tw }) => {
+      const one = tw.trim();
+      return !UPCOMING.test(h.text) && (one.includes(" ") || (/^[a-z0-9]{2,5}$/.test(one) && h.text.includes(one.toUpperCase()) && !SQL_WORDS.test(one)));
+    });
   for (const c of claims.availability) {
     if (found >= 15) break;
     if (!UPCOMING.test(c.text) && !(c.context && UPCOMING.test(c.context))) continue;
-    const words = new Set(tokens(c.text));
-    const t = named.find(({ h, tw }) => h.file !== c.file && tw.every((w) => words.has(w)))?.h;
+    const words = ` ${tokens(c.text).join(" ")} `;
+    const t = named.find(({ h, tw }) => h.file !== c.file && words.includes(tw))?.h;
     if (t) {
       add("availability", t.text.slice(0, 80), c, t);
       found++;
@@ -518,7 +563,8 @@ function pairClaims(claims: Record<ClaimKind, Claim[]>, titles: Claim[]): ClaimC
 const APP_CODE = /\.(ts|tsx|js|jsx|mjs|vue|svelte|astro)$/;
 const TEST_PATH = /(^|\/)(test|tests|__tests__|spec|e2e|fixtures?)\//;
 const BILLING = /\b(stripe|subscriptions?|premium|entitle(ment|d)?s?|quotas?|seats?|(is|has)(Premium|Pro|Paid|Plan)\w*|\w*(Plan|Seat|Usage|Project|Member|Free|Pro)Limits?\w*|\w*_LIMIT\w*)\b|\bplan(Id|Tier|_id|_tier)?\s*(===?|!==?|:)/i;
-const ENTITY = /(user|account|member)|(team|org|workspace|company)|(project|repo|site)/i;
+// Whole words, after identifiers are split ("teamId" is "team Id"): "remember", "steam" and "website" name no entity.
+const ENTITY = /\b(?:(users?|accounts?|members?)|(teams?|orgs?|organi[sz]ations?|workspaces?|compan(?:y|ies))|(projects?|repos?|sites?))\b/i;
 // Plan checks (isPremium, hasProPlan, checkSeatLimit) and constants (FREE_PROJECT_LIMIT, MAX_PRO_SEATS).
 const GATE = /\b(?:is|has|can|check|require|assert|enforce|ensure|within|exceeds?)(?=[A-Z])\w*?(?:Premium|Pro|Plan|Paid|Seat|Quota|Limit|Entitle|Subscri|Tier|Trial)\w*|\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g;
 const GATE_CONST = /(LIMIT|QUOTA|SEATS?|MAX)/;
@@ -526,7 +572,7 @@ const GATE_PLAN = /(FREE|PRO|PLAN|PREMIUM|TRIAL|PAID|TEAM|SEAT|QUOTA|TIER)/;
 const UPGRADE = /\b(upgrade|unlock|go pro|pro gives|premium (feature|plan)|requires? (a |the )?(pro|paid|premium|team|business) plan|(plan|usage|seat|project) limit|limit reached|out of (credits|quota)|available on (the )?(pro|paid|premium|team|business))\b/i;
 
 function entityOf(s: string): Entity | null {
-  const m = ENTITY.exec(s);
+  const m = ENTITY.exec(s.replace(/([a-z0-9])(?=[A-Z])/g, "$1 ").replace(/_/g, " "));
   return m ? (m[1] ? "user" : m[2] ? "team" : "project") : null;
 }
 
@@ -559,15 +605,25 @@ function collect(root: string) {
   // package.json and LICENSE files give the license state; they are not copy.
   const isMeta = (f: string) => /(^|\/)package\.json$/.test(f) || LICENSE_FILE.test(f.split(sep).pop() ?? "");
   const files = all.filter((f) => !isMeta(f));
-  const licenseState = readLicenseState(root, all.filter(isMeta));
+  // In a monorepo the LICENSE and the root package.json sit above the app folder: read them from each folder up to the git root.
+  const above = foldersAbove(root).flatMap((p) => {
+    try {
+      return readdirSync(p).sort().filter((n) => META_NAMES.has(n) || LICENSE_FILE.test(n)).map((n) => join(p, n)).filter((f) => lstatSync(f).isFile());
+    } catch {
+      return [];
+    }
+  });
+  const licenseState = readLicenseState(root, [...all.filter(isMeta), ...above]);
   const claims = Object.fromEntries(KINDS.map((k) => [k, []])) as unknown as Record<ClaimKind, Claim[]>;
   const counts = Object.fromEntries(KINDS.map((k) => [k, 0])) as unknown as Record<ClaimKind, number>;
   const env = new Map<string, EnvFlag["uses"]>();
-  // Docs page titles and top headings, to pair with features the site calls upcoming.
+  // Docs page titles and H1s, to pair with features the site calls upcoming.
   const titles: Claim[] = [];
   const hits: BillingScan["hits"] = [];
   const gateUses = new Map<string, Array<{ at: string; def: boolean; test: boolean }>>();
   const upgradeCopy: Claim[] = [];
+  // Lines with a one-digit amount and no "/mo" after it ("Starter: $9"), which are not counted as prices.
+  const oneDigit: string[] = [];
   for (const f of files) {
     let src: string;
     try {
@@ -581,9 +637,15 @@ function collect(root: string) {
     const isApp = APP_CODE.test(f);
     const inTest = TEST_PATH.test(rel);
     let inStyle = false;
+    const isPage = /\.(astro|vue|svelte)$/.test(f);
+    let inFront = false;
+    let inScript = false;
     const recent: string[] = [];
     let upcoming: string | null = null;
-    src.split("\n").forEach((raw, i) => {
+    // The plan named by the nearest heading or card name, for the prices under it.
+    let plan: string | null = null;
+    const lines = src.split("\n");
+    lines.forEach((raw, i) => {
       // Skip CSS and code samples (<pre>, fenced blocks): their "$1" and "select" aren't copy.
       if (/<style[\s>]|<pre[\s>]|^\s*```/i.test(raw) && !inStyle) {
         inStyle = !/<\/style>|<\/pre>/i.test(raw) && !/^\s*```.*```/.test(raw);
@@ -593,8 +655,17 @@ function collect(root: string) {
         if (/<\/style>|<\/pre>|^\s*```/i.test(raw)) inStyle = false;
         return;
       }
+      // In .astro, .vue and .svelte pages only the frontmatter and <script> blocks are code; the rest is copy.
+      if (isPage) {
+        if (i === 0 && raw.trim() === "---") inFront = true;
+        else if (inFront && raw.trim() === "---") inFront = false;
+        if (/<script[\s>]/i.test(raw) && !/<\/script>/i.test(raw)) inScript = true;
+        else if (/<\/script>/i.test(raw)) inScript = false;
+      }
+      // A JSX line with an element in it ("<li>Unlimited seats</li>") is copy too.
+      const isScript = isPage ? inFront || inScript : !(/\.[jt]sx$/.test(f) && (/^\s*</.test(raw) || raw.includes("</")));
       if (isApp && !/^\s*(import|export \{[^}]*\} from)\b/.test(raw)) {
-        if (!inTest && hits.length < KEEP && BILLING.test(raw)) hits.push({ file: rel, line: i + 1, text: raw.trim().slice(0, 200), entity: entityOf(raw) ?? entityOf(rel) });
+        if (!inTest && isScript && hits.length < KEEP && BILLING.test(raw)) hits.push({ file: rel, line: i + 1, text: raw.trim().slice(0, 200), entity: entityOf(raw) ?? entityOf(rel) });
         let seen = 0;
         for (const m of raw.matchAll(GATE)) {
           const name = m[0];
@@ -630,7 +701,8 @@ function collect(root: string) {
       // List items under "On our radar", "Roadmap" or "Coming soon" are not shipped, whatever their words.
       const heading = !isCode && (/^\s*#{1,6}\s/.test(raw) || /<h[1-6][\s>]/i.test(raw));
       if (heading) upcoming = UPCOMING_HEADING.test(text) ? text.replace(/^#+\s*/, "").slice(0, 120) : null;
-      if (isDoc && titles.length < KEEP && (/^#{1,2}\s/.test(raw) || (i < 30 && /^title:/.test(raw)))) {
+      if ((heading || NAME_CLASS.test(raw)) && words > 0 && words <= 4) plan = PLAN.test(text) ? text.replace(/^#+\s*/, "").slice(0, 60) : null;
+      if (isDoc && titles.length < KEEP && (/^#\s/.test(raw) || (i < 30 && /^title:/.test(raw)))) {
         const t = (/^title:[ \t]*(.+)$/.exec(raw)?.[1] ?? text.replace(/^#+\s*/, "")).replace(/^["']|["']$/g, "").trim();
         if (t) titles.push({ file: rel, line: i + 1, text: t.slice(0, 120) });
       }
@@ -646,23 +718,32 @@ function collect(root: string) {
           w = (t.match(/[A-Za-z]{2,}/g) ?? []).length;
         }
         // Inline code (`$5`, `= $1`) is not a price.
-        const hit = kind === "price" ? PATTERNS.price.test(t.replace(/`[^`]*`/g, " ")) : PATTERNS[kind].test(t);
+        let hit = kind === "price" ? PATTERNS.price.test(t.replace(/`[^`]*`/g, " ")) : PATTERNS[kind].test(t);
+        // "$9" with its "/mo" in the next element, on the next line.
+        if (kind === "price" && !hit && /[$€£]\d$/.test(t)) {
+          const next = lines.slice(i + 1, i + 4).map((l) => visibleParts(l)).find((l) => l);
+          if (next && /^(\/\s?(mo|month|year|yr)|per (month|year|seat|user))\b/i.test(next)) {
+            t = `${t} ${next}`;
+            hit = true;
+          }
+        }
+        if (kind === "price" && !hit && !isCode && /(^|[\s:(])[$€£]\d(?![\d.,])/.test(t) && !/[=<>][ \t]*[$€£]\d/.test(t) && !SQL.test(t) && oneDigit.length < 3) oneDigit.push(`${rel}:${i + 1}`);
         const item = kind === "availability" && listed;
         if (!hit && !item) continue;
         // A bare price on its own line counts; anything else needs a few words to be a claim.
         if (w < 3 && kind !== "price" && !item) continue;
         counts[kind]++;
         const context = item ? upcoming : w < 3 && ctx ? ctx : null;
-        if (claims[kind].length < KEEP) claims[kind].push({ file: rel, line: i + 1, text: t.slice(0, 300), ...(context ? { context } : {}) });
+        if (claims[kind].length < KEEP) claims[kind].push({ file: rel, line: i + 1, text: t.slice(0, 300), ...(context ? { context } : {}), ...(kind === "price" && plan ? { plan } : {}) });
       }
     });
   }
-  return { files, state, claims, counts, env, licenseState, titles, billing: billingOf(hits, gateUses, upgradeCopy) };
+  return { files, state, claims, counts, env, licenseState, titles, oneDigit, billing: billingOf(hits, gateUses, upgradeCopy) };
 }
 
 export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] = []): SourceScan {
   const root = realDir(dir);
-  const { files, state, claims, counts, env, licenseState, titles, billing } = collect(root);
+  const { files, state, claims, counts, env, licenseState, titles, oneDigit, billing } = collect(root);
   // Claims from the other folders, with paths relative to dir, so each pair reads the same way.
   const compared: SourceScan["compared"] = [];
   const pool = Object.fromEntries(KINDS.map((k) => [k, [...claims[k]]])) as unknown as Record<ClaimKind, Claim[]>;
@@ -688,6 +769,7 @@ export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] =
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
   if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"}: they point to a folder or to a file outside this directory.`);
   notes.push(...licenseNotes(claims.oss, licenseState));
+  if (oneDigit.length) notes.push(`Some lines have a one-digit amount with no "/mo" or "per" after it (${oneDigit.join(", ")}). They are not listed as prices, because "$1" is usually a code parameter. Open them to check.`);
   for (const k of KINDS) if (counts[k] > maxPerKind) notes.push(`${k}: ${counts[k]} matches, first ${maxPerKind} shown; pass a narrower directory to see the rest.`);
   let { decisions, issues: decisionIssues, numbered } = readDecisions(root, files);
   let decisionsFrom: string | undefined;
