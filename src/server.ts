@@ -560,10 +560,11 @@ export function createServer(): McpServer {
         text: z.string().min(1).max(100000),
         maxWords: z.number().int().min(100).max(10000).optional(),
         deliverable: z.enum(["answer", "plan"]).optional().describe("Sets the default word limit: answer 1,200, plan (a 90-day plan) 1,800"),
+        agentChannel: z.boolean().optional().describe("Set when scan_source found an MCP server: then the answer must say how coding agents find and choose it"),
       },
       annotations: readOnly,
     },
-    safe((a) => checkAnswer(a.text, a.maxWords, a.deliverable))
+    safe((a) => checkAnswer(a.text, a.maxWords, a.deliverable, { agentChannel: a.agentChannel }))
   );
 
   const platforms = Object.keys(PLATFORM_LIMITS) as [string, ...string[]];

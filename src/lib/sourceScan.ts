@@ -105,8 +105,15 @@ export interface SourceScan {
   /** Set when no records were under dir and they were read from this folder higher up in the same git repo. */
   decisionsFrom?: string;
   decisionIssues: DecisionIssue[];
+  /** The package.json that depends on an MCP server SDK, and how many tool registrations the code has; null when none. */
+  mcpServer: { file: string; package: string; tools: number } | null;
   notes: string[];
 }
+
+// Packages that mean the repo ships an MCP server.
+const MCP_PACKAGES = ["@modelcontextprotocol/sdk", "fastmcp", "mcp-framework"];
+// A tool registration in TypeScript or JavaScript MCP servers.
+const MCP_TOOL = /\b(?:registerTool|addTool)\(|\bserver\.tool\(/g;
 
 const ADR_FILE = /^(\d{3,4})-[\w.-]+\.md$/;
 const ADR_DIR = /(^|\/)(adr|adrs|decisions)\//i;
@@ -624,6 +631,20 @@ function collect(root: string) {
   const upgradeCopy: Claim[] = [];
   // Lines with a one-digit amount and no "/mo" after it ("Starter: $9"), which are not counted as prices.
   const oneDigit: string[] = [];
+  let mcp: { file: string; package: string; tools: number } | null = null;
+  for (const f of all.filter((x) => /(^|\/)package\.json$/.test(x)).sort()) {
+    try {
+      const pkg = JSON.parse(readFileSync(f, "utf8")) as Record<string, Record<string, string> | undefined>;
+      const deps = { ...pkg.dependencies, ...pkg.peerDependencies, ...pkg.optionalDependencies };
+      const hit = MCP_PACKAGES.find((n) => Object.hasOwn(deps, n));
+      if (hit) {
+        mcp = { file: relative(root, f), package: hit, tools: 0 };
+        break;
+      }
+    } catch {
+      // Not JSON: the license reader reports it.
+    }
+  }
   for (const f of files) {
     let src: string;
     try {
@@ -633,6 +654,7 @@ function collect(root: string) {
     }
     const rel = relative(root, f);
     const isCode = /\.(ts|js|mjs)$/.test(f);
+    if (mcp && isCode && !TEST_PATH.test(rel)) mcp.tools += src.match(MCP_TOOL)?.length ?? 0;
     const isDoc = /\.mdx?$/.test(f);
     const isApp = APP_CODE.test(f);
     const inTest = TEST_PATH.test(rel);
@@ -738,12 +760,12 @@ function collect(root: string) {
       }
     });
   }
-  return { files, state, claims, counts, env, licenseState, titles, oneDigit, billing: billingOf(hits, gateUses, upgradeCopy) };
+  return { files, state, claims, counts, env, licenseState, titles, oneDigit, billing: billingOf(hits, gateUses, upgradeCopy), mcp };
 }
 
 export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] = []): SourceScan {
   const root = realDir(dir);
-  const { files, state, claims, counts, env, licenseState, titles, oneDigit, billing } = collect(root);
+  const { files, state, claims, counts, env, licenseState, titles, oneDigit, billing, mcp } = collect(root);
   // Claims from the other folders, with paths relative to dir, so each pair reads the same way.
   const compared: SourceScan["compared"] = [];
   const pool = Object.fromEntries(KINDS.map((k) => [k, [...claims[k]]])) as unknown as Record<ClaimKind, Claim[]>;
@@ -784,10 +806,15 @@ export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] =
       notes.push(`No decision records under this folder; read ${decisions.length} from ${above}. Their paths are relative to this folder.`);
     }
   }
+  if (mcp) {
+    notes.push(
+      `This repo ships an MCP server (${mcp.package} in ${mcp.file}; ${mcp.tools} tool registration${mcp.tools === 1 ? "" : "s"} found). Coding agents are a user and a channel: a strategy should say how agents find and choose it (tool descriptions, registry listings, docs agents read; see developer-tools). Run check_answer with agentChannel true.`
+    );
+  }
   if (billing) notes.push("billing: planAttachesTo counts the code lines about plans that name a user, team or project; a team plan on the site needs a plan stored on a team. A gate with callsOutsideTests 0 is defined but not used in the product. Compare upgradeCopy with the pricing page.");
   if (decisionIssues.some((x) => x.conflict)) notes.push("decisionIssues: records or index rows disagree about the same issue (one says open, another built). Check the issue and the code.");
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, billing, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
+  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, billing, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, mcpServer: mcp, notes };
 }

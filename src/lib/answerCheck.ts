@@ -153,7 +153,13 @@ function splitAppendix(text: string): { body: string; appendix: string } {
   return { body: body.join("\n"), appendix: appendix.join("\n") };
 }
 
-export function checkAnswer(text: string, maxWords?: number, deliverable: keyof typeof WORD_LIMITS = "answer"): AnswerCheck {
+// Required when the product ships an MCP server (scan_source says so): how coding agents find and choose it.
+const AGENT_CHANNEL: [string, RegExp] = [
+  "the agent channel (how coding agents find and choose the MCP server)",
+  /\b(coding )?agents?\b[^.?!\n]{0,80}\b(channel|find|finds|choose|chooses|pick|picks|discover|select|call|calls)\b|\b(MCP|server) registry\b|\btool descriptions?\b|\b(channel|find|choose|pick|discover)\b[^.?!\n]{0,40}\b(coding )?agents?\b/i,
+];
+
+export function checkAnswer(text: string, maxWords?: number, deliverable: keyof typeof WORD_LIMITS = "answer", opts: { agentChannel?: boolean } = {}): AnswerCheck {
   const limit = maxWords ?? WORD_LIMITS[deliverable];
   const { body, appendix } = splitAppendix(text);
   // Count prose words; code spans and URLs count as one word each, like a reader sees them.
@@ -180,7 +186,7 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   if (unexplainedTerms.length) problems.push(`Explain on first use, in brackets, or replace: ${unexplainedTerms.join(", ")}.`);
   const norm = text.replace(/\s+/g, " ").trim();
   const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
-  const missingParts = PARTS.filter(([, re]) => !re.test(text)).map(([name]) => name);
+  const missingParts = [...PARTS, ...(opts.agentChannel ? [AGENT_CHANNEL] : [])].filter(([, re]) => !re.test(text)).map(([name]) => name);
   if (missingParts.length) problems.push(`Not found (ignore if it's there in other words): ${missingParts.join("; ")}.`);
   const labelIssues = checkLabels(text).filter((l) => l.status !== "ok" && l.status !== "no-source");
   for (const l of labelIssues) {
