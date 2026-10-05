@@ -323,6 +323,7 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
   const facts = auditHtml(html, res.url || url);
   if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
   applyResponseChecks(facts, res.status, res.url || url, res.headers.get("x-robots-tag"));
+  await checkCanonicalTarget(facts, res.url || url, timeoutMs);
   const chain = (res as Response & { redirectChain?: string[] }).redirectChain ?? [];
   if (chain.length) {
     facts.redirectChain = chain;
@@ -332,6 +333,36 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
     });
   }
   return facts;
+}
+
+/** A canonical that points elsewhere must lead to a live page: fetch it once and replace the "differs" note when it doesn't. */
+async function checkCanonicalTarget(facts: PageFacts, finalUrl: string, timeoutMs: number): Promise<void> {
+  if (!facts.canonical) return;
+  const n = normalize(facts.canonical, finalUrl);
+  if (!n || n === normalize(finalUrl, finalUrl)) return;
+  // Fetch and report the URL as written: normalize() drops the trailing slash, which may be the URL that works.
+  const target = new URL(facts.canonical, finalUrl).toString();
+  let problem: string | null = null;
+  try {
+    const r = await guardedFetch(target, {
+      signal: AbortSignal.timeout(timeoutMs),
+      headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", accept: "text/html,*/*;q=0.8" },
+    });
+    r.body?.cancel().catch(() => undefined);
+    const chain = (r as Response & { redirectChain?: string[] }).redirectChain ?? [];
+    if (r.status !== 200) problem = `returns HTTP ${r.status}`;
+    else if (chain.length) problem = `redirects (${chain.join(" ")})`;
+    else if (robotsDirectives(r.headers.get("x-robots-tag") ?? "").has("noindex")) problem = "is noindex (X-Robots-Tag)";
+  } catch (e) {
+    if (e instanceof BlockedAddressError) return;
+    problem = `could not be fetched (${e instanceof Error ? e.message : String(e)})`;
+  }
+  if (!problem) return;
+  facts.flags = facts.flags.filter((f) => !f.message.startsWith("Canonical ("));
+  facts.flags.unshift({
+    severity: "error",
+    message: `Canonical points to ${target}, which ${problem}. Google may ignore the canonical or index the wrong URL. Point it at the live URL of this page.`,
+  });
 }
 
 /** HTTP-level checks shared by fetch and render modes. */
@@ -530,6 +561,7 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
       facts.flags.unshift({ severity: "warning", message: "The <h1> exists only after JavaScript runs." });
     }
     applyResponseChecks(facts, res?.status(), finalUrl, res ? ((await res.allHeaders())["x-robots-tag"] ?? null) : null);
+    await checkCanonicalTarget(facts, finalUrl, timeoutMs);
     facts.url = url;
     if (scriptUrl !== finalUrl) {
       facts.flags.push({ severity: "info", message: `Scripts changed the address to ${scriptUrl} after load. If people share that URL, give it a canonical pointing at the clean one.` });

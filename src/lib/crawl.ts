@@ -120,6 +120,8 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
 
   // Resolve the start URL first: example.com → www.example.com redirects are common.
   let start = requested;
+  // A sitemap named in the start page's <head> (<link rel="sitemap">), which some frameworks add.
+  let headSitemap: string | null = null;
   try {
     const r = await getFollow(requested);
     if (r.url !== requested) {
@@ -130,6 +132,12 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
           (temporary ? " A temporary redirect (302/307) on the start URL: if it's permanent, use 301/308 or serve content at the start URL." : "")
       );
     }
+    if (r.res.ok && (r.res.headers.get("content-type") ?? "").includes("html")) {
+      const { text } = await readCapped(r.res, MAX_HTML_BYTES);
+      const tag = text.match(/<link\b[^>]*\brel=["']?sitemap\b[^>]*>/i)?.[0];
+      const href = tag?.match(/\bhref=["']?([^"'\s>]+)/i)?.[1];
+      if (href) headSitemap = normalize(href, r.url);
+    } else r.res.body?.cancel().catch(() => undefined);
   } catch {
     // Leave start as requested; the page fetch will record the error.
   }
@@ -190,10 +198,20 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     }
     return found;
   };
+  const outerNotes = notes;
   if (opts.useSitemap ?? true) {
-    const candidates = robots.sitemaps.length ? robots.sitemaps : [new URL("/sitemap.xml", start).toString()];
+    // Without a Sitemap line in robots.txt, try the <head> link and the usual file names, and stop at the first that
+    // lists pages. Only notes about /sitemap.xml and the <head> link are kept: a 404 on a guessed name says nothing.
+    const defaultSitemap = new URL("/sitemap.xml", start).toString();
+    const guessed = !robots.sitemaps.length;
+    const candidates = guessed
+      ? [...new Set([headSitemap, defaultSitemap, new URL("/sitemap_index.xml", start).toString(), new URL("/sitemap-index.xml", start).toString()].filter((u): u is string => !!u))]
+      : robots.sitemaps;
+    const guessNotes: string[] = [];
     for (const sm of candidates.slice(0, 5)) {
       if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
+      if (guessed && sitemapSource) break;
+      const notes = guessed ? (sm === defaultSitemap || sm === headSitemap ? guessNotes : []) : outerNotes;
       try {
         const { res: r, url: smUrl } = await getFollow(sm);
         if (!r.ok) {
@@ -235,13 +253,26 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         notes.push(`Sitemap could not be fetched: ${sm}`);
       }
     }
-    if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines and /sitemap.xml).");
+    if (guessed && sitemapSource && sitemapSource !== defaultSitemap) {
+      notes.push(
+        `Found the sitemap at ${sitemapSource}${sitemapSource === headSitemap ? " (named in the start page's <head>)" : ""}, but robots.txt names no sitemap and /sitemap.xml has none. Search engines don't read <link rel="sitemap"> or guess file names: add "Sitemap: ${sitemapSource}" to robots.txt and submit it in Search Console.`
+      );
+    } else if (!sitemapSource) notes.push(...guessNotes);
+    if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines, the start page's <head>, /sitemap.xml, /sitemap_index.xml and /sitemap-index.xml).");
     if (urlLimitHit) notes.push("Read only the first 100,000 sitemap URLs. Sitemap counts are partial, and pages were not checked against the rest.");
     if (notFullUrls.length) {
       notes.push(
         `${notFullUrls.length} sitemap <loc> values are not full URLs (e.g. "${notFullUrls[0]}"). The sitemap rules require full URLs such as ${new URL("/page", start)}, and Google may ignore these entries. This crawl read paths such as "/about" against the sitemap's address and skipped the rest.`
       );
     }
+  }
+
+  const offHost = [...sitemapSet].filter((u) => new URL(u).host !== host);
+  if (offHost.length) {
+    const hosts = [...new Set(offHost.map((u) => new URL(u).host))];
+    notes.push(
+      `${offHost.length} of ${sitemapSet.size} sitemap URLs are on ${hosts.slice(0, 3).join(", ")}, not on ${host}, so this crawl did not check them. A sitemap should list URLs on the host it serves: Google ignores URLs on other hosts unless that host is verified in the same Search Console account.`
+    );
   }
 
   const pages = new Map<string, CrawledPage>();
@@ -380,7 +411,8 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
         if (/nofollow/i.test(a.getAttribute("rel") ?? "")) continue;
         const n = normalize(a.getAttribute("href") ?? "", base);
         // A link to the page itself ("#main" skip links, href="#") is not an inlink.
-        if (n && n !== current && new URL(n).host === host) links.add(n);
+        // Cloudflare's /cdn-cgi/ paths (e.g. email-protection links, which its script rewrites in the browser) are not pages.
+        if (n && n !== current && new URL(n).host === host && !new URL(n).pathname.startsWith("/cdn-cgi/")) links.add(n);
       }
     }
     page.internalLinksOut = links.size;
@@ -452,7 +484,24 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     p.depth = depthOf.get(p.url) ?? null;
   }
 
-  const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial);
+  // Canonical targets this crawl did not read (often on another host, such as www): check up to 20 of them, so a
+  // canonical pointing to a page that doesn't exist is caught.
+  const canonicalStatus = new Map<string, string>();
+  const unread = [...new Set([...pages.values()].map((p) => p.canonical).filter((c): c is string => !!c && !pages.has(c)))].slice(0, 20);
+  await Promise.all(
+    unread.map(async (c) => {
+      try {
+        const r = await get(c);
+        r.body?.cancel().catch(() => undefined);
+        if (r.status >= 300 && r.status < 400) canonicalStatus.set(c, `redirects (${r.status})`);
+        else if (r.status !== 200) canonicalStatus.set(c, `HTTP ${r.status}`);
+        else if (/noindex/i.test(r.headers.get("x-robots-tag") ?? "")) canonicalStatus.set(c, "noindex (X-Robots-Tag)");
+      } catch (e) {
+        canonicalStatus.set(c, `could not be fetched (${e instanceof Error ? e.message : String(e)})`);
+      }
+    })
+  );
+  const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial, canonicalStatus);
   if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${left} more URLs were queued. Site-wide counts are partial.`);
   if (robotsDisallowed) notes.push(`${robotsDisallowed} URL(s) skipped because robots.txt disallows them.`);
 
@@ -476,7 +525,14 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   };
 }
 
-function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, sitemap: Set<string>, host: string, sitemapPartial: boolean): Issue[] {
+function buildIssues(
+  pages: CrawledPage[],
+  inlinks: Map<string, Set<string>>,
+  sitemap: Set<string>,
+  host: string,
+  sitemapPartial: boolean,
+  canonicalStatus: Map<string, string> = new Map()
+): Issue[] {
   const issues: Issue[] = [];
   const add = (id: string, severity: Issue["severity"], message: string, examples: string[]) => {
     if (examples.length) issues.push({ id, severity, message, count: examples.length, examples: examples.slice(0, 10) });
@@ -485,6 +541,9 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
   // Pages that could not be read are reported once, under fetch-errors.
   const ok = pages.filter((p) => p.status === 200 && !p.redirectChain.length && !p.error);
   const indexable = ok.filter((p) => !p.noindex);
+  // Pages that name another URL as canonical ask Google to index that URL instead: they don't belong in the sitemap,
+  // and their duplicate titles or few words are expected.
+  const ownCanonical = indexable.filter((p) => !p.canonical || p.canonical === p.url);
 
   const broken = pages.filter((p) => p.status !== null && p.status >= 400);
   add(
@@ -513,12 +572,12 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
 
   const dup = (key: (p: CrawledPage) => string | null, id: string, label: string) => {
     const groups = new Map<string, string[]>();
-    for (const p of indexable) {
+    for (const p of ownCanonical) {
       const k = key(p);
       if (!k) continue;
       groups.set(k, [...(groups.get(k) ?? []), p.url]);
     }
-    add(id, "warning", `Duplicate ${label} across indexable pages.`, [...groups.entries()].filter(([, us]) => us.length > 1).map(([k, us]) => `"${k.slice(0, 80)}" on ${us.length} pages: ${us.slice(0, 3).join(", ")}`));
+    add(id, "warning", `Duplicate ${label} across indexable pages that are their own canonical.`, [...groups.entries()].filter(([, us]) => us.length > 1).map(([k, us]) => `"${k.slice(0, 80)}" on ${us.length} pages: ${us.slice(0, 3).join(", ")}`));
   };
   dup((p) => p.title, "duplicate-titles", "titles");
   dup((p) => p.metaDescription, "duplicate-descriptions", "meta descriptions");
@@ -541,7 +600,7 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
     "Sitemap pages with no internal links pointing to them (orphans). Google finds and values pages largely through internal links.",
     indexable.filter((p) => p.inSitemap && (inlinks.get(p.url)?.size ?? 0) === 0 && p.depth !== 0).map((p) => p.url)
   );
-  add("not-in-sitemap", "info", "Indexable pages found by links but missing from the sitemap.", sitemap.size && !sitemapPartial ? indexable.filter((p) => !p.inSitemap).map((p) => p.url) : []);
+  add("not-in-sitemap", "info", "Indexable pages found by links but missing from the sitemap.", sitemap.size && !sitemapPartial ? ownCanonical.filter((p) => !p.inSitemap).map((p) => p.url) : []);
 
   add(
     "canonical-elsewhere",
@@ -552,18 +611,29 @@ function buildIssues(pages: CrawledPage[], inlinks: Map<string, Set<string>>, si
   add(
     "canonical-broken",
     "error",
-    "Canonical points to a URL that redirects, errors or is noindex.",
+    "Canonical points to a URL that redirects, errors or is noindex. Google may ignore the canonical, or index the wrong URL.",
     indexable
-      .filter((p) => p.canonical && p.canonical !== p.url && byUrl.has(p.canonical))
-      .filter((p) => {
-        const t = byUrl.get(p.canonical!)!;
-        return t.status !== 200 || t.redirectChain.length > 0 || t.noindex;
+      .filter((p) => p.canonical && p.canonical !== p.url)
+      .map((p) => {
+        const t = byUrl.get(p.canonical!);
+        const why = t
+          ? t.error
+            ? "could not be fetched"
+            : t.redirectChain.length
+              ? "redirects"
+              : t.status !== 200
+                ? `HTTP ${t.status}`
+                : t.noindex
+                  ? "noindex"
+                  : null
+          : canonicalStatus.get(p.canonical!) ?? null;
+        return why ? `${p.url} → ${p.canonical} (${why})` : null;
       })
-      .map((p) => `${p.url} → ${p.canonical}`)
+      .filter((e): e is string => !!e)
   );
   add("deep-pages", "info", "Pages more than 3 clicks from the start URL. Important pages should be reachable in a few clicks.", ok.filter((p) => p.depth !== null && p.depth > 3).map((p) => `${p.url} (depth ${p.depth})`));
-  add("single-inlink", "info", "Indexable pages with only one internal link pointing to them.", indexable.filter((p) => (inlinks.get(p.url)?.size ?? 0) === 1).map((p) => p.url));
-  add("thin", "info", "Indexable pages under 200 words (heuristic; fine for some page types).", indexable.filter((p) => p.wordCount < 200 && !shell(p)).map((p) => `${p.url} (${p.wordCount} words)`));
+  add("single-inlink", "info", "Indexable pages with only one internal link pointing to them.", ownCanonical.filter((p) => (inlinks.get(p.url)?.size ?? 0) === 1).map((p) => p.url));
+  add("thin", "info", "Indexable pages under 200 words (heuristic; fine for some page types).", ownCanonical.filter((p) => p.wordCount < 200 && !shell(p)).map((p) => `${p.url} (${p.wordCount} words)`));
 
   // hreflang
   const hreflangIssues: string[] = [];

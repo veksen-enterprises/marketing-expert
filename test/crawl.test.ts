@@ -18,7 +18,7 @@ const site: Record<string, R> = {
   "/b": { body: html("Same title", `<h1>B</h1>${words(50)}`, `<link rel="alternate" hreflang="en" href="${B}/b"><link rel="alternate" hreflang="fr" href="${B}/c">`) },
   "/c": { body: html("C", `<h1>C</h1>${words(300)}<a href="/d">d</a>`) },
   "/d": { body: html("D", `<h1>D</h1>${words(300)}<a href="/e">e</a>`) },
-  "/e": { body: html("E", `<h1>E</h1>${words(300)}`) },
+  "/e": { body: html("Same title", `<h1>E</h1>${words(300)}`) },
   "/old": { status: 301, headers: { location: "/older" } },
   "/older": { status: 302, headers: { location: "/a" } },
   "/orphan": { body: html("Orphan", `<h1>O</h1>${words(300)}`) },
@@ -68,7 +68,7 @@ describe("crawlSite", async () => {
     expect(issue("orphans")!.examples).toEqual([`${B}/orphan`]);
     expect(issue("noindex-in-sitemap")!.examples).toEqual([`${B}/noidx`]);
     expect(issue("non200-in-sitemap")!.examples[0]).toMatch(/\/old \(redirects to https:\/\/site.test\/a\)/);
-    expect(issue("canonical-broken")!.examples).toEqual([`${B}/a → ${B}/old`]);
+    expect(issue("canonical-broken")!.examples).toEqual([`${B}/a → ${B}/old (redirects)`]);
     expect(issue("deep-pages")!.examples).toEqual([`${B}/e (depth 4)`]);
     expect(issue("thin")!.examples[0]).toMatch(/\/b \(51 words\)/);
     expect(issue("hreflang")!.examples.join(" ")).toMatch(/target doesn't link back/);
