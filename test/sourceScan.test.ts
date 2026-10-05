@@ -247,3 +247,47 @@ describe("scanSource claim kinds, license and prices", () => {
     expect(scanSource(d, 10).truncated).toBe(false);
   });
 });
+
+describe("scanSource conflicts across the site and the docs", () => {
+  function site() {
+    const base = mkdtempSync(join(tmpdir(), "pair-"));
+    mkdirSync(join(base, "site"));
+    mkdirSync(join(base, "docs"));
+    writeFileSync(join(base, "site", "pricing.astro"), "<h3>Pro plan</h3>\n<span>$20</span>\n");
+    writeFileSync(join(base, "site", "index.html"), "<p>Pro is $16/mo billed annually.</p>\n<p>MCP server coming soon for every plan.</p>\n<p>Your rows of data never leave your machine.</p>\n");
+    writeFileSync(join(base, "docs", "mcp-server.md"), "# MCP server\n\nConnect your editor to the analyzer.\n");
+    writeFileSync(join(base, "docs", "privacy.md"), "# Privacy\n\nThe analyzer sends 10 sample rows to the model.\n");
+    return base;
+  }
+
+  it("pairs prices for one plan, upcoming features that the docs document, and opposite data claims", () => {
+    const base = site();
+    const r = scanSource(join(base, "site"), 60, [join(base, "docs")]);
+    const ref = (c: { file: string; line: number }) => `${c.file}:${c.line}`;
+    expect(r.conflicts.map((c) => [c.topic, c.subject, ref(c.a), ref(c.b), c.modeHint])).toEqual([
+      ["price", "pro", "index.html:1", "pricing.astro:2", "index.html:1: billed annually"],
+      ["availability", "MCP server", "index.html:2", join("..", "docs", "mcp-server.md") + ":1", null],
+      ["data", "rows", "index.html:3", join("..", "docs", "privacy.md") + ":3", null],
+    ]);
+    expect(r.compared).toEqual([{ dir: join(r.dir, "..", "docs"), filesScanned: 2, claimCounts: expect.objectContaining({ data: 1 }) }]);
+    expect(r.notes.join(" ")).toMatch(/true in one mode .* unclear, not false/);
+  });
+
+  it("pairs thousands of claims and titles quickly", () => {
+    const base = mkdtempSync(join(tmpdir(), "pair-"));
+    mkdirSync(join(base, "site"));
+    mkdirSync(join(base, "docs"));
+    writeFileSync(join(base, "site", "a.md"), Array.from({ length: 1500 }, (_, i) => `Feature number${i} is coming soon. Pro is $${i + 10}/mo. We never store rows ${i}.`).join("\n") + "\n");
+    writeFileSync(join(base, "docs", "b.md"), Array.from({ length: 1500 }, (_, i) => `## Feature topic${i}\n\nWe send sample rows ${i}.`).join("\n") + "\n");
+    const t = performance.now();
+    const r = scanSource(join(base, "site"), 60, [join(base, "docs")]);
+    expect(performance.now() - t).toBeLessThan(1500);
+    expect(r.conflicts.length).toBeLessThanOrEqual(40);
+  });
+
+  it("finds conflicts inside one folder too, and none when the claims agree", () => {
+    const base = site();
+    expect(scanSource(join(base, "site")).conflicts.map((c) => c.topic)).toEqual(["price"]);
+    expect(scanSource(join(base, "docs")).conflicts).toEqual([]);
+  });
+});

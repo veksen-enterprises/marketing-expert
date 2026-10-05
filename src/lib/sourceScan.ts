@@ -51,6 +51,23 @@ export interface LicenseState {
   packages: Array<{ file: string; name: string | null; license: string | null; private: boolean }>;
 }
 
+export interface ClaimRef {
+  file: string;
+  line: number;
+  text: string;
+}
+
+/** Two claims that may disagree: one plan at two prices, a feature marketed as upcoming that a docs page covers, or one
+ * subject (credentials, rows, local, install) stated both ways. modeHint names a mode (self-host, CI, cloud, annual
+ * billing) either side mentions: the claim may be true in that mode only. */
+export interface ClaimConflict {
+  topic: "price" | "availability" | "data";
+  subject: string;
+  a: ClaimRef;
+  b: ClaimRef;
+  modeHint: string | null;
+}
+
 export interface SourceScan {
   dir: string;
   filesScanned: number;
@@ -58,10 +75,14 @@ export interface SourceScan {
   claims: Record<ClaimKind, Claim[]>;
   claimCounts: Record<ClaimKind, number>;
   envFlags: EnvFlag[];
-  /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
-  decisions: Decision[];
+  /** Claims in dir (and in compareWith) that may disagree, in pairs with both file:line refs. Paths are relative to dir. */
+  conflicts: ClaimConflict[];
+  /** The compareWith folders, as read. */
+  compared: Array<{ dir: string; filesScanned: number; claimCounts: Record<ClaimKind, number> }>;
   /** LICENSE files and each package.json's license and private fields, to check open-source claims against. */
   licenseState: LicenseState;
+  /** Decision records (ADRs) with their recorded status, so features aren't described as shipped when the record says otherwise. */
+  decisions: Decision[];
   /** Set when no records were under dir and they were read from this folder higher up in the same git repo. */
   decisionsFrom?: string;
   decisionIssues: DecisionIssue[];
@@ -244,13 +265,15 @@ const SKIP_DIRS = new Set(["node_modules", "dist", "build", "out", "coverage", "
 export const MAX_FILES = 4000;
 const MAX_BYTES = 512 * 1024;
 
+// A currency amount needs 2 or more digits, cents, or a period after it ("$9/mo"): "$1" is a SQL parameter or a
+// shell variable. Never after "=", and not as "($1)" or "ANY($1, ...)".
+const AMOUNT = /(?<!=[ \t]*)(?:(?<!\()|(?![$€£]\d+[),]))[$€£](?:\d[\d,]*\d(?:\.\d{2})?|\d\.\d{2}|\d(?=[ \t]?(?:\/|per\b|a month)))(?!\d|\.\d)/;
+
 // Tried on every line, read in full, so no part may rescan the rest of the line from many starting points ("curl curl
 // curl ...", "1,1,1,..."): the pipe of "curl ... | sh" is found first, and a count starts only at the start of a number.
 const PATTERNS: Record<ClaimKind, RegExp> = {
   data: /\b(stores?|stored|storing|collects?|collected|sends?|sent|uploads?|uploaded|read-only|never (see|read|store|touch|leaves?|sends?)|leaves? (your|the)|locally|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|credentials?|connection strings?|passwords?|encrypt\w*|retain\w*|retention|sample (rows|values)|parameter values|literal values|PII|personal data|GDPR|SOC ?2|HIPAA|rows? of (your )?data|query text|we (never|don't|do not) (see|read|store|access)|your data)\b/i,
-  // A currency amount needs 2 or more digits, cents, or a period after it ("$9/mo"): "$1" is a SQL parameter or a
-  // shell variable. Never after "=", and not as "($1)" or "ANY($1, ...)".
-  price: /((?<!=[ \t]*)(?:(?<!\()|(?![$€£]\d+[),]))[$€£](?:\d[\d,]*\d(?:\.\d{2})?|\d\.\d{2}|\d(?=[ \t]?(?:\/|per\b|a month)))(?!\d|\.\d))|(\b\d+(\.\d+)?\s?(\/|per\s)(mo|month|year|yr|seat|user|host|server|project)\b)|\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\b/i,
+  price: new RegExp(`(${AMOUNT.source})|(\\b\\d+(\\.\\d+)?\\s?(\\/|per\\s)(mo|month|year|yr|seat|user|host|server|project)\\b)|\\b(free forever|free plan|free tier|lifetime|money-back|refund|trial)\\b`, "i"),
   availability: /\b(coming soon|soon|on (our|the) radar|roadmap|shipping next|planned|in beta|beta|alpha|preview|early access|waitlist|not yet|launching|available now|now available|shipped|deprecated|retired|sunset)\b/i,
   setup: /(\bdocker (run|compose)\b|\bnpm (i|install)\b|\bnpx\b|\bpnpm (add|dlx)\b|\bpip install\b|\bbrew install\b|\|(?<=curl [^|]*\|)\s*(sh|bash)|\b\d+\s?(seconds?|secs?|minutes?|mins?)\b|\bone (click|command|line)\b|\bno (install|installation|signup|sign-up|credit card|code changes|agents? to install)\b)/i,
   proof: /(\b\d+(\.\d+)?\s?(%|x|×)(?![\w-])|\b(fastest|the only|first ever|#1|trusted by|used by|loved by|(?<![\d,])\d[\d,]*\+? (teams|companies|developers|users|customers)))/i,
@@ -390,10 +413,100 @@ const CSS = /^[.#@][\w-].*\{\s*$|^[\w-]+\s*:[^:]+;\s*$/;
 const BUILTIN_ENV = new Set(["NODE_ENV", "DEV", "PROD", "SSR", "MODE", "BASE_URL", "CI", "PORT", "HOME", "PATH", "TZ"]);
 const OUTPUT_HINT = /redirect|navigate|\bto:|<h1|head\(|<head|title|meta|canonical|robots|noindex|route|sitemap|\?\s*["'`/]|&&\s*\(|render/i;
 
-export function scanSource(dir: string, maxPerKind = 60): SourceScan {
+// Claims kept per kind for pairing; only maxPerKind of them are returned.
+const KEEP = 1000;
+
+const PLAN = /\b(free|hobby|starter|basic|personal|indie|developer|pro|plus|premium|teams?|business|growth|scale|startup|enterprise)\b/i;
+const UPCOMING = /\b(soon|radar|coming|not yet|planned|roadmap|shipping next|waitlist|early access)\b/i;
+// Words a claim can name a mode with: the claim may be true in that mode only.
+const MODE = /\b(self[- ]host(ed|ing)?|on[- ]prem\w*|CI|monitor mode|cloud|hosted|SaaS|annual(ly)?|yearly|monthly|billed \w+|per (seat|user)|trial|beta)\b/i;
+const NEGATIVE = /\b(never|not|no|without|nothing|none|zero)\b|n't\b/i;
+// Subjects of data and setup claims that sites and docs most often state both ways.
+const SUBJECTS: Array<[string, RegExp]> = [
+  ["credentials", /credential|password|connection strings?|secret|api key/i],
+  ["rows", /\brows?\b|sample (rows|values)|query text|parameter values|literal values/i],
+  ["local", /\blocally\b|on your (own )?(machine|computer|laptop|infrastructure|servers?|network)|\bleaves?\b/i],
+  ["install", /\binstall|\bdocker\b|\bagents?\b|\bnpx\b/i],
+  ["open source", /open[- ]source|source[- ]available/i],
+];
+const STOP = new Set("the and for with your our you how use using all any can get new now set via from into this that are was will docs guide overview introduction about coming soon radar roadmap planned next shipping yet not beta preview".split(" "));
+
+function tokens(s: string): string[] {
+  return (s.match(/[A-Za-z0-9]+/g) ?? []).filter((w) => (w.length >= 3 || /^[A-Z0-9]{2}$/.test(w)) && !STOP.has(w.toLowerCase())).map((w) => w.toLowerCase());
+}
+
+function amountOf(text: string): string | null {
+  const m = AMOUNT.exec(text.replace(/`[^`]*`/g, " "));
+  return m ? m[0][0] + String(parseFloat(m[0].slice(1).replace(/,/g, ""))) : null;
+}
+
+function modeHint(a: Claim, b: Claim): string | null {
+  const parts = [a, b].flatMap((c) => {
+    const m = MODE.exec(`${c.text} ${c.context ?? ""}`);
+    return m ? [`${c.file}:${c.line}: ${m[0]}`] : [];
+  });
+  return parts.length ? parts.join("; ") : null;
+}
+
+function ref(c: Claim): ClaimRef {
+  return { file: c.file, line: c.line, text: c.text.slice(0, 200) };
+}
+
+/** Pairs of claims that may disagree. Found by keyword, so each pair is something to check, not a finding. */
+function pairClaims(claims: Record<ClaimKind, Claim[]>, titles: Claim[]): ClaimConflict[] {
+  const out: ClaimConflict[] = [];
+  const add = (topic: ClaimConflict["topic"], subject: string, a: Claim, b: Claim) => out.push({ topic, subject, a: ref(a), b: ref(b), modeHint: modeHint(a, b) });
+  // (a) One plan at two prices.
+  const plans = new Map<string, Map<string, Claim>>();
+  for (const c of claims.price) {
+    const amount = amountOf(c.text);
+    const plan = (PLAN.exec(c.text) ?? PLAN.exec(c.context?.split(" / ").pop() ?? "") ?? PLAN.exec(c.context ?? ""))?.[1].toLowerCase().replace(/^teams$/, "team");
+    if (!amount || !plan) continue;
+    const byAmount = plans.get(plan) ?? new Map<string, Claim>();
+    if (!byAmount.has(amount)) byAmount.set(amount, c);
+    plans.set(plan, byAmount);
+  }
+  for (const [plan, byAmount] of plans) {
+    const [first, ...rest] = [...byAmount.values()];
+    for (const c of rest.slice(0, 3)) add("price", plan, first, c);
+  }
+  // (b) Marketed as upcoming, but a docs page or section has its name.
+  let found = 0;
+  // A title of two or more words, or one name like "SSO": one ordinary word ("Pricing") matches too much.
+  const named = titles.map((h) => ({ h, tw: tokens(h.text) })).filter(({ h, tw }) => !UPCOMING.test(h.text) && (tw.length >= 2 || (tw.length === 1 && /\b[A-Z]{2,}\b/.test(h.text))));
+  for (const c of claims.availability) {
+    if (found >= 15) break;
+    if (!UPCOMING.test(c.text) && !(c.context && UPCOMING.test(c.context))) continue;
+    const words = new Set(tokens(c.text));
+    const t = named.find(({ h, tw }) => h.file !== c.file && tw.every((w) => words.has(w)))?.h;
+    if (t) {
+      add("availability", t.text.slice(0, 80), c, t);
+      found++;
+    }
+  }
+  // (c) The same subject stated both ways ("rows never leave" vs "sends 10 sample rows").
+  const pool = [...claims.data, ...claims.setup, ...claims.oss];
+  for (const [subject, re] of SUBJECTS) {
+    const about = pool.filter((c) => re.test(c.text));
+    const neg = about.filter((c) => NEGATIVE.test(c.text));
+    const pos = about.filter((c) => !NEGATIVE.test(c.text));
+    let n = 0;
+    for (const a of neg) {
+      const b = pos.find((p) => p.file !== a.file);
+      if (b && n++ < 2) add("data", subject, a, b);
+    }
+  }
+  return out.slice(0, 40);
+}
+
+function realDir(dir: string): string {
   const root = realpathSync(dir);
   if (!statSync(root).isDirectory()) throw new RangeError(`${dir} is not a directory`);
   if (root === "/") throw new RangeError("refusing to scan the filesystem root; pass the repo or app directory");
+  return root;
+}
+
+function collect(root: string) {
   const all: string[] = [];
   const state: { truncated: boolean; links?: number } = { truncated: false };
   walk(root, all, state, EXTS, META_NAMES);
@@ -404,6 +517,8 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   const claims = Object.fromEntries(KINDS.map((k) => [k, []])) as unknown as Record<ClaimKind, Claim[]>;
   const counts = Object.fromEntries(KINDS.map((k) => [k, 0])) as unknown as Record<ClaimKind, number>;
   const env = new Map<string, EnvFlag["uses"]>();
+  // Docs page titles and top headings, to pair with features the site calls upcoming.
+  const titles: Claim[] = [];
   for (const f of files) {
     let src: string;
     try {
@@ -413,6 +528,7 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
     }
     const rel = relative(root, f);
     const isCode = /\.(ts|js|mjs)$/.test(f);
+    const isDoc = /\.mdx?$/.test(f);
     let inStyle = false;
     const recent: string[] = [];
     let upcoming: string | null = null;
@@ -447,6 +563,10 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
       // List items under "On our radar", "Roadmap" or "Coming soon" are not shipped, whatever their words.
       const heading = !isCode && (/^\s*#{1,6}\s/.test(raw) || /<h[1-6][\s>]/i.test(raw));
       if (heading) upcoming = UPCOMING_HEADING.test(text) ? text.replace(/^#+\s*/, "").slice(0, 120) : null;
+      if (isDoc && titles.length < KEEP && (/^#{1,2}\s/.test(raw) || (i < 30 && /^title:/.test(raw)))) {
+        const t = (/^title:[ \t]*(.+)$/.exec(raw)?.[1] ?? text.replace(/^#+\s*/, "")).replace(/^["']|["']$/g, "").trim();
+        if (t) titles.push({ file: rel, line: i + 1, text: t.slice(0, 120) });
+      }
       const listed = !heading && upcoming !== null && words > 0 && (/^\s*([-*+]|\d+\.)\s+\S/.test(raw) || /<li[\s>]/i.test(raw));
       // Access rules are often only in code comments ("connects as a superuser").
       const comment = isCode ? (/^\s*(?:\/\/|\/?\*+)\s?(.*)$/.exec(raw)?.[1] ?? /\s\/\/\s?(.*)$/.exec(raw)?.[1] ?? "") : "";
@@ -465,15 +585,35 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
         if (w < 3 && kind !== "price" && !item) continue;
         counts[kind]++;
         const context = item ? upcoming : w < 3 && ctx ? ctx : null;
-        if (claims[kind].length < maxPerKind) claims[kind].push({ file: rel, line: i + 1, text: t.slice(0, 300), ...(context ? { context } : {}) });
+        if (claims[kind].length < KEEP) claims[kind].push({ file: rel, line: i + 1, text: t.slice(0, 300), ...(context ? { context } : {}) });
       }
     });
   }
+  return { files, state, claims, counts, env, licenseState, titles };
+}
+
+export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] = []): SourceScan {
+  const root = realDir(dir);
+  const { files, state, claims, counts, env, licenseState, titles } = collect(root);
+  // Claims from the other folders, with paths relative to dir, so each pair reads the same way.
+  const compared: SourceScan["compared"] = [];
+  const pool = Object.fromEntries(KINDS.map((k) => [k, [...claims[k]]])) as unknown as Record<ClaimKind, Claim[]>;
+  const allTitles = [...titles];
+  for (const d of compareWith) {
+    const other = realDir(d);
+    if (other === root) continue;
+    const c = collect(other);
+    const rebase = (x: Claim) => ({ ...x, file: relative(root, join(other, x.file)) });
+    for (const k of KINDS) pool[k].push(...c.claims[k].map(rebase));
+    allTitles.push(...c.titles.map(rebase));
+    compared.push({ dir: other, filesScanned: c.files.length, claimCounts: c.counts });
+  }
+  const conflicts = pairClaims(pool, allTitles);
   const envFlags = [...env.entries()]
     .map(([name, uses]) => ({ name, uses }))
     .sort((a, b) => Number(b.uses.some((u) => u.affectsOutput)) - Number(a.uses.some((u) => u.affectsOutput)) || a.name.localeCompare(b.name));
   const notes = [
-    "Lines are matched by keyword; some are not claims. Check each data, price and availability claim against the docs and against the other files: the same thing stated differently in two places is a finding.",
+    "Lines are matched by keyword; some are not claims. conflicts pairs claims that may disagree (one plan at two prices, a feature called upcoming that a docs page covers, one subject stated both ways); open both lines before you call it a contradiction. A claim that is true in one mode (self-host, CI, cloud, annual billing) and not another is unclear, not false: say which mode. conflicts finds only matching plans, subjects and page titles, so still check the other claims against the docs.",
     "Tooltips, FAQ answers and attribute text are included because visitors read them. Docs folders are scanned too if they are under this directory; docs that disagree with each other are a finding.",
     "Env flags marked affectsOutput appear in routing, head or conditional rendering. Say which value the build you reviewed used.",
   ];
@@ -498,5 +638,5 @@ export function scanSource(dir: string, maxPerKind = 60): SourceScan {
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims, claimCounts: counts, envFlags, licenseState, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
+  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, notes };
 }
