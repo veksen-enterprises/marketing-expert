@@ -38,3 +38,7 @@ Round 3 ran after the round-2 instruction changes. Totals: 100, 101, 101 out of 
 
 - Give every concurrent advisor its own scratch directory and tell it not to read elsewhere in /tmp. In round 4 two advisors evidently shared a temp file: the devtool-competition answer was a GameX Companion draft under a DBTool tool log (kept as `runs/v4/devtool-competition-contaminated.md`), and the companion-risk answer was a devtool-strategy draft (`runs/v4/companion-risk-contaminated.md`). Before grading, check that each answer is about the right business and that its word count matches the last check_answer in its log.
 - check_answer returns a fingerprint (hash plus first words) of the text it checked. Graders: recompute it on the saved answer to confirm the checked text is the sent text.
+
+## Other business types
+
+Five fictional cases (ecommerce, local services, consumer app, marketplace, professional services) were added on 2026-10-05 to measure the playbooks outside developer tools (ROADMAP item 7). Their material is in `evals/fixtures/`, and grader notes are in `evals/expectations.md`. Because they are invented, their runs and grades can be committed.
