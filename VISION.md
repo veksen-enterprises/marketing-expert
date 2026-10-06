@@ -23,7 +23,7 @@ The first users are technical founders at zero to ten customers, mostly B2B and 
 
 - **26 tools:** calculators (A/B tests, unit economics, paid media, funnels, market size, liquidity), audits (page, site crawl, AI crawler access, copy, platform limits, UTM), repo checks (`scan_source`), self-checks on the draft (`check_answer`, `verify_quotes`), business profiles, small-bet matching (`match_small_bets`), playbook search, and `learn_more` to expand any summary.
 - **11 prompts:** fixed workflows (diagnosis, strategy with a pre-revenue path, positioning, landing page teardown, experiment plan, campaign brief, launch plan, opportunity assessment, competitive strategy, exits, technical SEO review).
-- **57 playbooks** in `knowledge/` built from **47 research notes** in `research/`. On 2026-10-05 the snippet-only citations were re-read at their sources; about 100 remain unreachable.
+- **59 playbooks** in `knowledge/` built from **49 research notes** in `research/`. On 2026-10-05 the snippet-only citations were re-read at their sources; about 100 remain unreachable.
 - **An evaluation method** in `evals/`: real cases, a 10-item rubric, graders that check every claim against the business's repo.
 - See `README.md` for usage and `ROADMAP.md` for gaps.
 

@@ -29,7 +29,10 @@ describe("plain-language search", () => {
     expect(e).toMatch(/charge/);
     expect(e).toMatch(/pricing/);
   });
-  it("leaves exact searches alone: searchKnowledge is unchanged", () => {
-    expect(searchKnowledge("how much should we charge", 3).map((h) => h.slug)).toEqual(["marketplaces", "marketplaces", "marketplaces"]);
+  it("leaves exact searches alone: only searchPlain expands the query", () => {
+    const q = "how much should we charge";
+    const plain = searchPlain(q, 5).map((h) => h.pointer);
+    expect(plain).toEqual(searchKnowledge(expandQuery(q), 11).filter((h) => h.slug !== "glossary").slice(0, 5).map((h) => h.pointer));
+    expect(searchKnowledge(q, 5).map((h) => h.pointer)).not.toEqual(plain);
   });
 });

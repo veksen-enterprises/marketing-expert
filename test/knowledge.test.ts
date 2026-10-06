@@ -47,6 +47,8 @@ describe("knowledge base", () => {
     ["app store optimization retention d30 paywall", "consumer-apps"],
     ["get my app featured on the app store launch day charts", "app-store-discovery"],
     ["cheap marketing ideas with no users and no budget", "small-bets"],
+    ["fan site game publisher rules discord premium apps monetize", "building-on-games-and-platforms"],
+    ["gst qst eu vat oss merchant of record paddle stripe tax", "selling-digital-products-across-borders"],
     ["quebec french language bill 96 law 25 website", "marketing-law-by-market"],
     ["turkey iys kvkk commercial message consent", "marketing-law-by-market"],
     ["open source self-hosted paid hosted service agpl cloud", "developer-tools"],
