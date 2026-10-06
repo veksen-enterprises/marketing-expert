@@ -90,9 +90,12 @@ export function getPlaybook(slug: string): Playbook | undefined {
   return loadPlaybooks().find((p) => p.slug === slug);
 }
 
-export function sections(books = loadPlaybooks()): Section[] {
+let sectionCache: Section[] | null = null;
+export function sections(books?: Playbook[]): Section[] {
+  // The playbooks don't change while the server runs: split them once.
+  if (!books && sectionCache) return sectionCache;
   const out: Section[] = [];
-  for (const b of books) {
+  for (const b of books ?? loadPlaybooks()) {
     const parts = b.body.split(/^(?=## )/m);
     for (const part of parts) {
       const h = /^## (.+)$/m.exec(part);
@@ -101,7 +104,9 @@ export function sections(books = loadPlaybooks()): Section[] {
       out.push({ slug: b.slug, playbookTitle: b.title, heading, text, tags: b.tags, summary: summaryOf(text), pointer: `playbook:${b.slug}#${heading}` });
     }
   }
-  return out.filter((s) => s.text.length > 0);
+  const result = out.filter((s) => s.text.length > 0);
+  if (!books) sectionCache = result;
+  return result;
 }
 
 const STOP = new Set("a an and are as at be by for from how i in is it of on or our should that the this to we what when which who why with you your do does can my".split(" "));
@@ -130,15 +135,26 @@ export interface SearchHit {
 /** Query terms beyond this are ignored: each one costs a scan of the whole corpus. */
 export const MAX_QUERY_TERMS = 32;
 
+// Each corpus is split into words once, not on every search.
+const docCache = new WeakMap<Section[], Array<{ s: Section; toks: string[] }>>();
+function docsOf(corpus: Section[]) {
+  let docs = docCache.get(corpus);
+  if (!docs) {
+    docs = corpus.map((s) => {
+      const head = tokenize(`${s.playbookTitle} ${s.heading}`);
+      // Heading terms count triple: a section titled "Pricing" is about pricing.
+      // Tags count once per section: they tie every section to its playbook's topic.
+      return { s, toks: [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))] };
+    });
+    docCache.set(corpus, docs);
+  }
+  return docs;
+}
+
 export function searchKnowledge(query: string, limit = 5, corpus = sections()): SearchHit[] {
   const q = [...new Set(tokenize(query))].slice(0, MAX_QUERY_TERMS);
   if (q.length === 0) return [];
-  const docs = corpus.map((s) => {
-    const head = tokenize(`${s.playbookTitle} ${s.heading}`);
-    // Heading terms count triple: a section titled "Pricing" is about pricing.
-    // Tags count once per section: they tie every section to its playbook's topic.
-    return { s, toks: [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))] };
-  });
+  const docs = docsOf(corpus);
   const N = docs.length;
   const avg = docs.reduce((n, d) => n + d.toks.length, 0) / Math.max(1, N);
   const df = new Map<string, number>();
