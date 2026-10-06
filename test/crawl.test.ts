@@ -64,7 +64,7 @@ describe("crawlSite", async () => {
     expect(issue("broken-internal")!.examples[0]).toMatch(/\/missing \(404\) ← linked from https:\/\/site.test\//);
     expect(issue("redirect-chains")!.examples[0]).toMatch(/\/old 301 → .*\/older 302 → .*\/a/);
     expect(issue("links-to-redirects")!.count).toBe(1);
-    expect(issue("duplicate-titles")!.examples[0]).toMatch(/"Same title" on 2 pages/);
+    expect(issue("duplicate-titles")!.examples[0]).toMatch(/"Same title" on 3 pages/);
     expect(issue("orphans")!.examples).toEqual([`${B}/orphan`]);
     expect(issue("noindex-in-sitemap")!.examples).toEqual([`${B}/noidx`]);
     expect(issue("non200-in-sitemap")!.examples[0]).toMatch(/\/old \(redirects to https:\/\/site.test\/a\)/);

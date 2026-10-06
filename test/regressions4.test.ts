@@ -48,6 +48,21 @@ describe("crawl_site on a site whose canonicals and sitemap point at a dead www 
   });
 });
 
+describe("crawl_site when every canonical is broken", () => {
+  it("still checks duplicate titles: a page whose canonical points to a dead URL is its own page", async () => {
+    // Shaped like a live site on 2026-10-06: all canonicals on a 404 host hid every duplicate-title finding.
+    const r = await crawlSite({
+      startUrl: `${B}/`,
+      fetchFn: serve({
+        "/": { body: page("Home", `<a href="/copy">copy</a>`, `<link rel="canonical" href="${W}/">`) },
+        "/copy": { body: page("Home", "", `<link rel="canonical" href="${W}/copy/">`) },
+      }),
+    });
+    expect(r.issues.find((i) => i.id === "canonical-broken")!.count).toBe(2);
+    expect(r.issues.find((i) => i.id === "duplicate-titles")!.examples[0]).toMatch(/"Home" on 2 pages/);
+  });
+});
+
 describe("crawl_site sitemap guessing", () => {
   it("finds /sitemap_index.xml without a robots.txt line, and keeps quiet about the guessed names that 404", async () => {
     const r = await crawlSite({

@@ -543,7 +543,15 @@ function buildIssues(
   const indexable = ok.filter((p) => !p.noindex);
   // Pages that name another URL as canonical ask Google to index that URL instead: they don't belong in the sitemap,
   // and their duplicate titles or few words are expected.
-  const ownCanonical = indexable.filter((p) => !p.canonical || p.canonical === p.url);
+  // Why a page's canonical target can't be used (redirects, errors, noindex), or null when it can.
+  const brokenWhy = (p: CrawledPage): string | null => {
+    if (!p.canonical || p.canonical === p.url) return null;
+    const t = byUrl.get(p.canonical);
+    if (!t) return canonicalStatus.get(p.canonical) ?? null;
+    return t.error ? "could not be fetched" : t.redirectChain.length ? "redirects" : t.status !== 200 ? `HTTP ${t.status}` : t.noindex ? "noindex" : null;
+  };
+  // A canonical that points to a dead page doesn't make this page a copy: it is still checked as its own page.
+  const ownCanonical = indexable.filter((p) => !p.canonical || p.canonical === p.url || brokenWhy(p) !== null);
 
   const broken = pages.filter((p) => p.status !== null && p.status >= 400);
   add(
@@ -613,20 +621,8 @@ function buildIssues(
     "error",
     "Canonical points to a URL that redirects, errors or is noindex. Google may ignore the canonical, or index the wrong URL.",
     indexable
-      .filter((p) => p.canonical && p.canonical !== p.url)
       .map((p) => {
-        const t = byUrl.get(p.canonical!);
-        const why = t
-          ? t.error
-            ? "could not be fetched"
-            : t.redirectChain.length
-              ? "redirects"
-              : t.status !== 200
-                ? `HTTP ${t.status}`
-                : t.noindex
-                  ? "noindex"
-                  : null
-          : canonicalStatus.get(p.canonical!) ?? null;
+        const why = brokenWhy(p);
         return why ? `${p.url} → ${p.canonical} (${why})` : null;
       })
       .filter((e): e is string => !!e)
