@@ -88,6 +88,75 @@ _In short:_ Don't position against tracked competitors instead of real alternati
 - Treating positioning as a tagline exercise. The output is a set of decisions; copy comes later.
 - Re-positioning every quarter. Positioning should change when the market, product or best customers change, not when a campaign underperforms.
 
+## "Start with why": when purpose helps and when it doesn't
+
+_In short:_ A stated purpose can help you hire and gather a community. It rarely sells a new product by itself. On product pages, say what it does and what it replaces first; tell the why elsewhere.
+
+Simon Sinek's "Golden Circle" says inspiring organisations communicate "why" first (purpose, cause, belief), then "how", then "what". This section checks that claim against the evidence and gives a rule for where each part goes. Dunford's method above is not repeated here.
+
+**What Sinek actually claims** [practitioner; TEDx talk 2009 and book 2009; case stories only]
+
+- The talk's core line: "people don't buy what you do; people buy why you do it." The goal is "to do business with people who believe what you believe."
+- The evidence offered is stories picked after the result was known: Apple against Dell and Gateway, the Wright brothers against Samuel Langley, TiVo as a failure. There is no comparison group and no failed why-first company.
+- The book does not drop the "what". Two of its chapters are "Start with WHY, but Know HOW" and "Know WHY. Know HOW. Then WHAT?".
+
+**The brain claim does not hold** [research; reviews and lab studies]
+
+- Sinek says the neocortex handles the "what" and language, while the limbic brain handles feelings and "all decision-making, and it has no capacity for language". He calls this "biology", not opinion.
+- Neuroscience rejects the model behind it. The idea that newer brain layers sit on older ones, each with its own function, "has long been discredited among neurobiologists" [research; review, 2020]. A single "limbic system" is "outmoded" [research; review, 2015]. Emotions show up across many brain systems, including the cortex [research; analysis of 148 imaging studies, 2,159 participants].
+- What is true: feelings take part in decisions. But the classic evidence for that involves an area at the front of the cortex, not a separate "why brain" [research; patient study, 1994]. So the biology says nothing about the order of words on your page.
+
+**Does purpose sell?**
+
+- **On average, no better.** In the IPA awards database (the UK advertising trade body's collection of campaign case studies), 47 purpose campaigns averaged 1.1 "very large business effects", against 1.6 for 333 other campaigns [practitioner; IPA awards entries, 2021; not peer-reviewed].
+- **"Strong purpose campaigns win" is circular.** The same study reports that its "strong" purpose cases beat the average. But "strong" was defined as having achieved a very large business effect, so the result is built in [practitioner; IPA's own definition; critics Shotton and Ritson].
+- **The famous growth figures are vendor correlations.** Kantar (a research firm that also sells purpose consulting): purpose-led brands grew in value 175% over 12 years, against 70% for others [vendor; 100 brands, 2019; press relay]. Unilever: its "sustainable living" brands grew 69% faster than its other brands in 2018 [vendor; the company chose which brands counted]. In 2023 Unilever's new CEO said it would stop "force fitting" purpose: "for some brands it simply won't be relevant" [vendor; company statement].
+- **Most buyers don't know the purpose.** About one in five people matched famous brands to their stated purpose. Excluding guesses, real awareness "rarely" passed 10%. More than half of these brands had promoted their purpose for over 20 years [research; Ehrenberg-Bass, about 3,000 people, 14 brands, 2025; read via press]. Five current or former Unilever purpose brands gained one share point or less over 6–8 years, and some lost share [research; Ehrenberg-Bass, Euromonitor data, 2026; not peer-reviewed].
+- **Purpose can lift sales when buyers care and it fits the product.** A Fair Trade label raised coffee sales almost 10% in one US grocery chain. But a 9% price rise cut the cheaper coffee's sales 30% [research; field experiment, one chain]. Giving half the revenue to charity at a fixed price "only slightly increased demand" [research; field experiment, n=113,047; one attraction].
+- **It can also backfire.** Buyers rated a green product lower when the company said it made the product green on purpose. They assumed effort was taken away from quality [research; lab experiments]. Ethical products seem "gentle", so they lose appeal when buyers want strength [research; experiments].
+- **Purpose alone does not predict company performance.** In about 500,000 employee survey answers, purpose was "not related to financial performance". Firms with purpose plus clear direction from management did better later [research; US firms; correlational].
+- Mark Ritson's view: purpose is a choice, not a requirement. A company can act on a purpose without putting it in its marketing. His own example: he has a purpose for his course but doesn't use it to sell, "because most don't care" [practitioner].
+
+**Sinek and Dunford answer different questions** [practitioner]
+
+- Dunford says positioning "is not your brand story, nor is it your vision or your 'why'". Positioning answers: why pick this over what you do today?
+- Sinek's "why" answers a different question: why does this company exist, and do I share that belief?
+- For a new product, a buyer needs the first answer before the second matters. Do positioning first. Then decide whether a "why" adds anything for a given audience.
+
+**When a stated why plausibly helps**
+
+- **Hiring.** In one experiment, online workers who read about an employer's social responsibility asked for 44% lower pay for the same job. In a second, the average effect was small, but top performers gave up the extra pay they usually ask for [research; two randomized field experiments, short online jobs]. Firm results are linked to purpose felt by middle managers, not executives [research; correlational]. This is the best-supported use of a "why".
+- **Mission-driven buyers.** Some buyers pay more for an ethical feature they care about, but how much varies a lot [research; field experiment]. Purpose works best when it matches what the product does. The successful purpose campaigns in the IPA data linked the purpose to product benefits [practitioner; IPA].
+- **Community and hobby products.** People who identify with a community take part more, but also feel pressure to conform [research; survey, car clubs]. Open-source contributors mostly come for enjoyment and their own needs, not ideology [research; survey, 684 developers]. So a stated why helps set community norms, but the activity itself is the main draw. See **community-and-hobby-products**.
+- **Founder-led content.** Posts about why you built something are a common way to earn attention. There is no peer-reviewed evidence on whether they bring signups or sales [rule-of-thumb].
+
+**When it hurts: an early B2B landing page**
+
+- People decide fast whether a page deserves reading. Large browser-log studies show a quick first screening before anyone reads closely [research; browsing logs, 2010].
+- B2B buyers spend about 17% of their buying time with all potential suppliers combined [vendor; Gartner, research year not stated].
+- A visitor to a new B2B product has never heard of you. If the headline is a belief ("we believe teams deserve better tools"), they cannot tell what the product is, who it is for, or what it replaces. Then they leave or pick a familiar name [rule-of-thumb; inference from the screening and buyer-time evidence, not tested directly].
+- No study was found that tests a why-first headline against a what-first headline on a real product page.
+
+**A practical rule for small products** [rule-of-thumb; built from the evidence above]
+
+| Where | Lead with | Why can appear as |
+|---|---|---|
+| Homepage headline, product and pricing pages, store listing, directory listing, ads, cold email | What it is, who it's for, what it replaces | One line, after the what, or nowhere |
+| About page | The founder's reason, plainly told | The main content |
+| Founder posts, launch posts, newsletter | A real story about the problem | The main content, ending with what you built |
+| Jobs page, messages to candidates | What you are trying to change | The main content, with honest pay and role details |
+| Community rules, README "why this exists" | What the community is for and won't do | Short norms, kept in practice |
+
+- A useful "why" is often small and concrete: the problem the founder hit, or what the project refuses to do. It doesn't need to be a social cause.
+- Don't invent a social cause for a tool that has none. Buyers rarely notice it, and stated good intentions can make them assume lower quality.
+- Test the first screen with a stranger: can they say what it is and what it replaces? If not, fix the "what" before adding any "why". See **landing-pages-and-cro** and **messaging-and-copy**.
+
+**Folklore**
+
+- "People don't buy what you do; they buy why you do it", "it's biology", and "purpose brands grow twice as fast": none of these holds up. The quote comes from hand-picked stories. The brain model behind it is rejected by neuroscientists. The growth figures are vendor correlations, and on average purpose campaigns did worse in the IPA data.
+
+Sources for this section: research/start-with-why.md; research/b2b-saas-models.md (Gartner); research/content-social-pr.md (founder-led content).
+
 ## Sources
 
-See research/positioning-messaging.md (Dunford 2019, 2023; Ries & Trout 1981; Romaniuk, Sharp & Ehrenberg 2007). Primary pages could not be fetched during research; wording is from secondary summaries.
+See research/positioning-messaging.md (Dunford 2019, 2023; Ries & Trout 1981; Romaniuk, Sharp & Ehrenberg 2007). Primary pages could not be fetched during research; wording is from secondary summaries. Start with why and purpose-led marketing: research/start-with-why.md.
