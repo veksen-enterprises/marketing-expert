@@ -47,6 +47,8 @@ describe("knowledge base", () => {
     ["app store optimization retention d30 paywall", "consumer-apps"],
     ["get my app featured on the app store launch day charts", "app-store-discovery"],
     ["cheap marketing ideas with no users and no budget", "small-bets"],
+    ["quebec french language bill 96 law 25 website", "marketing-law-by-market"],
+    ["turkey iys kvkk commercial message consent", "marketing-law-by-market"],
     ["open source self-hosted paid hosted service agpl cloud", "developer-tools"],
     ["healthkit health connect fitness app new year", "fitness-and-health-apps"],
     ["holiday season pinterest crafters etsy affiliate", "seasonal-and-hobby-products"],

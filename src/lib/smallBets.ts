@@ -6,6 +6,7 @@
 
 import type { BusinessProfile } from "./profile.js";
 import { BETS } from "./smallBetsCatalog.js";
+import { sections } from "./knowledge.js";
 
 export const AUDIENCES = ["businesses", "developers", "consumers", "hobbyists", "local"] as const;
 export const SURFACES = ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical", "service"] as const;
@@ -74,6 +75,8 @@ export interface Bet {
   /** The ceiling for some audiences, where it differs from `ceiling` (short video is lopsided for consumers, capped
    * for B2B buyers). A profile's effective ceiling is the best one among its audiences. */
   ceilingFor?: Partial<Record<Audience, Bet["ceiling"]>>;
+  /** Which kind of marketing law the bet runs into, so the advisor checks the rules of the business's markets. */
+  law?: "messages" | "reviews-and-endorsements" | "pricing";
   /** For lopsided bets: how many tries to run before judging, judged on the best one, not the average. */
   tries?: number;
   cost: string;
@@ -97,6 +100,8 @@ export interface SmallBetsFacts {
   avoid?: AvoidTag[];
   /** What the business refuses to do, in its own words; avoid holds the checkable part. */
   principles?: string[];
+  /** Where the business operates or sells (countries, provinces, states), e.g. "Quebec", "Turkey". */
+  markets?: string[];
 }
 
 export interface StageReading {
@@ -143,6 +148,8 @@ export interface Verdict {
   playbookSection?: string;
   /** What learn_more takes to expand this bet. */
   learnMore: string;
+  /** For bets that touch marketing law: which rules to check, and the market sections to read. */
+  lawCheck?: string;
 }
 
 export interface MatchResult {
@@ -154,6 +161,8 @@ export interface MatchResult {
   assumptions: string[];
   /** The business's principles in its own words: check each fitting bet against them before proposing it. */
   checkAgainst: string[];
+  /** For each market in the profile, the marketing-law section to read (null when the playbook has none). */
+  marketLaw: Array<{ market: string; pointer: string | null }>;
   howToReport: string;
 }
 
@@ -172,8 +181,32 @@ export function ceilingFor(b: Pick<Bet, "ceiling" | "ceilingFor">, audiences?: A
 export const betScore = (b: Pick<Bet, "ceiling" | "evidence" | "effortHours">) =>
   Math.round(((CEILING_WEIGHT[b.ceiling] * EVIDENCE_WEIGHT[b.evidence]) / Math.sqrt(Math.max(1, b.effortHours))) * 1000) / 1000;
 
+const LAW_PLAYBOOK = "marketing-law-by-market";
+const LAW_WHAT = { messages: "consent rules for marketing emails and messages", "reviews-and-endorsements": "rules on asking for reviews, testimonials and paid endorsements", pricing: "price display and subscription rules" } as const;
+
+// Cities and other names people write for the markets the law playbook covers.
+const MARKET_ALIASES: Record<string, string> = {
+  montreal: "quebec", "montréal": "quebec", "québec": "quebec", "quebec city": "quebec",
+  toronto: "ontario", ottawa: "ontario", canada: "canada", vancouver: "canada", "british columbia": "canada",
+  "san francisco": "california", "los angeles": "california", "bay area": "california", usa: "united states", us: "united states", "u.s.": "united states",
+  istanbul: "turkey", "türkiye": "turkey", turkiye: "turkey", ankara: "turkey",
+  yerevan: "armenia",
+  "buenos aires": "argentina", caba: "argentina",
+};
+
+/** The marketing-law section for each market: a section whose heading names the market (or the market names it). */
+export function marketLawPointers(markets: string[] = []): MatchResult["marketLaw"] {
+  const secs = sections().filter((s) => s.slug === LAW_PLAYBOOK && !/^sources?$/i.test(s.heading) && s.heading !== "Marketing law by market");
+  return markets.map((market) => {
+    const raw = market.trim().toLowerCase();
+    const m = MARKET_ALIASES[raw] ?? raw;
+    const s = secs.find((x) => x.heading.toLowerCase().includes(m) || (m.length > 3 && m.includes(x.heading.toLowerCase().split(/[ (,]/)[0])));
+    return { market, pointer: s ? s.pointer : null };
+  });
+}
+
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles };
+  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets };
 }
 
 export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
@@ -256,7 +289,13 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       });
   }
   fitsNow.sort((x, y) => y.score! - x.score!);
-  return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], howToReport: HOW_TO_REPORT };
+  const marketLaw = marketLawPointers(f.markets);
+  if (!f.markets?.length) assumptions.push("Markets not saved (where the business operates); legal notes can't name the rules that apply. Save markets, e.g. Quebec, Turkey.");
+  for (const v of fitsNow) {
+    const law = bets.find((b) => b.id === v.id)?.law;
+    if (law) v.lawCheck = `Check the ${LAW_WHAT[law]} in each market${marketLaw.length ? `: ${marketLaw.map((x) => x.pointer ?? `${x.market} (not covered yet)`).join(", ")}` : " (markets not saved)"}.`;
+  }
+  return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], marketLaw, howToReport: HOW_TO_REPORT };
 }
 
 function fitReason(b: Bet, f: SmallBetsFacts, stage: Stage): string {

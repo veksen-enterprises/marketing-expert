@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { matchSmallBets, readStage, betScore, type SmallBetsFacts } from "../src/lib/smallBets.js";
+import { matchSmallBets, readStage, betScore, marketLawPointers, type SmallBetsFacts } from "../src/lib/smallBets.js";
 import { BETS } from "../src/lib/smallBetsCatalog.js";
 
 const ids = (vs: Array<{ id: string }>) => vs.map((v) => v.id);
@@ -103,6 +103,7 @@ describe("matchSmallBets", () => {
     surfaces: ["cli", "api", "web-app"],
     revenue: "live",
     avoid: [],
+    markets: ["Quebec"],
   };
   it("opens stage-2 bets once traction is there, and keeps press for later", () => {
     const r = matchSmallBets(devtool);
@@ -153,6 +154,24 @@ describe("matchSmallBets", () => {
     expect(ids(matchSmallBets(local).fitsNow)).toContain("merchant-visits");
     expect(find(matchSmallBets(local).fitsLater, "in-store-signs")).toBeTruthy();
     expect(ids(matchSmallBets(devtool).doesntFit)).toContain("merchant-visits");
+  });
+  it("points each market, written as a place or a city, at its marketing-law section", () => {
+    const p = (m: string) => marketLawPointers([m])[0].pointer;
+    expect(p("Quebec")).toBe("playbook:marketing-law-by-market#Quebec");
+    expect(p("Montreal")).toBe("playbook:marketing-law-by-market#Quebec");
+    expect(p("Toronto")).toBe("playbook:marketing-law-by-market#Canada (federal) and Ontario");
+    expect(p("San Francisco")).toBe("playbook:marketing-law-by-market#United States and California");
+    expect(p("Istanbul")).toBe("playbook:marketing-law-by-market#Turkey");
+    expect(p("Türkiye")).toBe("playbook:marketing-law-by-market#Turkey");
+    expect(p("Yerevan")).toBe("playbook:marketing-law-by-market#Armenia");
+    expect(p("Buenos Aires")).toBe("playbook:marketing-law-by-market#Argentina");
+    expect(p("Japan")).toBeNull();
+  });
+  it("tells the advisor which market rules to check for a bet that sends messages", () => {
+    const r = matchSmallBets({ ...devtool, markets: ["Quebec", "Istanbul"] });
+    const emails = r.fitsNow.find((v) => v.id === "founder-emails")!;
+    expect(emails.lawCheck).toMatch(/consent rules.*#Quebec.*#Turkey/);
+    expect(r.fitsNow.find((v) => v.id === "comparison-pages")!.lawCheck).toBeUndefined();
   });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);

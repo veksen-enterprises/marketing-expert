@@ -5,7 +5,7 @@ An MCP server that turns a coding or chat agent (Claude Code, Claude Desktop, Cu
 - reads your own material first (repo, docs, site source) and checks what's actually shipped;
 - runs calculators instead of doing arithmetic in its head;
 - audits pages, sites and robots.txt instead of guessing what's there;
-- grounds advice in 56 sourced playbooks, saying how strong the evidence is;
+- grounds advice in 57 sourced playbooks, saying how strong the evidence is;
 - recommends at most three moves, each with a cheapest test, a metric, a time box and a stop condition;
 - checks its own draft (length, jargon, missing parts, evidence labels, quotes against your files) before answering.
 
@@ -157,7 +157,7 @@ The server has no live data and no data about you except what you give it. Every
 
 1. **Your input and your files.** What you tell it, the repo or folder you point it at, and the pages it fetches when you ask for an audit. Business profiles stay in `MARKETING_EXPERT_DATA_DIR` on your machine.
 2. **Calculations.** Standard formulas run on your numbers (or on assumptions the agent labels as such). Nothing is looked up.
-3. **Playbooks** (`knowledge/*.md`, 56 files). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps, fitness and health apps, community and hobby products, seasonal and hobby products, products sold to local merchants, professional services, retail), channel (SEO and AI search, app store discovery, marketplace and registry listings, content, social, PR, events, video, paid, email, partnerships, referral, outbound), foundation (small bets, founder-led sales, activation and analytics, positioning, messaging, pricing, research, experimentation, measurement, launches, first customers, retention, law) and strategy (market sizing, startup risk, competing with incumbents, platform risk, exits).
+3. **Playbooks** (`knowledge/*.md`, 57 files). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps, fitness and health apps, community and hobby products, seasonal and hobby products, products sold to local merchants, professional services, retail), channel (SEO and AI search, app store discovery, marketplace and registry listings, content, social, PR, events, video, paid, email, partnerships, referral, outbound), foundation (small bets, founder-led sales, activation and analytics, positioning, messaging, pricing, research, experimentation, measurement, launches, first customers, retention, law, marketing law by market: Quebec, Canada, US and California, Turkey, Armenia, Argentina) and strategy (market sizing, startup risk, competing with incumbents, platform risk, exits).
 4. **Research notes** (`research/*.md`, 32 files). The cited sources each playbook is built from, with access notes and open questions.
 
 Every claim in a playbook carries an evidence tag, so the agent can tell you how much to trust it:

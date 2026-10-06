@@ -232,6 +232,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "cold-one-to-one",
+    law: "messages",
     effortHours: 20,
     ceiling: "capped",
     name: "Personal messages to clearly fitting people",
@@ -296,6 +297,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "waitlist-referral",
+    law: "messages",
     effortHours: 16,
     ceiling: "lopsided",
     name: "A waitlist where referrals move people up",
@@ -358,6 +360,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "founder-emails",
+    law: "messages",
     effortHours: 5,
     ceiling: "steady",
     name: "Email every new sign-up, payer and canceller yourself",
@@ -388,6 +391,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "ask-happy-users",
+    law: "reviews-and-endorsements",
     effortHours: 2,
     ceiling: "capped",
     name: "Ask happy users for an introduction, a review or a quote",
@@ -417,6 +421,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "changelog",
+    law: "messages",
     effortHours: 4,
     ceiling: "capped",
     name: "A public changelog and 'what's new' emails",
@@ -630,6 +635,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "newsletter-sponsorship",
+    law: "reviews-and-endorsements",
     effortHours: 3,
     ceiling: "capped",
     tries: 3,
@@ -648,6 +654,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "paid-tutorial",
+    law: "reviews-and-endorsements",
     effortHours: 2,
     ceiling: "steady",
     tries: 2,
@@ -666,6 +673,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "affiliate",
+    law: "reviews-and-endorsements",
     effortHours: 10,
     ceiling: "steady",
     name: "An affiliate or referral link with a commission",
@@ -696,6 +704,7 @@ export const BETS: Bet[] = [
   },
   {
     id: "lifetime-deal",
+    law: "pricing",
     effortHours: 10,
     ceiling: "capped",
     name: "A lifetime deal on a deal site",
