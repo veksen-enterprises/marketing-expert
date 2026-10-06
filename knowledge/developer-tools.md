@@ -78,6 +78,62 @@ More code is now written by agents. Stack Overflow's 2025 survey found 31% of re
 - **Treat tasks, not trials, as the sample** when testing descriptions: one model answers the same prompt almost the same way each time. Vary the request wording, include a control task where your tool should not be picked, and report how many cells were unanimous [our experiment].
 - To check whether agents find you at all, see ai-assistant-visibility ("Developer tools: coding agents are a separate audience").
 
+## Fully open source with a paid hosted service
+
+_In short:_ Self-hosters rarely pay. People buy the hosted version to skip servers, upgrades and backups. Price it against that work, keep both paths honest, and plan for a big cloud host early.
+
+This model means the code is under a permissive licence (MIT, Apache 2.0), anyone can run all of it, and the company earns money only from running it for people. Licence basics and the Elastic, HashiCorp and Redis stories are in "Open source as distribution" above; they are not repeated here.
+
+**Who pays when self-hosting is free**
+
+- **Revenue comes from the hosted service, not from self-hosters.** Plausible (web analytics) said in February 2024 that its self-hosters gave $300 a month in donations, while 12,000+ subscribers paid for its cloud [first-party; one firm]. It now reports more than 21,000 paying subscribers and a team of 10 [first-party; one firm]. Ghost (publishing, MIT licence, a non-profit foundation) shows about $11.1M ARR (annual recurring revenue) from its hosted service [first-party; live page, date of figures not stated].
+- **People pay to avoid the work.** Plausible and Supabase both list what a self-hoster takes on: servers, security patches, upgrades, backups, uptime and capacity [first-party]. That list is your sales page.
+- **Nobody publishes how many self-hosters later pay.** The "1–2% of users pay" figure is relayed lore (research/early-stage-gtm-devtools.md). Do not plan revenue on it.
+- **"Nothing held back" tends to erode.** Plausible moved from MIT to AGPL in 2020 and in 2024 kept funnels and some other features for cloud customers [first-party]. PostHog keeps paid features in its cloud [first-party]. Supabase's self-hosted version lacks managed backups, branching and some other features [first-party]. Ghost is the counter-example [first-party]. When companies hold back, it is usually features that only matter when running at scale (backups, managing many sites, advanced bot filtering), not the core product. Decide your line before launch and write it down.
+- **A self-hosted path costs support time.** PostHog stopped supporting its Kubernetes deployment in 2023: about 3.5% of users ran it, but debugging those installs took too much of a small team's time [first-party; one firm]. A slower release cycle for the self-hosted version (Plausible: twice a year) is one way to limit that cost [first-party].
+
+**Pricing the hosted service**
+
+- **Your real competitor is often "do nothing".** Next.js already optimises images on a self-hosted server with no setup [first-party]. For an image service, the buyer compares you with that, then with other image services.
+- **Image services price in units that are hard to compare** [vendor; list prices read 2026-10-05]:
+  - Cloudinary: shared credits. One credit is 1 GB delivered, 1 GB stored or 1,000 transformations. Plus costs $99 a month for 225 credits.
+  - imgix: credits too. 1 credit per GB delivered; $25 a month for 100 credits at entry level.
+  - Cloudflare Images: $0.50 per 1,000 unique transformations a month (first 5,000 free), plus $1 per 100,000 images delivered.
+  - Vercel: $0.05–$0.08 per 1,000 transformations on every cache miss, plus cache and data-transfer fees.
+- **Worked example, our arithmetic from those list prices:** 1 million image views a month at 100 KB (100 GB) with 20,000 different sizes. Cloudflare comes to at most about $17.50 ($7.50 of transformations, plus $10 of delivery if the images are stored with Cloudflare); Cloudinary needs about 120 credits, so the $99 plan; imgix needs at least 100 credits for delivery alone, so $25 or more. Vercel's transformation fee is about $1–$2, but its transfer fees were not counted. It ignores plan fees and storage. The same workload varies several times over in price, and buyers struggle to estimate it. One clear unit and a public cost calculator are an opening for a new entrant [practitioner].
+- **Price against the self-hosting bill, not only against vendors.** Show the costs a self-hoster pays: a server, bandwidth, storage for cached images, and hours for upgrades and security patches to the image library. No independent study measures that cost; write your own estimate and show how you got it [practitioner].
+- **Usage pricing needs a free allowance, alerts and a cap.** Cloudflare and Vercel stop new transformations on their free plans instead of billing, and keep cached images working [first-party]. That is a good default: an image service that breaks a site, or sends a surprise bill, loses trust fast. More on usage pricing in pricing.
+
+**Cloud-provider risk and staying fully open**
+
+- **A permissive licence lets a big cloud provider sell your project as a service.** That is legal. Elastic's own account says its fight with AWS began with the product name and a false claim of partnership, six years before its 2021 licence change [first-party; one firm]. Register your trademark and keep the hosted product's name distinct. A licence can be changed later; a confused name cannot easily be fixed.
+- **AGPL is open source and deters some hosts, but not all.** MongoDB says cloud vendors were "testing the boundaries" of the AGPL before it left in 2018 [first-party; one firm]. Grafana chose AGPL in 2021 and admits it protects less than source-available licences [first-party]. AGPL also blocks some company users: Google bans AGPL code entirely [first-party; one firm].
+- **Licence effects on adoption depend on the ecosystem.** In 131 million projects, most licensed projects use permissive licences, and that share is growing. Switching from a restrictive to a permissive licence went with more activity in Python and less in C [research; preprint; observational]. There is no single "best licence for adoption".
+- **A theory model predicts what happens next.** When a strong firm builds on your open code, it tends to serve the high end of the market while you serve the lower end [research; theoretical model]. If you stay permissive, plan for that: aim the hosted service at the teams a cloud giant serves badly, such as small teams who want simple pricing and direct help.
+- **Every public case is a large project.** No study measures how often a cloud provider hosts a small tool. Don't relicense against a threat you have not seen; changing licence later is costly (see "Open source as distribution" above).
+
+**Keeping both paths honest**
+
+- **Make the self-hosted path real.** Docs for running it, a container image, upgrade notes, and the same configuration names as the hosted version. A self-hosted path that is deliberately broken is noticed fast and costs trust [practitioner].
+- **Make the hosted path easier, not the only one.** A one-click deploy (for example Vercel's Deploy Button clones the repository and deploys it in one flow [first-party]) helps self-hosters. A free hosted tier with no card helps everyone else.
+- **Document migration both ways.** Plausible documents moving data between its self-hosted and cloud versions in either direction [first-party]. Supabase says, "To avoid lock-in, we make it easy to migrate in and out", using standard database dumps and CSV [first-party]. A visible way out lowers the risk of trying the hosted version.
+- **Telemetry in the self-hosted version should be opt-in.** Self-hosters chose you partly for control. Count adoption with opt-in pings and your own endpoint; see activation-and-analytics ("CLI and developer-tool telemetry").
+
+**Trust signals for a hosted media service**
+
+- **Keep the customer's originals in the customer's storage where you can.** imgix connects to the customer's own storage bucket instead of taking the images [first-party]. Then leaving means changing a URL, not moving a library. Worry about lock-in is a recorded barrier to buying cloud services [research; survey, n=114; abstract only].
+- **Publish uptime honestly.** A public status page and incident write-ups first. A financial SLA (a contract that pays credits for downtime) is usually an enterprise feature: Cloudinary lists "enterprise SLAs" only on its Enterprise plan [vendor].
+- **Say what happens to images and logs.** Images can show people, and request logs hold viewers' IP addresses. Under the GDPR an image service is often a data processor: it needs a written contract, a list of sub-processors, and must delete or return the data when the service ends [regulator text]. Publish these before buyers ask; see privacy-and-marketing-law.
+- **Failure mode matters.** Say what users see if the service is down or over quota: the original image, an error, or the last cached version.
+
+**What usually works by stage**
+
+- **First users:** ship the full project under a permissive licence with a working self-host guide. Run a free hosted tier yourself. Register the name. Write down which features, if any, will be hosted-only, and why.
+- **First paying customers:** one clear price unit, a public calculator, spend alerts and a cap. Documented migration both ways. A status page. Ask every new paying customer why they did not self-host, and put their words on the pricing page.
+- **Growing:** data processing agreement, sub-processor list and security page; enterprise SLA and SSO for large accounts; watch for resellers and hosting providers using your name, and act on the trademark first.
+
+Sources: research/open-source-with-hosted-service.md; research/developer-tools.md; research/early-stage-gtm-devtools.md §4; research/activation-and-analytics.md.
+
 ## Self-hosting and the enterprise upgrade path
 
 _In short:_ Enterprise needs like single sign-on, audit logs and self-hosting are the natural paid tier; keep the price gap reasonable and publish a security page before buyers ask.
@@ -152,4 +208,4 @@ _In short:_ Avoid gating trials behind sales, treating stars as traction, choosi
 
 ## Sources
 
-research/early-stage-gtm-devtools.md (Christakis & Bird 2016; Sadowski et al. 2018; Software Engineering at Google ch. 20; Distefano et al. 2019; Kavaler et al. 2019; Lamba et al. 2020; Brown & Parnin; Wessel et al.; Mirhosseini & Parnin 2017); research/developer-tools.md (StarScout 2024; HashiCorp, Redis and Elastic license records; relicensing study 2024; GitLab; Show HN guidelines; MCP Registry and spec; Anthropic tool guide; Stack Overflow 2025; GitHub and Vercel docs; sso.tax). research/landscape-2026.md §4 for llms.txt. Mostly from search snippets; see caveats there.
+research/early-stage-gtm-devtools.md (Christakis & Bird 2016; Sadowski et al. 2018; Software Engineering at Google ch. 20; Distefano et al. 2019; Kavaler et al. 2019; Lamba et al. 2020; Brown & Parnin; Wessel et al.; Mirhosseini & Parnin 2017); research/developer-tools.md (StarScout 2024; HashiCorp, Redis and Elastic license records; relicensing study 2024; GitLab; Show HN guidelines; MCP Registry and spec; Anthropic tool guide; Stack Overflow 2025; GitHub and Vercel docs; sso.tax). research/landscape-2026.md §4 for llms.txt. Mostly from search snippets; see caveats there. Fully open source with a paid hosted service: research/open-source-with-hosted-service.md.

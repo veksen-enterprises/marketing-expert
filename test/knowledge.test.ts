@@ -47,6 +47,7 @@ describe("knowledge base", () => {
     ["app store optimization retention d30 paywall", "consumer-apps"],
     ["get my app featured on the app store launch day charts", "app-store-discovery"],
     ["cheap marketing ideas with no users and no budget", "small-bets"],
+    ["open source self-hosted paid hosted service agpl cloud", "developer-tools"],
     ["healthkit health connect fitness app new year", "fitness-and-health-apps"],
     ["holiday season pinterest crafters etsy affiliate", "seasonal-and-hobby-products"],
     ["cafe restaurant merchants point of sale toast square", "selling-to-local-merchants"],
