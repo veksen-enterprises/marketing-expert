@@ -62,7 +62,7 @@ _In short:_ A trade tool that touches real money puts its users' accounts at ris
 
 **Real-money trading (RMT)** means selling in-game items, currency, accounts or services for real money.
 - Blizzard's current EULA bans gathering items "for sale/selling/exchanging outside of the Platform", paid boosting, and "communicating or facilitating" commercial offers in the game [first-party; revised 21 Mar 2024]. The EULA binds players. The publisher's levers against a tool are banning its users and IP claims against the site.
-- Blizzard itself closed Diablo III's real-money auction house on 18 March 2014. It said trading "ultimately undermines" the game's core loop: "kill monsters to get cool loot" [first-party; 17 Sep 2013]. Publishers see cash trading as a threat to the game, not just a rules issue.
+- Blizzard itself closed the real-money auction house of one of its own games on 18 March 2014. It said trading "ultimately undermines" the game's core loop: "kill monsters to get cool loot" [first-party; 17 Sep 2013]. Publishers see cash trading as a threat to the game, not just a rules issue.
 - Valve's 2016 action shows the risk for a third party that builds a service on item transfers [press].
 - **What to do:** prices only in game currency or item swaps; a rule and filter against cash, payment links and account sales; report and remove such posts; say so publicly. Discord also bans selling Discord accounts and servers, game cheats, and illegal gambling [first-party; Community Guidelines, Sep 2025].
 

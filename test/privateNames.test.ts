@@ -19,7 +19,8 @@ describe.skipIf(patterns.length === 0)("no private business names in tracked fil
   });
   it("no tracked file contains a listed name", () => {
     const res = patterns.map((p) => new RegExp(p, "i"));
-    const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" }).split("\0").filter(Boolean);
+    // Tracked files and new files git would add (not ignored): a file must be caught before its first commit.
+    const files = execFileSync("git", ["ls-files", "-z", "--cached", "--others", "--exclude-standard"], { encoding: "utf8" }).split("\0").filter(Boolean);
     const hits: string[] = [];
     for (const f of files) {
       if (!existsSync(f) || /\.(png|jpe?g|gif|ico|pdf|woff2?)$/i.test(f)) continue;
