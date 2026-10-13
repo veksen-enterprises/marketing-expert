@@ -74,7 +74,7 @@ These need someone to talk to.
 - **Thank the first users personally.** Do it because it's right: thank-you calls to about 600,000 donors had no effect on later giving. [research]
 - **A hiring post that explains the product**, only when there is a real role. [anecdote]
 - **Embeddable widgets that link back**: a widget, tooltip or badge other sites embed. Google says to nofollow links in widgets you distribute. [first-party; anecdote]
-- **Build in public**: progress, decisions and numbers shared openly. Draws other founders first, buyers only if they are founders or makers; competitors can copy what you disclose. Anecdote only, all survivors. [anecdote]
+- **Build in public**: progress, decisions and numbers shared openly. Draws other founders first, buyers only if they are founders or makers; competitors can copy what you disclose. Anecdote only, all survivors. For how to tell a result, including a failed one, see content-marketing (proof of demand, told against yourself). [anecdote]
 
 ## Stage 2: steady use
 
