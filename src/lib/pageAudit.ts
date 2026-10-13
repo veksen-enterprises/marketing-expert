@@ -215,6 +215,7 @@ function readFacts(html: string, url?: string): PageFacts {
   else if (title.length > 60) flags.push({ severity: "info", message: `Title is ${title.length} chars; likely truncated in search results (~600px ≈ 50–60 chars).` });
   if (!description) flags.push({ severity: "warning", message: "Missing meta description; Google will pick a snippet from the page." });
   else if (description.length > 160) flags.push({ severity: "info", message: `Meta description is ${description.length} chars; likely truncated (~155 desktop, ~120 mobile).` });
+  else if (description.length < 70) flags.push({ severity: "info", message: `Meta description is ${description.length} chars; that says little about what the page offers. Google sets no minimum and may show page text instead (this audit's threshold: 70).` });
   if (h1s.length === 0) flags.push({ severity: "warning", message: "No <h1>. Usually means the main promise isn't marked up as the main heading, or isn't there." });
   if (h1s.length > 1) flags.push({ severity: "info", message: `${h1s.length} <h1> elements. Not an SEO penalty, but check there is one clear primary message.` });
   if (!canonical) flags.push({ severity: "info", message: "No canonical link." });
@@ -390,7 +391,10 @@ function normalize(href: string, base: string): string {
 export interface RenderedAudit extends PageFacts {
   rendering: {
     serverWordCount: number;
+    /** Words in the rendered DOM, hidden or not: the figure to compare with serverWordCount. */
     renderedWordCount: number;
+    /** Words a visitor can see (innerText skips text CSS hides, such as closed menus and tabs). */
+    visibleWordCount: number;
     /** Share of rendered text that is missing from the server HTML. */
     clientOnlyShare: number;
     serverH1s: string[];
@@ -511,7 +515,12 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     })
     .catch((e: unknown) => {
       proxy.close();
-      throw e;
+      // Playwright's message ends in a boxed install banner meant for its own test runner. Keep its first line.
+      const first = (e instanceof Error ? e.message : String(e)).split("\n")[0];
+      const fix = process.env.MARKETING_EXPERT_CHROMIUM
+        ? `Check that MARKETING_EXPERT_CHROMIUM (${process.env.MARKETING_EXPERT_CHROMIUM}) is a Chromium binary.`
+        : "Set MARKETING_EXPERT_CHROMIUM to a Chromium or Chrome binary (or run `npx playwright-core install chromium`).";
+      throw new Error(`render mode could not start Chromium: ${first} ${fix}`);
     });
   try {
     await assertPublicUrl(u);
@@ -531,6 +540,7 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => undefined);
     const serverHtml: string = res ? await res.text() : "";
     const renderedHtml: string = await page.content();
+    const visibleText: string = await page.evaluate(() => document.body?.innerText ?? "").catch(() => "");
     // The HTTP final URL, not page.url(): scripts often rewrite the address bar (filters, calculator state).
     const finalUrl: string = res?.url() ?? page.url();
     const scriptUrl: string = page.url();
@@ -541,7 +551,7 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
     const sh = head(server);
     const rh = head(facts);
     const headDiff = (Object.keys(sh) as Array<keyof typeof sh>).filter((k) => (sh[k] ?? null) !== (rh[k] ?? null)).map((k) => ({ field: k, server: sh[k] ?? null, rendered: rh[k] ?? null }));
-    facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, clientOnlyShare: clientOnly, serverH1s: server.h1s, serverHead: sh, headDiff };
+    facts.rendering = { serverWordCount: server.wordCount, renderedWordCount: facts.wordCount, visibleWordCount: countWordsIn(visibleText), clientOnlyShare: clientOnly, serverH1s: server.h1s, serverHead: sh, headDiff };
     for (const d of headDiff) {
       const critical = d.field === "robots" || d.field === "canonical";
       facts.flags.unshift({
@@ -556,6 +566,10 @@ export async function renderAndAudit(url: string, timeoutMs = 30000): Promise<Re
         severity: "warning",
         message: `${(clientOnly * 100).toFixed(0)}% of the page text only appears after JavaScript runs (server HTML: ${server.wordCount} words; rendered: ${facts.wordCount}). Crawlers and AI fetchers that don't run scripts see much less. Server-render the main content.`,
       });
+    }
+    const visible = facts.rendering.visibleWordCount;
+    if (facts.wordCount > 0 && visible < facts.wordCount * 0.8) {
+      facts.flags.push({ severity: "info", message: `Visitors see ${visible} of the ${facts.wordCount} rendered words; the rest is hidden by CSS (closed menus, tabs, accordions or off-screen text). wordCount counts both.` });
     }
     if (facts.h1s.length && server.h1s.length === 0) {
       facts.flags.unshift({ severity: "warning", message: "The <h1> exists only after JavaScript runs." });

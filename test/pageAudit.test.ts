@@ -54,3 +54,15 @@ describe("text extraction", () => {
   });
 });
 
+
+describe("meta description length", () => {
+  const page = (d: string) => auditHtml(`<html lang="en"><head><title>T</title><meta name="description" content="${d}"></head><body><h1>H</h1></body></html>`);
+  it("flags a very short description", () => {
+    const msgs = page("Postgres query analysis tool").flags.map((f) => f.message).join("\n");
+    expect(msgs).toMatch(/Meta description is 28 chars/);
+  });
+  it("leaves a normal-length description alone", () => {
+    const msgs = page("Find slow Postgres queries in CI before they ship, with an index suggestion and the plan that proves it.").flags.map((f) => f.message).join("\n");
+    expect(msgs).not.toMatch(/Meta description is/);
+  });
+});
