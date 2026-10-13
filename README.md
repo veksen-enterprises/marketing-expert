@@ -95,6 +95,7 @@ Tips:
 |---|---|
 | `marketing_diagnosis` | Finds the one constraint on growth before recommending anything |
 | `marketing_strategy` | Ranked strategy: business-type playbook, economics, channels or (below ~10 paying customers) a first-ten plan, 90 days with dates and hours |
+| `marketing_ideas` | A set number of distinct ideas (default 5), each on a different mechanism and tied to the business's own facts, then the few to test first |
 | `positioning_workshop` | April Dunford's positioning steps in order |
 | `landing_page_teardown` | Evidence-based critique of a page, claims checked against your docs |
 | `experiment_plan` | Turns an idea into a test that can give a trustworthy answer, or says not to test |

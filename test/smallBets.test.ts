@@ -43,6 +43,7 @@ describe("matchSmallBets", () => {
     const r = matchSmallBets({});
     expect(ids(r.fitsNow)).toContain("listings");
     expect(ids(r.fitsNow)).toContain("comparison-pages");
+    expect(ids(r.fitsNow)).toContain("moment-products");
     expect(find(r.fitsLater, "founder-emails")!.reason).toMatch(/first users/);
     expect(find(r.fitsLater, "press")!.reason).toMatch(/newsworthy|story/);
     expect(r.doesntFit).toEqual([]);

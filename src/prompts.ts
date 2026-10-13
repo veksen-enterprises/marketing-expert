@@ -76,7 +76,7 @@ Work in this order:
 Business: ${business}
 
 1. Context: call list_business_profiles / get_business_profile if one exists. Ask for anything essential that's missing (price, how they buy, current numbers) before going further; state assumptions if the user can't answer.
-2. Business type: pick the closest playbook and read it with get_playbook: b2b-saas-sales-led, self-serve-saas, developer-tools, ecommerce-dtc, marketplaces, local-services, consumer-apps, community-and-hobby-products, seasonal-and-hobby-products, fitness-and-health-apps, selling-to-local-merchants (products that local shops adopt for their customers), professional-services or retail-cpg. Say which one and why; if it's a mix, say which parts of each apply.
+2. Business type: pick the closest playbook and read it with get_playbook: b2b-saas-sales-led, self-serve-saas, developer-tools, ecommerce-dtc, marketplaces, local-services, consumer-apps, community-and-hobby-products, seasonal-and-hobby-products, event-moment-products, fitness-and-health-apps, selling-to-local-merchants (products that local shops adopt for their customers), professional-services or retail-cpg. Say which one and why; if it's a mix, say which parts of each apply.
 2b. Alternatives: name what the target users do today instead (specific competitors, adjacent tools, communities, "do nothing"), from your own knowledge if needed, labelled unverified. The strategy has to beat those, not an abstract market.
 3. Constraint: what limits growth right now (see the marketing_diagnosis order: activation and proof, positioning, reach, conversion, retention, unit economics)? Strategy targets that constraint; if retention or positioning is broken, fixing that comes before spending on acquisition. If the product touches customer data, credentials or production systems, check the site's data and credential claims against the docs (scan_source) and list contradictions as a short "Fix first" list, one line each, outside the moves.
 4. Economics: run unit_economics or paid_media_math with their numbers, or with labelled assumptions, to show what customer acquisition cost the business can afford (unit_economics returns it without a CAC). This rules channels in or out.
@@ -86,6 +86,30 @@ Business: ${business}
 8. What not to do yet, and why.
 Before sending, run check_answer with deliverable "plan" (a 1,800-word limit), and with agentChannel true if scan_source reported mcpServer.
 Offer to save the confirmed facts with save_business_profile.`)
+  );
+
+  server.registerPrompt(
+    "marketing_ideas",
+    {
+      title: "Marketing ideas",
+      description: "Generate a set number of distinct marketing ideas for a specific business, each built on a different mechanism and grounded in the business's own facts, then pick the few worth testing first.",
+      argsSchema: {
+        business: z.string().describe("What you sell, to whom, and where; or the name of a saved profile"),
+        count: z.string().optional().describe("How many ideas (default 5)"),
+        angle: z.string().optional().describe("A concept to build from, e.g. 'event-moment products'"),
+      },
+    },
+    ({ business, count, angle }) =>
+      user(`Give ${count ?? "5"} marketing ideas for this business.${opt(angle, "\nBuild from this concept")}
+
+Business: ${business}
+
+1. Context: call list_business_profiles / get_business_profile; if the business has a repo or site, read it (scan_source) so each idea rests on what is actually shipped. Name what buyers use instead, labelled unverified if from memory.
+2. Sources: call match_small_bets on the profile and search_playbooks for the business type${angle ? " and the concept above" : ""}. Read event-moment-products: check what public moments this audience lives through (races, finals, concerts, releases, outages, deadlines, conferences) and whether one gives an idea.
+3. Ideas: each idea uses a different mechanism (who sees it, why they act); variations of one idea count once. For each: a one-line name; what you do; the fact about this business that makes it fit (with the file or profile field); "Cheapest test:" with its cost; "Stop:" as a number; the evidence tag from the playbook it rests on, bracket copied whole. Mark an idea "unproven" when no playbook backs it.
+4. Pick: at most ${MAX_MOVES} ideas to test first, in order, and why those beat the rest now. Ideas not picked are not moves.
+5. Say which ideas the business's principles or avoid list rule out, instead of listing them.
+Run check_answer on the exact text before sending.`)
   );
 
   server.registerPrompt(

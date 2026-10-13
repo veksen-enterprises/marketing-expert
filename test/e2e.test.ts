@@ -35,6 +35,7 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     ]);
     const prompts = (await client.listPrompts()).prompts.map((p) => p.name);
     expect(prompts).toContain("landing_page_teardown");
+    expect(prompts).toContain("marketing_ideas");
     const resources = (await client.listResources()).resources;
     expect(resources.length).toBeGreaterThanOrEqual(13);
     const r = await client.readResource({ uri: "marketing://playbook/pricing" });
