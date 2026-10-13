@@ -1,0 +1,650 @@
+// Small site crawler for SEO health checks. Same-host only, polite (limited concurrency, respects
+// robots.txt for "*"), bounded (maxPages). Finds the problems that need many pages to see:
+// broken internal links, redirect chains, duplicates, orphan pages, noindex/sitemap conflicts,
+// canonical problems, link depth and hreflang errors.
+
+import { parse } from "node-html-parser";
+import { guardedFetch, readCapped, MAX_HTML_BYTES, MAX_ROBOTS_BYTES } from "./netguard.js";
+import { countWords, elementsOf, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
+import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
+
+export { parseRobots, robotsAllows };
+
+export type FetchFn = (url: string, init: { redirect: "manual"; headers: Record<string, string>; signal: AbortSignal }) => Promise<Response>;
+
+export interface CrawlOptions {
+  startUrl: string;
+  maxPages?: number;
+  useSitemap?: boolean;
+  concurrency?: number;
+  timeoutMs?: number;
+  respectRobots?: boolean;
+  fetchFn?: FetchFn;
+}
+
+export interface CrawledPage {
+  url: string;
+  status: number | null;
+  error?: string;
+  redirectChain: string[];
+  finalUrl: string;
+  depth: number | null;
+  inSitemap: boolean;
+  title: string | null;
+  metaDescription: string | null;
+  h1Count: number;
+  canonical: string | null;
+  noindex: boolean;
+  wordCount: number;
+  internalLinksOut: number;
+  inlinks: number;
+  hreflang: Array<{ lang: string; href: string }>;
+  scriptCount?: number;
+  /** HTML was larger than MAX_HTML_BYTES; only the first part was read. */
+  truncated?: boolean;
+}
+
+export interface Issue {
+  id: string;
+  severity: "error" | "warning" | "info";
+  message: string;
+  count: number;
+  examples: string[];
+}
+
+export interface CrawlResult {
+  startUrl: string;
+  pagesCrawled: number;
+  limitReached: boolean;
+  sitemapUrls: number;
+  sitemapSource: string | null;
+  robotsDisallowed: number;
+  issues: Issue[];
+  /** A URL that redirects has redirectsTo (where it leads) instead of title, wordCount and noindex. */
+  pages: Array<Pick<CrawledPage, "url" | "status" | "depth" | "inlinks" | "inSitemap"> & Partial<Pick<CrawledPage, "title" | "wordCount" | "noindex">> & { redirectsTo?: string }>;
+  notes: string[];
+}
+
+const UA = "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; site crawl)";
+const HREFLANG_RE = /^(x-default|[a-z]{2,3}(-[A-Za-z]{4})?(-([A-Za-z]{2}|\d{3}))?)$/;
+// Body limits. The sitemap protocol allows 50 MB per file. The URL total bounds memory when a sitemap index
+// lists many large sitemaps.
+const MAX_SITEMAP_BYTES = 50 * 1024 * 1024;
+const MAX_SITEMAP_URLS = 100_000;
+
+function normalize(href: string, base: string): string | null {
+  try {
+    const u = new URL(href, base);
+    if (!/^https?:$/.test(u.protocol)) return null;
+    u.hash = "";
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+function* extractLocs(xml: string): Generator<string> {
+  // A <loc> may wrap its URL in CDATA, which is read as it is.
+  for (const m of xml.matchAll(/<loc>\s*(?:<!\[CDATA\[\s*([^<\s\]]+)\s*\]\]>|([^<\s]+))\s*<\/loc>/gi)) yield m[1] ?? m[2].replace(/&amp;/g, "&");
+}
+
+export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
+  const maxPages = Math.min(opts.maxPages ?? 100, 1000);
+  const concurrency = Math.min(opts.concurrency ?? 4, 8);
+  const timeoutMs = opts.timeoutMs ?? 15000;
+  const fetchFn: FetchFn = opts.fetchFn ?? ((u, init) => guardedFetch(u, init));
+  const requested = normalize(opts.startUrl, opts.startUrl);
+  if (!requested) throw new RangeError("startUrl must be an http(s) URL");
+  const notes: string[] = [];
+
+  const get = async (url: string) =>
+    fetchFn(url, { redirect: "manual", headers: { "user-agent": UA, accept: "text/html,application/xml,text/xml,*/*;q=0.8" }, signal: AbortSignal.timeout(timeoutMs) });
+  // For robots.txt, sitemaps and the start URL: follow up to 5 redirects (any host).
+  const getFollow = async (url: string): Promise<{ res: Response; url: string; chain: string[] }> => {
+    let current = url;
+    const chain: string[] = [];
+    for (let hop = 0; hop < 5; hop++) {
+      const res = await get(current);
+      const loc = res.headers.get("location");
+      if (res.status >= 300 && res.status < 400 && loc) {
+        const next = normalize(loc, current);
+        if (!next) return { res, url: current, chain };
+        chain.push(`${res.status} → ${next}`);
+        current = next;
+        continue;
+      }
+      return { res, url: current, chain };
+    }
+    return { res: await get(current), url: current, chain };
+  };
+
+  // Resolve the start URL first: example.com → www.example.com redirects are common.
+  let start = requested;
+  // A sitemap named in the start page's <head> (<link rel="sitemap">), which some frameworks add.
+  let headSitemap: string | null = null;
+  try {
+    const r = await getFollow(requested);
+    if (r.url !== requested) {
+      start = r.url;
+      const temporary = r.chain.some((c) => /^30[27] /.test(c));
+      notes.push(
+        `Start URL redirects: ${requested} ${r.chain.join(" ")}; crawling ${start}.` +
+          (temporary ? " A temporary redirect (302/307) on the start URL: if it's permanent, use 301/308 or serve content at the start URL." : "")
+      );
+    }
+    if (r.res.ok && (r.res.headers.get("content-type") ?? "").includes("html")) {
+      const { text } = await readCapped(r.res, MAX_HTML_BYTES);
+      const tag = text.match(/<link\b[^>]*\brel=["']?sitemap\b[^>]*>/i)?.[0];
+      const href = tag?.match(/\bhref=["']?([^"'\s>]+)/i)?.[1];
+      if (href) headSitemap = normalize(href, r.url);
+    } else r.res.body?.cancel().catch(() => undefined);
+  } catch {
+    // Leave start as requested; the page fetch will record the error.
+  }
+  const host = new URL(start).host;
+
+  // robots.txt
+  let robots: RobotsRules = { allow: [], disallow: [], sitemaps: [] };
+  try {
+    const { res: r } = await getFollow(new URL("/robots.txt", start).toString());
+    if (r.ok) {
+      const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
+      // Drop the cut-off last line so half a rule isn't read as a shorter one.
+      robots = parseRobots(truncated ? text.slice(0, Math.max(text.lastIndexOf("\n"), text.lastIndexOf("\r")) + 1) : text);
+      if (truncated) notes.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this crawl did the same.");
+    } else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
+  } catch {
+    notes.push("robots.txt could not be fetched.");
+  }
+  const respectRobots = opts.respectRobots ?? true;
+
+  // Sitemaps (one level of sitemap index).
+  const sitemapSet = new Set<string>();
+  let sitemapSource: string | null = null;
+  // True when some sitemap URLs were not read, so "missing from the sitemap" can't be judged.
+  let sitemapPartial = false;
+  let urlLimitHit = false;
+  const notFullUrls: string[] = [];
+  const readSitemap = async (r: Response, url: string): Promise<string> => {
+    const { text, truncated } = await readCapped(r, MAX_SITEMAP_BYTES);
+    if (truncated) {
+      sitemapPartial = true;
+      notes.push(`Sitemap ${url} is larger than 50 MB, the most search engines accept. Only the first 50 MB was read.`);
+    }
+    return text;
+  };
+  // <loc> values must be full URLs. Read paths ("/about", "about") against the sitemap's address. Skip the rest:
+  // read as a path, "www.example.com/about" would give a URL that doesn't exist.
+  const locUrl = (l: string, base: string): string | null => {
+    const abs = normalize(l, l);
+    if (abs) return abs;
+    notFullUrls.push(l);
+    const firstPart = l.split(/[/?#]/)[0];
+    return firstPart.includes(".") && firstPart !== "." && firstPart !== ".." ? null : normalize(l, base);
+  };
+  /** Adds the sitemap's page URLs; returns how many it lists. */
+  const addLocs = (xml: string, base: string): number => {
+    let found = 0;
+    for (const l of extractLocs(xml)) {
+      const n = locUrl(l, base);
+      if (!n) continue;
+      found++;
+      if (sitemapSet.has(n)) continue;
+      if (sitemapSet.size >= MAX_SITEMAP_URLS) {
+        sitemapPartial = urlLimitHit = true;
+        return found;
+      }
+      sitemapSet.add(n);
+    }
+    return found;
+  };
+  const outerNotes = notes;
+  if (opts.useSitemap ?? true) {
+    // Without a Sitemap line in robots.txt, try the <head> link and the usual file names, and stop at the first that
+    // lists pages. Only notes about /sitemap.xml and the <head> link are kept: a 404 on a guessed name says nothing.
+    const defaultSitemap = new URL("/sitemap.xml", start).toString();
+    const guessed = !robots.sitemaps.length;
+    const candidates = guessed
+      ? [...new Set([headSitemap, defaultSitemap, new URL("/sitemap_index.xml", start).toString(), new URL("/sitemap-index.xml", start).toString()].filter((u): u is string => !!u))]
+      : robots.sitemaps;
+    const guessNotes: string[] = [];
+    for (const sm of candidates.slice(0, 5)) {
+      if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
+      if (guessed && sitemapSource) break;
+      const notes = guessed ? (sm === defaultSitemap || sm === headSitemap ? guessNotes : []) : outerNotes;
+      try {
+        const { res: r, url: smUrl } = await getFollow(sm);
+        if (!r.ok) {
+          notes.push(`Sitemap ${sm} returned HTTP ${r.status}${r.status >= 500 ? " (server error: crawlers can't read it until it recovers)" : ""}.`);
+          continue;
+        }
+        const xml = await readSitemap(r, sm);
+        let found = 0;
+        const children: string[] = [];
+        let childrenFailed = 0;
+        if (/<sitemapindex/i.test(xml)) {
+          for (const c of extractLocs(xml)) {
+            const child = locUrl(c, smUrl);
+            if (child && children.push(child) >= 20) break;
+          }
+          for (const child of children) {
+            if (sitemapSet.size >= MAX_SITEMAP_URLS) break;
+            try {
+              const { res: cr, url: crUrl } = await getFollow(child);
+              if (cr.ok) found += addLocs(await readSitemap(cr, child), crUrl);
+              else {
+                childrenFailed++;
+                notes.push(`Child sitemap ${child} returned HTTP ${cr.status}${cr.status >= 500 ? " (server error: crawlers can't read it until it recovers)" : ""}.`);
+              }
+            } catch {
+              childrenFailed++;
+              notes.push(`Child sitemap failed: ${child}`);
+            }
+          }
+        } else {
+          found = addLocs(xml, smUrl);
+        }
+        // A sitemap counts only if it gave page URLs. A catch-all route that serves the app's HTML gives none.
+        if (found) sitemapSource ??= sm;
+        else if (/^\s*(<!doctype html|<html|<head|<body)/i.test(xml)) notes.push(`Sitemap ${sm} is an HTML page (probably the app's catch-all route), not an XML sitemap. Crawlers find no URLs in it.`);
+        else if (childrenFailed && childrenFailed === children.length) notes.push(`Sitemap ${sm} is a sitemap index, but none of its ${childrenFailed} child sitemaps could be read.`);
+        else notes.push(`Sitemap ${sm} lists no page URLs.`);
+      } catch {
+        notes.push(`Sitemap could not be fetched: ${sm}`);
+      }
+    }
+    if (guessed && sitemapSource && sitemapSource !== defaultSitemap) {
+      notes.push(
+        `Found the sitemap at ${sitemapSource}${sitemapSource === headSitemap ? " (named in the start page's <head>)" : ""}, but robots.txt names no sitemap and /sitemap.xml has none. Search engines don't read <link rel="sitemap"> or guess file names: add "Sitemap: ${sitemapSource}" to robots.txt and submit it in Search Console.`
+      );
+    } else if (!sitemapSource) notes.push(...guessNotes);
+    if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines, the start page's <head>, /sitemap.xml, /sitemap_index.xml and /sitemap-index.xml).");
+    if (urlLimitHit) notes.push("Read only the first 100,000 sitemap URLs. Sitemap counts are partial, and pages were not checked against the rest.");
+    if (notFullUrls.length) {
+      notes.push(
+        `${notFullUrls.length} sitemap <loc> values are not full URLs (e.g. "${notFullUrls[0]}"). The sitemap rules require full URLs such as ${new URL("/page", start)}, and Google may ignore these entries. This crawl read paths such as "/about" against the sitemap's address and skipped the rest.`
+      );
+    }
+  }
+
+  const offHost = [...sitemapSet].filter((u) => new URL(u).host !== host);
+  if (offHost.length) {
+    const hosts = [...new Set(offHost.map((u) => new URL(u).host))];
+    notes.push(
+      `${offHost.length} of ${sitemapSet.size} sitemap URLs are on ${hosts.slice(0, 3).join(", ")}, not on ${host}, so this crawl did not check them. A sitemap should list URLs on the host it serves: Google ignores URLs on other hosts unless that host is verified in the same Search Console account.`
+    );
+  }
+
+  const pages = new Map<string, CrawledPage>();
+  const inlinkSources = new Map<string, Set<string>>();
+  // The links found on each page, and where each same-host redirect leads; click depth is computed from them.
+  const outlinks = new Map<string, string[]>();
+  const redirects = new Map<string, string>();
+  // Two FIFO queues: link-discovered URLs first (breadth-first), then sitemap-only URLs.
+  const linkQueue: string[] = [start];
+  const sitemapQueue: string[] = [];
+  const queued = new Set<string>([start]);
+  // URLs fetched or being fetched, including redirect targets read from the redirect's answer.
+  const fetched = new Set<string>();
+  let robotsDisallowed = 0;
+  for (const s of sitemapSet) {
+    if (new URL(s).host === host && !queued.has(s)) {
+      sitemapQueue.push(s);
+      queued.add(s);
+    }
+  }
+  const nextUrl = () => linkQueue.shift() ?? sitemapQueue.shift();
+  const pending = () => linkQueue.length + sitemapQueue.length;
+
+  const newPage = (url: string): CrawledPage => ({
+    url,
+    status: null,
+    redirectChain: [],
+    finalUrl: url,
+    depth: null,
+    inSitemap: sitemapSet.has(url),
+    title: null,
+    metaDescription: null,
+    h1Count: 0,
+    canonical: null,
+    noindex: false,
+    wordCount: 0,
+    internalLinksOut: 0,
+    inlinks: 0,
+    hreflang: [],
+  });
+  type Fetched = { page: CrawledPage; links: string[]; redirectsTo?: string };
+  /** The page at `url`. For a same-host redirect to an HTML page, also that page, unless it is crawled anyway. */
+  const fetchPage = async (url: string): Promise<Fetched[]> => {
+    const page = newPage(url);
+    let current = url;
+    let res: Response | null = null;
+    try {
+      for (let hop = 0; hop < 6; hop++) {
+        res = await get(current);
+        if (res.status >= 300 && res.status < 400 && res.headers.get("location")) {
+          const next = normalize(res.headers.get("location")!, current);
+          if (!next) break;
+          page.redirectChain.push(`${res.status} → ${next}`);
+          current = next;
+          if (new URL(current).host !== host) break;
+          continue;
+        }
+        break;
+      }
+    } catch (e) {
+      page.error = e instanceof Error ? e.message : String(e);
+      return [{ page, links: [] }];
+    }
+    page.status = res!.status;
+    page.finalUrl = current;
+    const xr = res!.headers.get("x-robots-tag");
+    if (xr && robotsDirectives(xr).has("noindex")) page.noindex = true;
+    const ct = res!.headers.get("content-type") ?? "";
+    const html = res!.ok && ct.includes("html");
+    if (page.redirectChain.length) {
+      // A redirect's target is its own page: reading its HTML as this URL would credit its links to this URL. A
+      // same-host HTML target is read here, from this answer, so it isn't fetched twice and one page doesn't use two of
+      // maxPages. A target that is not HTML (a PDF) is not a page to check.
+      if (!html || new URL(current).host !== host) return [{ page, links: [] }];
+      if (fetched.has(current) || (respectRobots && !robotsAllows(robots, current))) {
+        res!.body?.cancel().catch(() => undefined);
+        return [{ page, links: [], redirectsTo: current }];
+      }
+      fetched.add(current);
+      queued.add(current);
+      const target = newPage(current);
+      target.status = page.status;
+      target.noindex = page.noindex;
+      return [{ page, links: [], redirectsTo: current }, await readBody(res!, target)];
+    }
+    return [html ? await readBody(res!, page) : { page, links: [] }];
+  };
+  const readBody = async (res: Response, page: CrawledPage): Promise<Fetched> => {
+    let html: string;
+    try {
+      ({ text: html, truncated: page.truncated } = await readCapped(res, MAX_HTML_BYTES));
+    } catch (e) {
+      page.error = `body download failed: ${e instanceof Error ? e.message : String(e)}`;
+      return { page, links: [] };
+    }
+    // One page that can't be read (e.g. a <title> left open around thousands of nested tags) must not end the crawl.
+    try {
+      return readPage(html, page, page.url);
+    } catch (e) {
+      page.error = `could not read the HTML: ${e instanceof RangeError ? "elements are nested too deeply (often many unclosed tags)" : e instanceof Error ? e.message : String(e)}`;
+      return { page, links: [] };
+    }
+  };
+  const readPage = (html: string, page: CrawledPage, current: string): { page: CrawledPage; links: string[] } => {
+    // parseNoneClosedTags: the default clean-up of unclosed tags takes cubic time (30 KB of "<div>" took 18 s).
+    const root = parse(html, { parseNoneClosedTags: true, blockTextElements: { script: true, style: true, noscript: true } });
+    // One walk of the tree instead of querySelectorAll, whose time grows with the square of the number of matches.
+    const all = elementsOf(root);
+    const first = (tag: string, attr?: string, value?: string) => all.find((e) => e.tagName === tag && (!attr || e.getAttribute(attr) === value));
+    // Relative URLs resolve against <base href> when the page has one, as in browsers.
+    const baseHref = all.find((e) => e.tagName === "BASE" && e.hasAttribute("href"))?.getAttribute("href");
+    const base = (baseHref && normalize(baseHref, current)) || current;
+    page.title = documentTitle(root)?.text.trim() || null;
+    page.metaDescription = all.find((e) => e.tagName === "META" && e.getAttribute("name")?.trim().toLowerCase() === "description")?.getAttribute("content")?.trim() || null;
+    page.h1Count = all.filter((e) => e.tagName === "H1").length;
+    const can = first("LINK", "rel", "canonical")?.getAttribute("href");
+    page.canonical = can ? normalize(can, base) : null;
+    // Every robots and googlebot meta tag counts; "none" means noindex and nofollow.
+    const robotsMeta = robotsMetaTags(all).map((t) => robotsDirectives(t.content));
+    if (robotsMeta.some((d) => d.has("noindex"))) page.noindex = true;
+    page.hreflang = all
+      .filter((l) => l.tagName === "LINK" && l.getAttribute("rel") === "alternate" && l.hasAttribute("hreflang"))
+      .map((l) => ({ lang: l.getAttribute("hreflang") ?? "", href: normalize(l.getAttribute("href") ?? "", base) ?? "" }));
+    // Count in the whole page, body included; frameworks often put their module scripts there.
+    page.scriptCount = all.filter(
+      (e) => (e.tagName === "SCRIPT" && (e.hasAttribute("src") || e.getAttribute("type") === "module")) || (e.tagName === "LINK" && e.getAttribute("rel") === "modulepreload")
+    ).length;
+    const body = first("BODY") ?? root;
+    page.wordCount = countWords(body);
+    const nofollowPage = robotsMeta.some((d) => d.has("nofollow"));
+    const links = new Set<string>();
+    if (!nofollowPage) {
+      // Links inside script, style, noscript, svg and template are not part of the page.
+      for (const a of elementsOf(body, new Set(["script", "style", "noscript", "svg", "template"]))) {
+        if (a.tagName !== "A" || !a.hasAttribute("href")) continue;
+        if (/nofollow/i.test(a.getAttribute("rel") ?? "")) continue;
+        const n = normalize(a.getAttribute("href") ?? "", base);
+        // A link to the page itself ("#main" skip links, href="#") is not an inlink.
+        // Cloudflare's /cdn-cgi/ paths (e.g. email-protection links, which its script rewrites in the browser) are not pages.
+        if (n && n !== current && new URL(n).host === host && !new URL(n).pathname.startsWith("/cdn-cgi/")) links.add(n);
+      }
+    }
+    page.internalLinksOut = links.size;
+    return { page, links: [...links] };
+  };
+
+  // maxPages counts fetches: a redirect and the target read from its answer count once.
+  let fetches = 0;
+  while (pending() > 0 && fetches < maxPages) {
+    const batch: string[] = [];
+    while (pending() > 0 && batch.length < concurrency && fetches + batch.length < maxPages) {
+      const u = nextUrl()!;
+      // Already read as a redirect's target.
+      if (fetched.has(u)) continue;
+      if (respectRobots && !robotsAllows(robots, u)) {
+        robotsDisallowed++;
+        continue;
+      }
+      fetched.add(u);
+      batch.push(u);
+    }
+    fetches += batch.length;
+    const results = (await Promise.all(batch.map(fetchPage))).flat();
+    for (const { page, links, redirectsTo } of results) {
+      pages.set(page.url, page);
+      outlinks.set(page.url, links);
+      // A same-host redirect to an HTML page: crawl the target as well, if it wasn't read already.
+      if (redirectsTo) redirects.set(page.url, redirectsTo);
+      for (const l of redirectsTo ? [...links, redirectsTo] : links) {
+        if (!queued.has(l)) {
+          queued.add(l);
+          linkQueue.push(l);
+        }
+      }
+      for (const l of links) {
+        if (!inlinkSources.has(l)) inlinkSources.set(l, new Set());
+        inlinkSources.get(l)!.add(page.url);
+      }
+    }
+  }
+  // Queued URLs that a redirect led to were read already.
+  const left = [...linkQueue, ...sitemapQueue].filter((u) => !fetched.has(u)).length;
+  const limitReached = left > 0;
+  // A link to a redirect also leads to its target.
+  for (const [from, to] of redirects) {
+    for (const s of inlinkSources.get(from) ?? []) {
+      if (s === to) continue;
+      if (!inlinkSources.has(to)) inlinkSources.set(to, new Set());
+      inlinkSources.get(to)!.add(s);
+    }
+  }
+  // Click depth: the shortest path from the start URL over the links found, breadth-first. Computed after the crawl
+  // because pages also listed in the sitemap are fetched in sitemap order. A redirect adds no click.
+  const depthOf = new Map<string, number>([[start, 0]]);
+  const reached = [start];
+  for (let i = 0; i < reached.length; i++) {
+    const d = depthOf.get(reached[i])! + 1;
+    for (const l of outlinks.get(reached[i]) ?? []) {
+      for (const u of [l, redirects.get(l)]) {
+        if (u && !depthOf.has(u)) {
+          depthOf.set(u, d);
+          reached.push(u);
+        }
+      }
+    }
+  }
+  for (const p of pages.values()) {
+    p.inlinks = inlinkSources.get(p.url)?.size ?? 0;
+    p.depth = depthOf.get(p.url) ?? null;
+  }
+
+  // Canonical targets this crawl did not read (often on another host, such as www): check up to 20 of them, so a
+  // canonical pointing to a page that doesn't exist is caught.
+  const canonicalStatus = new Map<string, string>();
+  const unread = [...new Set([...pages.values()].map((p) => p.canonical).filter((c): c is string => !!c && !pages.has(c)))].slice(0, 20);
+  await Promise.all(
+    unread.map(async (c) => {
+      try {
+        const r = await get(c);
+        r.body?.cancel().catch(() => undefined);
+        if (r.status >= 300 && r.status < 400) canonicalStatus.set(c, `redirects (${r.status})`);
+        else if (r.status !== 200) canonicalStatus.set(c, `HTTP ${r.status}`);
+        else if (/noindex/i.test(r.headers.get("x-robots-tag") ?? "")) canonicalStatus.set(c, "noindex (X-Robots-Tag)");
+      } catch (e) {
+        canonicalStatus.set(c, `could not be fetched (${e instanceof Error ? e.message : String(e)})`);
+      }
+    })
+  );
+  const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial, canonicalStatus);
+  if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${left} more URLs were queued. Site-wide counts are partial.`);
+  if (robotsDisallowed) notes.push(`${robotsDisallowed} URL(s) skipped because robots.txt disallows them.`);
+
+  return {
+    startUrl: start,
+    pagesCrawled: pages.size,
+    limitReached,
+    sitemapUrls: sitemapSet.size,
+    sitemapSource,
+    robotsDisallowed,
+    issues,
+    pages: [...pages.values()]
+      .slice(0, 300)
+      // A redirect's own page is not read: it says where it leads, with no title or word count.
+      .map((p) =>
+        p.redirectChain.length
+          ? { url: p.url, status: p.status, redirectsTo: p.finalUrl, depth: p.depth, inlinks: p.inlinks, inSitemap: p.inSitemap }
+          : { url: p.url, status: p.status, depth: p.depth, inlinks: p.inlinks, title: p.title, wordCount: p.wordCount, noindex: p.noindex, inSitemap: p.inSitemap }
+      ),
+    notes,
+  };
+}
+
+function buildIssues(
+  pages: CrawledPage[],
+  inlinks: Map<string, Set<string>>,
+  sitemap: Set<string>,
+  host: string,
+  sitemapPartial: boolean,
+  canonicalStatus: Map<string, string> = new Map()
+): Issue[] {
+  const issues: Issue[] = [];
+  const add = (id: string, severity: Issue["severity"], message: string, examples: string[]) => {
+    if (examples.length) issues.push({ id, severity, message, count: examples.length, examples: examples.slice(0, 10) });
+  };
+  const byUrl = new Map(pages.map((p) => [p.url, p]));
+  // Pages that could not be read are reported once, under fetch-errors.
+  const ok = pages.filter((p) => p.status === 200 && !p.redirectChain.length && !p.error);
+  const indexable = ok.filter((p) => !p.noindex);
+  // Pages that name another URL as canonical ask Google to index that URL instead: they don't belong in the sitemap,
+  // and their duplicate titles or few words are expected.
+  // Why a page's canonical target can't be used (redirects, errors, noindex), or null when it can.
+  const brokenWhy = (p: CrawledPage): string | null => {
+    if (!p.canonical || p.canonical === p.url) return null;
+    const t = byUrl.get(p.canonical);
+    if (!t) return canonicalStatus.get(p.canonical) ?? null;
+    return t.error ? "could not be fetched" : t.redirectChain.length ? "redirects" : t.status !== 200 ? `HTTP ${t.status}` : t.noindex ? "noindex" : null;
+  };
+  // A canonical that points to a dead page doesn't make this page a copy: it is still checked as its own page.
+  const ownCanonical = indexable.filter((p) => !p.canonical || p.canonical === p.url || brokenWhy(p) !== null);
+
+  const broken = pages.filter((p) => p.status !== null && p.status >= 400);
+  add(
+    "broken-internal",
+    "error",
+    "Internal URLs returning 4xx/5xx. Fix or remove the links pointing to them.",
+    broken.map((p) => `${p.url} (${p.status}) ← linked from ${[...(inlinks.get(p.url) ?? [])].slice(0, 3).join(", ") || "sitemap only"}`)
+  );
+  add("fetch-errors", "error", "URLs that failed to load or whose HTML could not be read (timeout, DNS, connection, HTML nested too deeply).", pages.filter((p) => p.error).map((p) => `${p.url}: ${p.error}`));
+  add(
+    "large-html",
+    "warning",
+    "Pages with more than 5 MB of HTML. Only the first 5 MB was checked, so their links and word counts are partial. HTML this large is slow to download and render.",
+    pages.filter((p) => p.truncated).map((p) => p.url)
+  );
+
+  const linkedRedirects = pages.filter((p) => p.redirectChain.length && (inlinks.get(p.url)?.size ?? 0) > 0);
+  add("links-to-redirects", "warning", "Internal links pointing at redirects. Link straight to the final URL.", linkedRedirects.map((p) => `${p.url} ${p.redirectChain.join(" ")}`));
+  add(
+    "temporary-redirects",
+    "info",
+    "Internal URLs using temporary redirects (302/307). If the move is permanent, use 301/308 so search engines consolidate signals on the target.",
+    pages.filter((p) => p.redirectChain.some((c) => /^30[27] /.test(c))).map((p) => `${p.url} ${p.redirectChain.join(" ")}`)
+  );
+  add("redirect-chains", "warning", "Redirect chains with more than one hop.", pages.filter((p) => p.redirectChain.length > 1).map((p) => `${p.url} ${p.redirectChain.join(" ")}`));
+
+  const dup = (key: (p: CrawledPage) => string | null, id: string, label: string) => {
+    const groups = new Map<string, string[]>();
+    for (const p of ownCanonical) {
+      const k = key(p);
+      if (!k) continue;
+      groups.set(k, [...(groups.get(k) ?? []), p.url]);
+    }
+    add(id, "warning", `Duplicate ${label} across indexable pages that are their own canonical.`, [...groups.entries()].filter(([, us]) => us.length > 1).map(([k, us]) => `"${k.slice(0, 80)}" on ${us.length} pages: ${us.slice(0, 3).join(", ")}`));
+  };
+  dup((p) => p.title, "duplicate-titles", "titles");
+  dup((p) => p.metaDescription, "duplicate-descriptions", "meta descriptions");
+  add("missing-title", "error", "Indexable pages without a <title>.", indexable.filter((p) => !p.title).map((p) => p.url));
+  add("missing-description", "info", "Indexable pages without a meta description.", indexable.filter((p) => !p.metaDescription).map((p) => p.url));
+  const shell = (p: CrawledPage) => p.wordCount < 50 && (p.scriptCount ?? 0) > 0;
+  add(
+    "client-rendered",
+    "warning",
+    "Pages whose server HTML is nearly empty (< 50 words) but loads scripts: content is probably built in the browser. Crawlers that don't run JavaScript (most AI crawlers) see an empty page; Google sees it only after rendering. Confirm with audit_page render=true. These pages are left out of the missing-h1 and thin findings, which would only restate this one.",
+    indexable.filter(shell).map((p) => `${p.url} (${p.wordCount} words in server HTML)`)
+  );
+  add("missing-h1", "warning", "Indexable pages without an <h1> in the server HTML (for client-rendered pages, check the rendered page).", indexable.filter((p) => p.h1Count === 0 && !shell(p)).map((p) => p.url));
+
+  add("noindex-in-sitemap", "error", "Pages in the sitemap that are noindex: the sitemap asks Google to index pages that refuse it.", ok.filter((p) => p.noindex && p.inSitemap).map((p) => p.url));
+  add("non200-in-sitemap", "warning", "Sitemap URLs that redirect or error. Sitemaps should list final, 200-status URLs only.", pages.filter((p) => p.inSitemap && (p.status !== 200 || p.redirectChain.length)).map((p) => (p.redirectChain.length ? `${p.url} (redirects to ${p.finalUrl})` : `${p.url} (${p.status})`)));
+  add(
+    "orphans",
+    "warning",
+    "Sitemap pages with no internal links pointing to them (orphans). Google finds and values pages largely through internal links.",
+    indexable.filter((p) => p.inSitemap && (inlinks.get(p.url)?.size ?? 0) === 0 && p.depth !== 0).map((p) => p.url)
+  );
+  add("not-in-sitemap", "info", "Indexable pages found by links but missing from the sitemap.", sitemap.size && !sitemapPartial ? ownCanonical.filter((p) => !p.inSitemap).map((p) => p.url) : []);
+
+  add(
+    "canonical-elsewhere",
+    "info",
+    "Pages whose canonical points to another URL (fine for duplicates; a problem if unintended).",
+    indexable.filter((p) => p.canonical && p.canonical !== p.url).map((p) => `${p.url} → ${p.canonical}`)
+  );
+  add(
+    "canonical-broken",
+    "error",
+    "Canonical points to a URL that redirects, errors or is noindex. Google may ignore the canonical, or index the wrong URL.",
+    indexable
+      .map((p) => {
+        const why = brokenWhy(p);
+        return why ? `${p.url} → ${p.canonical} (${why})` : null;
+      })
+      .filter((e): e is string => !!e)
+  );
+  add("deep-pages", "info", "Pages more than 3 clicks from the start URL. Important pages should be reachable in a few clicks.", ok.filter((p) => p.depth !== null && p.depth > 3).map((p) => `${p.url} (depth ${p.depth})`));
+  add("single-inlink", "info", "Indexable pages with only one internal link pointing to them.", ownCanonical.filter((p) => (inlinks.get(p.url)?.size ?? 0) === 1).map((p) => p.url));
+  add("thin", "info", "Indexable pages under 200 words (heuristic; fine for some page types).", ownCanonical.filter((p) => p.wordCount < 200 && !shell(p)).map((p) => `${p.url} (${p.wordCount} words)`));
+
+  // hreflang
+  const hreflangIssues: string[] = [];
+  for (const p of ok) {
+    if (!p.hreflang.length) continue;
+    for (const h of p.hreflang) if (!HREFLANG_RE.test(h.lang)) hreflangIssues.push(`${p.url}: invalid hreflang code "${h.lang}"`);
+    if (!p.hreflang.some((h) => h.href === p.url)) hreflangIssues.push(`${p.url}: no self-referencing hreflang`);
+    for (const h of p.hreflang) {
+      const target = byUrl.get(h.href);
+      if (!target || h.href === p.url || new URL(h.href).host !== host) continue;
+      if (!target.hreflang.some((t) => t.href === p.url)) hreflangIssues.push(`${p.url} → ${h.href} (${h.lang}): target doesn't link back`);
+    }
+  }
+  add("hreflang", "warning", "hreflang problems (invalid codes, missing self-reference, missing return links). Google ignores hreflang pairs that don't link back.", hreflangIssues);
+
+  const order = { error: 0, warning: 1, info: 2 };
+  return issues.sort((a, b) => order[a.severity] - order[b.severity] || b.count - a.count);
+}

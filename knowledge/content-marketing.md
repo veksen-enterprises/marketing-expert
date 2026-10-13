@@ -1,0 +1,128 @@
+---
+title: Content marketing (beyond SEO)
+summary: Content that builds demand rather than only ranking; choosing audience, job and point of view, formats (original research, newsletters, podcasts, video, free tools), distribution before creation, founder-led content, telling proof of demand against yourself, what the Edelman-LinkedIn thought leadership data says, how to measure content, and the risks of AI-generated content.
+tags: content marketing, thought leadership, founder posts, twitter, proof of demand, first paying customer, honest story, build in public, newsletter, podcast, video, original research, data report, founder-led content, distribution, repurposing, editorial strategy, b2b content, ai content, content measurement
+---
+
+This playbook covers content whose main job is to earn attention and trust from buyers. Content whose main job is to rank in search is in seo-and-ai-search. Posting on social platforms is in organic-social-and-community; pitching content to journalists is in pr-and-influencers.
+
+## Strategy: who, which job, what point of view [practitioner]
+
+_In short:_ Before making anything, write down who the one reader is, what job they are doing, and what opinion you hold that a competitor would dispute. Tie topics to moments when people start buying.
+
+Write three sentences before you make anything. If you can't, more content won't help.
+- **Who**: one specific reader, described by role and situation (for example, "finance lead at a 50–200 person SaaS company during month-end close"). Get this from customer-research, not guesses. Content for "everyone in B2B" reaches nobody.
+- **Which job**: what the reader is trying to get done when they meet your content. Typical jobs are learning a skill, judging a vendor, building a business case for their boss, or keeping up with the field. Each job needs a different format.
+- **What point of view**: a claim you believe that a reasonable competitor would disagree with. It should follow from your positioning (see positioning). Content without a point of view repeats what already exists and gives nobody a reason to remember you.
+- **Link content to buying moments**: tie topics to the situations that make people start buying in your category ("category entry points", see brand-and-demand). A post about "what to do when your auditor flags X" beats a post about "five finance trends".
+- **Pick one or two "flagship" formats** and do them on a fixed schedule. Consistency builds a habit for the audience; a scattered mix of formats builds nothing.
+
+## Formats and when to use them
+
+_In short:_ Pick formats by purpose: original research gets cited, newsletters are the one channel you own, podcasts build relationships, and free tools and case studies sit close to buying.
+
+- **Original research and data reports.** Survey your market, or publish anonymised data from your own product. This is the format most likely to be cited by journalists, analysts and AI answers (see seo-and-ai-search on "information gain"). In the Cision 2025 State of the Media survey, 61% of journalists said they value industry data such as trends and market statistics [vendor]. Rules: publish your method and sample size; ask questions whose answer you don't already know; get one headline number that can stand alone in a sentence; release it once a year on the same schedule so people expect it.
+- **Newsletters.** The one content channel you own: no algorithm decides who sees it (deliverability rules still apply, see email-and-lifecycle). Best for building a direct relationship over months. One clear topic, one sender voice, a fixed day. Grow it with sign-up forms on your best content and with cross-promotion swaps with similar newsletters [practitioner].
+- **Podcasts.** Slow to grow an audience, but strong for building relationships: inviting buyers, partners and experts as guests is often worth more than the downloads. Record on video too, and cut short clips for social [practitioner].
+- **Video.** In the Content Marketing Institute (CMI) 2025 B2B survey (980 B2B marketers, mostly in North America), video was rated the most effective content type (58%), followed by case studies and customer stories (53%), and e-books/white papers and research reports (45% each) [vendor; self-rated effectiveness, not measured outcomes].
+- **Free tools and templates** (calculators, checkers, spreadsheet templates; Weinberg & Mares call this "engineering as marketing"). They solve a small version of the problem your product solves, keep earning links and visits for years, and are hard for an AI summary to replace. Put product context next to the tool, not a hard gate in front of it [practitioner].
+- **Case studies and customer stories.** The format closest to buying. Use a specific "before" situation, numbers the customer agrees to publish, and quotes in the customer's words (see messaging-and-copy).
+
+## Distribution before creation [practitioner]
+
+_In short:_ Plan where each piece will go before you make it: cut one big piece into many small ones, write natively for each platform, give sales a short version, and re-promote your best work.
+
+"Create once, distribute many": plan where each piece will go before you make it. A common practitioner split is to spend as much effort on distribution as on creation; this is a rule of thumb with no measured basis [rule-of-thumb].
+- Before writing, list the channels: newsletter, founder and employee posts, communities, partner newsletters, sales emails, paid promotion, journalists.
+- Make one large "pillar" piece (report, long video, webinar) and cut it into many small ones: short clips, charts, quote cards, a newsletter issue, a thread, a slide for the sales deck.
+- Write native posts for each platform rather than posting links. Platforms reward content people engage with inside the platform (see organic-social-and-community).
+- Give sales a short version they can send to prospects. Content that sales actually uses is content that reaches buyers.
+- Re-promote the best pieces several times. Most of your audience missed them the first time.
+- Paid promotion of your best organic posts is often cheaper than paid ads made from scratch (see paid-acquisition).
+
+## Founder-led content [practitioner]
+
+_In short:_ Early on, the founder's own account usually reaches the right people better than the company page. Share real lessons and numbers, and build an email list so the audience is not stuck on one platform.
+
+- In early-stage B2B, the founder's personal account often reaches more of the right people than the company page, because platforms show posts from people more than posts from brand pages (see organic-social-and-community).
+- What works: specific lessons from building the company, honest numbers, strong opinions about the category, stories from customer conversations (with permission). One story shape that works, and when it backfires, is in the next section.
+- What fails: product announcements dressed as stories, generic motivation, and ghostwritten posts the founder never read. Ghostwriting help is fine if the ideas and voice are the founder's.
+- Plan for the founder leaving or getting busy: build an email list and a company newsletter from the founder's audience so the relationship isn't only on one platform.
+
+## Proof of demand, told against yourself
+
+_In short:_ A strong early founder post is a true story where someone wanted the product more than you expected, with your own slip in it. It helps only when the slip is small, comes after the good news, is answered by it, and is not in the skill you sell.
+
+**The shape**, in this order:
+1. A fact that shows demand: someone paid, came back, or worked around a missing feature. Money or effort counts more than praise, because it cost the person something [practitioner; The Mom Test].
+2. Your own slip, said plainly: the product wasn't ready, the payment page wasn't meant to work, you didn't expect them.
+3. One line on what you took from it. This line answers the slip.
+4. Half a line on what the product is and who it's for, so a reader who liked the story can try it.
+
+**Why it can work.**
+- Adding one small negative after positive product information raised ratings and purchases when people weren't thinking hard about the choice, and lowered them when they were [research; 4 studies incl. one field test, one team; Ein-Gar, Shiv & Tormala 2012]. Scrolling a feed is low-effort reading; a pricing page is not, so this helps the post, not the sales page.
+- Messages that raise a doubt and answer it persuaded more than one-sided messages; raising a doubt without answering it persuaded less [research; meta-analysis, 40+ experiments; O'Keefe 1999, read via a secondary summary]. "Someone paid anyway" is the answer to "it wasn't ready".
+- A blunder raised liking for a person already seen as very able and lowered it for an average one [research; small 1960s–70s lab studies, the first with male students only; read via secondary summaries]. So the slip must sit outside the skill you sell.
+- Feeds test each post on strangers who don't know you (see organic-social-and-community), so the post has to stand on its own facts.
+
+**When it fails.**
+- The slip is in what you sell. A query-analysis tool admitting a wrong analysis, or a security product admitting a leak, shows the risk buyers fear. Write those up as a plain post-mortem, not a charming story.
+- The "demand" is a compliment, a like, or a friend signing up.
+- It ends on a teaser ("big news soon"). That asks for trust with no evidence right after the story earned it with evidence. Name the news or cut the line (our judgement; untested).
+- The customer can be identified and didn't agree. Ask first.
+- Every post uses it. Repeated weekly, it reads as a formula.
+
+**Example (anonymised; one decent post, not a template).** A founder's first paying user was a beta tester who found a way to subscribe before the product was public. The post said so, admitted the founder's first reaction was "wait, how did he do that?!", and ended "someone paid for it before I considered it ready. I'll take it." Two weak lines: it never says what the product does, so readers can like it but can't try it; and its last line promises "big news soon".
+
+**Posting your small bets.** A small bet (see small-bets) ends with a number, often a disappointing one. A short daily post can report it: what you tried, what happened, what you'll do next. A failed bet told plainly is the same shape, since the slip is your guess, not your product. Evidence that this brings buyers is survivor anecdotes only [anecdote; see small-bets, building in public]. X discounts the same author shown to a reader repeatedly, so space posts out rather than posting several in a row [first-party; X ranking docs]. Count replies and profile visits from likely buyers and tagged sign-ups, not likes.
+
+## B2B thought leadership: what the Edelman-LinkedIn data says [vendor]
+
+_In short:_ Surveys by interested parties say buyers trust thought leadership (expert opinion content) more than marketing. Treat that as direction only: write for the whole buying group and challenge assumptions.
+
+LinkedIn sells the ad space where thought leadership is promoted, and Edelman sells thought-leadership services, so both have a commercial interest in these findings. All figures are buyers' self-reports in a survey, not observed behaviour.
+- **2024 report** ("Reaching Beyond the Ready", 3,484 global business executives): 73% of decision-makers said an organisation's thought leadership is a more trustworthy basis for judging its capabilities than its marketing materials and product sheets; 90% said they would be more receptive to outreach from a company that consistently produces high-quality thought leadership; more than 75% said a piece of thought leadership had led them to research a product they were not considering; 60% said they would pay a premium to work with a company with strong thought leadership; 52% of decision-makers and 54% of C-suite executives spend an hour or more per week reading it.
+- **2025 report** ("Invisible Influence", 1,934 US respondents surveyed on LinkedIn among its own members): focuses on "hidden buyers" (people in finance, operations, legal, procurement who influence a deal but rarely meet sales). Reported findings: more than 40% of B2B deals stall because of internal misalignment; 71% of hidden buyers have little or no direct contact with sales; 95% of hidden buyers say strong thought leadership makes them more receptive to outreach; 86% prefer content that challenges their assumptions.
+- **How to use it**: as a direction, not proof. The practical lessons are sound and cheap to test: write for every person in the buying group, not only the champion; give buyers material they can forward internally; challenge an assumption instead of repeating the consensus.
+
+## Measuring content
+
+_In short:_ Content effects are hard to track by clicks, so ask buyers how they heard of you, watch leading signals per format, and judge over months against two or three metrics agreed with sales and finance.
+
+See metrics-and-measurement for attribution methods. Content-specific rules:
+- **Self-reported attribution** (a free-text "How did you hear about us?" field on demo and sign-up forms) catches content consumed without a click: podcasts, newsletters, posts read in the feed [practitioner].
+- **Assisted pipeline**: share of opportunities where a contact consumed content before or during the deal. Useful for direction; it shows correlation, not that the content caused the deal.
+- **Leading indicators by format**: newsletter subscriber growth and reply rate; podcast completion rate; report citations and inbound journalist requests; tool usage and sign-ups from the tool.
+- **Lagging indicators**: branded search volume, direct traffic, win rate and sales-cycle length for deals that touched content vs deals that didn't.
+- CMI's 2025 survey found measuring content results was the second most cited challenge (47%) [vendor]. Agree with sales and finance on two or three metrics before you start, and judge on months, not weeks (see brand-and-demand).
+
+## AI-generated content: risks
+
+_In short:_ Mass-produced AI pages can be penalised by Google, sound like everyone else and invent facts. Use AI for research, editing and cutting pieces down, but keep ideas, data and final review human.
+
+- **Search penalties**: Google's spam policies count mass-produced pages with little value as "scaled content abuse", whatever tool made them (see seo-and-ai-search) [first-party].
+- **Sameness**: language models produce the average of what already exists. That is the opposite of a point of view and of "information gain".
+- **Accuracy and trust**: invented statistics and quotes damage credibility, and in ads or testimonials they can break consumer-protection law (see pr-and-influencers on the FTC reviews rule).
+- **Sensible use**: research help, transcription, cutting a long piece into short ones, editing, translation. Keep the ideas, data, examples and final review human.
+
+## What usually works by stage
+
+_In short:_ Early on, do founder posts plus one owned format like a newsletter, written from customer conversations. When scaling, add a yearly research report, case studies for sales and an editor before more writers.
+
+- **Early (pre product-market fit to first repeatable sales)**: founder-led posts plus one owned format (usually a newsletter). Write from customer conversations. Distribute by hand in the communities where buyers already are. No content team yet.
+- **Scaling**: an annual research report as the flagship, a regular newsletter or podcast, case studies for sales, and a repurposing system. Hire an editor before hiring more writers. Add paid promotion of proven pieces and employee advocacy.
+
+## Common mistakes
+
+_In short:_ Avoid publishing with nothing to say, writing for search engines or fellow marketers, skipping distribution, gating everything, judging on last-click results after four weeks, and publishing research with a hidden method.
+
+- Publishing on a schedule with nothing to say; volume without a point of view.
+- Writing for search engines or for peers in marketing instead of for buyers.
+- Spending all effort on creation and none on distribution.
+- Gating everything behind a form, then judging content only on form fills.
+- Judging content on last-click attribution after four weeks.
+- Publishing "research" with a hidden method or a sample too small to support the headline.
+
+## Sources
+
+research/content-social-pr.md (Edelman-LinkedIn 2024 and 2025; Ein-Gar, Shiv & Tormala 2012; O'Keefe 1999; Aronson, Willerman & Floyd 1966; Mettee & Wilkins 1972; Fitzpatrick 2013; CMI B2B Benchmarks 2025; Cision State of the Media 2025; Google spam policies; Weinberg & Mares 2015). See also research/measurement.md for self-reported attribution.
