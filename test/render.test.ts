@@ -24,6 +24,12 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
         res.end(`<html><head><title>T</title></head><body><h1>Hi</h1><script>const m=document.createElement("meta");m.name="robots";m.content="noindex";document.head.appendChild(m);</script></body></html>`);
         return;
       }
+      if (req.url === "/hidden") {
+        // 20 visible words; 60 more sit in a menu a stylesheet hides.
+        res.writeHead(200, { "content-type": "text/html" });
+        res.end(`<html><head><title>T</title><style>.menu{display:none}</style></head><body><h1>Hi</h1><p>${"seen ".repeat(19)}</p><nav class="menu">${"hidden ".repeat(60)}</nav></body></html>`);
+        return;
+      }
       if (req.url === "/noindex") {
         res.writeHead(200, { "content-type": "text/html", "x-robots-tag": "noindex" });
         res.end(page);
@@ -65,6 +71,12 @@ describe.skipIf(!enabled)("renderAndAudit", () => {
     expect(r.flags.map((f) => f.message).join(" ")).toMatch(/robots differs between server HTML/);
   }, 60000);
 
+  it("counts visible words apart from text CSS hides", async () => {
+    const r = await renderAndAudit(url + "hidden");
+    expect(r.rendering.renderedWordCount).toBe(80);
+    expect(r.rendering.visibleWordCount).toBe(20);
+    expect(r.flags.map((f) => f.message).join("\n")).toMatch(/Visitors see 20 of the 80 rendered words/);
+   }, 60000);
   it("keeps HTTP-level checks in render mode", async () => {
     const r = await renderAndAudit(url + "noindex");
     expect(r.flags.some((f) => f.severity === "error" && /X-Robots-Tag: noindex/.test(f.message))).toBe(true);
