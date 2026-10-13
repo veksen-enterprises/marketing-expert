@@ -6,7 +6,23 @@ A founder who isn't a marketer asks an AI agent "how do I get customers?" and ge
 
 This server gives an agent that discipline. It should make any agent advise like a careful senior marketer who has read your repo: diagnose first, use real numbers or labelled assumptions, say how strong the evidence is, recommend at most three moves you can test cheaply, and say what would prove the advice wrong.
 
-The first users are technical founders at zero to ten customers, mostly B2B and developer tools, working inside Claude Code or a similar agent. The advice must also work for other business types (ecommerce, local services, consumer apps, marketplaces), which the playbooks cover but the evaluations haven't measured yet.
+## Who it's for
+
+1. **Now: the owner's own products.** This is first a marketing tool for the owner's portfolio of small products (developer tools, game companions and the like), used inside Claude Code. Running it on those products comes before every other case, and every run is free evaluation. The repo still doesn't name them (ADR 0001).
+2. **Later: other technical founders at zero to ten customers**, possibly as a paid service. Evaluations keep at least one case that isn't the owner's, so the advice doesn't fit only the owner's products.
+
+Playbooks for business types and markets the owner's products don't touch (retail, local services, several countries' law) stay, but get no new work until a product needs them.
+
+## Values
+
+What the advisor aims for when the founder hasn't said otherwise, and where it stops.
+
+- **Trust first.** Customers, users and anyone else the product touches should be able to see how it works and not feel tricked. Public image is what that trust looks like from outside. Profit comes from both over time, not from spending them.
+- **The line is wider than customers.** A tactic is over the line if anyone affected would feel tricked or exposed by it once they saw how it works, including people who never signed up: someone whose name or picture a product publishes, a forum a launch post is aimed at, a competitor named on a comparison page.
+- **Over the line, two cases.** If it is illegal, or likely illegal where the business operates, the advisor declines that part, says what it would cost, and offers the honest version that gets most of the effect. If it is legal, it says plainly what it costs in trust and who bears it, then helps.
+- **Careful about law, never legal advice.** Name the jurisdiction and the rule, cite the source, say what wasn't checked, and say when a lawyer is worth paying for: personal data, children, health, money, or anything that publishes people who didn't opt in.
+- **Bad news first.** If the evidence says a product probably won't work, that is the first finding, marked as such, with what would change the verdict. Hiding it under other risks is the worse failure.
+- **A warning the founder overrides is recorded, not repeated.** The advisor stores the decision and what would reopen it (a removal request, a complaint, traffic past a stated level) in the business profile, and raises it again only when one of those happens.
 
 ## Principles
 
@@ -15,7 +31,7 @@ The first users are technical founders at zero to ten customers, mostly B2B and 
 3. **Numbers come from tools.** Calculators state their inputs and mark assumed ones. The agent never presents a hand-calculated figure.
 4. **Evidence is labelled honestly.** Every playbook claim carries its strength (research, first-party, practitioner, vendor, rule of thumb) and its caveats (snippet-only, self-selected, one firm). Where research is thin, say so, and generate evidence (experiments, coded case sets) labelled as our own.
 5. **Short, ranked, testable.** At most three moves, each one action, with a cheapest test, a metric, a time box and a stop condition. Say what not to do yet and what would prove the diagnosis wrong.
-6. **Respect the founder's vision.** Check advice against the business's stated principles and non-goals.
+6. **Respect the founder's vision.** Check advice against the business's stated principles and non-goals, and against the values above.
 7. **Business language, explained.** Readers are not business people, and many want to learn the trade, and their first language may not be English. Use the real business term and explain it in plain words the first time (the glossary holds both); never "moat".
 8. **Measure, don't assume.** Changes are judged by evaluations on real cases, graded against a fixed rubric, with several runs per case so noise is visible.
 
@@ -26,6 +42,10 @@ The first users are technical founders at zero to ten customers, mostly B2B and 
 - **60 playbooks** in `knowledge/` built from **51 research notes** in `research/`. On 2026-10-05 the snippet-only citations were re-read at their sources; about 100 remain unreachable.
 - **An evaluation method** in `evals/`: real cases, a 10-item rubric, graders that check every claim against the business's repo.
 - See `README.md` for usage and `ROADMAP.md` for gaps.
+
+## Where it may go
+
+If people besides the owner want it, a paid version would be two servers: a local one that reads the business's files, and a hosted one with auth for playbooks, calculators and page fetches, with a check that the local one is current. Source code never leaves the user's machine: the local server runs the file checks itself (`scan_source`, `verify_quotes`, `check_answer`) and fetches the playbook text it needs. A hosted server that fetches any URL for strangers needs abuse limits beyond the private-address guard. Nothing here is built yet; it waits until someone besides the owner uses the free version.
 
 ## What we learned building it
 
