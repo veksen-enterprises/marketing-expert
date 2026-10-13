@@ -145,12 +145,16 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
 
   // robots.txt
   let robots: RobotsRules = { allow: [], disallow: [], sitemaps: [] };
+  // A catch-all route that serves the site's HTML at /robots.txt: there are no rules and no Sitemap lines to read.
+  let robotsIsHtml = false;
   try {
     const { res: r } = await getFollow(new URL("/robots.txt", start).toString());
     if (r.ok) {
       const { text, truncated } = await readCapped(r, MAX_ROBOTS_BYTES);
+      robotsIsHtml = /^\s*(<!doctype html|<html|<head|<body)/i.test(text);
+      if (robotsIsHtml) notes.push("robots.txt is an HTML page (probably the site's catch-all route), not a robots file. Crawlers find no rules, so every bot is allowed and no sitemap is announced. Serve a real text/plain robots.txt.");
       // Drop the cut-off last line so half a rule isn't read as a shorter one.
-      robots = parseRobots(truncated ? text.slice(0, Math.max(text.lastIndexOf("\n"), text.lastIndexOf("\r")) + 1) : text);
+      if (!robotsIsHtml) robots = parseRobots(truncated ? text.slice(0, Math.max(text.lastIndexOf("\n"), text.lastIndexOf("\r")) + 1) : text);
       if (truncated) notes.push("robots.txt is larger than 500 KB. Google reads only the first 500 KB and ignores the rest; this crawl did the same.");
     } else if (r.status >= 500) notes.push(`robots.txt returned HTTP ${r.status}. Google treats a server error on robots.txt as "block everything" until it recovers. Fix this first.`);
   } catch {
@@ -255,7 +259,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     }
     if (guessed && sitemapSource && sitemapSource !== defaultSitemap) {
       notes.push(
-        `Found the sitemap at ${sitemapSource}${sitemapSource === headSitemap ? " (named in the start page's <head>)" : ""}, but robots.txt names no sitemap and /sitemap.xml has none. Search engines don't read <link rel="sitemap"> or guess file names: add "Sitemap: ${sitemapSource}" to robots.txt and submit it in Search Console.`
+        `Found the sitemap at ${sitemapSource}${sitemapSource === headSitemap ? " (named in the start page's <head>)" : ""}, but ${robotsIsHtml ? "robots.txt is an HTML page, so it announces no sitemap," : "robots.txt names no sitemap"} and /sitemap.xml has none. Search engines don't read <link rel="sitemap"> or guess file names: add "Sitemap: ${sitemapSource}" to robots.txt and submit it in Search Console.`
       );
     } else if (!sitemapSource) notes.push(...guessNotes);
     if (!sitemapSource && !notes.some((n) => n.startsWith("Sitemap "))) notes.push("No XML sitemap found (checked robots.txt Sitemap lines, the start page's <head>, /sitemap.xml, /sitemap_index.xml and /sitemap-index.xml).");
