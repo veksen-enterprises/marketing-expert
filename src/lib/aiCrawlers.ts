@@ -110,7 +110,11 @@ export function evaluateAiAccess(robotsTxt: string | null, site: string, paths: 
   if (bots.every((b) => b.allowed) && robotsTxt) {
     findings.push("robots.txt allows all listed AI bots on the checked paths. This only covers robots.txt: it says nothing about status codes, noindex, or how much text the server HTML holds (use crawl_site or audit_page for that).");
   }
-  if (robotsTxt && !file.sitemaps.length) findings.push("robots.txt has no Sitemap: line. Add one with the sitemap's absolute URL so crawlers find it without Search Console.");
+  // A host that blocks Google on purpose (an app, a staging site) has no use for a sitemap. One that allows it may
+  // still belong out of search; robots.txt alone can't tell, so the advice says which case it is for.
+  if (robotsTxt && !file.sitemaps.length && !blockedSearch.includes("Googlebot")) {
+    findings.push("robots.txt has no Sitemap: line. If this host's pages should appear in search, add one with the sitemap's absolute URL so crawlers find it without Search Console. If they shouldn't (an app behind sign-in, admin or staging), skip the sitemap and send noindex (X-Robots-Tag header or meta tag) instead.");
+  }
   findings.push("robots.txt is a request, not enforcement, and not the only gate: firewall/CDN bot rules can block AI bots even when robots.txt allows them (some CDNs block them by default). OpenAI recommends also allowing its published IP ranges for OAI-SearchBot. robots.txt changes take ~24 hours to reach ChatGPT search.");
   return {
     site: base.origin,
