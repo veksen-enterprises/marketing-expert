@@ -44,3 +44,16 @@ describe("evaluateAiAccess", () => {
     expect(r.bots.find((b) => b.token === "PerplexityBot")!.allowed).toBe(false);
   });
 });
+
+// Seen on an app host (behind sign-in) whose robots.txt allows all: the tool told the owner to add a
+// Sitemap line, which would invite search engines into pages that should stay out of search.
+describe("Sitemap advice", () => {
+  const msgs = (txt: string) => evaluateAiAccess(txt, "https://app.example.com").findings.join("\n");
+  it("doesn't ask for a Sitemap line on a host that blocks search crawlers", () => {
+    expect(msgs("User-agent: *\nDisallow: /")).not.toMatch(/Sitemap/);
+  });
+  it("makes the Sitemap advice conditional on wanting the host in search", () => {
+    const m = msgs("User-agent: *\nAllow: /");
+    expect(m).toMatch(/no Sitemap: line[^\n]*noindex/);
+  });
+});
