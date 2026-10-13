@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/veksen/marketing-expert.git"
+    "url": "git+https://github.com/veksen-enterprises/marketing-expert.git"
   },
   "keywords": [],
   "author": "",
   "bugs": {
-    "url": "https://github.com/veksen/marketing-expert/issues"
+    "url": "https://github.com/veksen-enterprises/marketing-expert/issues"
   },
-  "homepage": "https://github.com/veksen/marketing-expert#readme",
+  "homepage": "https://github.com/veksen-enterprises/marketing-expert#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.0",
     "node-html-parser": "^9.0.4",

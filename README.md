@@ -16,7 +16,7 @@ The model already knows the textbook frameworks. This server covers what it is u
 Needs Node 20 or later.
 
 ```bash
-git clone https://github.com/veksen/marketing-expert.git
+git clone https://github.com/veksen-enterprises/marketing-expert.git
 cd marketing-expert
 npm install && npm run build
 ```
@@ -32,7 +32,7 @@ claude mcp add -s user marketing-expert -- node /absolute/path/to/marketing-expe
 Or install straight from GitHub (the `prepare` script builds it):
 
 ```bash
-claude mcp add -s user marketing-expert -- npx -y github:veksen/marketing-expert
+claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert
 ```
 
 **Claude Desktop** (`claude_desktop_config.json`), **Cursor** (`~/.cursor/mcp.json`) and most other MCP clients use the same shape:
@@ -159,7 +159,7 @@ The server has no live data and no data about you except what you give it. Every
 1. **Your input and your files.** What you tell it, the repo or folder you point it at, and the pages it fetches when you ask for an audit. Business profiles stay in `MARKETING_EXPERT_DATA_DIR` on your machine.
 2. **Calculations.** Standard formulas run on your numbers (or on assumptions the agent labels as such). Nothing is looked up.
 3. **Playbooks** (`knowledge/*.md`, 60 files). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps, fitness and health apps, community and hobby products, seasonal and hobby products, event-moment products, products sold to local merchants, professional services, retail), channel (SEO and AI search, app store discovery, marketplace and registry listings, content, social, PR, events, video, paid, email, partnerships, referral, outbound), foundation (small bets, founder-led sales, activation and analytics, positioning, messaging, pricing, research, experimentation, measurement, launches, first customers, retention, law, marketing law by market: Quebec, Canada, US and California, Turkey, Armenia, Argentina; selling digital products across borders) and strategy (market sizing, startup risk, competing with incumbents, platform risk, building on games and platforms, exits).
-4. **Research notes** (`research/*.md`, 32 files). The cited sources each playbook is built from, with access notes and open questions.
+4. **Research notes** (`research/*.md`, 51 files). The cited sources each playbook is built from, with access notes and open questions.
 
 Every claim in a playbook carries an evidence tag, so the agent can tell you how much to trust it:
 

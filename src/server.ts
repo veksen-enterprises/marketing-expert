@@ -99,6 +99,11 @@ const readOnly = { readOnlyHint: true, openWorldHint: false } as const;
 
 export function createServer(): McpServer {
   const server = new McpServer({ name: "marketing-expert", version: "0.1.0" }, { instructions: INSTRUCTIONS });
+  // Reject unknown arguments. A plain shape strips them, so a misnamed input (get_playbook `name` for `slug`)
+  // silently changed the result instead of failing.
+  const register = server.registerTool.bind(server) as (name: string, config: object, cb: unknown) => unknown;
+  server.registerTool = ((name: string, config: { inputSchema?: z.ZodRawShape }, cb: unknown) =>
+    register(name, config.inputSchema ? { ...config, inputSchema: z.strictObject(config.inputSchema) } : config, cb)) as typeof server.registerTool;
 
   // ── Experimentation ────────────────────────────────────────────────────────
   server.registerTool(

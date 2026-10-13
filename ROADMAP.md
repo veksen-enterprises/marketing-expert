@@ -23,5 +23,5 @@ What isn't built yet, what's weak in what is built, and what can't be measured o
 ## Not planned
 
 - A web interface.
-- Multiple users or shared accounts.
+- Multiple users or shared accounts, until someone besides the owner uses the free version (see VISION.md, "Where it may go").
 - Memory beyond the business profiles stored on your machine.
