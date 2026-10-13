@@ -63,6 +63,14 @@ describe("checkLabels", () => {
     expect(checkLabels("Most vendors publish case studies (the vendor's own research, so read it with care).").map((l) => l.status)).not.toContain("merged");
     expect(checkLabels("Treat moderators as your first customers (practitioner rule of thumb).")[0].status).toBe("merged");
   });
+  it("does not take a lower-ranked passage's longer label over a better match that carries the answer's label", () => {
+    // Self-assessment, 2026-10-13, 2 of 3 runs: the MCP Registry line (developer-tools, [first-party]) ranked first,
+    // but the Redis line's [first-party via secondary, not re-verified], third in search, was reported as dropped.
+    const r = checkLabels("List the free open-source server in the official MCP Registry so agents and cloud providers find it [first-party].");
+    expect(r[0]).toMatchObject({ status: "ok", sourceLabels: ["first-party", "not re-verified"] });
+    expectSourceLine(r[0].source, "developer-tools", r[0].sourceText);
+    expect(r[0].sourceText).toMatch(/MCP Registry/);
+  });
   it("needs a clear search lead before calling a sentence an unlabelled reuse", () => {
     // devtool-competition, round 5: matched the third search hit, on the words "tool agents call not their".
     expect(checkLabels("Be the tool agents call, not their rival.")).toEqual([]);

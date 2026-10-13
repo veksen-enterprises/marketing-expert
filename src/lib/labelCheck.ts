@@ -231,8 +231,13 @@ export function checkLabels(text: string, minScore = 6): LabelFinding[] {
       continue;
     }
     // A source label that starts with the answer's label and goes on ("first-party survey; self-selected sample")
-    // is the clearest sign of a dropped qualifier.
-    const extended = hits.flatMap((h) => bracketsIn(h.text).map((l) => ({ h, l }))).find(({ l }) => labels.some((a) => norm(l).startsWith(norm(a)) && norm(l).length > norm(a).length + 3 && QUALIFIER.test(l)));
+    // is the clearest sign of a dropped qualifier, unless a better-ranked passage carries the answer's label as written:
+    // that passage is the likelier source (an MCP Registry line [first-party] was held to a Redis line's longer label).
+    const exactAt = hits.findIndex((h) => bracketsIn(h.text).some((l) => labels.some((a) => norm(l) === norm(a))));
+    const extended = hits
+      .slice(0, exactAt < 0 ? hits.length : exactAt + 1)
+      .flatMap((h) => bracketsIn(h.text).map((l) => ({ h, l })))
+      .find(({ l }) => labels.some((a) => norm(l).startsWith(norm(a)) && norm(l).length > norm(a).length + 3 && QUALIFIER.test(l)));
     if (extended && !labels.some((l) => QUALIFIER.test(l))) {
       out.push({ ...base, source: sourceOf(extended.h), sourceLabels: [extended.l], sourceText: extended.h.text.slice(0, 200), matchedBy, status: "qualifier-dropped" });
       continue;
