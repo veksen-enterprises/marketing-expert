@@ -10,7 +10,7 @@ What isn't built yet, what's weak in what is built, and what can't be measured o
 
 ## Known weak spots
 
-4. **Evidence qualifiers still get dropped.** This was the top named error in the latest evaluation (12 times in 18 runs). `check_answer` catches some by matching each labelled claim to the closest playbook passage. Matching by quoted phrase first, and restricting to a playbook the sentence names, would catch more.
+4. **Evidence qualifiers still get dropped.** This was the top named error in the latest evaluation (12 times in 18 runs). `check_answer` catches some by matching each labelled claim to a playbook passage: the one a quoted phrase comes from, else the best hit in a playbook the sentence names, else search. Since 2026-10-13 a longer label on a lower-ranked passage no longer outweighs a better match that carries the answer's label as written; that fixed a false flag seen in 2 of 3 self-assessment runs. Sentences that blend two passages are still matched to one.
 5. **Moves still get bundled.** `check_answer` flags moves that combine several actions or lack a test or stop condition, but agents don't always fix what it flags (6 bundled moves and 3 missing tests or stops in 18 runs).
 6. **Plain language.** Unexplained jargon still appears (9 times in 18 runs), mostly terms the jargon check doesn't know.
 
