@@ -1,7 +1,7 @@
 ---
 title: Content marketing (beyond SEO)
-summary: Content that builds demand rather than only ranking; choosing audience, job and point of view, formats (original research, newsletters, podcasts, video, free tools), distribution before creation, founder-led content, what the Edelman-LinkedIn thought leadership data says, how to measure content, and the risks of AI-generated content.
-tags: content marketing, thought leadership, newsletter, podcast, video, original research, data report, founder-led content, distribution, repurposing, editorial strategy, b2b content, ai content, content measurement
+summary: Content that builds demand rather than only ranking; choosing audience, job and point of view, formats (original research, newsletters, podcasts, video, free tools), distribution before creation, founder-led content, telling proof of demand against yourself, what the Edelman-LinkedIn thought leadership data says, how to measure content, and the risks of AI-generated content.
+tags: content marketing, thought leadership, founder posts, twitter, proof of demand, first paying customer, honest story, build in public, newsletter, podcast, video, original research, data report, founder-led content, distribution, repurposing, editorial strategy, b2b content, ai content, content measurement
 ---
 
 This playbook covers content whose main job is to earn attention and trust from buyers. Content whose main job is to rank in search is in seo-and-ai-search. Posting on social platforms is in organic-social-and-community; pitching content to journalists is in pr-and-influencers.
@@ -45,9 +45,36 @@ _In short:_ Plan where each piece will go before you make it: cut one big piece 
 _In short:_ Early on, the founder's own account usually reaches the right people better than the company page. Share real lessons and numbers, and build an email list so the audience is not stuck on one platform.
 
 - In early-stage B2B, the founder's personal account often reaches more of the right people than the company page, because platforms show posts from people more than posts from brand pages (see organic-social-and-community).
-- What works: specific lessons from building the company, honest numbers, strong opinions about the category, stories from customer conversations (with permission).
+- What works: specific lessons from building the company, honest numbers, strong opinions about the category, stories from customer conversations (with permission). One story shape that works, and when it backfires, is in the next section.
 - What fails: product announcements dressed as stories, generic motivation, and ghostwritten posts the founder never read. Ghostwriting help is fine if the ideas and voice are the founder's.
 - Plan for the founder leaving or getting busy: build an email list and a company newsletter from the founder's audience so the relationship isn't only on one platform.
+
+## Proof of demand, told against yourself
+
+_In short:_ A strong early founder post is a true story where someone wanted the product more than you expected, with your own slip in it. It helps only when the slip is small, comes after the good news, is answered by it, and is not in the skill you sell.
+
+**The shape**, in this order:
+1. A fact that shows demand: someone paid, came back, or worked around a missing feature. Money or effort counts more than praise, because it cost the person something [practitioner; The Mom Test].
+2. Your own slip, said plainly: the product wasn't ready, the payment page wasn't meant to work, you didn't expect them.
+3. One line on what you took from it. This line answers the slip.
+4. Half a line on what the product is and who it's for, so a reader who liked the story can try it.
+
+**Why it can work.**
+- Adding one small negative after positive product information raised ratings and purchases when people weren't thinking hard about the choice, and lowered them when they were [research; 4 studies incl. one field test, one team; Ein-Gar, Shiv & Tormala 2012]. Scrolling a feed is low-effort reading; a pricing page is not, so this helps the post, not the sales page.
+- Messages that raise a doubt and answer it persuaded more than one-sided messages; raising a doubt without answering it persuaded less [research; meta-analysis, 40+ experiments; O'Keefe 1999, read via a secondary summary]. "Someone paid anyway" is the answer to "it wasn't ready".
+- A blunder raised liking for a person already seen as very able and lowered it for an average one [research; small 1960s–70s lab studies, the first with male students only; read via secondary summaries]. So the slip must sit outside the skill you sell.
+- Feeds test each post on strangers who don't know you (see organic-social-and-community), so the post has to stand on its own facts.
+
+**When it fails.**
+- The slip is in what you sell. A query-analysis tool admitting a wrong analysis, or a security product admitting a leak, shows the risk buyers fear. Write those up as a plain post-mortem, not a charming story.
+- The "demand" is a compliment, a like, or a friend signing up.
+- It ends on a teaser ("big news soon"). That asks for trust with no evidence right after the story earned it with evidence. Name the news or cut the line (our judgement; untested).
+- The customer can be identified and didn't agree. Ask first.
+- Every post uses it. Repeated weekly, it reads as a formula.
+
+**Example (anonymised; one decent post, not a template).** A founder's first paying user was a beta tester who found a way to subscribe before the product was public. The post said so, admitted the founder's first reaction was "wait, how did he do that?!", and ended "someone paid for it before I considered it ready. I'll take it." Two weak lines: it never says what the product does, so readers can like it but can't try it; and its last line promises "big news soon".
+
+**Posting your small bets.** A small bet (see small-bets) ends with a number, often a disappointing one. A short daily post can report it: what you tried, what happened, what you'll do next. A failed bet told plainly is the same shape, since the slip is your guess, not your product. Evidence that this brings buyers is survivor anecdotes only [anecdote; see small-bets, building in public]. X discounts the same author shown to a reader repeatedly, so space posts out rather than posting several in a row [first-party; X ranking docs]. Count replies and profile visits from likely buyers and tagged sign-ups, not likes.
 
 ## B2B thought leadership: what the Edelman-LinkedIn data says [vendor]
 
@@ -98,4 +125,4 @@ _In short:_ Avoid publishing with nothing to say, writing for search engines or 
 
 ## Sources
 
-research/content-social-pr.md (Edelman-LinkedIn 2024 and 2025; CMI B2B Benchmarks 2025; Cision State of the Media 2025; Google spam policies; Weinberg & Mares 2015). See also research/measurement.md for self-reported attribution.
+research/content-social-pr.md (Edelman-LinkedIn 2024 and 2025; Ein-Gar, Shiv & Tormala 2012; O'Keefe 1999; Aronson, Willerman & Floyd 1966; Mettee & Wilkins 1972; Fitzpatrick 2013; CMI B2B Benchmarks 2025; Cision State of the Media 2025; Google spam policies; Weinberg & Mares 2015). See also research/measurement.md for self-reported attribution.
