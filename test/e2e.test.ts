@@ -59,6 +59,17 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     expect(p.isError).toBe(true);
   });
 
+  it("rejects unknown arguments instead of ignoring them", async () => {
+    // Advisors called get_playbook with `name` instead of `slug` and silently got the playbook list.
+    const g = await call("get_playbook", { name: "pricing" });
+    expect(g.isError).toBe(true);
+    expect(g.text).toMatch(/name/);
+    // A misspelled optional input dropped the lifetime-deal block without a word.
+    const u = await call("unit_economics", { arpaMonthly: 5, grossMargin: 0.85, monthlyChurn: 0.08, lifetimePrice: 50 });
+    expect(u.isError).toBe(true);
+    expect(u.text).toMatch(/lifetimePrice/);
+  });
+
   it("saves and reads a business profile", async () => {
     const s = await call("save_business_profile", { name: "acme", product: "x", metrics: { mrr: { value: 100, asOf: "2026-09" } } });
     expect(s.json.saved.metrics.mrr.value).toBe(100);
