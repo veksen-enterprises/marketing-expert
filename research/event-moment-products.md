@@ -444,6 +444,20 @@ https://www.bigsurmarathon.org/european-union-data-protection-regulations/ ; htt
 - Shows organizers treat results as personal data under their own notices.
 - [first-party organizer] [snippet-only]
 
+**P35. Location expansion: Marketing API changelog v22.0 and Advanced targeting reference / Meta for Developers**
+https://developers.facebook.com/documentation/ads-commerce/marketing-api/marketing-api-changelog/version22.0 ; https://developers.facebook.com/docs/marketing-api/audiences/reference/advanced-targeting
+- Changelog entry "Reach People Interested in Selected Cities and Regions", "Applies to v22.0+": "Expands location targeting beyond an ad campaign's target cities or regions" "to deliver ads to people who have shown interest in a location."
+- Advanced targeting: "To opt in, set the geo parameter under individual_setting in targeting_automation to 1." In the API it is opt-in; the Ads Manager default was not read.
+- Practitioner description of the Ads Manager checkbox ("Reach more people likely to respond to your ads"): Meta may reach people "interested in your selected cities and regions, for example people showing intent to travel to these locations" (Jon Loomer, "4 Reasons Meta Ads Reach People Outside of the Targeted Location", 31 Mar 2025, https://www.jonloomer.com/meta-ads-reach-people-outside-of-the-targeted-location/) [practitioner] [read 2026-10-13].
+- [first-party] [read 2026-10-13]
+
+**P36. Learning phase / Meta for Developers (Meta Horizon ads resources); TikTok Business Help Center**
+https://developers.meta.com/horizon/resources/optimize-ad-campaign/ ; https://ads.tiktok.com/resources/help/article/learning-phase-faq
+- Meta (page written for Meta Horizon app advertisers): "the learning period stabilizes with a minimum of 50 events over a 7-day period" per ad set; "Making changes to your ad set can trigger a new learning period"; "limiting your audience size too narrowly can increase your costs".
+- TikTok: "Achieving 50 conversions is the most significant indicator of passing the learning phase." No time window stated.
+- The Meta Business Help Center pages "About the learning phase" and "About learning limited" were seen by title only (robots-blocked).
+- [first-party; Meta page written for VR app ads] [read 2026-10-13]
+
 ---
 
 ### Open questions / not verified
@@ -584,6 +598,15 @@ https://static.case.law/f3d/550/cases/0465-01.json
 Unlicensed T-shirts referring to the 2004 Sugar Bowl and the teams' records, using school colors but not school names or logos, infringed. Sample shirt slogans include "Bourbon Street or Bust" and "Sweet as Sugar!" The court found likely confusion given "the defendant's admitted intent to create an association with the plaintiffs and to influence consumers in calling the plaintiffs to mind." It found that Smack "intended to capitalize on the potential for confusion," knowing the shirts sold "alongside officially licensed merchandise." Nominative fair use was rejected, because the defense "cannot be one that creates a likelihood of confusion as to source, sponsorship, affiliation, or approval." The jury awarded $10,506.80 in actual damages and $35,686 in lost profits, and the district court issued an injunction, which the Fifth Circuit affirmed. The case shows that references to an event plus trade dress can infringe without any word mark.
 [legal] [read 2026-10-13]
 
+**L29. EU Trade Mark Regulation (EU) 2017/1001, Art. 14; UK Trade Marks Act 1994, s. 11(2)**
+https://eur-lex.europa.eu/eli/reg/2017/1001/2025-12-01/eng/pdf ; https://www.legislation.gov.uk/ukpga/1994/26/section/11
+- EU Art. 14(1)(b): a mark owner cannot stop use of "signs or indications which are not distinctive or which concern the kind, quality, quantity, intended purpose, value," "geographical origin, the time of production of goods" "or other characteristics of the goods or services".
+- EU Art. 14(1)(c): nor use of the mark "for the purpose of identifying or referring to goods or services" "as those of the proprietor of that trade mark".
+- EU Art. 14(2): only "where the use made by the third party is in accordance with honest practices in industrial or commercial matters."
+- UK s. 11(2)(b)–(c) uses the same wording and the same "honest practices" condition.
+- EU national marks follow the same wording through Directive 2015/2436 Art. 14 (not fetched).
+[first-party] [read 2026-10-13]
+
 ---
 
 ### 4. Facts, results, maps, setlists
@@ -641,6 +664,14 @@ Under Missouri law, using players' names and statistics in fantasy games met the
 https://www.legisquebec.gouv.qc.ca/en/showdoc/cs/CCQ-1991
 Art. 35: "Every person has a right to the respect of his reputation and privacy. The privacy of a person may not be invaded without the consent of the person or without the invasion being authorized by law." Art. 36: "The following acts, in particular, may be considered as invasions of the privacy of a person: ... (5) using his name, image, likeness or voice for a purpose other than the legitimate information of the public."
 [legal] [read 2026-10-13] (fetched with curl; WebFetch was blocked with HTTP 403)
+
+**L30. GDPR Art. 14 and Art. 21 (EU Regulation 2016/679; UK GDPR)**
+https://gdpr-info.eu/art-14-gdpr/ ; https://www.legislation.gov.uk/eur/2016/679/article/14 ; https://gdpr-info.eu/art-21-gdpr/
+- Art. 14(3): where data were not obtained from the person, they must be told "within a reasonable period after obtaining the personal data, but at the latest within one month," and, if the data are used to contact the person, "at the latest at the time of the first communication to that data subject".
+- The EU "disproportionate effort" exception (14(5)(b)) is framed "in particular for processing for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes". In the UK GDPR it sits in Art. 14(5)(e), inserted 5 Feb 2026.
+- Art. 21(2)–(3): a person has "the right to object at any time" to direct marketing, "which includes profiling to the extent that it is related to such direct marketing"; after that, "the personal data shall no longer be processed for such purposes."
+- Applying these to a seller who copies names from public race results is our reading; no regulator guidance on that case was found (see Part P, open question 13).
+[first-party] [read 2026-10-13]
 
 ---
 
