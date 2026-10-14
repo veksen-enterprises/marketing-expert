@@ -357,7 +357,7 @@ export function createServer(): McpServer {
     {
       title: "Paid media break-even",
       description:
-        "Break-even ROAS and CPA, max affordable CPC, the conversion rate needed at a given CPC, implied CPA/ROAS from CPC or CPM+CTR, and budget projections. For subscriptions (billingModel 'subscription', or monthlyChurn given) aov is one month's revenue (divide an annual price by 12) and it returns payback months at the implied CPA. Use to sanity-check a paid channel before or while spending." + CITE,
+        "Break-even ROAS and CPA, max affordable CPC, the conversion rate needed at a given CPC, implied CPA/ROAS from CPC or CPM+CTR, and budget projections. For subscriptions (billingModel 'subscription', or monthlyChurn given) aov is one month's revenue (divide an annual price by 12) and it returns payback months at the implied CPA. Use to sanity-check a paid channel before or while spending. With spend and conversions so far it returns stopCheck: whether the results are enough to call an ad worse than targetCpa, or whether stopping now would be acting on noise." + CITE,
       inputSchema: {
         aov: z.number().positive().optional().describe("Average order value; for a subscription, one month's revenue per customer"),
         margin: z.number().gt(0).lte(1).optional().describe("Contribution margin 0–1"),
@@ -370,6 +370,8 @@ export function createServer(): McpServer {
         targetCpa: z.number().positive().optional(),
         billingModel: z.enum(["one-time", "subscription"]).optional().describe("Default one-time; subscription when monthlyChurn is given"),
         monthlyChurn: z.number().min(0).lt(1).optional().describe("Subscription: monthly churn 0–1"),
+        spend: z.number().positive().optional().describe("Stop check: amount already spent on the ad or ad set being judged"),
+        conversions: z.number().int().min(0).optional().describe("Stop check: conversions that spend produced"),
         assumedInputs,
       },
       annotations: readOnly,
@@ -386,6 +388,8 @@ export function createServer(): McpServer {
       if (a.ctr !== undefined) parts.push(`ctr ${pct(a.ctr)}`);
       if (a.budget !== undefined) parts.push(`budget ${num(a.budget)}`);
       if (a.targetCpa !== undefined) parts.push(`targetCpa ${num(a.targetCpa)}`);
+      if (a.spend !== undefined) parts.push(`spend ${num(a.spend)}`);
+      if (a.conversions !== undefined) parts.push(`conversions ${a.conversions}`);
       if (r.billingModel === "subscription") parts.push(`subscription${a.monthlyChurn !== undefined ? `, churn ${pct(a.monthlyChurn)}/month` : ""}`);
       const limit = r.breakEvenCpaLtv ?? r.breakEvenCpaFirstOrder;
       let result: string;
@@ -397,6 +401,11 @@ export function createServer(): McpServer {
       else if (r.impliedCpa !== null) result = `implied CPA ${num(r.impliedCpa)}`;
       else result = r.breakEvenRoasFirstOrder !== null ? `break-even ROAS ${num(r.breakEvenRoasFirstOrder)}` : "not enough inputs for a break-even";
       if (r.paybackMonthsAtImpliedCpa != null && !subNoLtv) result += `, payback ${r.paybackMonthsAtImpliedCpa} month${r.paybackMonthsAtImpliedCpa === 1 ? "" : "s"}`;
+      if (r.stopCheck) {
+        const sc = r.stopCheck;
+        const head = `${sc.decision} (${Number((sc.chanceThisFewIfAtBenchmark * 100).toPrecision(2))}% chance of ${a.conversions === 0 ? "none" : `${a.conversions} or fewer`} at CPA ${num(sc.benchmarkCpa)})`;
+        result = result === "not enough inputs for a break-even" ? head : `${result}; ${head}`;
+      }
       return cited(r, "paid_media_math", parts.join(", "), result, assumed);
     })
   );

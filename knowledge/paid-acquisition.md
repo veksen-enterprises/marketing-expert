@@ -59,10 +59,21 @@ _In short:_ Judge tests on cost at the margin, raise budgets in steps because ea
 - Scaling raises marginal CPA (you exhaust the cheapest audience first). Increase budget in steps and watch marginal, not blended, numbers.
 - Every channel decays: refresh creative on a schedule and keep testing new channels (see channel-strategy).
 
+## Find where the cost comes from
+
+_In short:_ Cost per customer is the product of a few rates; break it into them before blaming the ad, because a rise after the click is not an ads problem.
+
+CPA = CPM ÷ (1000 × CTR × click-to-customer rate). This is arithmetic, not a benchmark: compare each rate with its own earlier values, not with someone else's "healthy" number. paid_media_math gives the implied CPA from CPM, CTR and CVR; funnel_analysis with spend gives the cost at each step (impression, click, install or signup, purchase).
+- **CPM up, the rest steady**: you pay more to reach people (competition, season, narrow audience). The ad isn't failing.
+- **CTR down**: the ad or its hook is not getting attention, or it has run long enough that the same people have seen it too often.
+- **CTR steady, click-to-customer rate down**: the cause is after the click: the landing page or store listing, signup or onboarding, the price or paywall. New creative won't fix it.
+- **Everything steady but reported conversions down**: check tracking and reporting delay before changing anything.
+
 ## When to stop or cut
 
-_In short:_ Stop or cut paid spend when costs sit above break-even with no fix, the channel's customers churn faster, a holdout shows little extra lift, or you're mostly paying for demand you already had.
+_In short:_ Stop an ad only when its results are unlikely for one at target; stop or cut paid spend when costs sit above break-even with no fix, the channel's customers churn faster, a holdout shows little extra lift, or you're mostly paying for demand you already had.
 
+- Before stopping a single ad on few or no conversions, run paid_media_math with spend, conversions and targetCpa. An ad that truly converts at target shows no conversions after spending twice the target about 14% of the time, so "2× target CPA with zero conversions" stops about one good ad in seven. With no conversions, about 3× the target is needed for a 95% call.
 - Implied CPA above break-even with no realistic path to fix it.
 - Cohorts from the channel churn faster than others (check unit_economics by channel).
 - A holdout test shows little incremental lift.
