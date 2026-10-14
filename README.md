@@ -23,6 +23,18 @@ Needs Node 20 or later.
 
 Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, drafts the business profile, asks only what the repo can't answer, saves the profile and writes a first strategy to `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
 
+**Any agent: paste this** in a session opened at your product's repo:
+
+```text
+Set up the marketing-expert MCP server for the product in this repo.
+1. If its tools (get_playbook, scan_source, check_answer) aren't available, install it, tell me to restart the session, and stop.
+   Claude Code: claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert
+   Other clients: add a server named marketing-expert running "npx -y github:veksen-enterprises/marketing-expert".
+2. Then read and follow https://raw.githubusercontent.com/veksen-enterprises/marketing-expert/main/skills/get-started/SKILL.md
+```
+
+**Just the skill**, without the plugin: copy `skills/get-started/` into `~/.claude/skills/` (every project) or a repo's `.claude/skills/`. It still needs the server; if the server is missing, the skill gives the install command and stops.
+
 **From source:**
 
 ```bash
