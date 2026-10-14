@@ -1,0 +1,14 @@
+{
+  "name": "marketing-expert",
+  "description": "The marketing-expert plugin: a careful marketing advisor for your product repos.",
+  "owner": {
+    "name": "veksen-enterprises"
+  },
+  "plugins": [
+    {
+      "name": "marketing-expert",
+      "source": "./",
+      "description": "The marketing-expert MCP server and a get-started skill for product repos."
+    }
+  ]
+}

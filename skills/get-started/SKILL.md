@@ -1,0 +1,34 @@
+---
+name: get-started
+description: Set up marketing-expert for the product in this repo and write its first marketing strategy. Use when the user wants to market this product, set up marketing-expert here, or get a first marketing plan for this repo.
+---
+
+<!-- Generated from getStartedText in src/prompts.ts by scripts/build-skill.mjs. Edit there, not here. -->
+
+First check that the marketing-expert MCP server is connected: its tools include get_playbook, scan_source and check_answer. If they aren't available, tell the user to install it with `/plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert` or with `claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert`, then restart the session, and stop. Once connected, follow the server's instructions: they override your habits on length, evidence labels and numbers.
+
+Set up marketing-expert for the product in this repo, then write its first marketing strategy.
+
+1. Read the repo before asking anything: README, docs, pricing, the marketing site source if it's here, and any vision, roadmap or decision-record files. Run scan_source on the repo root. If the marketing site has its own folder, run scan_source on it with compareWith set to the docs folder.
+2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile and work only on its missingFields and staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
+3. Send the user one message: the profile you drafted from the repo, each fact with the file it came from, then only the questions the repo can't answer: price, paying customers, signups or traffic with a date, money and hours a week for marketing, the goal (hobby, side income or business), the countries or provinces they sell in, and anything they refuse to do. For each, say which labelled assumption you'll use if they don't know.
+4. Save what the user confirmed with save_business_profile. Fill traction (dated with asOf), assets, audiences, surfaces, revenue, launched, markets, principles and avoid where known, because match_small_bets reads them. Don't save assumptions; state them in the answer.
+5. Write the first strategy with the steps below, using the saved profile. Save it to marketing/strategy-YYYY-MM-DD.md in the repo, and don't commit it unless the user asks.
+
+## First strategy
+
+Propose a marketing strategy for this business.
+
+Business: the product in this repo; use the profile saved in step 4
+
+1. Context: call list_business_profiles / get_business_profile if one exists. Ask for anything essential that's missing (price, how they buy, current numbers) before going further; state assumptions if the user can't answer.
+2. Business type: pick the closest playbook and read it with get_playbook: b2b-saas-sales-led, self-serve-saas, developer-tools, ecommerce-dtc, marketplaces, local-services, consumer-apps, community-and-hobby-products, seasonal-and-hobby-products, event-moment-products, fitness-and-health-apps, selling-to-local-merchants (products that local shops adopt for their customers), professional-services or retail-cpg. Say which one and why; if it's a mix, say which parts of each apply.
+2b. Alternatives: name what the target users do today instead (specific competitors, adjacent tools, communities, "do nothing"), from your own knowledge if needed, labelled unverified. The strategy has to beat those, not an abstract market.
+3. Constraint: what limits growth right now (see the marketing_diagnosis order: activation and proof, positioning, reach, conversion, retention, unit economics)? Strategy targets that constraint; if retention or positioning is broken, fixing that comes before spending on acquisition. If the product touches customer data, credentials or production systems, check the site's data and credential claims against the docs (scan_source) and list contradictions as a short "Fix first" list, one line each, outside the moves.
+4. Economics: run unit_economics or paid_media_math with their numbers, or with labelled assumptions, to show what customer acquisition cost the business can afford (unit_economics returns it without a CAC). This rules channels in or out.
+5. Channels. With fewer than ~10 paying customers, skip the channel shortlist: use first-customers to plan the first ten instead (who exactly, as a named segment or list of 20–50 accounts or communities; how each is reached; the offer, agreement and price; the success test), and say how money will actually be collected in the 90 days (existing checkout, invoice, or a build task the billing code needs). Otherwise shortlist 3 using channel-strategy (Bullseye, channel-model fit) and the channel playbooks (seo-and-ai-search, ai-assistant-visibility, content-marketing, organic-social-and-community, pr-and-influencers, events-and-webinars, video-and-youtube, paid-acquisition, email-and-lifecycle, partnerships-and-affiliates, referral-programs, outbound-and-abm). If retention is the constraint, use retention-and-expansion; check budget realism with marketing-budget-and-team and legal limits with privacy-and-marketing-law. For each: why it fits this business, then the cheapest test, metric and stop line as in step 6. Separately from the moves, call match_small_bets on the saved profile and list up to three small bets that fit now (cheap tests matched to what the business already has), each with its first test and stop line; small bets are not moves and don't count toward the move limit.
+6. The plan: at most 3 moves; each move is one action (no "and", no "in the same change"), with the lines "Mechanism:", "Cheapest test:" (smaller than the move, with its cost), "Metric:", "Time box:" and "Stop:" (the number that means drop or change it). Then the first 90 days in order, with calendar dates, founder or owner hours per week for each move, and owners if a team was described. At most 2–3 things at once; no move may depend on the output of one that starts later.
+7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
+8. What not to do yet, and why.
+Before sending, run check_answer with deliverable "plan" (a 1,800-word limit), and with agentChannel true if scan_source reported mcpServer.
+Offer to save the confirmed facts with save_business_profile.
