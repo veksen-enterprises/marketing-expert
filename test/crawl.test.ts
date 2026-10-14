@@ -81,3 +81,28 @@ describe("crawlSite", async () => {
     expect(small.notes.join(" ")).toMatch(/Stopped at maxPages=3/);
   });
 });
+
+// Seen on a docs site: a catch-all route served the home page at /robots.txt, and the crawl said
+// "robots.txt names no sitemap" as if a real robots file had left the line out.
+describe("crawlSite with an HTML robots.txt", async () => {
+  const home = html("Home", `<a href="/a">A</a>${words(300)}`, `<link rel="sitemap" href="/sitemap-index.xml">`);
+  const pages: Record<string, R> = {
+    "/": { body: home },
+    "/robots.txt": { body: `<!doctype html>${home}` },
+    "/a": { body: html("A", `<a href="/">Home</a>${words(300)}`) },
+    "/sitemap-index.xml": { body: `<sitemapindex><sitemap><loc>${B}/sitemap-0.xml</loc></sitemap></sitemapindex>`, headers: { "content-type": "application/xml" } },
+    "/sitemap-0.xml": { body: `<urlset><url><loc>${B}/</loc></url><url><loc>${B}/a</loc></url></urlset>`, headers: { "content-type": "application/xml" } },
+  };
+  const fetchHtmlRobots: FetchFn = async (url) => {
+    const r = pages[new URL(url).pathname];
+    if (!r) return new Response("not found", { status: 404, headers: { "content-type": "text/html" } });
+    return new Response(r.body ?? "", { status: r.status ?? 200, headers: { "content-type": "text/html", ...r.headers } });
+  };
+  const r = await crawlSite({ startUrl: `${B}/`, fetchFn: fetchHtmlRobots });
+  const notes = r.notes.join("\n");
+  it("says robots.txt is an HTML page, not that it names no sitemap", () => {
+    expect(notes).toMatch(/robots\.txt is an HTML page/);
+    expect(notes).not.toMatch(/robots\.txt names no sitemap/);
+    expect(notes).toMatch(/Sitemap: https:\/\/site\.test\/sitemap-index\.xml/);
+  });
+});
