@@ -15,8 +15,18 @@ The model already knows the textbook frameworks. This server covers what it is u
 
 Needs Node 20 or later.
 
+**Claude Code, one step.** Install the plugin; it brings the server and a `get-started` skill:
+
+```
+/plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert
+```
+
+Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, drafts the business profile, asks only what the repo can't answer, saves the profile and writes a first strategy to `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
+
+**From source:**
+
 ```bash
-git clone https://github.com/veksen/marketing-expert.git
+git clone https://github.com/veksen-enterprises/marketing-expert.git
 cd marketing-expert
 npm install && npm run build
 ```
@@ -32,7 +42,7 @@ claude mcp add -s user marketing-expert -- node /absolute/path/to/marketing-expe
 Or install straight from GitHub (the `prepare` script builds it):
 
 ```bash
-claude mcp add -s user marketing-expert -- npx -y github:veksen/marketing-expert
+claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert
 ```
 
 **Claude Desktop** (`claude_desktop_config.json`), **Cursor** (`~/.cursor/mcp.json`) and most other MCP clients use the same shape:
@@ -93,6 +103,7 @@ Tips:
 
 | Prompt | What it does |
 |---|---|
+| `get_started` | First run in a product's repo: profile from the repo, the few questions it can't answer, then a first strategy (also the `get-started` skill) |
 | `marketing_diagnosis` | Finds the one constraint on growth before recommending anything |
 | `marketing_strategy` | Ranked strategy: business-type playbook, economics, channels or (below ~10 paying customers) a first-ten plan, 90 days with dates and hours |
 | `marketing_ideas` | A set number of distinct ideas (default 5), each on a different mechanism and tied to the business's own facts, then the few to test first |
