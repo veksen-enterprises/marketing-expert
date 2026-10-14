@@ -6,6 +6,7 @@ Read `VISION.md` first (why, principles, lessons), then `ROADMAP.md` (what to wo
 
 - `src/server.ts`: tool and resource registration, and `INSTRUCTIONS` (the operating rules sent to the agent). A test caps the instructions' word count: replace text, don't append.
 - `src/prompts.ts`: guided workflows. `prompts/seo-site-review-v2.md` holds the long SEO review prompt.
+- `.claude-plugin/` and `skills/get-started/`: the Claude Code plugin (server plus skill). `SKILL.md` is generated from the `get_started` prompt: edit `src/prompts.ts`, then `npm run build && node scripts/build-skill.mjs`.
 - `src/lib/*.ts`: pure, tested logic, one module per tool area. `netguard.ts` guards every outbound fetch.
 - `knowledge/*.md`: playbooks served to the agent (frontmatter: title, summary, tags). Files starting with `_` aren't served; `_conventions.md` holds the evidence tags and writing rules.
 - `research/*.md`: cited source notes behind the playbooks, with access marks and open questions.
