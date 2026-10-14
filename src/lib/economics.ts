@@ -269,6 +269,27 @@ export interface PaidMediaInput {
   billingModel?: "one-time" | "subscription";
   /** Subscription mode: monthly churn 0–1, for payback months at the implied CPA. */
   monthlyChurn?: number;
+  /** Stop check: money already spent on the ad or ad set being judged. */
+  spend?: number;
+  /** Stop check: conversions that spend produced so far. */
+  conversions?: number;
+}
+
+export interface StopCheck {
+  /** The CPA the results are judged against, and where it came from. */
+  benchmarkCpa: number;
+  benchmarkBasis: "targetCpa" | "ltvGrossProfit" | "first-order gross profit";
+  observedCpa: number | null;
+  /** Conversions an ad converting exactly at the benchmark would be expected to show at this spend. */
+  expectedConversionsAtBenchmark: number;
+  /** Chance an ad converting exactly at the benchmark shows this many conversions or fewer. */
+  chanceThisFewIfAtBenchmark: number;
+  /** Total spend at which this many conversions would be under a 5% chance for an ad at the benchmark. */
+  spendToJudgeAtThisCount: number;
+  /** Exact (Garwood) 95% interval for the true CPA, from the Poisson count. */
+  cpaInterval95: [number, number | null];
+  decision: "stop: worse than benchmark" | "keep spending: not enough evidence";
+  note: string;
 }
 
 export interface PaidMediaResult {
@@ -289,6 +310,8 @@ export interface PaidMediaResult {
   breakEvenRoasFirstPeriod?: number | null;
   /** Subscription mode: months of gross profit (with churn) to recover the implied CPA; null if not within 240 months. */
   paybackMonthsAtImpliedCpa?: number | null;
+  /** Given spend and conversions: whether the results so far are enough to stop. */
+  stopCheck?: StopCheck | null;
   verdict: string | null;
   warnings: string[];
 }
@@ -366,6 +389,20 @@ export function paidMediaMath(i: PaidMediaInput): PaidMediaResult {
       "Platform-reported ROAS is attributed, not incremental. Part of those conversions would have happened anyway (especially brand search and retargeting). Validate with a holdout or geo test before scaling."
     );
   }
+  let stopCheck: StopCheck | null | undefined;
+  if (i.spend !== undefined || i.conversions !== undefined) {
+    if (i.spend === undefined || i.conversions === undefined) throw new RangeError("The stop check needs both spend and conversions");
+    if (!(i.spend > 0) || !Number.isInteger(i.conversions) || i.conversions < 0) throw new RangeError("spend must be positive and conversions a whole number ≥ 0");
+    // A subscription's first-month gross profit is not a CPA to judge against; it needs a target or lifetime figure.
+    const bench: [number, StopCheck["benchmarkBasis"]] | null =
+      i.targetCpa !== undefined ? [i.targetCpa, "targetCpa"] : beCpaLtv !== null ? [beCpaLtv, "ltvGrossProfit"] : firstOrderGp !== null && !subscription ? [firstOrderGp, "first-order gross profit"] : null;
+    if (bench === null) {
+      stopCheck = null;
+      warnings.push("Stop check skipped: give targetCpa or ltvGrossProfit (or, for one-time sales, aov and margin) to judge spend and conversions against.");
+    } else {
+      stopCheck = stopCheckFor(i.spend, i.conversions, bench[0], bench[1]);
+    }
+  }
   if (beCpaLtv !== null) {
     warnings.push("LTV-based CPA limits assume you can finance the payback period and that the LTV estimate holds for customers from this channel.");
   }
@@ -385,8 +422,63 @@ export function paidMediaMath(i: PaidMediaInput): PaidMediaResult {
     ...(subscription
       ? { breakEvenCpaFirstPeriod: firstOrderGp, breakEvenRoasFirstPeriod: breakEvenRoas, paybackMonthsAtImpliedCpa: impliedCpa !== null && firstOrderGp ? paybackMonths : null }
       : {}),
+    ...(stopCheck !== undefined ? { stopCheck } : {}),
     verdict,
     warnings,
+  };
+}
+
+/** P(X ≤ k) for X ~ Poisson(lambda), summed in log space. */
+export function poissonCdf(k: number, lambda: number): number {
+  if (lambda <= 0) return 1;
+  let term = -lambda;
+  let sum = Math.exp(term);
+  for (let j = 1; j <= k; j++) {
+    term += Math.log(lambda / j);
+    sum += Math.exp(term);
+  }
+  return Math.min(1, sum);
+}
+
+/** The lambda at which P(X ≤ k) equals p (P falls as lambda rises). */
+function poissonLambdaForCdf(k: number, p: number): number {
+  let lo = 0;
+  let hi = Math.max(10, 2 * k + 20);
+  while (poissonCdf(k, hi) > p) hi *= 2;
+  for (let n = 0; n < 200; n++) {
+    const mid = (lo + hi) / 2;
+    if (poissonCdf(k, mid) > p) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function stopCheckFor(spend: number, conversions: number, benchmarkCpa: number, benchmarkBasis: StopCheck["benchmarkBasis"]): StopCheck {
+  const expected = spend / benchmarkCpa;
+  const chance = poissonCdf(conversions, expected);
+  const spendToJudge = poissonLambdaForCdf(conversions, 0.05) * benchmarkCpa;
+  // Garwood interval on the conversion count, turned into CPA bounds: spend / upper count, spend / lower count.
+  const upperCount = poissonLambdaForCdf(conversions, 0.025);
+  const lowerCount = conversions === 0 ? 0 : poissonLambdaForCdf(conversions - 1, 0.975);
+  const stop = chance < 0.05;
+  const pctText = `${Number((chance * 100).toPrecision(2))}%`;
+  const few = conversions === 0 ? "no conversions" : `${conversions} or fewer conversions`;
+  const note =
+    (stop
+      ? `Stop: an ad converting at the benchmark CPA ${benchmarkCpa.toFixed(2)} would show ${few} on ${spend.toFixed(2)} only ${pctText} of the time.`
+      : `Not enough evidence to stop: an ad converting at the benchmark CPA ${benchmarkCpa.toFixed(2)} would show ${few} on ${spend.toFixed(2)} ${pctText} of the time. ` +
+        `With ${conversions} conversion${conversions === 1 ? "" : "s"}, it takes ${spendToJudge.toFixed(2)} total spend (${(spendToJudge / benchmarkCpa).toFixed(1)}× the benchmark) to call it worse at 95% confidence.`) +
+    " Assumes conversions arrive at a steady rate and are all reported; delayed reporting (iOS, view-through, long sales cycles) makes the count look low. Checking every day and stopping at the first low reading raises the false-stop rate above 5%. This judges one ad against the benchmark, not which ad is best.";
+  return {
+    benchmarkCpa,
+    benchmarkBasis,
+    observedCpa: conversions > 0 ? spend / conversions : null,
+    expectedConversionsAtBenchmark: expected,
+    chanceThisFewIfAtBenchmark: chance,
+    spendToJudgeAtThisCount: spendToJudge,
+    cpaInterval95: [spend / upperCount, lowerCount > 0 ? spend / lowerCount : null],
+    decision: stop ? "stop: worse than benchmark" : "keep spending: not enough evidence",
+    note,
   };
 }
 
