@@ -1,27 +1,41 @@
-# marketing-expert-mcp
+# marketing-expert
 
-An MCP server that turns a coding or chat agent (Claude Code, Claude Desktop, Cursor and others) into a careful marketing advisor. Connect it, describe your business or point it at your repo, and ask a marketing question. The agent then:
+An MCP server that turns a coding or chat agent (Claude Code, Claude Desktop, Cursor and others) into a careful marketing advisor for small products.
+
+The model already knows the textbook frameworks. This server covers what it is unreliable at: arithmetic, current platform rules, telling evidence from folklore, checking claims against your code, and keeping answers short and testable. With it, the agent:
 
 - reads your own material first (repo, docs, site source) and checks what's actually shipped;
 - runs calculators instead of doing arithmetic in its head;
 - audits pages, sites and robots.txt instead of guessing what's there;
-- grounds advice in 60 sourced playbooks, saying how strong the evidence is;
+- grounds advice in sourced playbooks, saying how strong the evidence is;
 - recommends at most three moves, each with a cheapest test, a metric, a time box and a stop condition;
 - checks its own draft (length, jargon, missing parts, evidence labels, quotes against your files) before answering.
 
-The model already knows the textbook frameworks. This server covers what it is unreliable at: arithmetic, current platform rules, telling evidence from folklore, checking claims against your code, and keeping answers short and testable.
+## Example
 
-## Quick start
+> We get 3,000 visitors a day at 2.5% conversion. Can we A/B test a new headline?
+
+Instead of estimating, the agent runs the calculator and quotes its result line:
+
+```text
+ab_test_sample_size(baseline 2.5%, MDE +10% relative, alpha 0.05, power 0.8, 3,000 visitors/day) -> 64,199 per arm, 128,398 total, 43 days
+```
+
+Then it answers, in short: yes, but only for a large change. Detecting a 10% lift (2.5% to 2.75%) takes 43 days, so plan 7 whole weeks. In two weeks you can only detect a lift of 20% or more (16,792 visitors per version, 12 days). Fix the sample size before you start and check the result once: checking every day and stopping at the first good number makes false winners far more likely (5 looks give about 14% false positives instead of 5%).
+
+The result line is the tool's exact output, and a test re-runs it (`test/readme.test.ts`). The answer around it is shortened.
+
+## Install
 
 Needs Node 20 or later.
 
-**Claude Code, one step.** Install the plugin; it brings the server and a `get-started` skill:
+**Claude Code.** Install the plugin. It brings the server and a `get-started` skill:
 
 ```
 /plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert
 ```
 
-Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, sums up the product, lists the directions it can take for it (a first strategy, small bets, positioning, a page teardown, the economics…) and asks short profile questions the repo can't answer (users in the last 28 days and where the last few came from first, then price, budget, communities and data you have, what you refuse to do, where you sell; a marked guess is fine). Then it saves the profile and takes the direction you pick; the default is a first strategy in `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
+Then, in a product's repo, run `/marketing-expert:get-started`. The agent reads the repo, sums up the product, offers the directions it can take (a first strategy, small bets, positioning, a page teardown, the economics…), and asks a few profile questions the repo can't answer. A marked guess is fine. It then saves the profile and takes the direction you pick. The default is a first strategy, saved to `marketing/strategy-YYYY-MM-DD.md`.
 
 **Any agent: paste this** in a session opened at your product's repo:
 
@@ -33,156 +47,74 @@ Set up the marketing-expert MCP server for the product in this repo.
 2. Then read and follow https://raw.githubusercontent.com/veksen-enterprises/marketing-expert/main/skills/get-started/SKILL.md
 ```
 
-**Just the skill**, without the plugin: copy `skills/get-started/` into `~/.claude/skills/` (every project) or a repo's `.claude/skills/`. It still needs the server; if the server is missing, the skill gives the install command and stops.
-
-**From source:**
-
-```bash
-git clone https://github.com/veksen-enterprises/marketing-expert.git
-cd marketing-expert
-npm install && npm run build
-```
-
-Connect it to your agent.
-
-**Claude Code** (`-s user` makes it available in every project):
-
-```bash
-claude mcp add -s user marketing-expert -- node /absolute/path/to/marketing-expert/dist/index.js
-```
-
-Or install straight from GitHub (the `prepare` script builds it):
-
-```bash
-claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert
-```
-
-**Claude Desktop** (`claude_desktop_config.json`), **Cursor** (`~/.cursor/mcp.json`) and most other MCP clients use the same shape:
+**Other MCP clients** (Claude Desktop's `claude_desktop_config.json`, Cursor's `~/.cursor/mcp.json` and most others):
 
 ```json
 {
   "mcpServers": {
     "marketing-expert": {
-      "command": "node",
-      "args": ["/absolute/path/to/marketing-expert/dist/index.js"],
-      "env": { "MARKETING_EXPERT_DATA_DIR": "/absolute/path/to/profiles" }
+      "command": "npx",
+      "args": ["-y", "github:veksen-enterprises/marketing-expert"]
     }
   }
 }
 ```
 
-**No MCP support?** Any agent with a shell can use the bundled command-line client:
-
-```bash
-node scripts/mcp.mjs instructions                 # the server's operating rules
-node scripts/mcp.mjs tools                        # tools and their arguments
-node scripts/mcp.mjs prompts                      # guided workflows
-node scripts/mcp.mjs call market_size '{"segments":[...]}'
-node scripts/mcp.mjs prompt marketing_strategy '{"business":"..."}'
-```
-
-After pulling updates, run `npm run build` again.
+Clients without Claude Code skills get the same first-run workflow as the `get_started` prompt.
 
 ### Settings
 
-| Environment variable | Default | Use |
+Set these as environment variables on the server (an `"env"` object next to `"args"` in the JSON above).
+
+| Variable | Default | Use |
 |---|---|---|
 | `MARKETING_EXPERT_DATA_DIR` | `~/.marketing-expert` | Where business profiles are stored. Use an absolute path; set one per project to keep businesses apart. |
 | `MARKETING_EXPERT_ALLOW_PRIVATE` | off | Set to `1` to audit `localhost`, a staging server or anything on a private network. Off, those addresses are refused. |
 | `MARKETING_EXPERT_CHROMIUM` | none | Path to a Chromium binary for `audit_page` with `render: true` (pages built by JavaScript). Also run `npm install playwright-core`. |
 
-## How to use it
+## Check it works
 
-Ask in plain words. The server's instructions tell the agent which tools, prompts and playbooks to use.
+Ask the agent: "Use marketing-expert's ab_test_sample_size for 2.5% conversion, a 10% lift and 3,000 visitors a day." The answer should include `64,199 per arm, 128,398 total, 43 days`.
 
-- "Here's my business: … What should our marketing strategy be for the next 90 days?"
-- "I'm building X (repo attached). How do I get my first ten paying customers?"
-- "Our signups are flat. What's wrong?"
-- "Review our marketing site and tell me what to fix first."
-- "Crawl example.com and tell me what to fix for SEO and AI search."
-- "Can ChatGPT and Perplexity find us?"
-- "We get 3,000 visitors a day at 2.5% conversion. Can we A/B test a new headline?"
-- "Is this market big enough to raise money?"
-- "A big company just launched something like our product. What now?"
+If it doesn't:
+- **No marketing-expert tools.** Restart the client after installing; MCP servers load at start. In Claude Code, `/mcp` lists the server and its state.
+- **The server fails to start.** Check `node --version` is 20 or later.
+- **The first start is slow.** The first `npx` run downloads and builds the server, which took about 20 seconds in our test (2026-10-27). Later starts use the cache.
+
+## What it does
+
+Ask in plain words; the server's instructions tell the agent which tools, prompts and playbooks to use. The agent gets the full reference from the server itself (`node scripts/mcp.mjs tools` shows the same list).
+
+| Question | Tools |
+|---|---|
+| Can our traffic support this test? Did the test win? | `ab_test_sample_size`, `ab_test_evaluate`, `ab_test_sequential`, `ab_test_means_sample_size`, `ab_test_means_evaluate` |
+| What is a customer worth, and what can we pay to get one? | `unit_economics`, `paid_media_math` |
+| How many leads do we need? Is the market big enough? | `funnel_analysis`, `market_size` |
+| Will a request on our marketplace or alert find a match in time? | `liquidity_math` |
+| What does this page or site actually show to people, Google and AI crawlers? | `audit_page`, `crawl_site`, `check_ai_crawler_access` |
+| Do our site, docs and code agree on prices, data handling and what's shipped? | `scan_source` |
+| Is this copy clear, and does it fit the ad or search limits? | `analyze_copy`, `check_copy_limits`, `build_utm_link` |
+| Which cheap marketing moves fit this business now? | `match_small_bets` |
+| Is the agent's draft short, plain, testable, and true to its sources? | `check_answer`, `verify_quotes` |
+| What do we already know about this business, and what does the evidence say? | `list_business_profiles`, `get_business_profile`, `save_business_profile`, `search_playbooks`, `get_playbook`, `learn_more` |
+
+Calculators return their inputs and headline result in one line (`citeAs`, as in the example) and mark results built on assumed inputs.
+
+Guided workflows, as prompts (in Claude Code they are slash commands such as `/mcp__marketing-expert__marketing_strategy`): `get_started`, `marketing_diagnosis`, `marketing_strategy`, `marketing_ideas`, `positioning_workshop`, `landing_page_teardown`, `experiment_plan`, `campaign_brief`, `launch_plan`, `opportunity_assessment`, `competitive_strategy`, `exit_options`, `technical_seo_review`.
 
 Tips:
-- **Point it at your repo.** With a repo, the agent runs `scan_source` on your site, docs and decision records, and finds contradictions (two prices for one plan, "coming soon" on a shipped feature, data claims the docs disagree with). These are often the most useful findings.
-- **Give it your numbers.** Without them it uses labelled assumptions and tells you what would change if they're wrong.
-- **Save your business profile** ("save what you learned as a business profile") so the next conversation starts from the same facts. Save the moves you take on too: once a move passes its check date, the next run asks what happened before advising.
-- **Use the prompts directly** when you want a fixed process. In Claude Code they appear as slash commands, for example `/mcp__marketing-expert__marketing_strategy`.
+- **Point it at your repo.** The agent runs `scan_source` on your site, docs and decision records, and finds contradictions (two prices for one plan, "coming soon" on a shipped feature). These are often the most useful findings.
+- **Give it your numbers.** Without them it uses labelled assumptions and says what would change if they're wrong.
+- **Save your business profile** so the next conversation starts from the same facts. Save the moves you take on too: once a move passes its check date, the next run asks what happened before advising.
 
-### Prompts (guided workflows)
-
-| Prompt | What it does |
-|---|---|
-| `get_started` | First run in a product's repo: profile from the repo, the directions it can take, short profile questions, then the direction you pick (also the `get-started` skill) |
-| `marketing_diagnosis` | Finds the one constraint on growth before recommending anything |
-| `marketing_strategy` | Ranked strategy: business-type playbook, economics, channels or (below ~10 paying customers) a first-ten plan, 90 days with dates and hours |
-| `marketing_ideas` | A set number of distinct ideas (default 5), each on a different mechanism and tied to the business's own facts, then the few to test first |
-| `positioning_workshop` | April Dunford's positioning steps in order |
-| `landing_page_teardown` | Evidence-based critique of a page, claims checked against your docs |
-| `experiment_plan` | Turns an idea into a test that can give a trustworthy answer, or says not to test |
-| `campaign_brief` | One-page brief that forces the decisions a campaign needs |
-| `launch_plan` | Sizes a launch and plans before, during and after |
-| `opportunity_assessment` | Go/no-go on an idea: base rates, market size, timing, risks |
-| `competitive_strategy` | Positioning against incumbents and platforms; "feature, not a product" risk |
-| `exit_options` | Realistic exits: likelihood, buyers, what founders receive |
-| `technical_seo_review` | Measured SEO and AI-crawler review of a site from its source and a production build (text in `prompts/seo-site-review-v2.md`) |
-
-### Tools
-
-**Calculators**
-
-| Tool | What it does |
-|---|---|
-| `ab_test_sample_size` | Visitors per arm and test duration; says when a test is too long to run and what effect you *can* detect |
-| `ab_test_evaluate` | Significance, confidence intervals, sample-ratio mismatch, peeking warnings |
-| `ab_test_sequential` | A test you can check as often as you like (mSPRT) |
-| `ab_test_means_sample_size` / `ab_test_means_evaluate` | Same for revenue and other continuous metrics (Welch's t-test, outlier capping, variance reduction) |
-| `unit_economics` | Lifetime value, LTV:CAC, payback, the most you can afford per customer (works without a CAC), minimum price, scenarios, lifetime-deal mode |
-| `paid_media_math` | Break-even ROAS and CPA, max CPC, subscription mode |
-| `funnel_analysis` | Step and cumulative conversion; inverse mode: how many leads you need for N customers |
-| `market_size` | Bottom-up market size by segment, what you can realistically win, what a revenue target implies |
-| `liquidity_math` | Marketplaces, alerts and saved searches: chance a request finds a match in time, listings needed |
-
-Every calculator returns its inputs and headline result in one line (`citeAs`), and marks results built on assumed inputs.
-
-**Audits of what's actually there**
-
-| Tool | What it does |
-|---|---|
-| `audit_page` | Title, meta, headings, calls to action, forms, structured data, indexability; `render: true` shows how much content only exists after JavaScript |
-| `crawl_site` | Up to 1,000 pages plus the sitemap: broken links, redirects, duplicates, noindex, orphans, canonicals, click depth, client-rendered pages |
-| `check_ai_crawler_access` | Which AI bots robots.txt allows, grouped by training, AI search and user-triggered fetch |
-| `scan_source` | In a local repo: claims about data handling, prices, availability, setup and licence, with `file:line`; site-vs-docs conflicts; build flags; decision records and their status; what billing code enforces |
-| `analyze_copy` | Readability, vague and hype words, hedges, we-vs-you framing |
-| `check_copy_limits` | Character limits for Google, Microsoft, Meta, LinkedIn, X, TikTok, search results, email, Open Graph |
-| `build_utm_link` | Clean, consistent campaign links |
-
-**Self-checks the agent runs on its own draft**
-
-| Tool | What it does |
-|---|---|
-| `check_answer` | Word count against the budget, jargon used without explanation, missing parts (falsifier, open questions), moves without a test or stop, evidence labels stronger than the playbook or missing their caveats. Returns a fingerprint of the checked text |
-| `match_small_bets` | Sorts 40 cheap marketing moves into fit now, fit later (and what is missing) and doesn't fit (and why), from the profile's traction, assets, audiences, product surfaces, revenue model and the things the business rules out |
-| `verify_quotes` | Every quote and `file:line` citation checked against your repo: verbatim, wrong line, wrong file, or not found |
-
-**Context**
-
-| Tool | What it does |
-|---|---|
-| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Your business facts, stored as JSON on your machine; flags missing fields, stale numbers, estimated numbers, and saved moves past their check date |
-| `search_playbooks` / `get_playbook` | Search the playbooks (each result is a short plain summary with a pointer) and read one in full (also available as `marketing://playbook/{slug}` resources) |
-| `learn_more` | Expands one pointer: a playbook section, a whole playbook, one small bet, a glossary term, or plain words. Returns the detail, the plain meaning of the business terms in it, its evidence and sources, and where to go next |
-
-## Where the data comes from
+## Where answers come from
 
 The server has no live data and no data about you except what you give it. Every answer is built from four things:
 
-1. **Your input and your files.** What you tell it, the repo or folder you point it at, and the pages it fetches when you ask for an audit. Business profiles stay in `MARKETING_EXPERT_DATA_DIR` on your machine.
-2. **Calculations.** Standard formulas run on your numbers (or on assumptions the agent labels as such). Nothing is looked up.
-3. **Playbooks** (`knowledge/*.md`, 60 files). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps, fitness and health apps, community and hobby products, seasonal and hobby products, event-moment products, products sold to local merchants, professional services, retail), channel (SEO and AI search, app store discovery, marketplace and registry listings, content, social, PR, events, video, paid, email, partnerships, referral, outbound), foundation (small bets, founder-led sales, activation and analytics, positioning, messaging, pricing, research, experimentation, measurement, launches, first customers, retention, law, marketing law by market: Quebec, Canada, US and California, Turkey, Armenia, Argentina; selling digital products across borders) and strategy (market sizing, startup risk, competing with incumbents, platform risk, building on games and platforms, exits).
-4. **Research notes** (`research/*.md`, 51 files). The cited sources each playbook is built from, with access notes and open questions.
+1. **Your input and your files.** What you tell it, the repo or folder you point it at, and the pages it fetches when you ask for an audit.
+2. **Calculations.** Standard formulas run on your numbers, or on assumptions the agent labels as such. Nothing is looked up.
+3. **Playbooks** (`knowledge/*.md`). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps and more), by channel (SEO and AI search, content, social, PR, paid, email, outbound and more), by foundation (positioning, pricing, experimentation, first customers, retention, marketing law in several markets) and by strategy (market sizing, competing with incumbents, platform risk, exits).
+4. **Research notes** (`research/*.md`). The cited sources each playbook is built from, with access notes and open questions.
 
 Every claim in a playbook carries an evidence tag, so the agent can tell you how much to trust it:
 
@@ -193,43 +125,56 @@ Every claim in a playbook carries an evidence tag, so the agent can tell you how
 | `[practitioner]` | A rule from experienced operators, not tested |
 | `[vendor]` | Data from a company with a commercial interest in the conclusion |
 | `[rule-of-thumb]` | Widely repeated, no traceable basis |
-| `our experiment` / `our coding` | Evidence produced while building this server (see below) |
+| `our experiment` / `our coding` | Evidence produced while building this server |
 
 Qualifiers go inside the bracket: `[research; RCT, n=337,724; one firm]`, `[first-party; snippet-only]`. The agent is told to copy them as written, and `check_answer` flags labels it upgrades or strips.
 
 **How the research was done.** The research ran from a sandbox whose network policy blocked most primary sources (journal sites, arXiv, many company sites). So:
 - Most figures come from search-result snippets of the cited source, not a full read. They are marked `snippet-only`; full reads are marked `read-full`.
-- Every research pass was followed by an independent check of its citations, and claims that didn't hold were dropped or corrected and marked.
-- Where the literature was thin (for example, go-to-market with zero customers), the server's own evidence was generated and labelled as such: a simulated test of how coding agents choose between MCP tools, a coded set of 31 developer-tool first-customer stories (survivors only, self-told), and a coding of how developers describe slow database queries in public threads.
+- Every research pass was followed by an independent check of its citations. Claims that didn't hold were dropped or corrected, and marked.
+- Where the literature was thin (for example, go-to-market with zero customers), the server's own evidence was generated and labelled as such: a simulated test of how coding agents choose between MCP tools, a coded set of developer-tool first-customer stories (survivors only, self-told), and a coding of how developers describe slow database queries in public threads.
 
 Before quoting a number from a playbook as fact, check it against the primary source; the research notes say which ones need it most.
 
-**How quality is measured.** `evals/` holds the method: real cases, a rubric (`evals/rubric.md`) and graders that check every claim against the business's own repo. A change is judged by grading old and new runs in one blind batch and taking the mean difference across cases, with a confidence interval (`scripts/evals/grade.mjs`). The last round under the old 20-point rubric scored 17–19 per run. The weakest areas are still keeping evidence qualifiers, focused moves, and plain language.
+**How quality is measured.** `evals/` holds real cases, a rubric and graders that check every claim against the business's own repo. A change counts only if blind, paired grading of old and new runs shows a difference whose confidence interval excludes zero (`evals/README.md`).
 
-## Security
+## Safety
+
+What it writes: only `save_business_profile` writes, as JSON files in `MARKETING_EXPERT_DATA_DIR`. The `get_started` workflow asks the agent to save a strategy file in your repo; the agent writes that, not the server. Nothing is sent anywhere except requests to the sites you ask it to audit.
 
 The audit tools fetch URLs the model chooses, and web pages can contain hidden instructions. So:
 - Private, loopback, link-local (including cloud metadata), carrier-NAT and local IPv6 addresses are refused, including IPv4 addresses hidden inside IPv6 forms, on every redirect and, in render mode, for every request the page makes. `MARKETING_EXPERT_ALLOW_PRIVATE=1` turns this off for local testing.
 - Downloads are capped (5 MB of HTML per page, 500 KB for robots.txt) so a page can't exhaust memory.
-- Text from web pages and repos is labelled as untrusted, and the agent is told not to follow instructions found in it.
+- Text from web pages and repos is labelled as untrusted, and the agent is told not to follow instructions found in it. That label is an instruction to the model, not a guarantee.
 - DNS can change between the check and the request; this is a guard, not a firewall.
 - `scan_source` and `verify_quotes` read files on your machine: only source, docs and config extensions, with size and count limits, never following symbolic links, never reading `.git` or credential folders (`.config`, `.docker`, `.ssh` and other dot-folders outside a short allowlist such as `.github`). They refuse the filesystem root. Point them at a repo, not your home folder.
+
+## Limits
+
+- No live data connectors yet (Google Analytics, Search Console, ad platforms, Stripe): numbers come from you.
+- Evidence qualifiers and moves that bundle two actions still slip past the self-checks.
+- The playbooks outside developer tools haven't been evaluated yet.
+
+More in [ROADMAP.md](ROADMAP.md); the principles and lessons behind the design are in [VISION.md](VISION.md).
 
 ## Development
 
 ```bash
-npm run dev        # run from source
-npm run build
-npm test           # unit tests and an end-to-end stdio test (build first)
-npm run typecheck
+git clone https://github.com/veksen-enterprises/marketing-expert.git
+cd marketing-expert
+npm install && npm run build
+npm test           # build first: the end-to-end test runs dist/
 ```
 
-Render-mode tests are skipped unless `MARKETING_EXPERT_CHROMIUM` points at a Chromium binary (`npx playwright-core install chromium`).
+To run your local copy, point the client at `node /absolute/path/to/marketing-expert/dist/index.js` instead of `npx`. Run `npm run build` again after pulling.
 
-Layout: `src/lib/` holds the tested logic; `src/server.ts` registers tools and the operating instructions; `src/prompts.ts` holds the workflows; `knowledge/` holds the playbooks (frontmatter: title, summary, tags; files starting with `_` aren't served); `research/` holds the cited notes; `evals/` holds the evaluation method.
+**No MCP support?** Any agent with a shell can use the bundled command-line client from a clone:
 
-Writing rule for everything the agent shows users: plain words for readers whose first language may not be English. Never "moat"; say what stops competitors.
+```bash
+node scripts/mcp.mjs instructions                 # the server's operating rules
+node scripts/mcp.mjs tools                        # tools and their arguments
+node scripts/mcp.mjs call market_size '{"segments":[...]}'
+node scripts/mcp.mjs prompt marketing_strategy '{"business":"..."}'
+```
 
-## Not built yet and known weak spots
-
-See [ROADMAP.md](ROADMAP.md) (and [VISION.md](VISION.md) for the principles and lessons behind the design). In short: no live data connectors yet (Google Analytics, Search Console, ad platforms, Stripe); evidence qualifiers and bundled moves still slip through the self-checks; and the playbooks outside developer tools haven't been evaluated yet.
+Playbooks are Markdown files in `knowledge/` with `title`, `summary` and `tags` frontmatter. Repo layout, writing rules and how to evaluate a change are in [CLAUDE.md](CLAUDE.md).
