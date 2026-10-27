@@ -194,7 +194,9 @@ export const CHANNEL_KINDS: Array<{ kind: string; words: RegExp; bets: string[] 
   { kind: "communities", words: /\b(reddit|subreddits?|discord|forums?|communit(y|ies)|slack|facebook groups?|stack overflow|hacker news)\b/i, bets: ["answer-questions", "moderator-tool", "own-community"] },
   { kind: "word of mouth", words: /\b(word of mouth|referrals?|friends?|recommend(ed|ations?)?)\b/i, bets: ["ask-happy-users", "shareable-outputs", "founder-thanks", "affiliate"] },
   { kind: "store listings", words: /\b(app store|play store|web store|store listing|marketplace|director(y|ies)|listings?)\b/i, bets: ["listings", "integration", "perk-programmes"] },
-  { kind: "launch sites", words: /\b(product hunt|show hn|launch)\b/i, bets: ["launch-sites"] },
+  // A launch that brought users boosts nothing: posting the same product to the same site again is a resubmission,
+  // which the sites limit (research/relaunch-rules.md). matchSmallBets says so in the launch-sites reason instead.
+  { kind: "launch sites", words: /\b(product hunt|show hn|launch)\b/i, bets: [] },
   { kind: "social", words: /\b(twitter|x|linkedin|bluesky|mastodon|social|tiktok|instagram|youtube)\b/i, bets: ["social-presence", "founder-videos", "building-in-public"] },
   { kind: "pinterest", words: /\bpinterest\b/i, bets: ["pinterest-pins"] },
   { kind: "newsletters", words: /\bnewsletters?\b/i, bets: ["curator-submissions", "newsletter-sponsorship", "own-community"] },
@@ -221,6 +223,7 @@ export function workingChannels(channels: Channel[] = []): { byBet: Map<string, 
     const how = typeof c === "object" && c && typeof c.how === "string" ? c.how.trim() : "";
     const kinds = CHANNEL_KINDS.filter((k) => k.words.test(name));
     if (!kinds.length) unmatched.push(name);
+    else if (!kinds.some((k) => k.bets.length)) continue;
     else if (!how) unbacked.push(name);
     else for (const k of kinds) for (const id of k.bets) if (!byBet.has(id)) byBet.set(id, { name, how });
   }
@@ -330,10 +333,14 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       continue;
     }
     const channel = working.byBet.get(b.id);
+    const relaunch = b.id === "launch-sites" ? launchedOn(f.channels) : undefined;
     const score = betScore({ ...b, ceiling: ceilingFor(b, f.audiences) });
     fitsNow.push({
       ...base(b),
-      reason: fitReason(b, f, stage.stage) + (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : ""),
+      reason:
+        fitReason(b, f, stage.stage) +
+        (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : "") +
+        (relaunch ? `; ${RELAUNCH_NOTE(relaunch)}` : ""),
       cost: b.cost,
       judgeAfter: b.judgeAfter,
       measure: b.measure,
@@ -356,6 +363,18 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   }
   return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], marketLaw, howToReport: HOW_TO_REPORT };
 }
+
+/** The first profile channel that names a launch site: the founder has launched there before. */
+function launchedOn(channels: Channel[] = []): string | undefined {
+  const sites = CHANNEL_KINDS.find((k) => k.kind === "launch sites")!.words;
+  for (const c of channels) {
+    const name = typeof c === "string" ? c : typeof c?.name === "string" ? c.name : "";
+    if (sites.test(name)) return name;
+  }
+}
+// The sites' own rules, research/relaunch-rules.md §1–2.
+const RELAUNCH_NOTE = (site: string) =>
+  `you already launched on ${site}. Launching there again needs real news: Product Hunt asks for two months and a significant update; Show HN asks for a much changed version. Try a site you haven't used`;
 
 function fitReason(b: Bet, f: SmallBetsFacts, stage: Stage): string {
   const parts: string[] = [];

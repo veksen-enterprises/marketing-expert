@@ -208,6 +208,34 @@ describe("matchSmallBets", () => {
     // An empty reason is no reason.
     expect(matchSmallBets({ ...devtool, channels: [{ name: "Reddit", how: "  " }] }).assumptions.join(" ")).toMatch(/Not ranked up for Reddit/);
   });
+  it("doesn't rank a repeat launch above a new site, and states the sites' relaunch rules", () => {
+    // research/proven-channel-returns.md §3 and research/relaunch-rules.md §1–2: a repeat post on the same site is the
+    // resubmission case, and Product Hunt and Show HN both ask for real news before a second launch.
+    const live = { ...devtool, traction: { activeUsers: 12, basis: "counted" as const } };
+    const plain = matchSmallBets(live).fitsNow.find((v) => v.id === "launch-sites")!;
+    for (const channels of [[{ name: "Product Hunt", how: "referrer in analytics" }], ["Show HN"]]) {
+      const r = matchSmallBets({ ...live, channels });
+      const v = r.fitsNow.find((x) => x.id === "launch-sites")!;
+      expect(v.score).toBe(plain.score);
+      expect(v.workingChannel).toBeUndefined();
+      expect(v.reason).toMatch(/already launched on (Product Hunt|Show HN)/);
+      expect(v.reason).toMatch(/Product Hunt asks for two months and a significant update/);
+      expect(v.reason).toMatch(/Show HN asks for a much changed version/);
+      expect(v.reason).toMatch(/site you haven't used/);
+      // Not boosting it isn't a missing reason: no "how" is asked for.
+      expect(r.assumptions.join(" ")).not.toMatch(/Not ranked up for (Product Hunt|Show HN)/);
+    }
+    expect(plain.reason).not.toMatch(/already launched/);
+  });
+  it("runs a launch on two different sites before judging it, with a stop for no reaction", () => {
+    // research/small-bet-base-rates.md §1: about 1 in 8 Show HN posts reaches 10 points and over half get no comment.
+    const v = matchSmallBets({ ...devtool, traction: { activeUsers: 12 } }).fitsNow.find((x) => x.id === "launch-sites")!;
+    expect(v).toMatchObject({ tries: 2, ceiling: "lopsided" });
+    expect(v.effortHours).toBeGreaterThanOrEqual(24);
+    expect(v.stop).toMatch(/No reaction on two different sites/);
+    expect(v.stop).toMatch(/same version to the same site/);
+    expect(v.stop).toMatch(/spike with no retained users/);
+  });
   it("says when channels are missing or match no bet, instead of skipping them silently", () => {
     expect(matchSmallBets(devtool).assumptions.join(" ")).toMatch(/Channels not saved/);
     expect(matchSmallBets({ ...devtool, channels: ["carrier pigeon"] }).assumptions.join(" ")).toMatch(/matched no bet by keyword.*carrier pigeon/);
