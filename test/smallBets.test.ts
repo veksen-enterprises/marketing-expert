@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { matchSmallBets, readStage, betScore, marketLawPointers, type SmallBetsFacts } from "../src/lib/smallBets.js";
+import { matchSmallBets, readStage, betScore, marketLawPointers, CHANNEL_KINDS, CHANNEL_BOOST, factsFromProfile, type SmallBetsFacts } from "../src/lib/smallBets.js";
 import { BETS } from "../src/lib/smallBetsCatalog.js";
 
 const ids = (vs: Array<{ id: string }>) => vs.map((v) => v.id);
@@ -18,6 +18,10 @@ describe("catalog", () => {
       expect(["capped", "steady", "lopsided"], b.id).toContain(b.ceiling);
       if (b.tries) expect(b.ceiling === "lopsided" || b.budgetSkipsStage !== undefined || b.needs?.budget, b.id).toBeTruthy();
     }
+  });
+  it("points every channel kind at bets that exist", () => {
+    const known = new Set(BETS.map((b) => b.id));
+    for (const k of CHANNEL_KINDS) for (const id of k.bets) expect(known.has(id), `${k.kind}: ${id}`).toBe(true);
   });
   it("names every bet in the playbook", () => {
     const book = readFileSync("knowledge/small-bets.md", "utf8");
@@ -107,7 +111,7 @@ describe("matchSmallBets", () => {
     markets: ["Quebec"],
   };
   it("opens stage-2 bets once traction is there, and keeps press for later", () => {
-    const r = matchSmallBets(devtool);
+    const r = matchSmallBets({ ...devtool, channels: ["Google search"] });
     expect(r.stage.stage).toBe(2);
     for (const id of ["shareable-outputs", "one-command-try", "error-pages", "affiliate", "own-community"]) expect(ids(r.fitsNow), id).toContain(id);
     expect(ids(r.fitsLater)).toContain("press");
@@ -173,6 +177,25 @@ describe("matchSmallBets", () => {
     const emails = r.fitsNow.find((v) => v.id === "founder-emails")!;
     expect(emails.lawCheck).toMatch(/consent rules.*#Quebec.*#Turkey/);
     expect(r.fitsNow.find((v) => v.id === "comparison-pages")!.lawCheck).toBeUndefined();
+  });
+  it("ranks a bet higher when it builds on a channel already bringing users, and says which", () => {
+    const plain = matchSmallBets(devtool).fitsNow;
+    const r = matchSmallBets({ ...devtool, channels: ["a Reddit thread", "a podcast nobody's heard of"] });
+    const before = plain.find((v) => v.id === "answer-questions")!;
+    const after = r.fitsNow.find((v) => v.id === "answer-questions")!;
+    expect(after.score).toBeCloseTo(before.score! * CHANNEL_BOOST, 2);
+    expect(after.workingChannel).toBe("a Reddit thread");
+    expect(after.reason).toMatch(/builds on a Reddit thread, which already brings users/);
+    expect(r.fitsNow.findIndex((v) => v.id === "answer-questions")).toBeLessThan(plain.findIndex((v) => v.id === "answer-questions"));
+    expect(r.fitsNow.find((v) => v.id === "comparison-pages")!.workingChannel).toBeUndefined();
+    expect(r.assumptions.join(" ")).not.toMatch(/Channels not saved/);
+  });
+  it("says when channels are missing or match no bet, instead of skipping them silently", () => {
+    expect(matchSmallBets(devtool).assumptions.join(" ")).toMatch(/Channels not saved/);
+    expect(matchSmallBets({ ...devtool, channels: ["carrier pigeon"] }).assumptions.join(" ")).toMatch(/matched no bet by keyword.*carrier pigeon/);
+  });
+  it("reads channels from the saved profile", () => {
+    expect(factsFromProfile({ name: "x", channels: ["Google"] }).channels).toEqual(["Google"]);
   });
   it("ranks by score, highest first", () => {
     const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);

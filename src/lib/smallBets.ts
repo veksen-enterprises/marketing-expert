@@ -102,6 +102,8 @@ export interface SmallBetsFacts {
   principles?: string[];
   /** Where the business operates or sells (countries, provinces, states), e.g. "Quebec", "Turkey". */
   markets?: string[];
+  /** Where current users came from, in the business's words, e.g. "Reddit", "word of mouth", "Google". */
+  channels?: string[];
 }
 
 export interface StageReading {
@@ -143,8 +145,10 @@ export interface Verdict {
   effortHours?: number;
   ceiling?: Bet["ceiling"];
   tries?: number;
-  /** ceiling × evidence ÷ √effort; fitsNow is sorted by it, highest first. */
+  /** ceiling × evidence ÷ √effort, × CHANNEL_BOOST when it builds on a working channel; fitsNow is sorted by it. */
   score?: number;
+  /** The profile's channel this bet builds on: one already bringing users. */
+  workingChannel?: string;
   playbookSection?: string;
   /** What learn_more takes to expand this bet. */
   learnMore: string;
@@ -181,6 +185,37 @@ export function ceilingFor(b: Pick<Bet, "ceiling" | "ceilingFor">, audiences?: A
 export const betScore = (b: Pick<Bet, "ceiling" | "evidence" | "effortHours">) =>
   Math.round(((CEILING_WEIGHT[b.ceiling] * EVIDENCE_WEIGHT[b.evidence]) / Math.sqrt(Math.max(1, b.effortHours))) * 1000) / 1000;
 
+// A channel already bringing users shows the audience can be reached there, so bets on it rank higher. The boost is
+// a rule of thumb: enough to lift a bet over one a step above it, not enough to make a capped bet beat a lopsided one of equal effort.
+export const CHANNEL_BOOST = 1.5;
+/** Kinds of channel, the words a profile uses for each, and the bets that build on it. Matching is by keyword only. */
+export const CHANNEL_KINDS: Array<{ kind: string; words: RegExp; bets: string[] }> = [
+  { kind: "search", words: /\b(search|seo|google|bing|organic)\b/i, bets: ["comparison-pages", "error-pages", "data-pages", "teardowns", "free-tool"] },
+  { kind: "communities", words: /\b(reddit|subreddits?|discord|forums?|communit(y|ies)|slack|facebook groups?|stack overflow|hacker news)\b/i, bets: ["answer-questions", "moderator-tool", "own-community"] },
+  { kind: "word of mouth", words: /\b(word of mouth|referrals?|friends?|recommend(ed|ations?)?)\b/i, bets: ["ask-happy-users", "shareable-outputs", "founder-thanks", "affiliate"] },
+  { kind: "store listings", words: /\b(app store|play store|web store|store listing|marketplace|director(y|ies)|listings?)\b/i, bets: ["listings", "integration", "perk-programmes"] },
+  { kind: "launch sites", words: /\b(product hunt|show hn|launch)\b/i, bets: ["launch-sites"] },
+  { kind: "social", words: /\b(twitter|x|linkedin|bluesky|mastodon|social|tiktok|instagram|youtube)\b/i, bets: ["social-presence", "founder-videos", "building-in-public"] },
+  { kind: "pinterest", words: /\bpinterest\b/i, bets: ["pinterest-pins"] },
+  { kind: "newsletters", words: /\bnewsletters?\b/i, bets: ["curator-submissions", "newsletter-sponsorship", "own-community"] },
+  { kind: "open source", words: /\b(github|open source|open-source)\b/i, bets: ["open-source", "upstream-fixes", "fix-famous-projects"] },
+  { kind: "email", words: /\b(email|e-mail|mailing list)\b/i, bets: ["founder-emails", "changelog"] },
+  { kind: "in person", words: /\b(in person|door to door|shops?|stores? nearby|events?|meetups?|flyers?|posters?)\b/i, bets: ["merchant-visits", "in-store-signs", "calendar-events", "guest-spots"] },
+  { kind: "podcasts and press", words: /\b(podcasts?|press|articles?|blogs?)\b/i, bets: ["guest-spots", "journalist-requests", "press"] },
+];
+
+/** For each bet id, the first profile channel that names a kind the bet builds on; and the channels that matched none. */
+export function workingChannels(channels: string[] = []): { byBet: Map<string, string>; unmatched: string[] } {
+  const byBet = new Map<string, string>();
+  const unmatched: string[] = [];
+  for (const c of channels) {
+    const kinds = CHANNEL_KINDS.filter((k) => k.words.test(c));
+    if (!kinds.length) unmatched.push(c);
+    for (const k of kinds) for (const id of k.bets) if (!byBet.has(id)) byBet.set(id, c);
+  }
+  return { byBet, unmatched };
+}
+
 const LAW_PLAYBOOK = "marketing-law-by-market";
 const LAW_WHAT = { messages: "consent rules for marketing emails and messages", "reviews-and-endorsements": "rules on asking for reviews, testimonials and paid endorsements", pricing: "price display and subscription rules" } as const;
 
@@ -206,7 +241,7 @@ export function marketLawPointers(markets: string[] = []): MatchResult["marketLa
 }
 
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets };
+  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
 }
 
 export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
@@ -222,6 +257,9 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   // Users or payers mean the product is live, whatever the profile says.
   const launched = f.launched ?? ((f.traction?.activeUsers ?? 0) > 0 || (f.traction?.payingCustomers ?? 0) > 0 ? true : undefined);
   if (launched === undefined) assumptions.push("Launch status not saved; treated as not live yet, so launch posts wait and a waitlist is suggested.");
+  const working = workingChannels(f.channels);
+  if (!f.channels?.length) assumptions.push("Channels not saved (where current users came from), so no bet was ranked up for building on a channel that already works.");
+  if (working.unmatched.length) assumptions.push(`Channels matched no bet by keyword, so they didn't change the ranking: ${working.unmatched.join(", ")}.`);
 
   const fitsNow: Verdict[] = [];
   const fitsLater: Verdict[] = [];
@@ -271,22 +309,27 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (n.communities && !a.communities) blockers.push("needs an audience that gathers in moderated communities (save where, as assets.communities)");
     if (b.launch === "after" && !launched) blockers.push("needs a product people can try now");
 
-    if (blockers.length) fitsLater.push({ ...base(b), reason: blockers.join("; ") });
-    else
-      fitsNow.push({
-        ...base(b),
-        reason: fitReason(b, f, stage.stage),
-        cost: b.cost,
-        judgeAfter: b.judgeAfter,
-        measure: b.measure,
-        stop: b.stop,
-        evidence: b.evidence,
-        effortHours: b.effortHours,
-        ceiling: ceilingFor(b, f.audiences),
-        ...(b.tries ? { tries: b.tries } : {}),
-        score: betScore({ ...b, ceiling: ceilingFor(b, f.audiences) }),
-        playbookSection: b.section,
-      });
+    if (blockers.length) {
+      fitsLater.push({ ...base(b), reason: blockers.join("; ") });
+      continue;
+    }
+    const channel = working.byBet.get(b.id);
+    const score = betScore({ ...b, ceiling: ceilingFor(b, f.audiences) });
+    fitsNow.push({
+      ...base(b),
+      reason: fitReason(b, f, stage.stage) + (channel ? `; builds on ${channel}, which already brings users` : ""),
+      cost: b.cost,
+      judgeAfter: b.judgeAfter,
+      measure: b.measure,
+      stop: b.stop,
+      evidence: b.evidence,
+      effortHours: b.effortHours,
+      ceiling: ceilingFor(b, f.audiences),
+      ...(b.tries ? { tries: b.tries } : {}),
+      score: channel ? Math.round(score * CHANNEL_BOOST * 1000) / 1000 : score,
+      ...(channel ? { workingChannel: channel } : {}),
+      playbookSection: b.section,
+    });
   }
   fitsNow.sort((x, y) => y.score! - x.score!);
   const marketLaw = marketLawPointers(f.markets);
