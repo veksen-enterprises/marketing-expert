@@ -89,7 +89,7 @@ Both, at different stages. Liquidity decides whether an app survives. Product de
 - **Design differentiation fades.** Bumble's women-first rule built a brand; its downloads fell 19% in 2025 while Hinge rose 25.4% [21] [vendor].
 - **New entrants launch city by city.** Sitch (AI matchmaking, $6.7M raised) runs in three cities with "tens of thousands" of users [22] [trade press]. The source does not state why; city-by-city launches fit the liquidity view (density per city matters, not total users). Unchecked.
 
-**Verdict** [synthesis]: the coordinator's claim holds for survival (an empty local pool kills any design). JP's claim holds for share shifts among apps that already have users, but the best case (Hinge) is confounded by Match's backing. For a founder, liquidity is the outcome; marketing that concentrates users in one place, and a product rule that attracts one group, are how you get it. The repo's `liquidity_math` tool already covers the density side.
+**Verdict** [synthesis]: the coordinator's claim holds for survival (an empty local pool kills any design). JP's claim holds for share shifts among apps that already have users, but the best case (Hinge) is confounded by Match's backing. For a founder, liquidity is the outcome; marketing that concentrates users in one place, and a product rule that attracts one group, are how you get it. The repo's `liquidity_math` tool already covers the density side. *Corrected by `reciprocal-liquidity.md` (2026-10-27):* it does only if both people's like rates are folded into the match share, and nothing tells the agent to; given sign-ups and filter shares it reports nearly every watch firing.
 
 ## 6. What this implies for the MCP
 
