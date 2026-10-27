@@ -27,6 +27,9 @@ describe("checkLabels", () => {
     expect(rose[0].source).toMatch(/^marketplaces:\d+ › Dating/);
     const theory = checkLabels("Charge a lead or referral fee instead of a transaction fee to limit leakage [research, Hagiu & Wright 2024].");
     expect(theory[0]).toMatchObject({ status: "qualifier-dropped", sourceLabels: ["research (theory), Hagiu & Wright 2024"] });
+    const churn = checkLabels("A third of former dating users left because they started a relationship [research].");
+    expect(churn[0]).toMatchObject({ status: "qualifier-dropped" });
+    expect(churn[0].source).toMatch(/^consumer-apps:\d+ › Retention/);
     const kept = checkLabels("Charge a lead or referral fee instead of a transaction fee to limit leakage [research (theory), Hagiu & Wright 2024].");
     expect(kept[0].status).toBe("ok");
   });

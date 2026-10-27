@@ -15,6 +15,7 @@ Before spending on growth, check whether people stay. Paying to acquire users wh
 - Define "active" by the action that delivers value (a workout logged, a message sent), not by opening the app.
 - Find the early behaviour that predicts retained users (the "activation" event), then design onboarding to drive it. Method in **email-and-lifecycle** and **metrics-and-measurement**.
 - Compare retention **by acquisition source**: paid cohorts often retain worse than organic or referred ones.
+- **When the app ends once it works (dating), some churn is success.** In one survey a third of former users named starting a relationship as a reason they left, and more named failure or fatigue [research; survey, n=349; one country; convenience sample; multiple answers]. Ask leavers why, track the share who leave unhappy, and don't set lower total churn as the goal.
 
 ## App store optimization (ASO)
 
@@ -117,4 +118,4 @@ _In short:_ Common mistakes: paying for installs before retention flattens, aski
 
 ## Sources
 
-research/local-and-consumer-apps.md §2 (Adjust retention benchmarks; Lenny Rachitsky retention survey; Apple product page, product page optimization, ratings and AdAttributionKit docs; Android notification permission and Play In-App Review docs; Airship 2026 push benchmarks; RevenueCat State of Subscription Apps 2026; Epic v. Apple orders, Apple guideline update May 2025, Supreme Court docket 25-1311; Schmitt et al. 2011).
+research/dating-churn-on-success.md (why dating users leave); research/local-and-consumer-apps.md §2 (Adjust retention benchmarks; Lenny Rachitsky retention survey; Apple product page, product page optimization, ratings and AdAttributionKit docs; Android notification permission and Play In-App Review docs; Airship 2026 push benchmarks; RevenueCat State of Subscription Apps 2026; Epic v. Apple orders, Apple guideline update May 2025, Supreme Court docket 25-1311; Schmitt et al. 2011).
