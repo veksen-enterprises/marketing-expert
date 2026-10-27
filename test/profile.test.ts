@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -27,6 +27,33 @@ describe("business profiles", async () => {
     const p = getProfile("acme")!;
     expect(missingFields(p)).toContain("bestFitCustomers");
     expect(staleMetrics(p, 6, new Date("2026-10-04"))).toEqual(["churn (as of 2025-01)"]);
+  });
+  it("asks for traction, not a stage in words: Stage is worked out from traction", () => {
+    const p = getProfile("acme")!;
+    expect(missingFields(p)).toContain("traction");
+    expect(missingFields(p)).not.toContain("stage");
+    expect(missingFields(p)).not.toContain("selfDescribedStage");
+  });
+  it("reads profiles saved with the old names (constraints, stage) under the glossary names, and saves only the new ones", () => {
+    const dir = join(process.env.MARKETING_EXPERT_DATA_DIR!, "profiles");
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, "old.json"), JSON.stringify({ name: "old", constraints: ["5 hours a week"], stage: "private beta" }));
+    const p = getProfile("old")!;
+    expect(p.limits).toEqual(["5 hours a week"]);
+    expect(p.selfDescribedStage).toBe("private beta");
+    expect(p).not.toHaveProperty("constraints");
+    expect(p).not.toHaveProperty("stage");
+    saveProfile("old", { product: "x" });
+    const file = JSON.parse(readFileSync(join(dir, "old.json"), "utf8"));
+    expect(file.limits).toEqual(["5 hours a week"]);
+    expect(file.selfDescribedStage).toBe("private beta");
+    expect(file).not.toHaveProperty("constraints");
+    expect(file).not.toHaveProperty("stage");
+  });
+  it("keeps the new name when a file holds both", () => {
+    const dir = join(process.env.MARKETING_EXPERT_DATA_DIR!, "profiles");
+    writeFileSync(join(dir, "both.json"), JSON.stringify({ name: "both", constraints: ["old"], limits: ["new"] }));
+    expect(getProfile("both")!.limits).toEqual(["new"]);
   });
   it("rejects path traversal", () => {
     expect(() => saveProfile("../evil", {})).toThrow(/lowercase/);
