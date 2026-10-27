@@ -71,6 +71,8 @@ const HREFLANG_RE = /^(x-default|[a-z]{2,3}(-[A-Za-z]{4})?(-([A-Za-z]{2}|\d{3}))
 // lists many large sitemaps.
 const MAX_SITEMAP_BYTES = 50 * 1024 * 1024;
 const MAX_SITEMAP_URLS = 100_000;
+/** A fixed path no site has, so the probe gives the same verdict on every run. */
+export const SOFT_404_PATH = "/marketing-expert-soft-404-check-3f9c1a7e";
 
 function normalize(href: string, base: string): string | null {
   try {
@@ -161,6 +163,30 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     notes.push("robots.txt could not be fetched.");
   }
   const respectRobots = opts.respectRobots ?? true;
+
+  // Soft 404 probe: Google treats a missing page that answers 200 (or redirects to one) as a soft 404, and it
+  // spends crawl budget on URLs that should not exist. One fetch of a path that can't exist shows it.
+  let soft404: Issue | null = null;
+  const probe = new URL(SOFT_404_PATH, start).toString();
+  if (respectRobots && !robotsAllows(robots, probe)) notes.push("The soft 404 probe was not run: robots.txt disallows the probe path.");
+  else {
+    try {
+      const { res, chain } = await getFollow(probe);
+      res.body?.cancel().catch(() => undefined);
+      if (res.status === 200) {
+        const how = chain.length ? `redirects (${chain.join(" ")}) to a page that answers HTTP 200` : "answers HTTP 200";
+        soft404 = {
+          id: "soft-404",
+          severity: "warning",
+          message: `A path that can't exist ${how}. Google reports this as a soft 404 and keeps crawling such URLs. Answer missing pages with HTTP 404 or 410 (a "not found" page can still show links).`,
+          count: 1,
+          examples: [probe],
+        };
+      } else if (res.status !== 404 && res.status !== 410) notes.push(`The soft 404 probe (${probe}) got HTTP ${res.status}, not 404 or 410. Not judged as a soft 404; check what missing pages return.`);
+    } catch {
+      notes.push(`The soft 404 probe (${probe}) could not be fetched; soft 404s were not checked.`);
+    }
+  }
 
   // Sitemaps (one level of sitemap index).
   const sitemapSet = new Set<string>();
@@ -506,6 +532,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     })
   );
   const issues = buildIssues([...pages.values()], inlinkSources, sitemapSet, host, sitemapPartial, canonicalStatus);
+  if (soft404) issues.push(soft404);
   if (limitReached) notes.push(`Stopped at maxPages=${maxPages}; ${left} more URLs were queued. Site-wide counts are partial.`);
   if (robotsDisallowed) notes.push(`${robotsDisallowed} URL(s) skipped because robots.txt disallows them.`);
 
