@@ -204,7 +204,7 @@ Qualifiers go inside the bracket: `[research; RCT, n=337,724; one firm]`, `[firs
 
 Before quoting a number from a playbook as fact, check it against the primary source; the research notes say which ones need it most.
 
-**How quality is measured.** `evals/` holds the method: real cases, a 10-item rubric (`evals/rubric.md`) and graders that check every claim against the business's own repo. In the latest round, 3 runs per case were each graded on their own against the rubric, scoring 17–19 out of 20. The spread within a case (about 2 points) is the noise level any change has to beat. The weakest areas are still keeping evidence qualifiers, focused moves, and plain language.
+**How quality is measured.** `evals/` holds the method: real cases, a rubric (`evals/rubric.md`) and graders that check every claim against the business's own repo. A change is judged by grading old and new runs in one blind batch and taking the mean difference across cases, with a confidence interval (`scripts/evals/grade.mjs`). The last round under the old 20-point rubric scored 17–19 per run. The weakest areas are still keeping evidence qualifiers, focused moves, and plain language.
 
 ## Security
 

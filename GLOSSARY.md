@@ -143,8 +143,12 @@ A grader's scores for one run against the rubric, with its errors and their caus
 _Avoid_: review, evaluation
 
 **Rubric**:
-The fixed ten-item checklist every run is graded against, never against earlier rounds.
+The fixed checklist every run is graded against: eight items scored 0–2 and two pass/fail gates.
 _Avoid_: criteria, scorecard
+
+**Batch**:
+The runs of two versions (or two copies of one round) graded together, shuffled, under ids that hide the version.
+_Avoid_: grading round
 
 **Round**:
 One set of runs across all cases after a change to the server.

@@ -1,6 +1,6 @@
 # What a good answer notices (graders only)
 
-Graders score with `rubric.md`; these notes say what "specific to this business" (item 6) and "diagnosis" (item 3) look like for the fictional cases. A good answer need not hit every point, but missing the first one in each case is a diagnosis error.
+Graders score with `rubric.md`; these notes say what "specific to this business" (gate G6) and "diagnosis" (item 3) look like for the fictional cases. A good answer need not hit every point, but missing the first one in each case is a diagnosis error.
 
 ## ecom-ads (Fernhill Tea)
 - Break-even ROAS at 62% gross margin is about 1.6 (paid_media_math), so 1.4 is below break-even on first orders; with 22% repeat, judge on more than first-order value. Platform-reported ROAS is modelled, not incremental.
