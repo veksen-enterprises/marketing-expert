@@ -40,6 +40,22 @@ Before sending, run check_answer with deliverable "plan" (a 1,800-word limit), a
 Offer to save the confirmed facts with save_business_profile.`;
 }
 
+// The first-run profile questions, most output-changing first. Each saves to fields that match_small_bets reads
+// (`reads`, as factsFromProfile paths); a test checks that changing each one changes the match. `alsoSave` is
+// context the same answer gives for free. A question no tool reads is left out: the direction that needs it asks.
+export const PROFILE_QUESTIONS: Array<{ ask: string; reads: string[]; alsoSave?: string[] }> = [
+  { ask: "how many people opened or ran it at least once in the last 28 days, and how many pay right now (under 20, count them one by one rather than estimate)", reads: ["traction"] },
+  { ask: "for the last few users they know about, how each one found it, and how they know (the user said so, a tagged link, a sign-up question)", reads: ["channels"] },
+  { ask: "whether it charges now, plans to, or will stay free, and at what price", reads: ["revenue"], alsoSave: ["pricing"] },
+  { ask: "dollars a month they can spend on marketing", reads: ["assets.monthlyBudget"] },
+  { ask: "communities where their users gather (subreddits, Discord servers, forums), and any data they hold that nobody else has published", reads: ["assets.communities", "assets.data"] },
+  { ask: "anything they refuse to do in marketing", reads: ["principles", "avoid"] },
+  { ask: "the countries or provinces they sell in, if it charges or collects emails", reads: ["markets"] },
+];
+
+const questionList = PROFILE_QUESTIONS.map((q, i) => `(${i + 1}) ${q.ask}`).join("; ");
+const savedFields = [...new Set(PROFILE_QUESTIONS.flatMap((q) => [...q.reads, ...(q.alsoSave ?? [])]).map((f) => f.split(".")[0]))];
+
 // get_started: what an agent does in a product repo the first time. getStartedSkill wraps the same text as the
 // Claude Code skill in skills/get-started (written by scripts/build-skill.mjs, checked by a test), because an
 // agent can't fetch an MCP prompt itself; only the user can run one.
@@ -47,12 +63,12 @@ export function getStartedText(goal?: string): string {
   return `Set up marketing-expert for the product in this repo and show the user what it can do for it.${opt(goal, "\nGoal")}
 
 1. Read the repo before asking anything: README, docs, pricing, the marketing site source if it's here, and any vision, roadmap or decision-record files. Run scan_source on the repo root. If the marketing site has its own folder, run scan_source on it with compareWith set to the docs folder.
-2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile and work only on its missingFields and staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
+2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile; in step 3 ask only the questions whose fields are still empty, plus its staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
 3. Send the user one short message that shows what this tool can do for the product:
    - What the product is, in two or three lines, each fact with the file it came from. If something couldn't be read or found (no site URL, files scan_source didn't parse), say so in one line at most and work from what you have.
    - 4 to 6 directions to take next that fit this product, one line each, in plain words: what the user gets and the one input it still needs. Choose from: a first marketing strategy with a 90-day plan; small bets (cheap tests that fit now, from match_small_bets); the one thing holding growth back (marketing_diagnosis); positioning against what users do instead (positioning_workshop); a teardown of the homepage or landing page (landing_page_teardown); a technical SEO review of the site source (technical_seo_review); site claims that contradict the docs (scan_source with compareWith); what a customer is worth and what acquisition the business can afford (unit_economics); a launch plan (launch_plan); competing with larger players (competitive_strategy).
-   - The profile questions, numbered, one line each, answerable in a few words, in this order, skipping any the repo already answers: (1) how many people use it now and how many pay; (2) where those users came from (a post, search, word of mouth, a community, a store listing); (3) who gets the most out of it, and what they used before; (4) the price and how people pay; (5) hours and money a week for marketing; (6) what they already have to market with: their own following, communities they're active in, data nobody else has published; (7) the goal (hobby, side income or business) and anything they refuse to do; (8) the countries or provinces they sell in, if it charges or collects emails. Say once that any can be skipped and you'll state assumptions instead. Then ask which direction to start with; the first strategy is the default.
-4. Save what the user confirmed with save_business_profile: traction (dated with asOf), channels, bestFitCustomers, competitiveAlternatives, pricing, assets, audiences, surfaces, revenue, launched, markets, principles and avoid, because match_small_bets and the strategy read them. Don't save assumptions; state them in the answer.
+   - The profile questions, numbered, one line each, answerable in a few words, in this order, skipping any the repo already answers: ${questionList}. Say once that a guess is fine if they say it's a guess, and to skip only what they have no idea about. Then ask which direction to start with; the first strategy is the default.
+4. Save what the user confirmed with save_business_profile: ${[...savedFields, "audiences", "surfaces", "launched"].join(", ")}, because match_small_bets and the strategy read them. Don't save assumptions; state them in the answer.
 5. Do the direction the user picked, using the saved profile, and end with one line naming the next direction worth taking. The first strategy follows the steps below; save it to marketing/strategy-YYYY-MM-DD.md in the repo, and don't commit it unless the user asks.
 
 ## First strategy
