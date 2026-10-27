@@ -96,6 +96,7 @@ Ask in plain words; the server's instructions tell the agent which tools, prompt
 | What does this page or site actually show to people, Google and AI crawlers? | `audit_page`, `crawl_site`, `check_sitemap_robots`, `check_ai_crawler_access` |
 | Do our site, docs and code agree on prices, data handling and what's shipped? | `scan_source` |
 | Is this copy clear, and does it fit the ad or search limits? | `analyze_copy`, `check_copy_limits`, `build_utm_link` |
+| Do the analytics events we send match our tracking plan, and what breaks if the plan changes? | `check_tracking_events`, `diff_tracking_schema` |
 | Which cheap marketing moves fit this business now? | `match_small_bets` |
 | Is the agent's draft short, plain, testable, and true to its sources? | `check_answer`, `verify_quotes` |
 | What do we already know about this business, and what does the evidence say? | `list_business_profiles`, `get_business_profile`, `save_business_profile`, `search_playbooks`, `get_playbook`, `learn_more` |

@@ -13,6 +13,7 @@ import { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } from "./lib
 import { crawlSite } from "./lib/crawl.js";
 import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
 import { checkSitemapXml, checkRobotsTxt } from "./lib/sitemapRobots.js";
+import { checkTrackingEvents, diffTrackingSchema, PROPERTY_TYPES, CONVENTIONS } from "./lib/tracking.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
@@ -744,6 +745,50 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
         ? { untrustedContent: UNTRUSTED, ...evaluateAiAccess(a.robotsTxt, a.url, a.paths), llmsTxtFound: null, note: "Evaluated the robots.txt text you supplied; the live site was not fetched. Firewall/CDN rules and the live file may differ." }
         : { untrustedContent: UNTRUSTED, ...(await checkAiCrawlerAccess(a.url, a.paths)) }
     )
+  );
+
+  // ── Analytics tracking ────────────────────────────────────────────────────
+  const propType = z.enum(PROPERTY_TYPES);
+  const propSpec = z.strictObject({
+    type: z.union([propType, z.array(propType).min(1)]).optional(),
+    required: z.boolean().optional(),
+    pii: z.boolean().optional().describe("Declared personal data: PII checks skip it"),
+    enum: z.array(z.union([z.string(), z.number(), z.boolean()])).optional(),
+  });
+  const convention = z.enum(CONVENTIONS);
+  const trackingSchema = z
+    .strictObject({
+      naming: z.union([convention, z.strictObject({ events: convention.optional(), properties: convention.optional() })]).optional(),
+      commonProperties: z.record(z.string(), propSpec).optional().describe("Properties any event may carry, e.g. user_id"),
+      events: z.record(z.string(), z.strictObject({ properties: z.record(z.string(), propSpec).optional(), additionalProperties: z.boolean().optional().describe("false: undeclared properties are findings") })),
+    })
+    .describe('Tracking plan, e.g. {"naming":"snake_case","events":{"signup_completed":{"properties":{"plan":{"type":"string","required":true,"enum":["free","pro"]}}}}}');
+
+  server.registerTool(
+    "check_tracking_events",
+    {
+      title: "Check captured analytics events against the tracking plan",
+      description:
+        "Check events captured from a browser network log or an analytics debugger export (Segment-style {event, properties} or GA4-style {name, params}) against the declared tracking plan. Reports unknown events, missing required properties, wrong types, values outside an enum, undeclared properties on closed events, names that break the declared convention, and personal data in properties not declared as PII: emails, phone numbers, IP addresses, card numbers (Luhn) and names in properties named like first_name. Each finding names the event index, event, property and rule; learnMore points at the playbook sections that explain them. Nothing is stored. Pass real captured events: events guessed from source code don't test anything.",
+      inputSchema: {
+        schema: trackingSchema,
+        events: z.array(z.looseObject({ event: z.string().optional(), name: z.string().optional(), event_name: z.string().optional(), properties: z.record(z.string(), z.unknown()).optional(), params: z.record(z.string(), z.unknown()).optional() })).min(1).max(5000),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => checkTrackingEvents(a.schema, a.events))
+  );
+
+  server.registerTool(
+    "diff_tracking_schema",
+    {
+      title: "Diff two tracking plans",
+      description:
+        "Compare two versions of a tracking plan (same format as check_tracking_events) and list each change, marked breaking or not: removed events and properties (with a possible rename when exactly one same-shaped name was added), type changes, newly required properties, removed enum values, events closed to undeclared properties, and naming convention changes. Breaking means dashboards, funnels or senders built on the old plan stop working or start failing the check. Nothing is stored.",
+      inputSchema: { before: trackingSchema, after: trackingSchema },
+      annotations: readOnly,
+    },
+    safe((a) => diffTrackingSchema(a.before, a.after))
   );
 
   // ── Business profiles ─────────────────────────────────────────────────────
