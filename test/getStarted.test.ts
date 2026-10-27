@@ -11,7 +11,7 @@ describe("get_started", () => {
     expect(t.indexOf("save_business_profile")).toBeGreaterThan(0);
     expect(t.indexOf("save_business_profile")).toBeLessThan(t.indexOf("match_small_bets on the saved profile"));
   });
-  it("the first message offers directions that exist as tools or prompts, with at most three questions", () => {
+  it("the first message offers directions that exist as tools or prompts", () => {
     const t = getStartedText();
     const step3 = t.slice(t.indexOf("\n3. "), t.indexOf("\n4. "));
     const src = readFileSync("src/server.ts", "utf8") + readFileSync("src/prompts.ts", "utf8");
@@ -19,7 +19,14 @@ describe("get_started", () => {
     const named = [...step3.matchAll(/\b[a-z]+(?:_[a-z]+)+\b/g)].map((m) => m[0]);
     expect(named.length).toBeGreaterThan(5);
     for (const n of named) expect(registered, n).toContain(n);
-    expect(step3).toMatch(/At most three questions/);
+  });
+  it("asks first for the facts that change which bets and channels fit, and saves each to a field the tools read", () => {
+    const t = getStartedText();
+    const step3 = t.slice(t.indexOf("\n3. "), t.indexOf("\n4. "));
+    expect(step3.indexOf("how many people use it now")).toBeLessThan(step3.indexOf("where those users came from"));
+    expect(step3.indexOf("where those users came from")).toBeLessThan(step3.indexOf("the price"));
+    const step4 = t.slice(t.indexOf("\n4. "), t.indexOf("\n5. "));
+    for (const f of ["traction", "channels", "bestFitCustomers", "competitiveAlternatives", "pricing", "assets", "markets", "principles", "avoid"]) expect(step4).toContain(f);
   });
   it("plugin and skill install the same server", () => {
     const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));

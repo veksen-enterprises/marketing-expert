@@ -21,7 +21,7 @@ Needs Node 20 or later.
 /plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert
 ```
 
-Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, sums up the product, lists the directions it can take for it (a first strategy, small bets, positioning, a page teardown, the economics…) and asks at most three questions the repo can't answer. Then it saves the profile and takes the direction you pick; the default is a first strategy in `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
+Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, sums up the product, lists the directions it can take for it (a first strategy, small bets, positioning, a page teardown, the economics…) and asks short profile questions the repo can't answer (users today and where they came from first, then price, time and budget, what you already have, the goal). Then it saves the profile and takes the direction you pick; the default is a first strategy in `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
 
 **Any agent: paste this** in a session opened at your product's repo:
 
@@ -115,7 +115,7 @@ Tips:
 
 | Prompt | What it does |
 |---|---|
-| `get_started` | First run in a product's repo: profile from the repo, the directions it can take, at most three questions, then the direction you pick (also the `get-started` skill) |
+| `get_started` | First run in a product's repo: profile from the repo, the directions it can take, short profile questions, then the direction you pick (also the `get-started` skill) |
 | `marketing_diagnosis` | Finds the one constraint on growth before recommending anything |
 | `marketing_strategy` | Ranked strategy: business-type playbook, economics, channels or (below ~10 paying customers) a first-ten plan, 90 days with dates and hours |
 | `marketing_ideas` | A set number of distinct ideas (default 5), each on a different mechanism and tied to the business's own facts, then the few to test first |
