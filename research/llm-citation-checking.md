@@ -8,7 +8,7 @@ Scope: the judge is handed the claim and the evidence passage in all studies bel
 
 ## Sources
 
-1. Li, Y., Yue, X., Liao, Z. & Sun, H. (2024). "AttributionBench: How Hard is Automatic Attribution Evaluation?" Findings of ACL 2024 (venue from an ACL Anthology search snippet). arXiv:2402.15089. https://arxiv.org/html/2402.15089v1 [read 2026-10-27, through the fetch tool]
+1. Li, Y., Yue, X., Liao, Z. & Sun, H. (2024). "AttributionBench: How Hard is Automatic Attribution Evaluation?" Findings of ACL 2024 (venue from an ACL Anthology search snippet). arXiv:2402.15089. https://arxiv.org/html/2402.15089v1 [read 2026-10-27; fetch summary]
 2. Yue, X., Wang, B., Chen, Z., Zhang, K., Su, Y. & Sun, H. (2023). "Automatic Evaluation of Attribution by Large Language Models." arXiv:2305.06311. https://ar5iv.arxiv.org/html/2305.06311 [read 2026-10-27; venue not checked]
 3. Gao, T., Yen, H., Yu, J. & Chen, D. (2023). "Enabling Large Language Models to Generate Text with Citations" (ALCE). arXiv:2305.14627v2. https://arxiv.org/pdf/2305.14627v2 [read 2026-10-27; venue not checked]
 4. Hu, N., Chen, J., Wu, Y., Qi, G., Wang, H., Bi, S., Chen, Y., Wu, T. & Pan, J. Z. "Can LLMs Evaluate Complex Attribution in QA? Automatic Benchmarking using Knowledge Graphs" (CAQA). arXiv:2401.14640. https://arxiv.org/pdf/2401.14640 [read 2026-10-27; venue and version not checked]

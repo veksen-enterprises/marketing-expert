@@ -103,3 +103,5 @@ Not built here. Ordered by how much the notes agree and whether a test can come 
 6. **Held until a run produces a failing answer (CLAUDE.md rule):** the `check_answer` issue for a single-recent-period baseline (#16), the issue for redesign moves judged by stated preference (#21), and the "which version wins, not how many buy" band-note line (#20).
 
 Changes nothing: a base-rate requirement in `check_answer` or a prior field on predictions (#18: no field gain found, and a required base rate invites invented ones); `market_size` (#22, #30).
+
+Access mark added 2026-10-27: `[read DATE; fetch summary]` for a source seen only through a fetch tool that returns a summary and quotes (`knowledge/_conventions.md`; checked by `test/researchMarks.test.ts`). Applied where a note says how it read the page. Not applied, because the note doesn't say which tool read which source: the notes that only say "access marks as in `founder-test-samples.md`", and `query-page-outcomes.md`, `seasonal-and-hobby-products.md`, `small-bets-direct.md`, `start-with-why.md` (curl and a fetch tool mixed). Their `[read]` marks may overstate.

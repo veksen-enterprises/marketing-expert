@@ -16,8 +16,8 @@ Method caveat: the research proxy blocked support.google.com, developers.google.
 - Same as Google (30/90/15), limits applied after dynamic text substitution. [read 2026-10-05: learn.microsoft.com campaign-management-service/responsivesearchad gives 3–15 headlines of 30, 2–4 descriptions of 90 after substitution; path length not re-read]
 
 ## Meta feed — facebook.com/business/ads-guide
-- Primary text: recommended 50–150 [verified-search: facebook.com, 2026-10-04; read 2026-10-05 via WebFetch of the Facebook feed image guide]. Meta publishes no hard max and no ~125 "See more" cut-off; the 125 / 2,200 / 63,206 figures appear only on third-party spec sites (adsuploader, savemyleads, etc.) — still UNVERIFIED, keep as warnings only.
-- Headline recommended 27 [verified-search: facebook.com, 2026-10-04; read 2026-10-05 via WebFetch]; hard max UNVERIFIED (third-party sites claim 255). Older 125/40/30 guidance no longer in the guide; a facebook.com snippet still shows 125/40 for an older carousel spec.
+- Primary text: recommended 50–150 [verified-search: facebook.com, 2026-10-04; read 2026-10-05; fetch summary of the Facebook feed image guide]. Meta publishes no hard max and no ~125 "See more" cut-off; the 125 / 2,200 / 63,206 figures appear only on third-party spec sites (adsuploader, savemyleads, etc.) — still UNVERIFIED, keep as warnings only.
+- Headline recommended 27 [verified-search: facebook.com, 2026-10-04; read 2026-10-05; fetch summary]; hard max UNVERIFIED (third-party sites claim 255). Older 125/40/30 guidance no longer in the guide; a facebook.com snippet still shows 125/40 for an older carousel spec.
 - Description: no length found in the current feed-image guide.
 - Carousel: primary 80, headline 45, description 18 (recommended) [verified-search: facebook.com, 2026-10-04] (re-check 2026-10-05: carousel page not re-read; facebook.com refuses direct fetches).
 
