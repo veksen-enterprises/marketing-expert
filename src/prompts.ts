@@ -45,7 +45,7 @@ Offer to save the confirmed facts, and each move the user takes on as a predicti
 // context the same answer gives for free. A question no tool reads is left out: the direction that needs it asks.
 export const PROFILE_QUESTIONS: Array<{ ask: string; reads: string[]; alsoSave?: string[] }> = [
   { ask: "how many people opened or ran it at least once in the last 28 days, and how many pay right now (under 20, count them one by one rather than estimate), and whether that is counted from a record or a guess", reads: ["traction"], alsoSave: ["traction.basis"] },
-  { ask: "for the last few users they know about, how each one found it, and how they know (the user said so, a tagged link, a sign-up question)", reads: ["channels"] },
+  { ask: "for the last few users they know about, how each one found it, and how they know (the user said so, a tagged link, a sign-up question)", reads: ["channels"], alsoSave: ["channels.how"] },
   { ask: "whether it charges now, plans to, or will stay free, and at what price", reads: ["revenue"], alsoSave: ["pricing"] },
   { ask: "dollars a month they can spend on marketing", reads: ["assets.monthlyBudget"] },
   { ask: "communities where their users gather (subreddits, Discord servers, forums), and any data they hold that nobody else has published", reads: ["assets.communities", "assets.data"] },

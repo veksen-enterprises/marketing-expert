@@ -740,7 +740,11 @@ export function createServer(): McpServer {
         valueThemes: strList,
         proof: strList,
         pricing: z.string().nullable().optional(),
-        channels: strList,
+        channels: z
+          .array(z.union([z.string(), z.object({ name: z.string(), how: z.string().optional() })]))
+          .nullable()
+          .optional()
+          .describe('Where users came from. Only a channel with how (how the founder knows: a user said so, a referrer, a tagged link) ranks bets up; a plain string is a guess. e.g. [{"name": "Reddit", "how": "two users said so"}]'),
         metrics: z
           .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional(), basis }).nullable())
           .nullable()
