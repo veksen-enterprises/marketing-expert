@@ -6,14 +6,14 @@ Hop 1 from `llm-citation-checking.md`. Access marks as in `founder-test-samples.
 
 ## Sources
 
-1. Thakur, N., Pradeep, R., Upadhyay, S., Campos, D., Craswell, N. & Lin, J. "Support Evaluation for the TREC 2024 RAG Track: Comparing Human versus LLM Judges." arXiv:2504.15205. https://arxiv.org/pdf/2504.15205 [read 2026-10-27; venue and date not checked]
-2. Leung, E., Lumer, E., Feld, C., Huber, A., Subbiah, V. K. & Paul, K. (2026). "Do You Need a Frontier Model as a Citation Verifier? Benchmarking Rubric LLMs for Deep-Research Source Attribution." arXiv:2607.08700. https://arxiv.org/pdf/2607.08700 [read 2026-10-27]
-3. Ding, T., Nannapaneni, A. & De la Cruz Weinstein, J. P. (2026). "Do LLM Attribution Metrics Transfer? Auditing Retrieval-Augmented Generation Evaluation Across Datasets and Constructs." GroundLM workshop, EMNLP 2026 (as stated in the paper). arXiv:2606.23915. https://arxiv.org/pdf/2606.23915 [read 2026-10-27]
-4. Onweller et al. (2026). "Cited but Not Verified: Parsing and Evaluating Source Attribution in LLM Deep Research Agents." arXiv:2605.06635. https://arxiv.org/pdf/2605.06635 [read 2026-10-27]
-5. Tang, L., Laban, P. & Durrett, G. (2024). "MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents" (LLM-AggreFact). arXiv:2404.10774v2. https://arxiv.org/pdf/2404.10774 [read 2026-10-27; venue EMNLP 2024 per an alphaxiv page, not checked]
-6. Hu, Q., Long, Q. & Wang, W. (2025). "Decomposition Dilemmas: Does Claim Decomposition Boost or Burden Fact-Checking Performance?" arXiv:2411.02400v2. https://arxiv.org/html/2411.02400v2 [read 2026-10-27; venue not checked]
-7. Kamoi, R., Goyal, T., Rodriguez, J. D. & Durrett, G. (2023). "WiCE: Real-World Entailment for Claims in Wikipedia." arXiv:2303.01432. https://arxiv.org/pdf/2303.01432 [read 2026-10-27; EMNLP 2023 per ACL Anthology search result, snippet-only]
-8. Zhang, X. (2026). "Atomic and Holistic LLM Judges for Reference-Grounded Support Labels: A Prompt-Controlled Comparison." arXiv:2603.28005. https://arxiv.org/html/2603.28005 [read 2026-10-27; date and venue not stated]
+1. Thakur, N., Pradeep, R., Upadhyay, S., Campos, D., Craswell, N. & Lin, J. "Support Evaluation for the TREC 2024 RAG Track: Comparing Human versus LLM Judges." arXiv:2504.15205. https://arxiv.org/pdf/2504.15205 [read 2026-10-27; fetch summary; venue and date not checked]
+2. Leung, E., Lumer, E., Feld, C., Huber, A., Subbiah, V. K. & Paul, K. (2026). "Do You Need a Frontier Model as a Citation Verifier? Benchmarking Rubric LLMs for Deep-Research Source Attribution." arXiv:2607.08700. https://arxiv.org/pdf/2607.08700 [read 2026-10-27; fetch summary]
+3. Ding, T., Nannapaneni, A. & De la Cruz Weinstein, J. P. (2026). "Do LLM Attribution Metrics Transfer? Auditing Retrieval-Augmented Generation Evaluation Across Datasets and Constructs." GroundLM workshop, EMNLP 2026 (as stated in the paper). arXiv:2606.23915. https://arxiv.org/pdf/2606.23915 [read 2026-10-27; fetch summary]
+4. Onweller et al. (2026). "Cited but Not Verified: Parsing and Evaluating Source Attribution in LLM Deep Research Agents." arXiv:2605.06635. https://arxiv.org/pdf/2605.06635 [read 2026-10-27; fetch summary]
+5. Tang, L., Laban, P. & Durrett, G. (2024). "MiniCheck: Efficient Fact-Checking of LLMs on Grounding Documents" (LLM-AggreFact). arXiv:2404.10774v2. https://arxiv.org/pdf/2404.10774 [read 2026-10-27; fetch summary; venue EMNLP 2024 per an alphaxiv page, not checked]
+6. Hu, Q., Long, Q. & Wang, W. (2025). "Decomposition Dilemmas: Does Claim Decomposition Boost or Burden Fact-Checking Performance?" arXiv:2411.02400v2. https://arxiv.org/html/2411.02400v2 [read 2026-10-27; fetch summary; venue not checked]
+7. Kamoi, R., Goyal, T., Rodriguez, J. D. & Durrett, G. (2023). "WiCE: Real-World Entailment for Claims in Wikipedia." arXiv:2303.01432. https://arxiv.org/pdf/2303.01432 [read 2026-10-27; fetch summary; EMNLP 2023 per ACL Anthology search result, snippet-only]
+8. Zhang, X. (2026). "Atomic and Holistic LLM Judges for Reference-Grounded Support Labels: A Prompt-Controlled Comparison." arXiv:2603.28005. https://arxiv.org/html/2603.28005 [read 2026-10-27; fetch summary; date and venue not stated]
 
 Skipped: the LLM-AggreFact leaderboard page (only GPT-4 and MiniCheck figures visible, binary labels); FACTS Grounding (binary judge verdicts, not a partial-support measure); HALLMARK (arXiv:2607.18360; checks citation metadata, not claim support); AFEV (arXiv:2506.07446; GPT-3.5, its no-decomposition ablation was cut off in the fetch).
 
