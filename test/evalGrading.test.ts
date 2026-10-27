@@ -3,11 +3,13 @@ import { execFileSync } from "node:child_process";
 import { chmodSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { checkAnswer } from "../src/lib/answerCheck.js";
+import { checkQuotes } from "../src/lib/quoteCheck.js";
+import { checkLabels } from "../src/lib/labelCheck.js";
 import { join } from "node:path";
 // @ts-ignore: plain .mjs scripts, no type declarations
 import { fQuantile, iccOneWay, itemAgreement, pairedComparison, tQuantile, varianceSplit } from "../scripts/evals/stats.mjs";
 // @ts-ignore
-import { answerSection, caseOfRun, errorsOverlap, fingerprintStatus, parseGrade, planBatch, redact } from "../scripts/evals/grades.mjs";
+import { answerSection, caseOfRun, errorsOverlap, fingerprintStatus, formatToolFindings, parseGrade, planBatch, redact, toolFindings } from "../scripts/evals/grades.mjs";
 
 const script = join(__dirname, "../scripts/evals/grade.mjs");
 
@@ -125,6 +127,38 @@ describe("reading grades", () => {
   });
 });
 
+describe("tool findings for graders (research/llm-citation-checking.md §5)", () => {
+  const tools = { checkQuotes, checkLabels };
+  // Line 48 of evals/runs/v4/devtool-strategy.md: the v4 grader found the dropped qualifier by hand.
+  const v4 = readFileSync("evals/runs/v4/devtool-strategy.md", "utf8").split("\n")[47];
+  it("counts a dropped bracket qualifier from a real answer, with the playbook label", () => {
+    expect(v4).toMatch(/\[first-party survey\]/);
+    const f = toolFindings(v4, undefined, tools);
+    expect(f.label).toHaveLength(1);
+    expect(f.label[0]).toMatchObject({ status: "qualifier-dropped", sourceLabels: ["first-party survey; self-selected sample"] });
+    // No material: quotes are not checked, and that is said, not counted as zero.
+    expect(f.quote).toBeNull();
+  });
+  it("counts a quote on the wrong line or not in the source, and not a verified one", () => {
+    const material = "evals/fixtures/kitlend";
+    const answer = [
+      'The founders "launched 20 months ago" (ABOUT.md:9).',
+      'They rule out "no gear that can\'t be inspected in person" (ABOUT.md:6).',
+      'They want "growth at any cost" (ABOUT.md:3).',
+    ].join("\n");
+    const f = toolFindings(answer, material, tools);
+    expect(f.quote!.map((q: { status: string }) => q.status)).toEqual(["wrong-line", "not-found"]);
+    expect(f.label).toEqual([]);
+  });
+  it("formats the findings for the grader prompt, and says what they don't cover", () => {
+    const text = formatToolFindings(toolFindings(v4, undefined, tools));
+    expect(text).toMatch(/qualifier-dropped.*first-party survey; self-selected sample/);
+    expect(text).toMatch(/Quotes: not checked/);
+    expect(text).toMatch(/paraphrase/);
+    expect(formatToolFindings({ quote: [], label: [] })).toMatch(/Quotes: none found/);
+  });
+});
+
 describe("blind batches", () => {
   const ids = new Set(["devtool-site", "ecom-ads"]);
   it("maps run files to cases and skips contaminated ones out loud", () => {
@@ -167,6 +201,7 @@ describe("grade.mjs end to end, with a stand-in grader", () => {
   const mock = `#!/usr/bin/env node
 const fs = require("fs");
 const prompt = process.argv[process.argv.indexOf("-p") + 1];
+if (process.env.PROMPT_LOG) fs.appendFileSync(process.env.PROMPT_LOG, prompt + "\\n=====\\n");
 const path = prompt.match(/The answer: (\\S+?\\.md)\\./)[1];
 const q = Number(fs.readFileSync(path, "utf8").match(/QUALITY=(\\d)/)[1]);
 const id = path.match(/--([0-9a-z]{6})\\.md$/)[1];
@@ -193,8 +228,15 @@ console.log("\\x60\\x60\\x60json\\n" + JSON.stringify(q < 2 ? [{ class: "bundled
     const blinded = run(["blind", "--baseline", join(tmp, "v1"), "--candidate", join(tmp, "v2"), "--out", batch, "--seed", "3"]);
     expect(blinded).toMatch(/skipped .*kitlend-ish-1\.md: not a case id/);
     for (const f of readdirSync(join(batch, "answers"))) expect(readFileSync(join(batch, "answers", f), "utf8")).not.toMatch(/v1|v2/);
+    process.env.PROMPT_LOG = join(tmp, "prompts.log");
     run(["grade", "--batch", batch, "--grader-cmd", grader, "--parallel", "2"]);
+    delete process.env.PROMPT_LOG;
+    const prompts = readFileSync(join(tmp, "prompts.log"), "utf8");
+    expect(prompts).toMatch(/Already counted by script/);
+    expect(prompts).toMatch(/quote the source words for each, or write "none"/);
+    expect(prompts).toMatch(/Quotes: none found wrong/);
     const json = JSON.parse(run(["compare", "--batch", batch, "--json"]));
+    for (const name of ["quote problems (verify_quotes)", "label problems (check_answer)"]) expect(json.results.find((r: { name: string }) => r.name === name)?.k, name).toBe(2);
     const total = json.results.find((r: { name: string }) => r.name === "total");
     expect(total.k).toBe(2);
     expect(total.cases.map((c: { case: string }) => c.case)).toEqual(["ecom-ads", "local-weekdays"]);

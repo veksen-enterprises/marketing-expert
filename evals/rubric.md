@@ -53,3 +53,5 @@ Besides the prose grade, write `errors.json` next to each grade: one object per 
 ```
 
 Classes: misquote, wrong-line, wrong-file, qualifier-dropped, label-upgraded, bundled-move, missing-test-or-stop, unexplained-jargon, invented-number, wrong-tool-use, other (say what). An error with no verbatim `claim` can't be reproduced; leave it out of the file and mention it in the prose.
+
+Quotes and evidence brackets are checked by script (`verify_quotes`, the label check) and counted by `grade.mjs compare`; the grader prompt lists what they found. Don't add those to `errors.json`. Your citation work is the claims in the answer's own words that cite a source. For each, copy the claim's who, how many and how sure words ("developers", "most", "proven"), then quote the source words for each, or write "none". Any "none" is a `qualifier-dropped` error: put the claim words and the source words in `claim` and `sourceText`. Don't split the claim into all its facts first; in the one comparison on partial support, that did worse than checking the claim whole (research/partial-support-judges.md §3).
