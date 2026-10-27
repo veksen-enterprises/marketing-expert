@@ -90,7 +90,7 @@ export interface Bet {
 }
 
 export interface SmallBetsFacts {
-  traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
+  traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string; basis?: "counted" | "estimated" };
   assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
   audiences?: Audience[];
   surfaces?: Surface[];
@@ -124,7 +124,7 @@ export function readStage(f: SmallBetsFacts): StageReading {
   const users = t.activeUsers ?? 0;
   const visits = t.monthlyVisits ?? 0;
   const paying = t.payingCustomers ?? 0;
-  const as = t.asOf ? ` (as of ${t.asOf})` : "";
+  const as = `${t.asOf ? ` (as of ${t.asOf})` : ""}${t.basis === "counted" ? "" : ", estimated"}`;
   if (users >= STAGE2_USERS || visits >= STAGE2_VISITS) return { stage: 2, basis: `${users} active users, ${visits} monthly visits${as}` };
   if (users > 0 || paying > 0) return { stage: 1, basis: `${users} active users, ${paying} paying${as}` };
   return { stage: 0, basis: `no active users yet${as}` };
@@ -250,6 +250,8 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   const budget = a.monthlyBudget ?? 0;
   const assumptions: string[] = [];
   if (stage.basis.startsWith("no traction")) assumptions.push("No traction numbers saved; treated as no users yet. Save traction (active users, monthly visits, paying customers) to unlock later-stage bets.");
+  else if (f.traction?.basis !== "counted" && !stage.basis.startsWith("newsworthy"))
+    assumptions.push(`Traction is not marked as counted from a record, so stage ${stage.stage} rests on an estimate. Say so in the answer; near ${STAGE2_USERS} active users or ${STAGE2_VISITS.toLocaleString("en-US")} monthly visits, ask for the counted number and save it with basis "counted".`);
   if (!f.audiences?.length) assumptions.push("Audience not saved (businesses, developers, consumers, hobbyists, local), so no bet was ruled out for its audience.");
   if (!f.surfaces?.length) assumptions.push("Product surfaces not saved (web app, mobile app, CLI, library, API, bot...), so bets that need a specific surface were kept.");
   if (!f.avoid) assumptions.push("No 'avoid' list saved, so no bet was ruled out by the business's principles. Check each fitting bet against its non-goals before proposing it.");

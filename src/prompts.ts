@@ -37,14 +37,14 @@ Business: ${business}
 7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
 8. What not to do yet, and why.
 Before sending, run check_answer with deliverable "plan" (a 1,800-word limit), and with agentChannel true if scan_source reported mcpServer.
-Offer to save the confirmed facts with save_business_profile.`;
+Offer to save the confirmed facts, and each move the user takes on as a prediction, with save_business_profile.`;
 }
 
 // The first-run profile questions, most output-changing first. Each saves to fields that match_small_bets reads
 // (`reads`, as factsFromProfile paths); a test checks that changing each one changes the match. `alsoSave` is
 // context the same answer gives for free. A question no tool reads is left out: the direction that needs it asks.
 export const PROFILE_QUESTIONS: Array<{ ask: string; reads: string[]; alsoSave?: string[] }> = [
-  { ask: "how many people opened or ran it at least once in the last 28 days, and how many pay right now (under 20, count them one by one rather than estimate)", reads: ["traction"] },
+  { ask: "how many people opened or ran it at least once in the last 28 days, and how many pay right now (under 20, count them one by one rather than estimate), and whether that is counted from a record or a guess", reads: ["traction"], alsoSave: ["traction.basis"] },
   { ask: "for the last few users they know about, how each one found it, and how they know (the user said so, a tagged link, a sign-up question)", reads: ["channels"] },
   { ask: "whether it charges now, plans to, or will stay free, and at what price", reads: ["revenue"], alsoSave: ["pricing"] },
   { ask: "dollars a month they can spend on marketing", reads: ["assets.monthlyBudget"] },
@@ -54,7 +54,8 @@ export const PROFILE_QUESTIONS: Array<{ ask: string; reads: string[]; alsoSave?:
 ];
 
 const questionList = PROFILE_QUESTIONS.map((q, i) => `(${i + 1}) ${q.ask}`).join("; ");
-const savedFields = [...new Set(PROFILE_QUESTIONS.flatMap((q) => [...q.reads, ...(q.alsoSave ?? [])]).map((f) => f.split(".")[0]))];
+// reads collapse to their top field; alsoSave stays as written, so a sub-field such as traction.basis is named.
+const savedFields = [...new Set(PROFILE_QUESTIONS.flatMap((q) => [...q.reads.map((f) => f.split(".")[0]), ...(q.alsoSave ?? [])]))];
 
 // get_started: what an agent does in a product repo the first time. getStartedSkill wraps the same text as the
 // Claude Code skill in skills/get-started (written by scripts/build-skill.mjs, checked by a test), because an
@@ -63,7 +64,7 @@ export function getStartedText(goal?: string): string {
   return `Set up marketing-expert for the product in this repo and show the user what it can do for it.${opt(goal, "\nGoal")}
 
 1. Read the repo before asking anything: README, docs, pricing, the marketing site source if it's here, and any vision, roadmap or decision-record files. Run scan_source on the repo root. If the marketing site has its own folder, run scan_source on it with compareWith set to the docs folder.
-2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile; in step 3 ask only the questions whose fields are still empty, plus its staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
+2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile; ask about its duePredictions first, then in step 3 ask only the questions whose fields are still empty, plus its staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
 3. Send the user one short message that shows what this tool can do for the product:
    - What the product is, in two or three lines, each fact with the file it came from. If something couldn't be read or found (no site URL, files scan_source didn't parse), say so in one line at most and work from what you have.
    - 4 to 6 directions to take next that fit this product, one line each, in plain words: what the user gets and the one input it still needs. Choose from: a first marketing strategy with a 90-day plan; small bets (cheap tests that fit now, from match_small_bets); the one thing holding growth back (marketing_diagnosis); positioning against what users do instead (positioning_workshop); a teardown of the homepage or landing page (landing_page_teardown); a technical SEO review of the site source (technical_seo_review); site claims that contradict the docs (scan_source with compareWith); what a customer is worth and what acquisition the business can afford (unit_economics); a launch plan (launch_plan); competing with larger players (competitive_strategy).

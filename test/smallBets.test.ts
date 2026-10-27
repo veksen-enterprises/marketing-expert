@@ -102,7 +102,7 @@ describe("matchSmallBets", () => {
 
   // An early developer tool with a paid plan and a little traction.
   const devtool: SmallBetsFacts = {
-    traction: { activeUsers: 150, monthlyVisits: 3000, payingCustomers: 4, asOf: "2026-09" },
+    traction: { activeUsers: 150, monthlyVisits: 3000, payingCustomers: 4, asOf: "2026-09", basis: "counted" },
     assets: { expertise: "database performance", accounts: true },
     audiences: ["developers", "businesses"],
     surfaces: ["cli", "api", "web-app"],

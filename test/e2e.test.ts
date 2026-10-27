@@ -81,6 +81,24 @@ describe.skipIf(!built)("MCP server over stdio", () => {
     expect((r.contents[0] as { text: string }).text).toMatch(/"product": "x"/);
   });
 
+  it("saves predictions through the tool schema and returns the overdue ones with a note", async () => {
+    const move = { move: "Email 40 yarn shops", stop: "Stop if fewer than 3 of 40 agree", k: 3, n: 40 };
+    await call("save_business_profile", { name: "knit", traction: { activeUsers: 90, basis: "counted" }, predictions: [{ id: "shops", madeOn: "2026-08-04", checkOn: "2026-09-15", ...move }] });
+    await call("save_business_profile", { name: "knit", predictions: [{ id: "later", checkOn: "2999-01-01", ...move }] });
+    const g = await call("get_business_profile", { name: "knit" });
+    expect(g.json.profile.predictions.map((x: { id: string }) => x.id)).toEqual(["shops", "later"]);
+    expect(g.json.duePredictions.map((x: { id: string }) => x.id)).toEqual(["shops"]);
+    expect(g.json.duePredictionsNote).toMatch(/Before new advice, ask the user what happened/);
+    expect(g.json.estimatedFacts).toEqual([]);
+    const bad = await call("save_business_profile", { name: "knit", predictions: [{ id: "shops", outcome: { result: "it worked", stopHit: false, how: "recalled" } }] });
+    expect(bad.isError).toBe(true);
+    expect(bad.text).toMatch(/needs the number/);
+    await call("save_business_profile", { name: "knit", predictions: [{ id: "shops", outcome: { result: "0 of 40 agreed", stopHit: true, how: "measured", k: 0, n: 40 } }] });
+    const after = await call("get_business_profile", { name: "knit" });
+    expect(after.json.duePredictions).toEqual([]);
+    expect(after.json).not.toHaveProperty("duePredictionsNote");
+  });
+
   it("audits raw html and renders prompts", async () => {
     const a = await call("audit_page", { html: "<html><head><title>x</title></head><body><h1>Hi</h1></body></html>" });
     expect(a.json.h1s).toEqual(["Hi"]);

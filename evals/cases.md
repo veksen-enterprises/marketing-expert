@@ -28,3 +28,6 @@ These businesses are invented, so their material can live in the repo: `evals/fi
 | app-downloads | Stillwater (iOS meditation app) | stillwater | "How do I get more downloads? I'm a solo developer with no marketing budget to speak of." |
 | marketplace-city | Kitlend (camping gear rental) | kitlend | "Should we launch a third city before next season?" |
 | services-growth | Ledgerline (bookkeeping firm) | ledgerline | "Almost all our clients come from referrals. How do we get clients beyond that?" |
+| follow-up | Rowcount (knitting row counter app) | rowcount | "What should I do next to get more paying users for Rowcount?" |
+
+The follow-up case starts from a saved profile: copy `evals/fixtures/rowcount.profile.json` to `$MARKETING_EXPERT_DATA_DIR/profiles/rowcount.json` before the run, and keep it out of the folder the advisor reads. The profile holds two moves an earlier run set in August 2026, both past their check date with no outcome. NUMBERS.md answers one (the yarn-shop emails hit their stop line); nothing in the material answers the other. Run it with today set to 2026-10-27 or later.

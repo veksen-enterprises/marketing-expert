@@ -1,0 +1,37 @@
+{
+  "name": "rowcount",
+  "product": "Row and stitch counter for knitters and crocheters (web and iOS), with chart import from PDF patterns",
+  "category": "consumer hobby app",
+  "businessModel": "freemium subscription",
+  "stage": "first users",
+  "bestFitCustomers": "Hobby knitters who follow PDF patterns with charts",
+  "pricing": "Free for one project; Plus $4 a month or $36 a year",
+  "channels": ["App Store search", "web search", "r/knitting launch post"],
+  "traction": { "activeUsers": 2000, "payingCustomers": 190, "asOf": "2026-08", "basis": "counted" },
+  "audiences": ["hobbyists", "consumers"],
+  "surfaces": ["web-app", "mobile-app"],
+  "revenue": "live",
+  "launched": true,
+  "principles": ["No ads", "No selling or sharing user data", "Imported patterns stay private"],
+  "predictions": [
+    {
+      "id": "yarn-shop-cards",
+      "madeOn": "2026-08-04",
+      "move": "Email 40 independent yarn shops offering a free co-branded counter card for their counters",
+      "metric": "Shops that agree to stock the card",
+      "stop": "Stop if fewer than 3 of 40 shops agree by 2026-09-15",
+      "k": 3,
+      "n": 40,
+      "checkOn": "2026-09-15"
+    },
+    {
+      "id": "chart-import-onboarding",
+      "madeOn": "2026-08-04",
+      "move": "Add a first-run prompt that asks new users to import a PDF chart",
+      "metric": "Share of new accounts that import a chart in week 1",
+      "stop": "Stop if under 25% of new accounts import a chart in week 1, over 4 weeks after release",
+      "checkOn": "2026-10-01"
+    }
+  ],
+  "updatedAt": "2026-08-04T12:00:00.000Z"
+}
