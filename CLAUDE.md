@@ -39,8 +39,8 @@ Run `npm test` and check its exit code before committing; a grep of the output i
 
 1. Pick cases from `evals/cases.md` (or add cases for business types not yet covered: see ROADMAP).
 2. Run at least 3 advisor runs per case through `scripts/mcp.mjs`, each with its own `MARKETING_EXPERT_DATA_DIR` and its own temp directory; tell each not to read other temp files.
-3. Grade each run independently against `evals/rubric.md` only (not against earlier rounds). Graders open every cited file, recompute `check_answer`'s fingerprint on the saved answer, and tag each error with a class (misquote, wrong-line, qualifier-dropped, bundled-move, unexplained-jargon and so on).
-4. Compare per-case ranges and error-class counts with the last round. A change counts only if it beats the within-case spread (about 2 points).
+3. Grade the baseline and candidate runs together, blind: `node scripts/evals/grade.mjs blind`, then `grade` (`evals/README.md`, "Comparing two versions"). Graders see one answer and the rubric, open every cited file, and tag each error with a class (misquote, wrong-line, qualifier-dropped, bundled-move, unexplained-jargon and so on). The script checks `check_answer`'s fingerprint.
+4. `grade.mjs compare` gives the per-case differences and the mean difference across cases with a 95% CI. A change counts only if the interval excludes zero; read the per-case rows for business types it hurts.
 
 Evaluation outputs go under `evals/runs/` and `evals/grades/`; check with the owner before committing them.
 
