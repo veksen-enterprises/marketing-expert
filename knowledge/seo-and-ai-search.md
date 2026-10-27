@@ -53,7 +53,7 @@ Run crawl_site on the whole site for site-wide problems (broken links, redirect 
 - One clear h1; logical heading structure.
 - Server-rendered main content (crawlers and LLM fetchers see less of client-rendered pages).
 - Core Web Vitals good: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1.
-- Structured data where it maps to a rich result (Product, Organization, Article, FAQ only where eligible); valid JSON-LD.
+- Structured data where it maps to a rich result (Product, Organization, Article, Breadcrumb); valid JSON-LD with Google's required properties (audit_page checks them). Google stopped showing FAQ rich results on 7 May 2026 [first-party; Google's FAQPage page, read 2026-10-27].
 - Mobile-friendly, HTTPS, no redirect chains.
 
 ## Common mistakes
@@ -67,4 +67,4 @@ _In short:_ Don't judge SEO by traffic alone, publish volume over quality, targe
 
 ## Sources
 
-research/landscape-2026.md §4, §6 (Pew 2025; Ahrefs 2025; Seer 2025; Semrush 2025; Aggarwal et al. 2024; Google Search Central blog 2024; Search Engine Land). Figures largely from search snippets; marked [verify] in the research notes.
+research/landscape-2026.md §4, §6 (Pew 2025; Ahrefs 2025; Seer 2025; Semrush 2025; Aggarwal et al. 2024; Google Search Central blog 2024; Search Engine Land). Figures largely from search snippets; marked [verify] in the research notes. research/seo-advanced.md source 40 for the end of FAQ rich results.
