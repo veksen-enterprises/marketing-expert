@@ -37,7 +37,7 @@ Searched and not found: any study comparing a business owner's account of where 
 - Section 1 predicts exactly that failure for channels the founder posted in: a launch site or a community thread is both prominent to the founder and related to the product. [derived from 1]
 - Named cases survive better than shares. "The last three users: one said a friend told them, one came from a Reddit comment link, one I don't know" carries its own basis. PR #20 (open) rewrites the question this way: last few users, and how the founder knows. [derived; intake-question-design.md §3]
 
-## 5. Proposed change (not built; depends on PR #20 and the basis tags)
+## 5. Proposed change (items 1–3 built 2026-10-27 as a `how` on each channel; item 4 superseded)
 
 1. **`match_small_bets`: boost only on a channel with a basis.** When the profile marks a channel as a guess, or the answer gives no basis, don't boost; add an assumption line: "Not ranked up for <channel>: it's a guess where users came from. Say which recent users came from it and how you know, and it will be." When the basis is a user's own word, a link or a referrer, boost as now. Test: two profiles identical but for the channel's basis; scores differ only on the bets of that channel kind.
 2. **Do not drop the boost.** No source shows the boost picks worse bets; the evidence is only that its input is noisy. Keeping it behind a basis keeps the useful case (a referrer or a user's word) and removes the guessed one. [derived]

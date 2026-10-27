@@ -4,7 +4,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync, renameSync } from "node:fs";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
-import type { Audience, AvoidTag, Surface } from "./smallBets.js";
+import type { Audience, AvoidTag, Channel, Surface } from "./smallBets.js";
 
 /** "counted": looked up in a record (a database, Stripe, an analytics export). Anything else, missing included, is an estimate. */
 export type Basis = "counted" | "estimated";
@@ -57,7 +57,7 @@ export interface BusinessProfile {
   valueThemes?: string[];
   proof?: string[];
   pricing?: string;
-  channels?: string[];
+  channels?: Channel[];
   metrics?: Record<string, Metric>;
   voice?: { do?: string[]; dont?: string[] };
   constraints?: string[];

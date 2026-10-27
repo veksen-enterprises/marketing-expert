@@ -36,7 +36,7 @@ describe("get_started", () => {
   it("every profile question saves to a field that changes match_small_bets", () => {
     const sample: Record<string, unknown> = {
       traction: { activeUsers: 150, payingCustomers: 3 },
-      channels: ["Google search"],
+      channels: [{ name: "Google search", how: "a user said so" }],
       revenue: "none",
       "assets.monthlyBudget": 500,
       "assets.communities": "two Discord servers",
