@@ -42,6 +42,7 @@ describe("knowledge base", () => {
     ["product qualified leads activation onboarding freemium", "self-serve-saas"],
     ["contribution margin returns repeat purchase shopify", "ecommerce-dtc"],
     ["marketplace cold start supply liquidity take rate", "marketplaces"],
+    ["dating app cold start chicken and egg", "marketplaces"],
     ["google business profile reviews local pack", "local-seo"],
     ["dentist plumber local business rebooking", "local-services"],
     ["app store optimization retention d30 paywall", "consumer-apps"],

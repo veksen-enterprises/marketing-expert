@@ -19,6 +19,17 @@ describe("checkLabels", () => {
     expect(r[0].status).toBe("qualifier-dropped");
     expect(r[0].sourceLabels.join(" ")).toMatch(/self-selected/);
   });
+  it("treats one-study, one-site, field-experiment, theory and observational notes as qualifiers", () => {
+    // A [research] answer label for a dating claim matched a lab-study bullet in another playbook, because none of
+    // the true source's qualifiers counted as one.
+    const rose = checkLabels("In dating apps, a limited rose raised acceptance of a date request about 20% [research].");
+    expect(rose[0]).toMatchObject({ status: "qualifier-dropped" });
+    expect(rose[0].source).toMatch(/^marketplaces:\d+ › Dating/);
+    const theory = checkLabels("Charge a lead or referral fee instead of a transaction fee to limit leakage [research, Hagiu & Wright 2024].");
+    expect(theory[0]).toMatchObject({ status: "qualifier-dropped", sourceLabels: ["research (theory), Hagiu & Wright 2024"] });
+    const kept = checkLabels("Charge a lead or referral fee instead of a transaction fee to limit leakage [research (theory), Hagiu & Wright 2024].");
+    expect(kept[0].status).toBe("ok");
+  });
   it("accepts the full bracket", () => {
     const r = checkLabels("Developers judge a tool by its docs and quickstart [first-party survey; self-selected sample].");
     expect(r[0].status).toBe("ok");
