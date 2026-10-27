@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "MCP server that gives an LLM marketing tooling: calculators, copy/page audits, and opinionated playbooks.",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/build-info.mjs",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "prepare": "tsc"
+    "prepare": "tsc && node scripts/build-info.mjs"
   },
   "repository": {
     "type": "git",
