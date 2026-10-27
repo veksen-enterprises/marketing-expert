@@ -196,8 +196,8 @@ export async function checkEmailDomain(domainInput: string, selectors: string[] 
     else if (dmarc.record) {
       const inherited = dmarc.foundAt !== domain;
       const effective = inherited ? (dmarc.subdomainPolicy ?? dmarc.policy) : dmarc.policy;
-      if (inherited) add("dmarc", "info", `${domain} has no DMARC record of its own; the record at _dmarc.${dmarc.foundAt} applies (policy ${effective ?? "none set"}).`, RFC_DMARC);
-      if (!dmarc.policy || !["none", "quarantine", "reject"].includes(dmarc.policy)) add("dmarc", "error", `The DMARC record has no valid p= tag (none, quarantine or reject). Receivers may ignore the record.`, RFC_DMARC);
+      if (inherited) add("dmarc", "info", `${domain} has no DMARC record of its own; the record at _dmarc.${dmarc.foundAt} applies (policy ${effective ?? "none set"}).${dmarc.foundAt!.split(".").length > 2 ? " Receivers following RFC 7489 look only at the organisational domain, not at levels in between, so check that this is it." : ""}`, RFC_DMARC);
+      if (!dmarc.policy || !["none", "quarantine", "reject"].includes(dmarc.policy)) add("dmarc", "error", `The DMARC record has no valid p= tag (none, quarantine or reject). Receivers then act as if p=none when rua is valid, and otherwise apply no DMARC at all.`, RFC_DMARC);
       else if (effective === "none") add("dmarc", "warning", "DMARC policy is p=none: receivers report but don't act on mail that fails, so spoofed mail still gets through. It meets the Gmail, Yahoo and Microsoft minimum; move to quarantine, then reject, once reports show your own mail passes.", RFC_DMARC);
       if (!dmarc.rua) add("dmarc", "warning", "The DMARC record has no rua= address, so nobody receives the aggregate reports that show which servers send as this domain.", RFC_DMARC);
       if (dmarc.pct < 100) add("dmarc", "info", `pct=${dmarc.pct}: the policy applies to only ${dmarc.pct}% of failing mail.`, RFC_DMARC);
@@ -237,8 +237,8 @@ export async function checkEmailDomain(domainInput: string, selectors: string[] 
         } catch {
           add("dkim", "error", `The DKIM key at selector "${sel}" is not a readable RSA public key.`, RFC_DKIM_KEYS);
         }
-        if (entry.bits !== undefined && entry.bits < 1024) add("dkim", "error", `The DKIM key at selector "${sel}" is ${entry.bits}-bit RSA. The standard requires at least 1024 bits, and verifiers don't have to accept shorter keys; use 2048.`, RFC_DKIM_KEYS);
-        else if (entry.bits !== undefined && entry.bits < 2048) add("dkim", "info", `The DKIM key at selector "${sel}" is ${entry.bits}-bit RSA. The standard asks signers for 2048-bit keys.`, RFC_DKIM_KEYS);
+        if (entry.bits !== undefined && entry.bits < 1024) add("dkim", "error", `The DKIM key at selector "${sel}" is ${entry.bits}-bit RSA. Verifiers must treat signatures made with keys under 1024 bits as invalid, so this mail fails DKIM; use 2048.`, RFC_DKIM_KEYS);
+        else if (entry.bits !== undefined && entry.bits < 2048) add("dkim", "info", `The DKIM key at selector "${sel}" is ${entry.bits}-bit RSA. The standard says signers should use at least 2048 bits.`, RFC_DKIM_KEYS);
       }
     }
 
