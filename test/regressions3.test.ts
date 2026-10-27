@@ -10,7 +10,8 @@ describe("round-2 eval regressions", () => {
     const r = auditHtml(
       `<html><body><nav><a href="/"><span>[</span><span>Companion</span><span>]</span></a><a href="/search">Search</a><a href="/ias">IAS calculator</a><a href="/imbue">Imbue calculator</a></nav><p><b>Fast</b>er</p></body></html>`
     );
-    expect(r.leadText).toBe("[Companion] Search IAS calculator Imbue calculator Faster");
+    // The menu is left out of leadText (test/leadText.test.ts); its words still count.
+    expect(r.leadText).toBe("Faster");
     expect(r.wordCount).toBe(7);
   });
 

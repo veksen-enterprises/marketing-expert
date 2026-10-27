@@ -36,9 +36,86 @@ export interface PageFacts {
   links: { internal: number; external: number; nofollow: number };
   forms: Array<{ interactive: boolean; fields: number; requiredFields: number; submitText: string | null }>;
   ctaCandidates: string[];
-  /** First ~600 chars of visible body text: approximates what a visitor reads first. */
+  /**
+   * Up to 600 characters of text, approximating what a visitor reads first: from the first h1 when there is one,
+   * leaving out menus and cookie notices; leadTextSource says which rule applied and what it can't see.
+   */
   leadText: string;
+  leadTextSource: string;
+  /** Links and buttons inside <nav>, role="navigation" and <header>, in page order: menu labels, not judged. */
+  navLabels: { labels: Array<{ text: string; href: string | null }>; truncated: boolean };
+  /** "home" for the root path or a language root such as /en/; null when there is no URL. A deeper page may still be the main landing page. */
+  pageKind: "home" | "other" | null;
   flags: Array<{ severity: "error" | "warning" | "info"; message: string }>;
+}
+
+// Consent-tool markup (OneTrust, Cookiebot, Usercentrics, Didomi, TrustArc, Quantcast, Osano, Termly, iubenda,
+// cookieconsent) and common cookie-notice names, matched on id and class. Narrow on purpose: a bare "cookie"
+// would match a bakery's product cards.
+const CONSENT = /onetrust|cookiebot|usercentrics|didomi|truste|qc-cmp|osano|termly|iubenda|cookieconsent|cc-window|cookie-?(banner|notice|consent|bar|law|popup|modal)|consent-?(banner|manager|modal|popup)|gdpr/i;
+const NAV_MAX = 30;
+// "/", "/index.html", or one segment that is a known language tag ("/en/", "/fr-ca"): "/go" or "/ai" is not.
+const HOME_PATH = /^\/(index\.html?|([a-z]{2}(-[a-z]{2,4})?)\/?)?$/i;
+const LANGUAGES = new Intl.DisplayNames(["en"], { type: "language", fallback: "none" });
+
+function within(outer: HTMLElement, inner: HTMLElement | undefined): boolean {
+  return !!inner && outer.range[0] <= inner.range[0] && outer.range[1] >= inner.range[1];
+}
+
+function isMenu(e: HTMLElement): boolean {
+  return e.tagName === "NAV" || e.getAttribute("role") === "navigation";
+}
+
+function isConsent(e: HTMLElement): boolean {
+  return CONSENT.test(`${e.getAttribute("id") ?? ""} ${e.getAttribute("class") ?? ""}`);
+}
+
+function isSkipLink(e: HTMLElement): boolean {
+  return e.tagName === "A" && (e.getAttribute("href") ?? "").startsWith("#") && /^skip\b/i.test(visibleText(e));
+}
+
+/**
+ * Text a visitor likely reads first. Starting at the h1 handles the third of home pages that have no header or
+ * nav markup (research/first-screen.md); without an h1, menus, a site header and cookie notices are left out.
+ */
+function leadOf(body: HTMLElement, all: HTMLElement[], end: (el: HTMLElement) => number): { text: string; source: string } {
+  const h1 = all.find((e) => e.tagName === "H1" && visibleText(e, end(e)));
+  let skipped = false;
+  const skip = (e: HTMLElement) => {
+    const out = !within(e, h1) && (isMenu(e) || isConsent(e) || isSkipLink(e) || (!h1 && (e.tagName === "HEADER" || e.getAttribute("role") === "banner")));
+    if (out) skipped = true;
+    return out;
+  };
+  const text = visibleText(body, Infinity, { from: h1?.range[0], skip }).slice(0, 600);
+  if (h1) return { text, source: "from the first h1, leaving out menus and cookie notices after it. Not seen: text placed first by CSS, text added by scripts (unless render mode), and an h1 that is only a logo, which starts the text too early." };
+  if (skipped) return { text, source: "no h1; skipped menu, header or cookie-notice markup. A menu built without such markup (plain divs) may still be included." };
+  return { text, source: "no h1 and no menu, header or cookie-notice markup, so this is the start of the page text and may include menu or banner text." };
+}
+
+/** Links and buttons in menus and the site header: accessible name (text, then aria-label, then an image's alt). */
+function navLabelsOf(all: HTMLElement[], end: (el: HTMLElement) => number): PageFacts["navLabels"] {
+  const containers = all.filter((e) => isMenu(e) || e.tagName === "HEADER");
+  const outer = containers.filter((c) => !containers.some((o) => o !== c && within(o, c)));
+  const labels: PageFacts["navLabels"]["labels"] = [];
+  for (const c of outer) {
+    for (const e of elementsOf(c, NOT_CONTENT)) {
+      if (e.tagName !== "A" && e.tagName !== "BUTTON") continue;
+      const img = elementsOf(e).find((i) => i.tagName === "IMG" && i.getAttribute("alt")?.trim());
+      const t = visibleText(e, end(e)) || e.getAttribute("aria-label")?.trim() || img?.getAttribute("alt")?.trim() || "";
+      if (t) labels.push({ text: t, href: e.tagName === "A" ? (e.getAttribute("href") ?? null) : null });
+    }
+  }
+  return { labels: labels.slice(0, NAV_MAX), truncated: labels.length > NAV_MAX };
+}
+
+function pageKindOf(url?: string): PageFacts["pageKind"] {
+  if (!url) return null;
+  try {
+    const m = HOME_PATH.exec(new URL(url).pathname);
+    return m && (!m[2] || LANGUAGES.of(m[2])) ? "home" : "other";
+  } catch {
+    return null;
+  }
 }
 
 const CTA_VERBS = /^(get|start|try|book|request|sign|join|buy|download|schedule|contact|talk|see|create|claim|subscribe|register|shop|order|add|watch|learn|explore|apply)\b/i;
@@ -153,6 +230,7 @@ function readFacts(html: string, url?: string): PageFacts {
   const bodyText = text(body);
   const wordCount = countWordsIn(bodyText);
   const els = elementsOf(body, NOT_CONTENT);
+  const lead = leadOf(body, all, endOf);
 
   const imgs = els.filter((e) => e.tagName === "IMG");
   const missingAlt = imgs.filter((i) => i.getAttribute("alt") === undefined).length;
@@ -265,7 +343,10 @@ function readFacts(html: string, url?: string): PageFacts {
     links,
     forms,
     ctaCandidates: [...ctaSet].slice(0, 25),
-    leadText: bodyText.slice(0, 600),
+    leadText: lead.text,
+    leadTextSource: lead.source,
+    navLabels: navLabelsOf(all, endOf),
+    pageKind: pageKindOf(url),
     flags,
   };
 }
