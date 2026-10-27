@@ -541,7 +541,7 @@ Under s. 3(1), "A person acting in the course of a business may not use any repr
 **L10. FIFA, "Brand protection" page (inside.fifa.com, last updated 2025-06-20 per the fetch)**
 https://inside.fifa.com/en/tournament-organisation/brand-protection
 FIFA says: "We treat all unauthorised products as counterfeits." It defines ambush marketing as "prohibited marketing activities," that is, "creating a commercial association and/or seeking promotional exposure without the authorisation of the event organiser." The page says Clean Zones "are prescribed by local laws or regulations" but names no host-country statute. It links the FIFA World Cup 26 IP Guidelines.
-[first-party] [read 2026-10-13] (read through WebFetch, which summarizes; quotes are as returned)
+[first-party] [read 2026-10-13] (read as a fetch summary; quotes are as returned)
 
 **L11. FIFA World Cup 26 Intellectual Property Guidelines, June 2024, version 2.0 (PDF)**
 https://digitalhub.fifa.com/m/3567360896991b48/original/FIFA-World-Cup-26-IP-Guidelines.pdf
@@ -639,7 +639,7 @@ OSM data is licensed under the ODbL: "You are free to copy, distribute, transmit
 **L24. OSMF Licence/Attribution Guidelines (wiki, last edited 2026-09-10 per page)**
 https://osmfoundation.org/wiki/Licence/Attribution_Guidelines
 Per the WebFetch summary: "Static images must be generally attributed the same way as interactive maps." For printed works, "The URL to openstreetmap.org/copyright must be printed out." Attribution is needed when a Produced Work is used publicly. Small extracts are exempt from attribution: under 100 features, areas under 10,000 m², and thumbnails.
-[first-party] [read 2026-10-13] (read through a WebFetch summary; whether a poster must itself carry ODbL terms was not confirmed)
+[first-party] [read 2026-10-13] (read as a fetch summary; whether a poster must itself carry ODbL terms was not confirmed)
 
 ---
 
