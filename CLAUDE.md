@@ -31,6 +31,7 @@ Run `npm test` and check its exit code before committing; a grep of the output i
 - **Tool output is read as instructions.** Notes and verdicts must be accurate, worded no stronger than what was checked, and must say what was not checked (no silent skips or caps).
 - **Anything that widens what a tool can read or fetch needs a security look.** Never read `.git`, credential folders or files outside the given directory; never follow symbolic links out of it; keep the private-address guard on every hop.
 - **Playbook claims carry an evidence tag with qualifiers inside the bracket** (`[research; RCT, n=7,867; one firm]`). Every claim traces to `research/`. Check case facts against the primary source before they enter a playbook. `test/consistency.test.ts` checks that tool and playbook names referenced in playbooks exist.
+- **README states only what a test checks.** `test/readme.test.ts` fails on counts of playbooks, notes, bets or tools, on tool and prompt names that don't exist or are missing, and when the example's calculator line no longer matches the tool.
 - **Plain English, short sentences, never "moat"**, in playbooks, tool output and prompts.
 - **No business-specific content in the repo.** Evaluation cases used real businesses; their runs, grades and any strategy written for them stay out of git unless the owner agrees. Anonymise when writing generic research from them.
 - **Commits:** explain what and why in the body. Commit only the files you changed (`git commit -- <paths>`) when other agents share the working tree.
