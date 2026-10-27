@@ -6,6 +6,7 @@ import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "nod
 import { parse, HTMLElement } from "node-html-parser";
 import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
 import { checkStructuredData, type StructuredDataIssue } from "./structuredData.js";
+import { siteInfoOf, siteInfoFlags, type SiteInfo } from "./siteInfo.js";
 import { visibleText, elementsOf, wordCount as countWordsIn, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
 
 export interface PageFacts {
@@ -46,6 +47,8 @@ export interface PageFacts {
   navLabels: { labels: Array<{ text: string; href: string | null }>; truncated: boolean };
   /** "home" for the root path or a language root such as /en/; null when there is no URL. A deeper page may still be the main landing page. */
   pageKind: "home" | "other" | null;
+  /** Links to contact (or mailto/tel), imprint, privacy, terms, about and pricing pages, by link text or path. Flags only on a home page. */
+  siteInfo: SiteInfo;
   flags: Array<{ severity: "error" | "warning" | "info"; message: string }>;
 }
 
@@ -241,6 +244,9 @@ function readFacts(html: string, url?: string): PageFacts {
   } catch {
     host = null;
   }
+  const pageKind = pageKindOf(url);
+  const siteInfo = siteInfoOf(els.filter((e) => e.tagName === "A" && e.hasAttribute("href")).map((a) => ({ text: quote(a), href: a.getAttribute("href") ?? "" })));
+  if (pageKind === "home") flags.push(...siteInfoFlags(siteInfo, lang, host));
   const links = { internal: 0, external: 0, nofollow: 0 };
   for (const a of els) {
     if (a.tagName !== "A" || !a.hasAttribute("href")) continue;
@@ -346,7 +352,8 @@ function readFacts(html: string, url?: string): PageFacts {
     leadText: lead.text,
     leadTextSource: lead.source,
     navLabels: navLabelsOf(all, endOf),
-    pageKind: pageKindOf(url),
+    pageKind,
+    siteInfo,
     flags,
   };
 }
@@ -463,6 +470,8 @@ function applyResponseChecks(facts: PageFacts, status: number | undefined, final
   facts.finalUrl = finalUrl;
   facts.xRobotsTag = xRobotsTag;
   if (status !== undefined && status >= 400) facts.flags.unshift({ severity: "error", message: `HTTP ${status}.` });
+  // A local server under test is served over HTTP by design.
+  if (/^http:/i.test(finalUrl) && !/^http:\/\/(localhost|127\.|\[::1\]|[^/]*\.local[:/])/i.test(finalUrl)) facts.flags.unshift({ severity: "warning", message: `Served over plain HTTP (${finalUrl}). Chrome labels such pages "Not secure" in the address bar. Redirect to HTTPS.` });
   if (xRobotsTag && robotsDirectives(xRobotsTag).has("noindex")) facts.flags.unshift({ severity: "error", message: `X-Robots-Tag: ${xRobotsTag}` });
   if (facts.canonical && normalize(facts.canonical, finalUrl) !== normalize(finalUrl, finalUrl)) {
     facts.flags.push({ severity: "info", message: `Canonical (${facts.canonical}) differs from the fetched URL (${finalUrl}). Fine if intentional.` });
