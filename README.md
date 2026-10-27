@@ -117,7 +117,7 @@ The server has no live data and no data about you except what you give it. Every
 
 1. **Your input and your files.** What you tell it, the repo or folder you point it at, and the pages it fetches when you ask for an audit.
 2. **Calculations.** Standard formulas run on your numbers, or on assumptions the agent labels as such. Nothing is looked up.
-3. **Playbooks** (`knowledge/*.md`). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces, local services, consumer apps and more), by channel (SEO and AI search, content, social, PR, paid, email, outbound and more), by foundation (positioning, pricing, experimentation, first customers, retention, marketing law in several markets) and by strategy (market sizing, competing with incumbents, platform risk, exits).
+3. **Playbooks** (`knowledge/*.md`). Opinionated, sourced guidance by business type (SaaS, developer tools, ecommerce, marketplaces and dating apps, local services, consumer apps and more), by channel (SEO and AI search, content, social, PR, paid, email, outbound and more), by foundation (positioning, pricing, experimentation, first customers, retention, marketing law in several markets) and by strategy (market sizing, competing with incumbents, platform risk, exits).
 4. **Research notes** (`research/*.md`). The cited sources each playbook is built from, with access notes and open questions.
 
 Every claim in a playbook carries an evidence tag, so the agent can tell you how much to trust it:
