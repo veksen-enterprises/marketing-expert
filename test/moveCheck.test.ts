@@ -31,7 +31,7 @@ describe("lintMoves", () => {
 3. **One Hacker News launch post for the agent-plus-CI setup (weeks 7–9).** Mechanism: a concentrated developer audience. Beforehand, list the server in the official MCP Registry so visitors can add it in one step. Cost: a day. Metric: projects reaching a first CI result within 14 days. Stop condition: fewer than 10 activated projects means setup friction.`);
     const all = r.issues.join("\n");
     expect(all).toMatch(/Move 1: the cheapest test is the move itself \("just ship it/);
-    expect(all).toMatch(/Move 1: the stop line has no number .*"no change" is not a threshold/);
+    expect(all).toMatch(/Move 1: the stop line judges by no change but gives no baseline \("no change means/);
     expect(all).toMatch(/Move 2 adds a second action \("Beforehand, list the server/);
     expect(all).toMatch(/Move 2 has no "Cheapest test:" line/);
   });
@@ -129,5 +129,64 @@ Mechanism: x. Cheapest test: 5 calls. Metric: signups. Time box: 2 weeks. Stop: 
     const start = cpuNow();
     lintMoves(`## Moves\n\n1. **${"add ".repeat(24000)}**`);
     expect(cpuNow() - start).toBeLessThan(1000);
+  });
+});
+
+// Stop lines copied from evals/runs (rounds 2 to 4). Before 2026-10-27 every one of the vague ones passed: the time box
+// ("after 4 weeks"), "above" or "zero" counted as the threshold.
+describe("lintMoves stop thresholds", () => {
+  const move = (stop: string, test = "show it to the people who signed up") =>
+    lintMoves(`## Moves\n\n1. **Launch once on Hacker News.**\n- Mechanism: x.\n- Cheapest test: ${test}.\n- Metric: y.\n- Time box: 4 weeks.\n- Stop condition: ${stop}`).issues.join("\n");
+
+  it("doesn't take a duration as the threshold", () => {
+    // v4/companion-strategy.md
+    expect(move("new watches don't survive 30 days. That is a product problem, not reach.")).toMatch(/no number .*"30 days" is the time box, not a threshold/);
+    // v2/companion-strategy.md
+    expect(move("new servers' watchers don't get notifications within 14 days. That means you have spread too thin, so stop adding servers.")).toMatch(/"14 days" is the time box/);
+    // v4/companion-site.md
+    expect(move("if there are still almost no impressions after 8 weeks, the problem is demand or competition, not rendering.")).toMatch(/no number .*"almost no" is not a threshold/);
+  });
+
+  it("takes 'most' as the threshold even next to a number", () => {
+    // v4/companion-strategy.md: "zero" passed it.
+    expect(move("most watches get zero matches in two weeks. Then supply per watch is too thin.")).toMatch(/no number .*"most" is not a threshold/);
+    // v2/companion-strategy.md
+    expect(move("after 4 weeks, if most watchers get no notification, go back to supply (move 1) instead of adding users.")).toMatch(/"most" is not a threshold/);
+  });
+
+  it("flags 'no change' with no baseline", () => {
+    // v4/devtool-competition.md: "above" passed it.
+    expect(move("no rise above your current weekly baseline (set it before you start).")).toMatch(/judges by no change but gives no baseline/);
+    // v3/devtool-strategy.md, v2/devtool-competition.md, v4/devtool-site.md
+    expect(move("if 7-day activation hasn't moved after 4 weeks of signups, the blocker is setup, not the message.")).toMatch(/no baseline .*about 70% or more/);
+    expect(move("no movement after 4 weeks means the problem is activation, not the message.")).toMatch(/no baseline/);
+    expect(move("if fewer than half the testers can say what it does, change the headline. If activation is flat after 4 weeks, go back to the old emphasis.", "a 5-second test with 6–8 target developers")).toMatch(/no baseline \("If activation is flat/);
+    expect(move("if weekly signups stay under 12 (10 now) after 4 weeks, go back to the old page.")).toBe("");
+  });
+
+  it("flags a rate with no count", () => {
+    // v4/devtool-strategy.md
+    expect(move("if fewer than 10% of launch signups reach a first CI run, fix onboarding.")).toMatch(/rate with no count \("10%"\)/);
+    // v3/companion-risk.md: "three" counts servers, not watches; it is in the stop line, not elsewhere in the move.
+    expect(move("no moderator of the top three servers agrees, or fewer than 30% of watches fire within 7 days.")).toMatch(/rate with no count \("30%"\)/);
+    expect(move("if fewer than 10% of the first 50 signups reach a first CI run, fix onboarding.")).toBe("");
+    expect(move("if fewer than 10% of launch signups reach a first CI run, fix onboarding.", "the first 40 signups")).toBe("");
+  });
+
+  it("passes the stop lines that give a threshold", () => {
+    for (const stop of [
+      "if fewer than 3 of 10 still run it after 30 days, fix the product or the target user before going public.", // v3/devtool-site.md
+      "if you are named in 0 runs after two rounds, the work is getting mentioned elsewhere.", // v4/devtool-site.md
+      "3 posts bring fewer than ~10 activated projects. Then change the topic angle before writing more.", // v2/devtool-strategy.md
+      "fewer than 10 supporters means keep it a hobby and cap your costs.", // v3/companion-risk.md
+      "if 3 of 5 can't explain it, rewrite again.", // v4/devtool-strategy.md
+    ])
+      expect(move(stop)).toBe("");
+  });
+
+  it("applies the same rules to the falsifier", () => {
+    // v4/devtool-strategy.md: "4+ weeks" passed it.
+    expect(lintMoves("What would prove me wrong: if teams already run the check on most PRs for 4+ weeks, reach out.").issues.join(" ")).toMatch(/has no number/);
+    expect(lintMoves("I'm wrong if activation hasn't changed after 6 weeks.").issues.join(" ")).toMatch(/has no number/);
   });
 });
