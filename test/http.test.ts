@@ -45,6 +45,8 @@ describe("hosted endpoint (src/http.ts)", () => {
     expect(names).toContain("check_sitemap_robots");
     expect(names).toContain("check_tracking_events");
     expect(names).toContain("diff_tracking_schema");
+    expect(names).toContain("check_email_domain");
+    expect(names).toContain("check_email_html");
     const hit = await (await post(rpc(3, "tools/call", { name: "ab_test_sample_size", arguments: { baselineRate: 0.05, mde: 0.2 } }))).json();
     expect(hit.result.isError).toBeFalsy();
   });

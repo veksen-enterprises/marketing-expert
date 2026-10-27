@@ -13,6 +13,8 @@ import { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } from "./lib
 import { crawlSite } from "./lib/crawl.js";
 import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
 import { checkSitemapXml, checkRobotsTxt } from "./lib/sitemapRobots.js";
+import { checkEmailDomain } from "./lib/emailDomain.js";
+import { checkEmailHtml } from "./lib/emailHtml.js";
 import { checkTrackingEvents, diffTrackingSchema, PROPERTY_TYPES, CONVENTIONS } from "./lib/tracking.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
@@ -789,6 +791,38 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
       annotations: readOnly,
     },
     safe((a) => diffTrackingSchema(a.before, a.after))
+  );
+
+  // ── Email deliverability ──────────────────────────────────────────────────
+  server.registerTool(
+    "check_email_domain",
+    {
+      title: "Check an email sending domain (SPF, DMARC, DKIM, MX)",
+      description:
+        "Look up a sending domain's DNS and check SPF (one record, at most 10 DNS lookups counted through every include and redirect, and how it ends: -all, ~all, ?all or +all), DMARC (record present at the domain or a parent, p= none/quarantine/reject, rua, pct and alignment mode), DKIM for the selectors you pass, and MX. DKIM can't be discovered without a selector (the s= value in a sent message's DKIM-Signature header): without selectors the output says DKIM was not checked, not that it is missing. A lookup that fails is reported as not checked. At most 40 DNS queries per call. Whether real mail passes and aligns needs a message's headers and is not checked.",
+      inputSchema: {
+        domain: z.string().min(3).max(253).describe("The From domain, e.g. example.com or news.example.com"),
+        selectors: z.array(z.string().min(1).max(63)).max(10).optional().describe('DKIM selectors to check, e.g. ["google", "s1", "k1"]'),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: true },
+    },
+    safe((a) => checkEmailDomain(a.domain, a.selectors ?? []))
+  );
+
+  server.registerTool(
+    "check_email_html",
+    {
+      title: "Check an email's HTML",
+      description:
+        "Check an email's HTML, and optionally its plain-text part and headers: size against Gmail's clipping point (about 102 KB), a missing text part, images without alt, image-heavy mail, http:// links, a missing visible unsubscribe link, missing List-Unsubscribe or one-click (RFC 8058) headers, and web fonts or external CSS that clients drop. Each finding gives its basis: a cited source, or \"heuristic\" (reported at info only). Nothing is fetched or stored.",
+      inputSchema: {
+        html: z.string().min(1).max(5_000_000),
+        text: z.string().max(5_000_000).optional().describe("The plain-text part"),
+        headers: z.union([z.record(z.string(), z.string()), z.string().max(100_000)]).optional().describe('Headers as an object or raw "Name: value" lines; pass them to check List-Unsubscribe'),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => checkEmailHtml(a.html, a.text, a.headers))
   );
 
   // ── Business profiles ─────────────────────────────────────────────────────
