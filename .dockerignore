@@ -5,6 +5,10 @@ research
 test
 docs
 .git
+# build-info.mjs reads the commit from these; nothing from .git reaches the final image.
+!.git/HEAD
+!.git/refs
+!.git/packed-refs
 .claude
 .env*
 *.log

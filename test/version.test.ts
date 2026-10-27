@@ -2,7 +2,9 @@
 // changed can find out it is running old code.
 import { describe, it, expect } from "vitest";
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../src/server.js";
@@ -61,10 +63,10 @@ describe("compareWithMain", () => {
   });
 });
 
-const connect = async (updates: UpdateCheck) => {
+const connect = async (updates: UpdateCheck, hosted = false) => {
   const [a, b] = InMemoryTransport.createLinkedPair();
   const client = new Client({ name: "t", version: "0" });
-  await Promise.all([createServer({ updates }).connect(a), client.connect(b)]);
+  await Promise.all([createServer({ updates, hosted }).connect(a), client.connect(b)]);
   const texts = async (name: string, args: Record<string, unknown> = {}) =>
     ((await client.callTool({ name, arguments: args })).content as Array<{ text: string }>).map((c) => c.text);
   return { client, texts };
@@ -113,6 +115,20 @@ describe("server", () => {
   });
 });
 
+describe("hosted", () => {
+  it("one lookup per process however many servers, one notice, and it says redeploy", async () => {
+    const { f, urls } = github();
+    const updates = new UpdateCheck({ commit: OLD, dirty: false, builtAt: "t" }, f, true);
+    await updates.refresh();
+    // src/http.ts builds a server per request around one shared check; it must not warn on each.
+    const first = await (await connect(updates, true)).texts("get_playbook");
+    const second = await (await connect(updates, true)).texts("get_playbook");
+    expect(first[1]).toMatch(/redeploys it/);
+    expect(second).toHaveLength(1);
+    expect(urls).toHaveLength(2);
+  });
+});
+
 describe("build-info script", () => {
   it("records the checked-out commit", () => {
     execFileSync(process.execPath, ["scripts/build-info.mjs"], { stdio: "ignore" });
@@ -120,5 +136,19 @@ describe("build-info script", () => {
     expect(info.commit).toBe(execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim());
     expect(typeof info.dirty).toBe("boolean");
     expect(Number.isNaN(Date.parse(info.builtAt))).toBe(false);
+  });
+
+  // The Docker build: no git binary on PATH, only .git/HEAD and the refs in the context (.dockerignore).
+  it("reads the commit from .git files when git can't run", () => {
+    for (const loose of [true, false]) {
+      const dir = mkdtempSync(join(tmpdir(), "me-buildinfo-"));
+      cpSync("scripts", join(dir, "scripts"), { recursive: true });
+      mkdirSync(join(dir, ".git", "refs", "heads"), { recursive: true });
+      writeFileSync(join(dir, ".git", "HEAD"), "ref: refs/heads/main\n");
+      if (loose) writeFileSync(join(dir, ".git", "refs", "heads", "main"), `${OLD}\n`);
+      else writeFileSync(join(dir, ".git", "packed-refs"), `# pack-refs with: peeled\n${OLD} refs/heads/main\n`);
+      execFileSync(process.execPath, [join(dir, "scripts", "build-info.mjs")], { cwd: dir, stdio: "ignore", env: { PATH: "/nonexistent" } });
+      expect(JSON.parse(readFileSync(join(dir, "dist", "build-info.json"), "utf8"))).toMatchObject({ commit: OLD, dirty: null });
+    }
   });
 });

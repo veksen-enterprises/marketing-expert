@@ -20,7 +20,7 @@ import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } fro
 import { loadPlaybooks, getPlaybook, searchPlain } from "./lib/knowledge.js";
 import { learnMore } from "./lib/learnMore.js";
 import { registerPrompts, MAX_MOVES, MOVE_FORMAT, INSTALL_COMMAND } from "./prompts.js";
-import { readBuildInfo, installKind, describeCheck, UpdateCheck } from "./lib/version.js";
+import { readBuildInfo, installKind, describeCheck, UpdateCheck, TTL_MS } from "./lib/version.js";
 
 export const INSTRUCTIONS = `You are acting as a senior marketing and business strategist. This server gives you calculators, page and copy audits, and opinionated playbooks with sources. How to work:
 
@@ -105,20 +105,20 @@ export const HOSTED_NOTE = `This is marketing-expert's hosted endpoint. scan_sou
 export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } = {}): McpServer {
   const updates = opts.updates ?? new UpdateCheck(readBuildInfo());
   const { build } = updates;
+  const kind = opts.hosted ? "hosted" : installKind();
   void updates.refresh();
   const server = new McpServer({ name: "marketing-expert", version: build.commit ? `0.1.0+${build.commit.slice(0, 7)}` : "0.1.0" }, { instructions: opts.hosted ? `${INSTRUCTIONS}\n\n${HOSTED_NOTE}` : INSTRUCTIONS });
   // Reject unknown arguments. A plain shape strips them, so a misnamed input (get_playbook `name` for `slug`)
   // silently changed the result instead of failing.
-  // The first tool result after the background check finds main newer carries a one-time notice: a session
-  // started before main changed has no other way to learn it is running old code.
-  let warned = false;
+  // The first tool result after the background check finds main newer carries a notice: a session started
+  // before main changed has no other way to learn it is running old code. Once over stdio; hosted, once an hour.
   type Result = { content?: unknown[] };
   const withNotice = (cb: (...args: unknown[]) => Promise<Result>) => async (...args: unknown[]) => {
     const r = await cb(...args);
-    const c = updates.latest();
-    if (warned || !c || (c.state !== "behind" && c.state !== "diverged") || !Array.isArray(r?.content)) return r;
-    warned = true;
-    return { ...r, content: [...r.content, { type: "text", text: `Notice from the marketing-expert server, not part of the result above: ${describeCheck(build, c, installKind())} Tell the user once.` }] };
+    if (!Array.isArray(r?.content)) return r;
+    const c = updates.takeNotice(opts.hosted ? TTL_MS : Infinity);
+    if (!c) return r;
+    return { ...r, content: [...r.content, { type: "text", text: `Notice from the marketing-expert server, not part of the result above: ${describeCheck(build, c, kind)} Tell the user once.` }] };
   };
   const register = server.registerTool.bind(server) as (name: string, config: object, cb: unknown) => unknown;
   server.registerTool = ((name: string, config: { inputSchema?: z.ZodRawShape }, cb: (...args: unknown[]) => Promise<Result>) =>
@@ -135,7 +135,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
     },
     safe(async () => {
       const check = await updates.refresh();
-      return { ...build, install: installKind(), main: check, summary: describeCheck(build, check, installKind()) };
+      return { ...build, install: kind, main: check, summary: describeCheck(build, check, kind) };
     }, okExact)
   );
 
