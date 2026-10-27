@@ -49,8 +49,10 @@ export const BETS: Bet[] = [
     stage: 0,
     cost: "2–4 hours per page",
     judgeAfter: "2–3 months in Search Console",
-    measure: "Impressions, clicks and sign-ups per page",
-    stop: "Impressions but no clicks after 3 months: rewrite the title; clicks but no sign-ups: rewrite the page. Drop only if the query has no volume.",
+    // The likely case is about zero clicks (research/query-page-outcomes.md §1). "About 10" across the batch the effort
+    // covers is a judgment call: untargeted pages on an unlinked site predict 1–4, so a batch that works should clear it.
+    measure: "Impressions, clicks and sign-ups per page, from Search Console's Pages tab (rare queries are hidden in the Queries tab)",
+    stop: "Under about 10 search clicks across the first three pages after 3 months: stop writing new ones and keep the pages; try again once the site has links from a listing, a launch or answers. Impressions but almost no clicks: rewrite the titles. Clicks but no sign-ups: rewrite the page.",
     evidence: "some",
     section: S0,
   },
@@ -65,8 +67,8 @@ export const BETS: Bet[] = [
     audiences: ["developers", "businesses"],
     cost: "1–2 hours per page",
     judgeAfter: "About 3 months in Search Console",
-    measure: "Search clicks per page, then clicks through to the product",
-    stop: "Clicks but no product clicks after 3 months: keep as support content, stop writing new ones for acquisition.",
+    measure: "Search clicks per page from Search Console's Pages tab (rare queries are hidden in the Queries tab), then clicks through to the product",
+    stop: "Under about 10 search clicks across the first eight pages after 3 months: stop writing new ones. Clicks but no product clicks: keep as support content, stop writing new ones for acquisition.",
     evidence: "some",
     section: S0,
   },
