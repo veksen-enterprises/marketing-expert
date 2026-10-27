@@ -16,6 +16,11 @@ describe("liquidity", () => {
     expect(r.shareOfWatchesFiring).toBeCloseTo(r.rows.reduce((a, x) => a + x.probabilityWithinWindow, 0) / 3, 10);
     expect(r.verdict).toMatch(/narrowest \(0\.1% of listings\)/);
   });
+  it("shows a very narrow share without rounding it to 0.0%", () => {
+    const r = liquidity({ listingsPerDay: 30, matchShares: [0.0003, 0.003], windowDays: 7 });
+    expect(r.verdict).toMatch(/narrowest \(0\.03% of listings\)/);
+    expect(r.verdict).not.toMatch(/0\.0% of listings/);
+  });
   it("handles zero listings and rejects bad input", () => {
     expect(liquidity({ listingsPerDay: 0, matchShares: [0.01], windowDays: 7 }).rows[0].expectedDaysToFirstMatch).toBe(Infinity);
     expect(() => liquidity({ listingsPerDay: 10, matchShares: [0], windowDays: 7 })).toThrow(/matchShare/);
