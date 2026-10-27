@@ -21,7 +21,7 @@ Needs Node 20 or later.
 /plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert
 ```
 
-Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, sums up the product, lists the directions it can take for it (a first strategy, small bets, positioning, a page teardown, the economics…) and asks short profile questions the repo can't answer (users today and where they came from first, then price, time and budget, what you already have, the goal). Then it saves the profile and takes the direction you pick; the default is a first strategy in `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
+Then, in a product's repo, run `/marketing-expert:get-started` (or say "set up marketing-expert for this product"). The agent reads the repo, sums up the product, lists the directions it can take for it (a first strategy, small bets, positioning, a page teardown, the economics…) and asks short profile questions the repo can't answer (users in the last 28 days and where the last few came from first, then price, budget, communities and data you have, what you refuse to do, where you sell; a marked guess is fine). Then it saves the profile and takes the direction you pick; the default is a first strategy in `marketing/strategy-YYYY-MM-DD.md`. Other clients get the same workflow as the `get_started` prompt.
 
 **Any agent: paste this** in a session opened at your product's repo:
 
