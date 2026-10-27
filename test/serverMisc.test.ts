@@ -281,8 +281,8 @@ describe("INSTRUCTIONS step 1 names activation and proof", () => {
 });
 
 describe("package.json builds on install from git", () => {
-  it("has a prepare script that runs tsc", () => {
-    expect(JSON.parse(readFileSync("package.json", "utf8")).scripts.prepare).toBe("tsc");
+  it("has a prepare script that runs tsc and records the commit", () => {
+    expect(JSON.parse(readFileSync("package.json", "utf8")).scripts.prepare).toBe("tsc && node scripts/build-info.mjs");
   });
 });
 
