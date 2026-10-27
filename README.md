@@ -71,6 +71,7 @@ Set these as environment variables on the server (an `"env"` object next to `"ar
 | `MARKETING_EXPERT_DATA_DIR` | `~/.marketing-expert` | Where business profiles are stored. Use an absolute path; set one per project to keep businesses apart. |
 | `MARKETING_EXPERT_ALLOW_PRIVATE` | off | Set to `1` to audit `localhost`, a staging server or anything on a private network. Off, those addresses are refused. |
 | `MARKETING_EXPERT_CHROMIUM` | none | Path to a Chromium binary for `audit_page` with `render: true` (pages built by JavaScript). Also run `npm install playwright-core`. |
+| `MARKETING_EXPERT_UPDATE_CHECK` | on | Set to `0` to stop the server asking GitHub whether a newer version is on main. |
 
 ## Check it works
 
@@ -79,7 +80,8 @@ Ask the agent: "Use marketing-expert's ab_test_sample_size for 2.5% conversion, 
 If it doesn't:
 - **No marketing-expert tools.** Restart the client after installing; MCP servers load at start. In Claude Code, `/mcp` lists the server and its state.
 - **The server fails to start.** Check `node --version` is 20 or later.
-- **The first start is slow.** The first `npx` run downloads and builds the server, which took about 20 seconds in our test (2026-10-27). Later starts use the cache.
+- **The first start is slow.** The first `npx` run downloads and builds the server, which took about 20 seconds in our test (2026-10-27). Later starts check GitHub for a new commit; with none they use the cache (about 3 seconds in our test), with one they download and build again.
+- **Is it the latest version?** A server keeps running the code it started with, so an open session can be on an old version. Ask the agent to call `server_version`: it gives the commit and build time and compares them with main on GitHub. The server also checks on start, and the first tool result after it finds main newer says so. To update without a new session in Claude Code, run `/mcp`, pick marketing-expert and choose Reconnect.
 
 ## What it does
 
