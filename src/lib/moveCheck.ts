@@ -38,8 +38,38 @@ const REQUIRED: Array<[string, string]> = [
 ];
 // Not "one": "the one server" is not a threshold.
 const NUMBER_WORDS = ["zero", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "twenty", "fifty", "hundred"];
-const HAS_NUMBER = new RegExp(`\\d|\\b(${NUMBER_WORDS.join("|")}|half|a third|a quarter|twice|double|both|none of|(less|more) than|below|above)\\b`, "i");
-const VAGUE = /\b(most|mostly|few|many|some|often|rarely|enough|no change|doesn'?t move|don'?t move|no new)\b/i;
+// "Above" or "less than" is a comparison, not a number: "no rise above your baseline" passed until 2026-10.
+const HAS_NUMBER = new RegExp(`\\d|\\b(${NUMBER_WORDS.join("|")}|half|a third|a quarter|twice|double|both|none of)\\b`, "i");
+const VAGUE = /\b(most|mostly|few|many|some|often|rarely|enough|almost (?:no|none|nothing)|near(?:ly)? zero|close to zero|hardly any|no change|no movement|doesn'?t move|don'?t move|no new)\b/i;
+// Quantifiers that are the threshold themselves: "most watches get zero matches" has a number, but "most" decides.
+const VAGUE_SHARE = /\b(most|many|almost (?:no|none|nothing)|near(?:ly)? zero|close to zero|hardly any)\b/i;
+const N = `(?:\\d+|${NUMBER_WORDS.join("|")})`;
+// A stated share: "3 of 5", "1 in 4", "30%", "half".
+const SHARE = new RegExp(`\\b${N}\\s+(?:of|in|out of)\\s+(?:the\\s+)?${N}\\b|\\d\\s?%|\\b(?:half|a third|a quarter)\\b`, "i");
+// The time box or the metric's window: "after 4 weeks", "7-day activation", "(weeks 9–12)". None of these is the result
+// that decides, and in most vague stop lines in evals/runs (rounds 2 to 4) the duration was the only number.
+const DURATION = new RegExp(`\\b(?:${N}|an?|a few)(?:\\s+|-)(?:full\\s+)?(?:minute|hour|day|week|month|quarter|year)s?\\b|\\b(?:weeks?|days?|months?)[\\s-]+\\d+(?:\\s*[–-]\\s*\\d+)?`, "gi");
+const MONEY = /[$€£]\s?\d[\d,.]*k?|\b\d[\d,.]*\s?(?:usd|eur|dollars?)\b/gi;
+// "Activation hasn't moved", "no rise above your baseline": a before/after comparison.
+const NO_CHANGE = /\b(no (?:change|movement|rise|lift|increase|improvement)|(?:has|have)n'?t (?:moved|changed|risen|improved|gone up)|(?:does|do)n'?t (?:move|change|rise|improve|go up)|flat|unchanged)\b/i;
+const RATE = new RegExp(`\\d+(?:\\.\\d+)?\\s?%|\\b(?:half|a third|a quarter)\\b|\\b(?:\\d+|one) in ${N}\\b`, "i");
+const RATE_OF_COUNT = new RegExp(`(?:\\d\\s?%|\\bhalf|\\ba third|\\ba quarter|\\bin ${N})\\s+of\\s+(?:the\\s+)?(?:first\\s+)?${N}\\b`, "i");
+
+const noDurations = (s: string) => s.replace(DURATION, " ").replace(MONEY, " ");
+/** The threshold a stop line or falsifier gives, or why it gives none. */
+function thresholdGap(s: string): { vague?: string; duration?: string } | null {
+  const rest = noDurations(s);
+  if (HAS_NUMBER.test(rest) && !(VAGUE_SHARE.test(rest) && !SHARE.test(rest))) return null;
+  const duration = HAS_NUMBER.test(s) && !HAS_NUMBER.test(rest) ? new RegExp(DURATION.source, "i").exec(s)?.[0] : undefined;
+  return { vague: (VAGUE_SHARE.exec(rest) ?? VAGUE.exec(rest))?.[0], duration };
+}
+/** A sentence that judges by "no change" without saying the baseline or the change that counts. */
+const noBaseline = (stop: string) =>
+  stop.split(/(?<=[.!?;])\s+/).find((s) => NO_CHANGE.test(s) && !HAS_NUMBER.test(noDurations(s)));
+/** A count anywhere in the move, outside durations, money, shares and move numbers: "show it to 8 testers". */
+const COUNT = new RegExp(`\\d|\\b(?:${NUMBER_WORDS.join("|")})\\b`, "i");
+const hasCount = (block: string) =>
+  COUNT.test(noDurations(block).replace(new RegExp(RATE.source, "gi"), " ").replace(/^\s*(?:#{1,6}\s*|\*\*)?(?:move\s+)?\d+[.):]?/i, " ").replace(/\bmove\s+\d+\b/gi, " "));
 // Verbs that start a piece of work. Two of them joined by "and" or ";" in one action is two moves, but not inside
 // "who build and ship". The gap is bounded: an unbounded lazy scan grew with the square of the action's length.
 const VERBS = "add|build|post|ship|write|ask|list|run|fix|offer|publish|pin|help|rewrite|make|create|launch|send|remove|change|interview|record|register|connect|update";
@@ -178,9 +208,19 @@ export function lintMoves(text: string): MoveLint {
 
     const stop = fields.get("stop");
     if (stop !== undefined && /^(none|n\/a)\b(?!\s+of\b)|hygiene/i.test(stop)) issues.push(`${label} has no stop condition ("${snip(stop)}"). A fix with nothing to test goes under "Fix first", one line.`);
-    else if (stop !== undefined && !HAS_NUMBER.test(stop)) {
-      const vague = VAGUE.exec(stop);
-      issues.push(`${label}: the stop line has no number ("${snip(stop)}")${vague ? `; "${vague[0]}" is not a threshold` : ""}. Say the result that means drop or change it as a number ("fewer than 5 of 20 agree").`);
+    else if (stop !== undefined) {
+      const flat = noBaseline(stop);
+      const gap = thresholdGap(stop);
+      if (flat)
+        issues.push(`${label}: the stop line judges by no change but gives no baseline ("${snip(flat)}"). Say the baseline and the change that counts ("fewer than 15 signups a week, up from 10"). At 10 signups a week, comparing 4 weeks before and after catches only a lift of about 70% or more, 4 times in 5, from sampling noise alone.`);
+      else if (gap) {
+        const why = gap.vague ? `; "${gap.vague}" is not a threshold` : gap.duration ? `; "${gap.duration}" is the time box, not a threshold` : "";
+        issues.push(`${label}: the stop line has no number ("${snip(stop)}")${why}. Say the result that means drop or change it as a number ("fewer than 5 of 20 agree").`);
+      } else {
+        const rate = RATE.exec(stop);
+        if (rate && !RATE_OF_COUNT.test(stop) && !hasCount(block.replace(stop, " ")))
+          issues.push(`${label}: the stop line gives a rate with no count ("${snip(rate[0])}"). Say how many it is out of ("fewer than 3 of 30 signups"), or the count you'll wait for before judging.`);
+      }
     }
   });
 
@@ -199,7 +239,7 @@ export function lintMoves(text: string): MoveLint {
   if (fals) {
     // The falsifier follows the phrase on its line, or is the next line under a "What would prove me wrong" heading.
     const said = `${fals[1]}${/^[^\p{L}\p{N}]*[^\n.!?]*/u.exec(text.slice(fals.index + fals[1].length))![0]}`;
-    if (!HAS_NUMBER.test(said)) issues.push(`"What would prove me wrong" has no number ("${snip(said, 90)}"). Give the result that would change your mind as a number.`);
+    if (thresholdGap(said)) issues.push(`"What would prove me wrong" has no number ("${snip(said, 90)}"). Give the result that would change your mind as a number.`);
   }
   return { moves, issues };
 }
