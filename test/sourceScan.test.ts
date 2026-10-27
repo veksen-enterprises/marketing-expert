@@ -428,3 +428,23 @@ describe("scanSource review fixes (pairing, issue states, license, billing)", ()
     expect(b.planAttachesTo).toEqual({ user: 2, team: 2, project: 0 });
   });
 });
+
+describe("scanSource says what it did not read", () => {
+  it("counts source files in languages it does not parse, so a Dart app isn't silently skipped", () => {
+    const d = mkdtempSync(join(tmpdir(), "dart-"));
+    mkdirSync(join(d, "lib"));
+    writeFileSync(join(d, "README.md"), "# Tide\n\nA tide table app.\n");
+    writeFileSync(join(d, "lib", "main.dart"), "void main() {}\n");
+    writeFileSync(join(d, "lib", "home.dart"), 'const title = "Free forever";\n');
+    writeFileSync(join(d, "lib", "logo.png"), "x");
+    const r = scanSource(d);
+    expect(r.filesScanned).toBe(1);
+    expect(r.notRead).toEqual({ ".dart": 2 });
+    expect(r.notes.join(" ")).toMatch(/2 \.dart files/);
+  });
+  it("adds nothing when every source file was read", () => {
+    const r = scanSource(fixture());
+    expect(r.notRead).toEqual({});
+    expect(r.notes.join(" ")).not.toMatch(/Not read/);
+  });
+});

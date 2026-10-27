@@ -87,6 +87,8 @@ export interface BillingScan {
 export interface SourceScan {
   dir: string;
   filesScanned: number;
+  /** Source files in languages this scan doesn't parse, by extension. */
+  notRead: Record<string, number>;
   truncated: boolean;
   claims: Record<ClaimKind, Claim[]>;
   claimCounts: Record<ClaimKind, number>;
@@ -318,6 +320,9 @@ function findDecisionsAbove(root: string): string | null {
 const EXTS = new Set([".astro", ".html", ".htm", ".md", ".mdx", ".tsx", ".jsx", ".ts", ".js", ".mjs", ".vue", ".svelte"]);
 const SKIP_DIRS = new Set(["node_modules", "dist", "build", "out", "coverage", "vendor", "target", "__snapshots__"]);
 export const MAX_FILES = 4000;
+// Source and template files in languages scan_source doesn't parse. They are counted, not read, so the result can say what
+// it skipped: a Flutter app scanned as one README read as "the code can't be read".
+const OTHER_SOURCE = new Set([".dart", ".swift", ".kt", ".kts", ".java", ".py", ".rb", ".go", ".rs", ".php", ".cs", ".ex", ".exs", ".scala", ".erb", ".liquid", ".hbs", ".twig", ".ejs", ".jinja", ".j2"]);
 const MAX_BYTES = 512 * 1024;
 
 // A currency amount needs 2 or more digits, cents, or a period after it ("$9/mo"): "$1" is a SQL parameter or a
@@ -424,7 +429,7 @@ export const DOT_DIRS = new Set([".github", ".claude", ".cursor", ".vscode", ".c
  * `dot` also reads the dot-folders in DOT_DIRS (.github, .claude, .cursor), never dotfiles: verify_quotes
  * said a correct citation of .github/workflows/deploy.yml was missing from the repo.
  */
-export function walk(root: string, out: string[], state: { truncated: boolean; links?: number }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root, dot = false) {
+export function walk(root: string, out: string[], state: { truncated: boolean; links?: number; notRead?: Record<string, number> }, exts: Set<string> = EXTS, names: Set<string> = new Set(), top = root, dot = false) {
   let entries: string[];
   try {
     entries = readdirSync(root);
@@ -458,6 +463,10 @@ export function walk(root: string, out: string[], state: { truncated: boolean; l
     }
     if (st.isDirectory()) walk(p, out, state, exts, names, top, dot);
     else if (st.isFile() && wanted && st.size <= MAX_BYTES) out.push(p);
+    else if (st.isFile() && state.notRead && OTHER_SOURCE.has(extname(name).toLowerCase())) {
+      const e = extname(name).toLowerCase();
+      state.notRead[e] = (state.notRead[e] ?? 0) + 1;
+    }
   }
 }
 
@@ -607,7 +616,7 @@ function realDir(dir: string): string {
 
 function collect(root: string) {
   const all: string[] = [];
-  const state: { truncated: boolean; links?: number } = { truncated: false };
+  const state: { truncated: boolean; links?: number; notRead: Record<string, number> } = { truncated: false, notRead: {} };
   walk(root, all, state, EXTS, META_NAMES);
   // package.json and LICENSE files give the license state; they are not copy.
   const isMeta = (f: string) => /(^|\/)package\.json$/.test(f) || LICENSE_FILE.test(f.split(sep).pop() ?? "");
@@ -788,6 +797,8 @@ export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] =
     "Tooltips, FAQ answers and attribute text are included because visitors read them. Docs folders are scanned too if they are under this directory; docs that disagree with each other are a finding.",
     "Env flags marked affectsOutput appear in routing, head or conditional rendering. Say which value the build you reviewed used.",
   ];
+  const notRead = Object.entries(state.notRead).sort((a, b) => b[1] - a[1]);
+  if (notRead.length) notes.push(`Not read: ${notRead.map(([e, n]) => `${n} ${e} file${n === 1 ? "" : "s"}`).join(", ")}. This scan parses web, docs and JavaScript/TypeScript files only; open those files yourself (entry screens, store listing text, pricing code) instead of saying the code can't be read.`);
   if (state.truncated) notes.push(`Stopped after ${MAX_FILES} files; pass a narrower directory.`);
   if (state.links) notes.push(`Did not follow ${state.links} symbolic link${state.links === 1 ? "" : "s"}: they point to a folder or to a file outside this directory.`);
   notes.push(...licenseNotes(claims.oss, licenseState));
@@ -816,5 +827,5 @@ export function scanSource(dir: string, maxPerKind = 60, compareWith: string[] =
   if (decisions.length) {
     notes.push("Decision statuses such as \"not fully built\", \"superseded\", \"open\" or \"proposed\" mean the feature is partial, replaced or undecided. Use them when you say whether something is shipped. When the record and the index differ, report both; settle it from the feature's docs and code; the newest dated line usually wins.");
   }
-  return { dir: root, filesScanned: files.length, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, billing, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, mcpServer: mcp, notes };
+  return { dir: root, filesScanned: files.length, notRead: state.notRead, truncated: state.truncated || KINDS.some((k) => counts[k] > maxPerKind), claims: Object.fromEntries(KINDS.map((k) => [k, claims[k].slice(0, maxPerKind)])) as unknown as Record<ClaimKind, Claim[]>, claimCounts: counts, envFlags, conflicts, compared, licenseState, billing, decisions, ...(decisionsFrom ? { decisionsFrom } : {}), decisionIssues, mcpServer: mcp, notes };
 }

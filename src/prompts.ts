@@ -44,13 +44,16 @@ Offer to save the confirmed facts with save_business_profile.`;
 // Claude Code skill in skills/get-started (written by scripts/build-skill.mjs, checked by a test), because an
 // agent can't fetch an MCP prompt itself; only the user can run one.
 export function getStartedText(goal?: string): string {
-  return `Set up marketing-expert for the product in this repo, then write its first marketing strategy.${opt(goal, "\nGoal")}
+  return `Set up marketing-expert for the product in this repo and show the user what it can do for it.${opt(goal, "\nGoal")}
 
 1. Read the repo before asking anything: README, docs, pricing, the marketing site source if it's here, and any vision, roadmap or decision-record files. Run scan_source on the repo root. If the marketing site has its own folder, run scan_source on it with compareWith set to the docs folder.
 2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile and work only on its missingFields and staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
-3. Send the user one message: the profile you drafted from the repo, each fact with the file it came from, then only the questions the repo can't answer: price, paying customers, signups or traffic with a date, money and hours a week for marketing, the goal (hobby, side income or business), the countries or provinces they sell in, and anything they refuse to do. For each, say which labelled assumption you'll use if they don't know.
+3. Send the user one short message that shows what this tool can do for the product:
+   - What the product is, in two or three lines, each fact with the file it came from. If something couldn't be read or found (no site URL, files scan_source didn't parse), say so in one line at most and work from what you have.
+   - 4 to 6 directions to take next that fit this product, one line each, in plain words: what the user gets and the one input it still needs. Choose from: a first marketing strategy with a 90-day plan; small bets (cheap tests that fit now, from match_small_bets); the one thing holding growth back (marketing_diagnosis); positioning against what users do instead (positioning_workshop); a teardown of the homepage or landing page (landing_page_teardown); a technical SEO review of the site source (technical_seo_review); site claims that contradict the docs (scan_source with compareWith); what a customer is worth and what acquisition the business can afford (unit_economics); a launch plan (launch_plan); competing with larger players (competitive_strategy).
+   - At most three questions the repo can't answer, picked from price, paying customers, signups or traffic with a date, money and hours a week, the goal (hobby, side income or business), the countries or provinces they sell in, and anything they refuse to do; for each, the labelled assumption you'll use if they don't know. Then ask which direction to start with; the first strategy is the default.
 4. Save what the user confirmed with save_business_profile. Fill traction (dated with asOf), assets, audiences, surfaces, revenue, launched, markets, principles and avoid where known, because match_small_bets reads them. Don't save assumptions; state them in the answer.
-5. Write the first strategy with the steps below, using the saved profile. Save it to marketing/strategy-YYYY-MM-DD.md in the repo, and don't commit it unless the user asks.
+5. Do the direction the user picked, using the saved profile, and end with one line naming the next direction worth taking. The first strategy follows the steps below; save it to marketing/strategy-YYYY-MM-DD.md in the repo, and don't commit it unless the user asks.
 
 ## First strategy
 
@@ -78,7 +81,7 @@ export function registerPrompts(server: McpServer): void {
     "get_started",
     {
       title: "Get started in a product repo",
-      description: "First run in a product's repo: read the repo, draft the business profile, ask only what the repo can't answer, save the profile, then write a first marketing strategy.",
+      description: "First run in a product's repo: read the repo, show what the tool can do for this product, ask only what the repo can't answer, save the profile, then take the direction the user picks (a first marketing strategy by default).",
       argsSchema: { goal: z.string().optional().describe("e.g. first 10 paying customers, side income") },
     },
     ({ goal }) => user(getStartedText(goal))
