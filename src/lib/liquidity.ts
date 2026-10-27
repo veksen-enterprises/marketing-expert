@@ -52,7 +52,7 @@ export function liquidity(input: LiquidityInput): LiquidityResult {
     };
   });
   const shareOfWatchesFiring = rows.reduce((a, r) => a + r.probabilityWithinWindow, 0) / rows.length;
-  const pct = (x: number) => `${(x * 100).toFixed(x < 0.1 ? 1 : 0)}%`;
+  const pct = (x: number) => `${x > 0 && x < 0.001 ? Number((x * 100).toPrecision(2)) : (x * 100).toFixed(x < 0.1 ? 1 : 0)}%`;
   const narrow = rows.reduce((a, b) => (b.matchShare < a.matchShare ? b : a));
   const verdict =
     `At ${listingsPerDay} new listings a day, about ${pct(shareOfWatchesFiring)} of these watches would fire within ${windowDays} days. ` +
