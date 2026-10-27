@@ -103,7 +103,7 @@ export interface SmallBetsFacts {
   /** Where the business operates or sells (countries, provinces, states), e.g. "Quebec", "Turkey". */
   markets?: string[];
   /** Where current users came from, in the business's words, e.g. "Reddit", "word of mouth", "Google". */
-  channels?: string[];
+  channels?: Channel[];
 }
 
 export interface StageReading {
@@ -204,16 +204,27 @@ export const CHANNEL_KINDS: Array<{ kind: string; words: RegExp; bets: string[] 
   { kind: "podcasts and press", words: /\b(podcasts?|press|articles?|blogs?)\b/i, bets: ["guest-spots", "journalist-requests", "press"] },
 ];
 
-/** For each bet id, the first profile channel that names a kind the bet builds on; and the channels that matched none. */
-export function workingChannels(channels: string[] = []): { byBet: Map<string, string>; unmatched: string[] } {
-  const byBet = new Map<string, string>();
+/** Where users came from. A plain string is a guess; `how` says how the founder knows (a user said so, a referrer, a tagged link, a sign-up answer). */
+export type Channel = string | { name: string; how?: string };
+
+/**
+ * For each bet id, the first backed profile channel that names a kind the bet builds on; the channels that matched
+ * none; and the channels that matched a kind but carry no reason, so they don't rank anything up.
+ */
+export function workingChannels(channels: Channel[] = []): { byBet: Map<string, { name: string; how: string }>; unmatched: string[]; unbacked: string[] } {
+  const byBet = new Map<string, { name: string; how: string }>();
   const unmatched: string[] = [];
+  const unbacked: string[] = [];
   for (const c of channels) {
-    const kinds = CHANNEL_KINDS.filter((k) => k.words.test(c));
-    if (!kinds.length) unmatched.push(c);
-    for (const k of kinds) for (const id of k.bets) if (!byBet.has(id)) byBet.set(id, c);
+    // A hand-edited profile can hold anything here; an entry without a name is reported, not skipped.
+    const name = typeof c === "string" ? c : typeof c?.name === "string" ? c.name : JSON.stringify(c);
+    const how = typeof c === "object" && c && typeof c.how === "string" ? c.how.trim() : "";
+    const kinds = CHANNEL_KINDS.filter((k) => k.words.test(name));
+    if (!kinds.length) unmatched.push(name);
+    else if (!how) unbacked.push(name);
+    else for (const k of kinds) for (const id of k.bets) if (!byBet.has(id)) byBet.set(id, { name, how });
   }
-  return { byBet, unmatched };
+  return { byBet, unmatched, unbacked };
 }
 
 const LAW_PLAYBOOK = "marketing-law-by-market";
@@ -262,6 +273,9 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   const working = workingChannels(f.channels);
   if (!f.channels?.length) assumptions.push("Channels not saved (where current users came from), so no bet was ranked up for building on a channel that already works.");
   if (working.unmatched.length) assumptions.push(`Channels matched no bet by keyword, so they didn't change the ranking: ${working.unmatched.join(", ")}.`);
+  // A recalled source favours channels the founder posted in (research/channel-answer-accuracy.md), so a guess doesn't boost.
+  if (working.unbacked.length)
+    assumptions.push(`Not ranked up for ${working.unbacked.join(", ")}: no saved reason to think users came from there. Ask which recent users came from it and how the founder knows (the user said so, a referrer, a tagged link), and save that as the channel's how.`);
 
   const fitsNow: Verdict[] = [];
   const fitsLater: Verdict[] = [];
@@ -319,7 +333,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     const score = betScore({ ...b, ceiling: ceilingFor(b, f.audiences) });
     fitsNow.push({
       ...base(b),
-      reason: fitReason(b, f, stage.stage) + (channel ? `; builds on ${channel}, which already brings users` : ""),
+      reason: fitReason(b, f, stage.stage) + (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : ""),
       cost: b.cost,
       judgeAfter: b.judgeAfter,
       measure: b.measure,
@@ -329,7 +343,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       ceiling: ceilingFor(b, f.audiences),
       ...(b.tries ? { tries: b.tries } : {}),
       score: channel ? Math.round(score * CHANNEL_BOOST * 1000) / 1000 : score,
-      ...(channel ? { workingChannel: channel } : {}),
+      ...(channel ? { workingChannel: channel.name } : {}),
       playbookSection: b.section,
     });
   }

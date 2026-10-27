@@ -111,7 +111,7 @@ describe("matchSmallBets", () => {
     markets: ["Quebec"],
   };
   it("opens stage-2 bets once traction is there, and keeps press for later", () => {
-    const r = matchSmallBets({ ...devtool, channels: ["Google search"] });
+    const r = matchSmallBets({ ...devtool, channels: [{ name: "Google search", how: "search referrers in analytics" }] });
     expect(r.stage.stage).toBe(2);
     for (const id of ["shareable-outputs", "one-command-try", "error-pages", "affiliate", "own-community"]) expect(ids(r.fitsNow), id).toContain(id);
     expect(ids(r.fitsLater)).toContain("press");
@@ -180,19 +180,38 @@ describe("matchSmallBets", () => {
   });
   it("ranks a bet higher when it builds on a channel already bringing users, and says which", () => {
     const plain = matchSmallBets(devtool).fitsNow;
-    const r = matchSmallBets({ ...devtool, channels: ["a Reddit thread", "a podcast nobody's heard of"] });
+    const r = matchSmallBets({ ...devtool, channels: [{ name: "a Reddit thread", how: "two users said so" }, "a podcast nobody's heard of"] });
     const before = plain.find((v) => v.id === "answer-questions")!;
     const after = r.fitsNow.find((v) => v.id === "answer-questions")!;
     expect(after.score).toBeCloseTo(before.score! * CHANNEL_BOOST, 2);
     expect(after.workingChannel).toBe("a Reddit thread");
-    expect(after.reason).toMatch(/builds on a Reddit thread, which already brings users/);
+    expect(after.reason).toMatch(/builds on a Reddit thread, which already brings users \(two users said so\)/);
     expect(r.fitsNow.findIndex((v) => v.id === "answer-questions")).toBeLessThan(plain.findIndex((v) => v.id === "answer-questions"));
     expect(r.fitsNow.find((v) => v.id === "comparison-pages")!.workingChannel).toBeUndefined();
     expect(r.assumptions.join(" ")).not.toMatch(/Channels not saved/);
   });
+  it("ranks up only channels the founder can say how they know about", () => {
+    // research/channel-answer-accuracy.md: a recalled source favours channels the founder posted in, so a guess doesn't boost.
+    const guess = matchSmallBets({ ...devtool, channels: ["Reddit"] });
+    const backed = matchSmallBets({ ...devtool, channels: [{ name: "Reddit", how: "a referrer in analytics" }] });
+    const reddit = new Set(CHANNEL_KINDS.find((k) => k.kind === "communities")!.bets);
+    const plain = matchSmallBets(devtool).fitsNow;
+    for (const v of guess.fitsNow) {
+      expect(v.score, v.id).toBe(plain.find((x) => x.id === v.id)!.score);
+      expect(v.workingChannel, v.id).toBeUndefined();
+      const b = backed.fitsNow.find((x) => x.id === v.id)!;
+      if (reddit.has(v.id)) expect(b.score).toBeCloseTo(v.score! * CHANNEL_BOOST, 2);
+      else expect(b.score, v.id).toBe(v.score);
+    }
+    expect(guess.assumptions.join(" ")).toMatch(/Not ranked up for Reddit: no saved reason.*which recent users came from it and how/);
+    expect(backed.assumptions.join(" ")).not.toMatch(/Not ranked up/);
+    // An empty reason is no reason.
+    expect(matchSmallBets({ ...devtool, channels: [{ name: "Reddit", how: "  " }] }).assumptions.join(" ")).toMatch(/Not ranked up for Reddit/);
+  });
   it("says when channels are missing or match no bet, instead of skipping them silently", () => {
     expect(matchSmallBets(devtool).assumptions.join(" ")).toMatch(/Channels not saved/);
     expect(matchSmallBets({ ...devtool, channels: ["carrier pigeon"] }).assumptions.join(" ")).toMatch(/matched no bet by keyword.*carrier pigeon/);
+    expect(matchSmallBets({ ...devtool, channels: [null as never] }).assumptions.join(" ")).toMatch(/matched no bet by keyword.*null/);
   });
   it("reads channels from the saved profile", () => {
     expect(factsFromProfile({ name: "x", channels: ["Google"] }).channels).toEqual(["Google"]);
