@@ -36,7 +36,7 @@ Hop 1 from research/channel-answer-accuracy.md §6 ("Whether the 1.5 boost picks
 - On Reddit, resubmitting the same image lost popularity with each submission, modelled as exponential decay. The penalty fades with time between posts. It is strongest in the same community. Content that succeeded in a popular community "will not be successful again"; content from a niche community can still succeed in a larger one. [research, 5, read; 132,307 submissions of 16,736 images, 867 communities; images, not product posts]
 - Paid search worked only on people who didn't already buy: the effect was largest for users with no purchase in the past year and near zero for frequent buyers. [research, 4, read]
 - The mechanism in both: more effort on a channel pays when it reaches people the channel hasn't reached yet. It stops paying when it shows the same thing to the same people. [derived from 4, 5]
-- For the bets: "answer questions" or "comparison pages" add new content for new searchers, so they don't hit this. "One launch-site post" after a launch that brought users is the resubmission case: the same product, to the same crowd. [derived]
+- For the bets: "answer questions" or "comparison pages" add new content for new searchers, so they don't hit this. "One launch-site post" (now "Posts on two launch sites") after a launch that brought users is the resubmission case: the same product, to the same crowd. [derived]
 
 ## 4. Users from different channels are not equal
 
