@@ -50,7 +50,8 @@ export interface BusinessProfile {
   product?: string;
   category?: string;
   businessModel?: string;
-  stage?: string;
+  /** How the founder describes where the business is (e.g. private beta). Not the Stage in GLOSSARY.md, which match_small_bets works out from traction. */
+  selfDescribedStage?: string;
   bestFitCustomers?: string;
   competitiveAlternatives?: string[];
   differentiators?: string[];
@@ -60,7 +61,8 @@ export interface BusinessProfile {
   channels?: Channel[];
   metrics?: Record<string, Metric>;
   voice?: { do?: string[]; dont?: string[] };
-  constraints?: string[];
+  /** The founder's practical limits, such as hours a week or budget. Not the constraint, which the diagnosis names. */
+  limits?: string[];
   /** Facts match_small_bets uses to decide which bets fit. */
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string; basis?: Basis };
   assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
@@ -126,9 +128,19 @@ function readObject(file: string): Record<string, unknown> {
   return v as Record<string, unknown>;
 }
 
+// Profiles saved before the names matched GLOSSARY.md. The next save writes only the new names.
+const RENAMED: Record<string, keyof BusinessProfile> = { constraints: "limits", stage: "selfDescribedStage" };
+
 export function getProfile(name: string): BusinessProfile | null {
   const p = pathFor(name);
-  return existsSync(p) ? (readObject(p) as unknown as BusinessProfile) : null;
+  if (!existsSync(p)) return null;
+  const o = readObject(p);
+  for (const [old, now] of Object.entries(RENAMED)) {
+    if (!(old in o)) continue;
+    if (!(now in o)) o[now] = o[old];
+    delete o[old];
+  }
+  return o as unknown as BusinessProfile;
 }
 
 /**
@@ -183,7 +195,7 @@ export function saveProfile(name: string, patch: Partial<Record<keyof BusinessPr
 
 /** Fields the advice depends on that are still empty, most important first. */
 export function missingFields(p: BusinessProfile): string[] {
-  const order: Array<keyof BusinessProfile> = ["product", "bestFitCustomers", "competitiveAlternatives", "differentiators", "businessModel", "pricing", "metrics", "channels", "proof", "voice", "stage"];
+  const order: Array<keyof BusinessProfile> = ["product", "bestFitCustomers", "competitiveAlternatives", "differentiators", "businessModel", "pricing", "metrics", "channels", "proof", "voice", "traction"];
   return order.filter((k) => {
     const v = p[k];
     return v === undefined || (Array.isArray(v) && v.length === 0) || (typeof v === "object" && v !== null && Object.keys(v).length === 0);

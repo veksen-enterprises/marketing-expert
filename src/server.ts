@@ -733,7 +733,7 @@ export function createServer(): McpServer {
         product: z.string().nullable().optional(),
         category: z.string().nullable().optional(),
         businessModel: z.string().nullable().optional(),
-        stage: z.string().nullable().optional(),
+        selfDescribedStage: z.string().nullable().optional().describe("How the founder describes where the business is (e.g. private beta). match_small_bets works out the stage from traction, not from this"),
         bestFitCustomers: z.string().nullable().optional(),
         competitiveAlternatives: strList,
         differentiators: strList,
@@ -751,7 +751,7 @@ export function createServer(): McpServer {
           .optional()
           .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe", "basis": "counted"}}'),
         voice: z.object({ do: strList, dont: strList }).nullable().optional(),
-        constraints: strList,
+        limits: strList.describe("The founder's practical limits, such as hours a week or budget. Not the constraint the diagnosis names"),
         traction: z
           .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional(), basis })
           .nullable()
