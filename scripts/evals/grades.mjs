@@ -217,3 +217,32 @@ export function readGrade(gradesDir, id) {
     return { invalid: `${relative(process.cwd(), md)}: ${e.message}` };
   }
 }
+
+// Quote statuses that are errors. cited-file-not-read is a quote the tool could not check, not an error.
+const QUOTE_ERRORS = ["wrong-line", "other-file", "cited-file-missing", "not-found"];
+const LABEL_ERRORS = ["upgraded", "qualifier-dropped"];
+
+/**
+ * The error classes tools settle by exact match (research/llm-citation-checking.md §4–5): quotes against the case
+ * material (verify_quotes) and evidence brackets against the playbooks (check_answer's label check). `quote` is null
+ * when there is no material, so a case without it is left out of the count, not counted as zero. The checkers are
+ * passed in (from dist/ in grade.mjs) so this file stays plain JavaScript.
+ */
+export function toolFindings(answer, material, { checkQuotes, checkLabels }) {
+  const quote = material ? checkQuotes(answer, [material]).results.filter((r) => QUOTE_ERRORS.includes(r.status)) : null;
+  const label = checkLabels(answer).filter((f) => LABEL_ERRORS.includes(f.status));
+  return { quote, label };
+}
+
+/** The findings as grader prompt text, saying what the tools don't cover. */
+export function formatToolFindings({ quote, label }) {
+  const q = !quote
+    ? "Quotes: not checked (no material for this case)."
+    : quote.length
+      ? `Quotes (verify_quotes; misquote, wrong-line, wrong-file):\n${quote.map((r) => `- ${r.status}: "${r.quote.slice(0, 120)}" cited ${r.cited ?? "nowhere"}${r.foundAt.length ? `; found at ${r.foundAt.join(", ")}` : ""}${r.context ? `; context: ${r.context}` : ""}`).join("\n")}`
+      : "Quotes: none found wrong.";
+  const l = label.length
+    ? `Evidence brackets (check_answer; label-upgraded, qualifier-dropped):\n${label.map((f) => `- ${f.status}: "${f.claim.slice(0, 160)}" has [${f.answerLabel}]; the playbook passage (${f.source}) has ${f.sourceLabels.map((x) => `[${x}]`).join(", ")}`).join("\n")}`
+    : "Evidence brackets: none found upgraded or missing a qualifier.";
+  return `${q}\n${l}\nNot covered by these tools: claims in your own words (a paraphrase outside quotation marks or brackets) that widen who, how many or how sure. Those are yours to check.`;
+}
