@@ -19,7 +19,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, 
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { answerSection, errorsOverlap, GATES, listRuns, parseCases, planBatch, readGrade, SCORED_ITEMS } from "./grades.mjs";
+import { answerSection, errorsOverlap, formatToolFindings, GATES, listRuns, parseCases, planBatch, readGrade, SCORED_ITEMS, toolFindings } from "./grades.mjs";
 import { iccOneWay, itemAgreement, mean, pairedComparison, varianceSplit } from "./stats.mjs";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -74,7 +74,16 @@ function blind(versions, out, copies) {
   console.log("Not hidden: differences in content, such as a tool only one version has. Check a few answers before grading.");
 }
 
-function graderPrompt(entry, answerPath, material) {
+/** verify_quotes and the label check from the built server, or null before `npm run build`. */
+async function checkers() {
+  const dist = join(repo, "dist/lib");
+  if (!existsSync(join(dist, "quoteCheck.js"))) return null;
+  const { checkQuotes } = await import(join(dist, "quoteCheck.js"));
+  const { checkLabels } = await import(join(dist, "labelCheck.js"));
+  return { checkQuotes, checkLabels };
+}
+
+function graderPrompt(entry, answerPath, material, findings) {
   const c = cases.get(entry.case);
   const rubric = readFileSync(join(repo, "evals/rubric.md"), "utf8");
   const expectations = readFileSync(join(repo, "evals/expectations.md"), "utf8");
@@ -86,6 +95,7 @@ function graderPrompt(entry, answerPath, material) {
     notes ? `Grader notes for this case (the advisor did not see these):\n${notes}` : "",
     `The answer: ${answerPath}. Read only that file and the material. Do not read other files in /tmp, other evaluation runs or grades.`,
     `The check_answer fingerprint was checked by script before grading; don't recompute it.`,
+    `Already counted by script, the same way for every answer: quotes checked against the material and evidence brackets checked against the playbooks. Use these findings when you score item 8, but don't add them to the json; if you think one is wrong, say so in the prose. Your citation work is the rubric's who, how many and how sure step for claims in the answer's own words.\n${findings}`,
     `Print the grade as Markdown in the format the rubric's "Grade format" section gives, then the errors as one fenced json block (the rubric's "Errors as data"; [] if none). Print nothing after the json block.`,
     `--- rubric.md ---\n${rubric}`,
   ]
@@ -100,13 +110,14 @@ function materialFor(caseId) {
   return undefined;
 }
 
-function runGrader(entry, answers, gradesDir) {
+function runGrader(entry, answers, gradesDir, tools) {
   const material = materialFor(entry.case);
   const work = mkdtempSync(join(tmpdir(), "eval-grade-"));
   const answerPath = join(work, entry.file);
   cpSync(join(answers, entry.file), answerPath);
+  const findings = formatToolFindings(toolFindings(answerSection(readFileSync(answerPath, "utf8")), material, tools));
   const cmd = opt["grader-cmd"] ?? "claude";
-  const args = ["-p", graderPrompt(entry, answerPath, material), "--output-format", "text", "--no-session-persistence", "--setting-sources", "project", "--allowedTools", "Read,Grep,Glob", "--add-dir", material];
+  const args = ["-p", graderPrompt(entry, answerPath, material, findings), "--output-format", "text", "--no-session-persistence", "--setting-sources", "project", "--allowedTools", "Read,Grep,Glob", "--add-dir", material];
   if (opt.model) args.push("--model", opt.model);
   return new Promise((done) => {
     const child = spawn(cmd, args, { cwd: work, env: process.env });
@@ -139,6 +150,8 @@ async function grade(batch) {
   mkdirSync(gradesDir, { recursive: true });
   const noMaterial = [...new Set(key.entries.map((e) => e.case).filter((c) => !materialFor(c)))];
   if (noMaterial.length) fail(`no material folder for ${noMaterial.join(", ")}: pass --materials <case or prefix>=<dir>`);
+  const tools = await checkers();
+  if (!tools) fail("the grader prompt carries verify_quotes and label-check findings: run npm run build first");
   // Only answers without a valid grade, so an interrupted batch can be resumed.
   const todo = key.entries.filter((e) => opt.regrade || readGrade(gradesDir, e.id).missing || readGrade(gradesDir, e.id).invalid);
   console.log(`grading ${todo.length} of ${key.entries.length} answers, ${opt.parallel ?? 3} at a time`);
@@ -147,7 +160,7 @@ async function grade(batch) {
   await Promise.all(
     Array.from({ length: Number(opt.parallel ?? 3) }, async () => {
       for (let e; (e = queue.shift()); ) {
-        const r = await runGrader(e, join(batch, "answers"), gradesDir);
+        const r = await runGrader(e, join(batch, "answers"), gradesDir, tools);
         console.log(`${e.file}: ${r.problem ?? "graded"}`);
         if (r.problem) problems.push(r);
       }
@@ -178,12 +191,14 @@ function loadGraded(batch) {
 
 async function mechanical(rows) {
   const dist = join(repo, "dist/lib");
-  if (!existsSync(join(dist, "answerCheck.js"))) return null;
+  const tools = await checkers();
+  if (!existsSync(join(dist, "answerCheck.js")) || !tools) return null;
   const { checkAnswer } = await import(join(dist, "answerCheck.js"));
   const { lintMoves } = await import(join(dist, "moveCheck.js"));
   return (r) => {
     const a = checkAnswer(r.answer);
-    return { words: a.words, moveIssues: lintMoves(r.answer).issues.length, bannedWords: a.bannedWords.length };
+    const f = toolFindings(r.answer, materialFor(r.case), tools);
+    return { words: a.words, moveIssues: lintMoves(r.answer).issues.length, bannedWords: a.bannedWords.length, quoteProblems: f.quote ? f.quote.length : NaN, labelProblems: f.label.length };
   };
 }
 
@@ -197,7 +212,12 @@ async function compare(batch) {
   const mech = await mechanical(rows);
   if (mech) {
     for (const r of rows) r.mech = mech(r);
-    measures.push(["words (check_answer)", (r) => r.mech.words], ["move-format issues (lintMoves)", (r) => r.mech.moveIssues]);
+    measures.push(
+      ["words (check_answer)", (r) => r.mech.words],
+      ["move-format issues (lintMoves)", (r) => r.mech.moveIssues],
+      ["quote problems (verify_quotes)", (r) => r.mech.quoteProblems],
+      ["label problems (check_answer)", (r) => r.mech.labelProblems]
+    );
   }
   const results = measures.map(([name, f]) => ({ name, ...pairedComparison(rows.map((r) => ({ case: r.case, version: r.version, value: f(r) })).filter((x) => Number.isFinite(x.value)), base, cand) }));
   if (opt.json) return console.log(JSON.stringify({ baseline: base, candidate: cand, results }, null, 2));
@@ -213,7 +233,9 @@ async function compare(batch) {
   else console.log("The interval includes zero: this batch does not show a difference.");
   console.log("\n| Measure | Mean difference | 95% CI | Cases |\n|---|---|---|---|");
   for (const r of results.slice(1)) console.log(`| ${r.name} | ${signed(r.meanDiff)} | ${ci(r)} | ${r.k} |`);
-  console.log(`\nNot checked: whether graders could tell the versions apart from the content. The CI assumes cases are independent and treats them as equally weighted; a change that helps one business type and hurts another shows in the per-case rows, not in the mean. ${mech ? "" : "Word counts and move-format issues were skipped: run npm run build first."}`);
+  const noQuotes = [...new Set(rows.filter((r) => r.mech && !Number.isFinite(r.mech.quoteProblems)).map((r) => r.case))];
+  if (noQuotes.length) console.log(`\nQuote problems not counted for ${noQuotes.join(", ")}: no material folder (pass --materials).`);
+  console.log(`\nNot checked: whether graders could tell the versions apart from the content. The CI assumes cases are independent and treats them as equally weighted; a change that helps one business type and hurts another shows in the per-case rows, not in the mean. ${mech ? "" : "Word counts, move-format issues, quote problems and label problems were skipped: run npm run build first."}`);
 }
 
 function agreement(batch) {
