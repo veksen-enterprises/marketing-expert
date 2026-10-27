@@ -33,8 +33,8 @@ One recommended action in an answer, with a mechanism, a cheapest test, a metric
 _Avoid_: recommendation, tactic, initiative, bet
 
 **Stop line**:
-The number that, if missed by the time box, means stopping the move.
-_Avoid_: kill criteria, exit condition
+The threshold that, if not met by the end of the time box, means stopping the move: a number, or a count of tries (fewer than k of n).
+_Avoid_: stop condition, stop rule, kill criteria, exit condition
 
 **Agent channel**:
 Coding agents as a route to users: how an agent finds and chooses a product's MCP server or library.
@@ -50,6 +50,10 @@ _Avoid_: tactic, quick win, growth hack
 How far a business has got, from 0 to 3: no users yet, first users, steady use, something newsworthy. Worked out from traction, not from how the founder describes it.
 _Avoid_: phase, maturity, funding stage
 
+**Working channel**:
+A channel the founder knows recent users came through (the user said so, a tagged link, a sign-up question). Small bets that build on one rank higher.
+_Avoid_: existing channel, traction channel (traction means the counts)
+
 **Fits now / fits later / doesn't fit**:
 The three verdicts on a small bet for one business: it can run today; something it needs is missing; it suits another kind of business or breaks a principle.
 _Avoid_: applies, eligible, recommended
@@ -57,7 +61,7 @@ _Avoid_: applies, eligible, recommended
 ## The business
 
 **Business profile**:
-The stored facts about one business that every answer starts from: product, customers, alternatives, pricing, dated metrics, traction, assets, principles.
+The stored facts about one business that every answer starts from: product, customers, alternatives, pricing, dated metrics, traction, working channels, assets, principles and predictions.
 _Avoid_: account, company record, context
 
 **Traction**:
@@ -69,8 +73,12 @@ Whether a traction or metric number was counted from a record (database, Stripe,
 _Avoid_: confidence, accuracy
 
 **Prediction**:
-A move saved in the business profile with its stop line and check date, so the next run asks what happened instead of relying on memory. Its outcome says whether the stop line was hit, with the number, and whether that number was measured or recalled.
+A move the founder took on, saved in the business profile with its stop line and a check date; it is due once that date passes with no outcome. Its outcome records the number seen, whether the stop line was hit, and whether the number was measured or recalled.
 _Avoid_: forecast (no probability is asked for), goal
+
+**Profile questions**:
+The short questions the advisor asks on a first run about what the repo can't show; each fills a profile field that changes which small bets fit.
+_Avoid_: intake survey, onboarding questions
 
 **Assets**:
 What a business has besides users that a bet can run on: data nobody else has published, expertise, a founder audience, a budget, a way to reach each user.
