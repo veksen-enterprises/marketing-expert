@@ -17,8 +17,11 @@ const BREAK = new Set([
   "a", "br", "button", "img", "input", "label", "option", "select", "textarea", "output", "meter", "progress",
 ]);
 
-/** `end`: stop at the first node that starts at or after this offset in the parsed HTML. */
-export function visibleText(el: HTMLElement | null | undefined, end = Infinity): string {
+/**
+ * `end`: stop at the first node that starts at or after this offset in the parsed HTML.
+ * `from`: leave out nodes that end at or before this offset. `skip`: leave out these elements and their contents.
+ */
+export function visibleText(el: HTMLElement | null | undefined, end = Infinity, opts: { from?: number; skip?: (e: HTMLElement) => boolean } = {}): string {
   if (!el) return "";
   const out: string[] = [];
   // " " entries stand for the space after a block element's children.
@@ -30,6 +33,7 @@ export function visibleText(el: HTMLElement | null | undefined, end = Infinity):
       continue;
     }
     if (n !== el && n.range[0] >= end) break;
+    if (opts.from !== undefined && n !== el && n.range[1] <= opts.from) continue;
     if (n.nodeType === 3) {
       out.push(n.text);
       continue;
@@ -37,6 +41,7 @@ export function visibleText(el: HTMLElement | null | undefined, end = Infinity):
     if (n.nodeType !== 1) continue;
     const tag = (n as HTMLElement).rawTagName?.toLowerCase() ?? "";
     if (SKIP.has(tag)) continue;
+    if (opts.skip && n !== el && opts.skip(n as HTMLElement)) continue;
     if (BREAK.has(tag)) {
       out.push(" ");
       stack.push(" ");
