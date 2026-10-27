@@ -71,7 +71,7 @@ _In short:_ Stop citing "red buttons beat green" and "this test lifted conversio
 _In short:_ Audit a page by checking the five-second message, match with traffic, value proposition, one clear button, nearby proof, answered objections, risk reversal, friction and technical basics, then rank the top three fixes.
 
 Run audit_page and analyze_copy first.
-1. **5-second test**: from the h1 and lead text, what is it, for whom, and what's the next step?
+1. **First-screen read** (yours, from the text): from the h1 and lead text, what is it, for whom, and what's the next step? To check it with people, show the first screen for 5 seconds to 5 target users and ask the same three questions. That tests whether the message is understood. Neither this nor asking people to pick between your page and competitors' predicts which version converts: picks matched the live winner about as often as chance [research; meta-analysis of 151 message pairs, and 541 students on news headlines; not web pages].
 2. **Message match** with the traffic source.
 3. **Value proposition**: specific outcome + mechanism + differentiation from the real alternative.
 4. **Primary CTA**: one, visible on the first screen, states what you get. Secondary CTA for not-ready visitors (demo video, pricing).
@@ -85,4 +85,4 @@ Output the top three changes ranked by impact × confidence, each as a hypothesi
 
 ## Sources
 
-research/cro-landing-pages.md (NN/g 2006/2010/2017/2018; Baymard; web.dev; Deloitte/Google 2020; Thomas, Simon & Kadiyali; Schindler & Yalch; Goldstein et al. 2008; Berman et al.; Kohavi et al.). Most figures are from search snippets; web.dev thresholds were read from source.
+research/cro-landing-pages.md (NN/g 2006/2010/2017/2018; Baymard; web.dev; Deloitte/Google 2020; Thomas, Simon & Kadiyali; Schindler & Yalch; Goldstein et al. 2008; Berman et al.; Kohavi et al.); research/preference-vs-live-results.md (stated picks vs live winners). Most figures are from search snippets; web.dev thresholds were read from source.
