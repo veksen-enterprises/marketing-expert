@@ -307,7 +307,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       doesntFit.push({ ...base(b), reason: `involves ${clash.join(", ")}, which the profile rules out` });
       continue;
     }
-    const kind = [f.category, f.product].filter(Boolean).join(" ");
+    const kind = [f.category, f.product].filter(Boolean).join(" / ");
     if (b.onlyFor && kind && !b.onlyFor.words.test(kind)) {
       doesntFit.push({ ...base(b), reason: `only for ${b.onlyFor.label}; the profile describes ${kind}` });
       continue;
