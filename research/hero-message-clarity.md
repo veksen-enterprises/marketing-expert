@@ -101,7 +101,7 @@ Not fetched: science.org (client error on the *Science Advances* page; read via 
    - Line 51 "Clarity before cleverness" and the hero rule (lines 54–61) carry no tag. Add `[practitioner; no behavioural test of hero clarity found]`.
    - Add one line after line 61, from §2: "No text formula predicts which headline wins: in large news-headline tests, wording features picked the winner little better than chance, and identical tests changed winner a quarter of the time [research; about 170,000 field A/B tests; news headlines, clicks not sign-ups]. Judge the hero with people (a 5-second test) and with traffic, not with a score."
    - Optional, from §5: "Curiosity and negative words win news clicks; don't copy them into a hero, where the goal is a sign-up, not a click [research; news headlines; post-click outcomes not measured]."
-   - Design stance holds: none of this grades the page's look; the human check is the 5-second test and the side-by-side with competitors.
+   - Design stance holds: none of this grades the page's look; the human check is the 5-second test and the side-by-side with competitors (correction 2026-10-27: both test understanding, not which version converts; `preference-vs-live-results.md`).
 
 ## Open questions
 

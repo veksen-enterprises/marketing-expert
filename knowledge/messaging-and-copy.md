@@ -84,6 +84,8 @@ Evidence hierarchy for copy decisions, strongest first:
 3. 5-second tests: measure first impressions and recall only. Peer-reviewed support is thin: Gronier (2016) found his hypothesis about what 5 seconds captures only partly confirmed, and Kuric et al. (2024) found results change with the page's visual complexity and participants' working memory, so a fixed 5 seconds is not a reliable standard.
 4. Internal opinion.
 
+Panels and 5-second tests find what people misread; they don't predict which version wins. In 151 message pairs, the message people judged more persuasive won only 58% of the time, and experts did no better than target readers [research; meta-analysis, 151 message pairs; mostly health messages; abstract only].
+
 Low-traffic B2B sites usually can't A/B test copy (see experimentation); panel tests plus sales-call feedback are the realistic option.
 
 ## Common mistakes
@@ -99,4 +101,4 @@ _In short:_ Don't write copy before positioning is settled, use hype words, list
 
 ## Sources
 
-research/positioning-messaging.md (Schwartz 1966; Copyhackers; Wynter; Gronier 2016; Kuric et al. 2024).
+research/positioning-messaging.md (Schwartz 1966; Copyhackers; Wynter; Gronier 2016; Kuric et al. 2024); research/preference-vs-live-results.md (O'Keefe 2018).

@@ -97,6 +97,7 @@ Both, at different stages. Liquidity decides whether an app survives. Product de
 2. **Point to cheap human checks, never an AI verdict.** Each maps to a finding above:
    - *5-second test:* show the home page or first screen to 5 target users for 5 seconds; ask what it is and whether they would trust it [9][10].
    - *Side-by-side:* put the product's first screen next to the top 3 competitors'; ask 5 target users which they would try first and why [10][11].
+   - *Correction (2026-10-27):* a pick between pages does not predict which page converts: judged picks matched live winners about as often as chance (`preference-vs-live-results.md`). Use the side-by-side only to find a page people misread or pass over. Drop "whether they would trust it" from the 5-person test: glance judgements of credibility are less consistent than of appeal (`design-lever-checks.md` item 6).
    - *Asset swap:* when listing images or store screenshots are home-made, test professional ones, since that is where field evidence of a demand effect exists [13].
    - *Paid design review:* a few hours of a working designer's time on the first-run flow is cheaper than a month of features in a crowded category [practitioner; no cost study found].
 3. **Separate "how it works" design from "how it looks".** In the dating cases, the winning moves were product rules [16][20]. The advisor should ask what rule makes the product different, not only how it looks.
