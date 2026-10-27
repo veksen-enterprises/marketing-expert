@@ -3,7 +3,7 @@ import { z } from "zod";
 import { sampleSizeTwoProportions, twoProportionTest, sampleRatioMismatch, minimumDetectableEffect } from "./lib/stats.js";
 import { unitEconomics, paidMediaMath, analyzeFunnel, reverseFunnel } from "./lib/economics.js";
 import { checkAnswer } from "./lib/answerCheck.js";
-import { liquidity } from "./lib/liquidity.js";
+import { liquidity, reciprocalLiquidity } from "./lib/liquidity.js";
 import { scanSource } from "./lib/sourceScan.js";
 import { checkQuotes } from "./lib/quoteCheck.js";
 import { analyzeCopy, checkLimits } from "./lib/copy.js";
@@ -493,20 +493,47 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
   server.registerTool(
     "liquidity_math",
     {
-      title: "Liquidity: will a watch or search find a match in time?",
+      title: "Liquidity: will a watch, search or dating user find a match in time?",
       description:
-        "For marketplaces, alerts and saved searches: given new listings per day and the share of listings a typical watch matches, returns the chance a watch fires within a window, the expected wait for the first match, and the listings per day needed for a target chance (Poisson arrivals). Give several match shares to cover narrow and broad watches. Use it to set go/stop thresholds instead of guessing." + CITE,
+        "For marketplaces, alerts and saved searches: given new listings per day and the share of listings a typical watch matches, returns the chance a watch fires within a window, the expected wait for the first match, and the listings per day needed for a target chance (Poisson arrivals). Give several match shares to cover narrow and broad watches. For dating and other apps where both people must say yes, use reciprocal instead: each side's new active users per day and like rate, plus the share passing both people's filters; it returns matches per user per week by side, the chance of at least one, and the other side's arrivals needed. Use it to set go/stop thresholds instead of guessing." + CITE,
       inputSchema: {
-        listingsPerDay: z.number().min(0).describe("New listings per day, each item counted once (no reposts)"),
-        matchShares: z.array(z.number().gt(0).max(1)).min(1).max(20).describe("Share of new listings a typical watch matches, e.g. [0.001, 0.01, 0.05]"),
-        windowDays: z.number().positive().describe("How long a watcher waits before giving up"),
+        listingsPerDay: z.number().min(0).optional().describe("New listings per day, each item counted once (no reposts)"),
+        matchShares: z.array(z.number().gt(0).max(1)).min(1).max(20).optional().describe("Share of new listings a typical watch matches, e.g. [0.001, 0.01, 0.05]"),
+        reciprocal: z
+          .object({
+            sides: z
+              .array(
+                z.object({
+                  name: z.string().min(1).max(50).describe("e.g. women, men, or member for one pool"),
+                  newPerDay: z.number().min(0).describe("New active users of this side arriving in range per day (active, not sign-ups)"),
+                  likeRate: z.number().gt(0).max(1).describe("Share of the other side's profiles a user on this side likes"),
+                })
+              )
+              .min(1)
+              .max(2)
+              .describe("Two sides, or one pool that matches with itself"),
+            filterShare: z.number().gt(0).max(1).describe("Share of the other side's profiles that pass both people's filters (age, distance, preferences)"),
+            conversationRate: z.number().min(0).max(1).optional().describe("Share of matches that become a conversation"),
+          })
+          .optional()
+          .describe("Dating mode: replaces listingsPerDay and matchShares"),
+        windowDays: z.number().positive().describe("How long a watcher or user waits before giving up"),
         targetProbability: z.number().gt(0).lt(1).optional().describe("Target chance of at least one match in the window, default 0.8"),
         assumedInputs,
       },
       annotations: readOnly,
     },
     safe((a) => {
-      const r = liquidity(a);
+      if (a.reciprocal) {
+        if (a.listingsPerDay !== undefined || a.matchShares) throw new RangeError("give reciprocal, or listingsPerDay with matchShares, not both");
+        const r = reciprocalLiquidity({ ...a.reciprocal, windowDays: a.windowDays, targetProbability: a.targetProbability });
+        const sides = a.reciprocal.sides.map((s) => `${s.name} ${num(s.newPerDay)}/day liking ${pct(s.likeRate)}`).join("; ");
+        const inputs = `${sides}; filter share ${pct(a.reciprocal.filterShare)}, window ${num(a.windowDays)} days`;
+        const result = r.rows.map((x) => `${x.side} ${num(x.matchesPerWeek)} matches/week`).join(", ");
+        return cited(r, "liquidity_math", inputs, result, a.assumedInputs);
+      }
+      if (a.listingsPerDay === undefined || !a.matchShares) throw new RangeError("give listingsPerDay and matchShares, or reciprocal for apps where both people must say yes");
+      const r = liquidity({ listingsPerDay: a.listingsPerDay, matchShares: a.matchShares, windowDays: a.windowDays, targetProbability: a.targetProbability });
       const inputs = `${num(a.listingsPerDay)} listings/day, match shares ${a.matchShares.map(pct).join(", ")}, window ${num(a.windowDays)} days`;
       return cited(r, "liquidity_math", inputs, `${pct(r.shareOfWatchesFiring)} of watches fire within ${num(a.windowDays)} days`, a.assumedInputs);
     })
