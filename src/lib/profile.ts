@@ -6,11 +6,43 @@ import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import type { Audience, AvoidTag, Surface } from "./smallBets.js";
 
+/** "counted": looked up in a record (a database, Stripe, an analytics export). Anything else, missing included, is an estimate. */
+export type Basis = "counted" | "estimated";
+
 export interface Metric {
   value: number | string;
   /** When the number was true, e.g. "2026-09". Numbers without dates go stale silently. */
   asOf?: string;
   source?: string;
+  basis?: Basis;
+}
+
+/** A move's stop line, saved when the move is chosen so the next run asks what happened instead of relying on memory. */
+export interface Prediction {
+  id: string;
+  madeOn: string;
+  move: string;
+  metric?: string;
+  stop: string;
+  /** For a count stop line ("fewer than k of n"): the threshold k and the number of tries n. */
+  k?: number;
+  n?: number;
+  /** When the stop line is due to be read, e.g. "2026-09-15". */
+  checkOn: string;
+  outcome?: PredictionOutcome;
+}
+
+export interface PredictionOutcome {
+  recordedOn: string;
+  /** What happened, with the number. */
+  result: string;
+  /** true: the stop line was hit (stop the move). false: it was cleared. null: unknown, e.g. the move never ran. */
+  stopHit: boolean | null;
+  /** "measured": read from a record. "recalled": the founder's memory. */
+  how: "measured" | "recalled";
+  /** Successes and tries actually seen, for a count stop line. */
+  k?: number;
+  n?: number;
 }
 
 export interface BusinessProfile {
@@ -30,7 +62,7 @@ export interface BusinessProfile {
   voice?: { do?: string[]; dont?: string[] };
   constraints?: string[];
   /** Facts match_small_bets uses to decide which bets fit. */
-  traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string };
+  traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string; basis?: Basis };
   assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
   audiences?: Audience[];
   surfaces?: Surface[];
@@ -44,6 +76,7 @@ export interface BusinessProfile {
   /** Things the business rules out (its non-goals and principles), as fixed tags. */
   avoid?: AvoidTag[];
   openQuestions?: string[];
+  predictions?: Prediction[];
   notes?: string;
   updatedAt?: string;
 }
@@ -100,7 +133,7 @@ export function getProfile(name: string): BusinessProfile | null {
 
 /**
  * Merge `patch` into the stored profile. Scalars replace; arrays replace (send the full list);
- * metrics and voice merge by key. Pass null for a field to delete it. If the stored file can't be read,
+ * metrics and voice merge by key; predictions merge by id (see mergePredictions). Pass null for a field to delete it. If the stored file can't be read,
  * it is moved to <name>.json.bak (or a name with the time, if that exists), the save starts from an empty profile, and a message is added to `warnings`.
  */
 export function saveProfile(name: string, patch: Partial<Record<keyof BusinessProfile, unknown>>, warnings: string[] = []): BusinessProfile {
@@ -132,6 +165,8 @@ export function saveProfile(name: string, patch: Partial<Record<keyof BusinessPr
       const voice: Record<string, unknown> = { ...(existing.voice ?? {}), ...(v as object) };
       for (const vk of Object.keys(voice)) if (voice[vk] === null) delete voice[vk];
       merged.voice = voice;
+    } else if (k === "predictions" && Array.isArray(v)) {
+      merged.predictions = mergePredictions(existing.predictions, v as Array<Partial<Prediction>>, warnings);
     } else {
       merged[k] = v;
     }
@@ -172,6 +207,103 @@ export function staleMetrics(p: BusinessProfile, months = 6, now = new Date()): 
     }
     const ageMonths = (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24 * 30.44);
     if (ageMonths > months) out.push(`${k} (as of ${m.asOf})`);
+  }
+  return out;
+}
+
+const DAY_MS = 1000 * 60 * 60 * 24;
+
+/** A "2026-09" date means the end of that month; a full date means that day. Null if it can't be read. */
+function readDate(s: unknown, monthEnd: boolean): Date | null {
+  if (typeof s !== "string" || !/^\d{4}-\d{2}(-\d{2})?/.test(s)) return null;
+  if (s.length === 7) {
+    const d = new Date(`${s}-01T00:00:00Z`);
+    if (Number.isNaN(d.getTime())) return null;
+    if (monthEnd) d.setUTCMonth(d.getUTCMonth() + 1, 0);
+    return d;
+  }
+  const d = new Date(s.length === 10 ? `${s}T00:00:00Z` : s);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+const today = () => new Date().toISOString().slice(0, 10);
+const isCount = (x: unknown) => Number.isInteger(x) && (x as number) >= 0;
+
+function checkCounts(where: string, k: unknown, n: unknown): void {
+  if (k === undefined && n === undefined) return;
+  if (!isCount(k) || !isCount(n) || (n as number) < 1 || (k as number) > (n as number))
+    throw new RangeError(`${where}: k and n go together, as whole numbers with 0 ≤ k ≤ n and n ≥ 1 (got k=${JSON.stringify(k)}, n=${JSON.stringify(n)})`);
+}
+
+/**
+ * Merge predictions by id, so a partial list never erases earlier ones. Fields sent for an existing id replace
+ * those fields (null deletes one, e.g. outcome: null); ids not sent are kept. A new id needs move, stop and checkOn.
+ * Throws RangeError on an entry that can't be saved, so nothing is written.
+ */
+export function mergePredictions(existing: unknown, patch: Array<Partial<Prediction>>, warnings: string[] = []): Prediction[] {
+  const out: Prediction[] = Array.isArray(existing) ? existing.filter((x) => x && typeof x === "object").map((x) => ({ ...x })) : [];
+  for (const raw of patch) {
+    const id = raw?.id;
+    if (typeof id !== "string" || !NAME_RE.test(id)) throw new RangeError(`each prediction needs an id of lowercase letters, digits and dashes (got ${JSON.stringify(id)})`);
+    const i = out.findIndex((x) => x.id === id);
+    const next: Record<string, unknown> = i >= 0 ? { ...out[i] } : { madeOn: today() };
+    for (const [k, v] of Object.entries(raw)) {
+      if (v === null) delete next[k];
+      else if (v !== undefined) next[k] = v;
+    }
+    for (const f of ["move", "stop", "checkOn"] as const)
+      if (typeof next[f] !== "string" || !(next[f] as string).trim()) throw new RangeError(`prediction "${id}" needs ${f}`);
+    if (!readDate(next.checkOn, true)) throw new RangeError(`prediction "${id}": can't read checkOn "${next.checkOn}"; use YYYY-MM-DD`);
+    if (!readDate(next.madeOn, false)) throw new RangeError(`prediction "${id}": can't read madeOn "${next.madeOn}"; use YYYY-MM-DD`);
+    checkCounts(`prediction "${id}"`, next.k, next.n);
+    const o = next.outcome as Partial<PredictionOutcome> | undefined;
+    if (o) {
+      const outcome = { recordedOn: today(), ...o };
+      if (typeof outcome.result !== "string" || !outcome.result.trim()) throw new RangeError(`prediction "${id}": the outcome needs result, saying what happened`);
+      if (outcome.stopHit === false && !/\d/.test(outcome.result))
+        throw new RangeError(`prediction "${id}": an outcome that cleared the stop line needs the number in result (e.g. "7 of 40 replied"), not only that it worked`);
+      checkCounts(`prediction "${id}" outcome`, outcome.k, outcome.n);
+      if (typeof next.k === "number" && typeof outcome.k === "number") {
+        if (outcome.n !== next.n) {
+          warnings.push(`Prediction "${id}": the outcome counts ${outcome.k} of ${outcome.n}, the stop line ${next.k} of ${next.n}; stopHit was not checked against the counts because the number of tries differs.`);
+        } else if (outcome.stopHit !== null && outcome.stopHit !== outcome.k < next.k) {
+          warnings.push(`Prediction "${id}": stopHit is ${outcome.stopHit}, but ${outcome.k} of ${outcome.n} is ${outcome.k < next.k ? "below" : "at or above"} the stop line's ${next.k}, read as "fewer than ${next.k} means stop". Check the stop line's wording and fix stopHit if needed.`);
+        }
+      }
+      next.outcome = outcome;
+    }
+    if (i >= 0) out[i] = next as unknown as Prediction;
+    else out.push(next as unknown as Prediction);
+  }
+  return out;
+}
+
+/** Predictions past their check date with no outcome saved, including those whose date can't be read. */
+export function duePredictions(p: BusinessProfile, now = new Date()): Array<Prediction & { daysOverdue: number | null }> {
+  if (!Array.isArray(p.predictions)) return [];
+  const out: Array<Prediction & { daysOverdue: number | null }> = [];
+  for (const x of p.predictions) {
+    if (!x || typeof x !== "object" || x.outcome) continue;
+    const d = readDate(x.checkOn, true);
+    if (!d) out.push({ ...x, daysOverdue: null });
+    else if (d.getTime() <= now.getTime()) out.push({ ...x, daysOverdue: Math.floor((now.getTime() - d.getTime()) / DAY_MS) });
+  }
+  return out;
+}
+
+export const DUE_PREDICTIONS_NOTE =
+  "These moves were due for a decision on their check date, and no outcome is saved. Before new advice, ask the user what happened to each: the number, and whether it was measured or recalled. Save it with save_business_profile (predictions, same id, outcome with result, stopHit and how). Not checked: whether the move was run at all, or whether the user's material already holds the answer; read it first. daysOverdue null means the check date can't be read.";
+
+/** Traction and metrics not marked as counted from a record; a missing basis counts as an estimate. */
+export function estimatedFacts(p: BusinessProfile): string[] {
+  const out: string[] = [];
+  const t = p.traction;
+  if (t && typeof t === "object" && t.basis !== "counted") {
+    const keys = (["activeUsers", "monthlyVisits", "payingCustomers"] as const).filter((k) => t[k] !== undefined);
+    if (keys.length) out.push(`traction (${keys.join(", ")})${t.basis ? "" : " (no basis saved)"}`);
+  }
+  for (const [k, m] of Object.entries(p.metrics ?? {})) {
+    if (m && typeof m === "object" && m.basis !== "counted") out.push(`metrics.${k}${m.basis ? "" : " (no basis saved)"}`);
   }
   return out;
 }

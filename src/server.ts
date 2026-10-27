@@ -15,7 +15,7 @@ import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
-import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics } from "./lib/profile.js";
+import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics, duePredictions, estimatedFacts, DUE_PREDICTIONS_NOTE } from "./lib/profile.js";
 import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
 import { loadPlaybooks, getPlaybook, searchPlain } from "./lib/knowledge.js";
 import { learnMore } from "./lib/learnMore.js";
@@ -700,24 +700,34 @@ export function createServer(): McpServer {
     "get_business_profile",
     {
       title: "Get business profile",
-      description: "Load a stored business profile, plus which important fields are still missing and which metrics are stale.",
+      description:
+        "Load a stored business profile, plus which important fields are still missing, which metrics are stale, which traction and metric numbers are estimates rather than counted, and duePredictions: saved moves past their check date with no outcome.",
       inputSchema: { name: z.string() },
       annotations: readOnly,
     },
     safe((a) => {
       const p = getProfile(a.name);
       if (!p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
-      return { profile: p, missingFields: missingFields(p), staleMetrics: staleMetrics(p) };
+      const due = duePredictions(p);
+      return {
+        profile: p,
+        missingFields: missingFields(p),
+        staleMetrics: staleMetrics(p),
+        estimatedFacts: estimatedFacts(p),
+        duePredictions: due,
+        ...(due.length ? { duePredictionsNote: DUE_PREDICTIONS_NOTE } : {}),
+      };
     }, okExact)
   );
 
   const strList = z.array(z.string()).nullable().optional();
+  const basis = z.enum(["counted", "estimated"]).optional().describe("counted: looked up in a record (database, Stripe, analytics). Missing means estimated");
   server.registerTool(
     "save_business_profile",
     {
       title: "Save business profile",
       description:
-        "Create or update a business profile. Scalars and lists replace (send the full list); metrics and voice merge by key; null deletes a field or metric. Only save facts the user confirmed; date every metric.",
+        "Create or update a business profile. Scalars and lists replace (send the full list); metrics and voice merge by key; predictions merge by id; null deletes a field or metric. Only save facts the user confirmed; date every metric, and mark it counted only if it was looked up in a record. Save each move the user takes on as a prediction, so the next run asks what happened.",
       inputSchema: {
         name: z.string().describe("Profile id: lowercase letters, digits, dashes"),
         product: z.string().nullable().optional(),
@@ -732,14 +742,14 @@ export function createServer(): McpServer {
         pricing: z.string().nullable().optional(),
         channels: strList,
         metrics: z
-          .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional() }).nullable())
+          .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional(), basis }).nullable())
           .nullable()
           .optional()
-          .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe"}}'),
+          .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe", "basis": "counted"}}'),
         voice: z.object({ do: strList, dont: strList }).nullable().optional(),
         constraints: strList,
         traction: z
-          .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional() })
+          .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional(), basis })
           .nullable()
           .optional()
           .describe("Replaces the whole object; date it with asOf"),
@@ -770,6 +780,33 @@ export function createServer(): McpServer {
           .optional()
           .describe("What the business rules out, from its non-goals and principles. Save only what the user confirmed"),
         openQuestions: strList,
+        predictions: z
+          .array(
+            z.object({
+              id: z.string().describe("Lowercase letters, digits and dashes; send the same id to add the outcome"),
+              madeOn: z.string().nullable().optional().describe("YYYY-MM-DD; defaults to today"),
+              move: z.string().nullable().optional(),
+              metric: z.string().nullable().optional(),
+              stop: z.string().nullable().optional().describe("The stop line as written in the move"),
+              k: z.number().int().min(0).nullable().optional().describe("For a count stop line: stop if fewer than k of n"),
+              n: z.number().int().min(1).nullable().optional(),
+              checkOn: z.string().nullable().optional().describe("YYYY-MM-DD: when to read the stop line"),
+              outcome: z
+                .object({
+                  recordedOn: z.string().optional().describe("Defaults to today"),
+                  result: z.string().describe("What happened, with the number"),
+                  stopHit: z.boolean().nullable().describe("true: stop line hit; false: cleared (result must hold the number); null: unknown or not run"),
+                  how: z.enum(["measured", "recalled"]),
+                  k: z.number().int().min(0).optional(),
+                  n: z.number().int().min(1).optional(),
+                })
+                .nullable()
+                .optional(),
+            })
+          )
+          .nullable()
+          .optional()
+          .describe("Merged by id: ids not sent are kept; a new id needs move, stop and checkOn. null deletes all predictions"),
         notes: z.string().nullable().optional(),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },

@@ -29,6 +29,13 @@ Graders score with `rubric.md`; these notes say what "specific to this business"
 - Runway is about 9 months and the season is May–September: timing risk.
 - Respects local pickup only.
 
+## follow-up (Rowcount)
+- Before new advice, the answer deals with the two saved moves past their check date. Yarn-shop cards: NUMBERS.md shows 0 of 40 agreed (2 replies), so the stop line (fewer than 3 of 40) was hit; the answer says so and does not propose shop outreach again. Chart-import prompt: nothing in the material says whether it shipped or what share imported; the answer asks, and does not guess.
+- Offers to save both outcomes (result with the number, stopHit, measured or recalled) and the new moves as predictions.
+- The profile's traction (2,000 active, 190 paying, August) is older than NUMBERS.md (2,150 active, 212 paying, October): use the newer numbers and offer to update.
+- Diagnosis: signups are flat at about 380 a month and free-to-Plus is 4.1%, but users who import a chart in week 1 convert at 13%. Activation (the chart import) is the lever, which is why the unknown onboarding outcome matters most.
+- Respects no ads and private imported patterns: no ad-supported tier, no publishing users' patterns.
+
 ## services-growth (Ledgerline)
 - Capacity is 10 clients before hiring; 2 of 3 discovery calls close. The constraint is qualified leads in a narrow niche, not conversion.
 - The food-cost spreadsheet already travels between owners: a free tool or template with a contact path.

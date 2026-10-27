@@ -64,6 +64,14 @@ _Avoid_: account, company record, context
 Dated counts of active users, monthly visits and paying customers.
 _Avoid_: metrics (metrics is the wider set), KPIs
 
+**Basis**:
+Whether a traction or metric number was counted from a record (database, Stripe, analytics) or estimated. A number with no basis saved is treated as estimated.
+_Avoid_: confidence, accuracy
+
+**Prediction**:
+A move saved in the business profile with its stop line and check date, so the next run asks what happened instead of relying on memory. Its outcome says whether the stop line was hit, with the number, and whether that number was measured or recalled.
+_Avoid_: forecast (no probability is asked for), goal
+
 **Assets**:
 What a business has besides users that a bet can run on: data nobody else has published, expertise, a founder audience, a budget, a way to reach each user.
 _Avoid_: resources, advantages

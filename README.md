@@ -108,7 +108,7 @@ Ask in plain words. The server's instructions tell the agent which tools, prompt
 Tips:
 - **Point it at your repo.** With a repo, the agent runs `scan_source` on your site, docs and decision records, and finds contradictions (two prices for one plan, "coming soon" on a shipped feature, data claims the docs disagree with). These are often the most useful findings.
 - **Give it your numbers.** Without them it uses labelled assumptions and tells you what would change if they're wrong.
-- **Save your business profile** ("save what you learned as a business profile") so the next conversation starts from the same facts.
+- **Save your business profile** ("save what you learned as a business profile") so the next conversation starts from the same facts. Save the moves you take on too: once a move passes its check date, the next run asks what happened before advising.
 - **Use the prompts directly** when you want a fixed process. In Claude Code they appear as slash commands, for example `/mcp__marketing-expert__marketing_strategy`.
 
 ### Prompts (guided workflows)
@@ -171,7 +171,7 @@ Every calculator returns its inputs and headline result in one line (`citeAs`), 
 
 | Tool | What it does |
 |---|---|
-| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Your business facts, stored as JSON on your machine; flags missing fields and stale numbers |
+| `list_business_profiles` / `get_business_profile` / `save_business_profile` | Your business facts, stored as JSON on your machine; flags missing fields, stale numbers, estimated numbers, and saved moves past their check date |
 | `search_playbooks` / `get_playbook` | Search the playbooks (each result is a short plain summary with a pointer) and read one in full (also available as `marketing://playbook/{slug}` resources) |
 | `learn_more` | Expands one pointer: a playbook section, a whole playbook, one small bet, a glossary term, or plain words. Returns the detail, the plain meaning of the business terms in it, its evidence and sources, and where to go next |
 
