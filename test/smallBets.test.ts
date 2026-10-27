@@ -272,3 +272,26 @@ describe("matchSmallBets", () => {
     expect(r.howToReport).toMatch(/best one/);
   });
 });
+
+describe("bets that read the business's category", () => {
+  const dating: SmallBetsFacts = { category: "dating app", audiences: ["consumers", "local"], surfaces: ["mobile-app"], launched: false, revenue: "planned", avoid: [] };
+  it("gives a dating app the one-place launch and the store rules on listings", () => {
+    const r = matchSmallBets(dating);
+    expect(find(r.fitsNow, "dense-pocket")?.reason).toMatch(/apps where people match with each other, read from the profile: dating app/);
+    expect(find(r.fitsNow, "listings")?.reason).toMatch(/4\.3\(b\).*filtering, reporting and blocking/);
+  });
+  it("leaves both out for a business that isn't a matching app", () => {
+    const r = matchSmallBets({ ...dating, category: "invoicing software for freelancers", audiences: ["businesses"], surfaces: ["web-app"] });
+    expect(find(r.doesntFit, "dense-pocket")).toBeDefined();
+    expect(find(r.fitsNow, "listings")?.reason).not.toMatch(/4\.3/);
+    const consumer = matchSmallBets({ ...dating, category: "photo sharing app with friends" });
+    expect(find(consumer.doesntFit, "dense-pocket")?.reason).toMatch(/only for apps where people match/);
+  });
+  it("waits for a category before offering a category-only bet", () => {
+    const { category, ...noCategory } = dating;
+    expect(find(matchSmallBets(noCategory).fitsLater, "dense-pocket")?.reason).toMatch(/save the profile's category/);
+  });
+  it("reads the category and product from a saved profile", () => {
+    expect(factsFromProfile({ name: "x", category: "dating app", product: "a dating app for climbers" } as never)).toMatchObject({ category: "dating app", product: "a dating app for climbers" });
+  });
+});
