@@ -227,7 +227,7 @@ Structure:
 2. Message match: does the headline continue what the traffic source promised? If the source is unknown, say what to check.
 3. Run analyze_copy on the lead text. Note vague claims, missing proof, writer-centric framing.
 4. Offer and CTA: is there one primary action, and is it clear what the visitor gets and what it costs them (time, money, data)?
-5. Proof and objections: what objections would this audience have (price, switching cost, risk, credibility), and where are they answered?
+5. Proof and objections: what objections would this audience have (price, switching cost, risk, credibility), and where are they answered? A missing contact or legal link (audit siteInfo) is a fact with the legal rule the audit names, not a proven loss of sales.
 6. Friction: forms, steps, speed, mobile. Use the audit flags.
 7. Technical/SEO flags from the audit that matter for this page's job (ignore the rest).
 Finish with at most ${MAX_MOVES} changes ranked by expected impact × confidence, each with a hypothesis in the form "Because [evidence], changing [X] for [audience] will improve [metric]"; ${MOVE_FORMAT}. Say which deserve an A/B test and which a smaller check (5 people shown the new page). Use ab_test_sample_size if traffic numbers are known.`)
