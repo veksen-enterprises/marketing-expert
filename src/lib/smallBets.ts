@@ -79,6 +79,10 @@ export interface Bet {
   law?: "messages" | "reviews-and-endorsements" | "pricing";
   /** For lopsided bets: how many tries to run before judging, judged on the best one, not the average. */
   tries?: number;
+  /** Only for businesses whose saved category or product matches `words`; `label` names them in reasons. */
+  onlyFor?: { words: RegExp; label: string };
+  /** Notes added to the fit reason when the saved category or product matches (a store rule for that kind of app). */
+  notes?: Array<{ match: RegExp; note: string }>;
   cost: string;
   /** How long before you can judge it. */
   judgeAfter: string;
@@ -90,6 +94,9 @@ export interface Bet {
 }
 
 export interface SmallBetsFacts {
+  /** The business's own words for what it is; bets with onlyFor or notes read them. */
+  category?: string;
+  product?: string;
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string; basis?: "counted" | "estimated" };
   assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
   audiences?: Audience[];
@@ -255,7 +262,7 @@ export function marketLawPointers(markets: string[] = []): MatchResult["marketLa
 }
 
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
+  return { category: p.category, product: p.product, traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
 }
 
 export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
@@ -300,6 +307,11 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       doesntFit.push({ ...base(b), reason: `involves ${clash.join(", ")}, which the profile rules out` });
       continue;
     }
+    const kind = [f.category, f.product].filter(Boolean).join(" ");
+    if (b.onlyFor && kind && !b.onlyFor.words.test(kind)) {
+      doesntFit.push({ ...base(b), reason: `only for ${b.onlyFor.label}; the profile describes ${kind}` });
+      continue;
+    }
     if (b.launch === "before" && launched) {
       doesntFit.push({ ...base(b), reason: "only before launch; the product is already live" });
       continue;
@@ -327,6 +339,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (n.visual && !a.visual) blockers.push("needs something users make or see that is worth showing as an image (save it as assets.visual)");
     if (n.communities && !a.communities) blockers.push("needs an audience that gathers in moderated communities (save where, as assets.communities)");
     if (b.launch === "after" && !launched) blockers.push("needs a product people can try now");
+    if (b.onlyFor && !kind) blockers.push(`only for ${b.onlyFor.label}; save the profile's category to tell`);
 
     if (blockers.length) {
       fitsLater.push({ ...base(b), reason: blockers.join("; ") });
@@ -340,7 +353,9 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       reason:
         fitReason(b, f, stage.stage) +
         (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : "") +
-        (relaunch ? `; ${RELAUNCH_NOTE(relaunch)}` : ""),
+        (relaunch ? `; ${RELAUNCH_NOTE(relaunch)}` : "") +
+        (b.onlyFor ? `; for ${b.onlyFor.label}, read from the profile: ${kind}` : "") +
+        (b.notes ?? []).filter((x) => kind && x.match.test(kind)).map((x) => `; ${x.note}`).join(""),
       cost: b.cost,
       judgeAfter: b.judgeAfter,
       measure: b.measure,
