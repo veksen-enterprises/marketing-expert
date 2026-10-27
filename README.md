@@ -93,7 +93,7 @@ Ask in plain words; the server's instructions tell the agent which tools, prompt
 | What is a customer worth, and what can we pay to get one? | `unit_economics`, `paid_media_math` |
 | How many leads do we need? Is the market big enough? | `funnel_analysis`, `market_size` |
 | Will a request on our marketplace or alert find a match in time? | `liquidity_math` |
-| What does this page or site actually show to people, Google and AI crawlers? | `audit_page`, `crawl_site`, `check_ai_crawler_access` |
+| What does this page or site actually show to people, Google and AI crawlers? | `audit_page`, `crawl_site`, `check_sitemap_robots`, `check_ai_crawler_access` |
 | Do our site, docs and code agree on prices, data handling and what's shipped? | `scan_source` |
 | Is this copy clear, and does it fit the ad or search limits? | `analyze_copy`, `check_copy_limits`, `build_utm_link` |
 | Which cheap marketing moves fit this business now? | `match_small_bets` |

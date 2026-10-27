@@ -5,6 +5,7 @@ import { createServer, request as httpRequest, type IncomingHttpHeaders } from "
 import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "node:net";
 import { parse, HTMLElement } from "node-html-parser";
 import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
+import { checkStructuredData, type StructuredDataIssue } from "./structuredData.js";
 import { visibleText, elementsOf, wordCount as countWordsIn, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
 
 export interface PageFacts {
@@ -27,6 +28,8 @@ export interface PageFacts {
   openGraph: Record<string, string>;
   twitter: Record<string, string>;
   jsonLdTypes: string[];
+  /** Required and recommended properties missing from JSON-LD, for the rich-result types Google documents. */
+  structuredDataIssues: StructuredDataIssue[];
   wordCount: number;
   images: number;
   imagesMissingAlt: number;
@@ -126,6 +129,7 @@ function readFacts(html: string, url?: string): PageFacts {
   }
 
   const jsonLdTypes: string[] = [];
+  const jsonLdBlocks: unknown[] = [];
   for (const s of all.filter((e) => e.tagName === "SCRIPT" && e.getAttribute("type") === "application/ld+json")) {
     try {
       const collect = (n: unknown): void => {
@@ -137,7 +141,9 @@ function readFacts(html: string, url?: string): PageFacts {
         }
       };
       // The script text as served: .text would decode "&quot;", which browsers and Google leave as it is.
-      collect(JSON.parse(s.rawText));
+      const parsed = JSON.parse(s.rawText);
+      jsonLdBlocks.push(parsed);
+      collect(parsed);
     } catch {
       flags.push({ severity: "warning", message: "A JSON-LD block failed to parse; search engines will ignore it." });
     }
@@ -232,6 +238,9 @@ function readFacts(html: string, url?: string): PageFacts {
     if (f.submitText && /^(submit|send)$/i.test(f.submitText)) flags.push({ severity: "info", message: `Generic submit button "${f.submitText}"; say what the visitor gets.` });
   }
   if (ctaSet.size === 0) flags.push({ severity: "warning", message: "No obvious call to action found (heuristic)." });
+  const structuredDataIssues = checkStructuredData(jsonLdBlocks);
+  const sdErrors = structuredDataIssues.filter((i) => i.severity === "error").length;
+  if (sdErrors) flags.push({ severity: "warning", message: `${sdErrors} required structured data properties are missing, so those items are not eligible for rich results. See structuredDataIssues.` });
   if (wordCount < 50) flags.push({ severity: "info", message: `Only ${wordCount} words of server-rendered text. If the page renders client-side, crawlers and this audit see less than users do.` });
 
   return {
@@ -249,6 +258,7 @@ function readFacts(html: string, url?: string): PageFacts {
     openGraph: og,
     twitter: tw,
     jsonLdTypes: [...new Set(jsonLdTypes)],
+    structuredDataIssues,
     wordCount,
     images: imgs.length,
     imagesMissingAlt: missingAlt,

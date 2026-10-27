@@ -12,6 +12,7 @@ import { buildUtm } from "./lib/utm.js";
 import { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } from "./lib/pageAudit.js";
 import { crawlSite } from "./lib/crawl.js";
 import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
+import { checkSitemapXml, checkRobotsTxt } from "./lib/sitemapRobots.js";
 import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
@@ -663,7 +664,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
     {
       title: "Audit a landing page",
       description:
-        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. Set render=true to run JavaScript and see how much content exists only client-side. If no HTML could be read (the URL can't be reached, the answer isn't an HTML page, or it is a login, firewall, rate-limit or server error page: HTTP 401, 403, 429 or 5xx), it returns checked: false with the reason and what to do instead.",
+        "Fetch a URL (or take raw HTML) and extract what a landing-page/SEO review needs: title, meta, headings, lead text, CTAs, forms, OG tags, structured data, indexability, plus objective flags. JSON-LD is checked against Google's required and recommended properties for Product, Offer, Review, AggregateRating, Article, BreadcrumbList, Organization, LocalBusiness and SoftwareApplication (structuredDataIssues, each with its Google source); other types, Microdata and RDFa are not checked. Set render=true to run JavaScript and see how much content exists only client-side. If no HTML could be read (the URL can't be reached, the answer isn't an HTML page, or it is a login, firewall, rate-limit or server error page: HTTP 401, 403, 429 or 5xx), it returns checked: false with the reason and what to do instead.",
       inputSchema: {
         url: z.string().optional().describe("http(s) URL to fetch"),
         html: z.string().optional().describe("Raw HTML instead of fetching"),
@@ -689,7 +690,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
     {
       title: "Crawl a site (SEO health)",
       description:
-        "Crawl up to maxPages same-site pages from a start URL plus the XML sitemap, respecting robots.txt, and report site-wide SEO problems: broken internal links, redirect chains, links to redirects, duplicate titles/descriptions, missing titles/h1, noindex or redirecting URLs in the sitemap, orphan pages, canonical problems, click depth, pages with one inlink, thin pages, and hreflang errors. Server HTML only.",
+        "Crawl up to maxPages same-site pages from a start URL plus the XML sitemap, respecting robots.txt, and report site-wide SEO problems: broken internal links, redirect chains, links to redirects, duplicate titles/descriptions, missing titles/h1, noindex or redirecting URLs in the sitemap, orphan pages, canonical problems, click depth, pages with one inlink, thin pages, hreflang errors, and soft 404s (one request for a path that can't exist; a 200 answer, or a redirect to one, is flagged). Server HTML only.",
       inputSchema: {
         url: z.string().describe("Start URL, usually the homepage"),
         maxPages: z.number().int().min(1).max(1000).optional().describe("Default 100"),
@@ -699,6 +700,30 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     safe(async (a) => ({ untrustedContent: UNTRUSTED, ...(await crawlSite({ startUrl: a.url, maxPages: a.maxPages, useSitemap: a.useSitemap, respectRobots: a.respectRobots })) }))
+  );
+
+  server.registerTool(
+    "check_sitemap_robots",
+    {
+      title: "Check a sitemap and robots.txt from text",
+      description:
+        "Check a sitemap (XML) and a robots.txt passed as text, for a site not deployed yet or not reachable from here (staging on a private address). Sitemap: root element and namespace, full and escaped URLs, the 50,000-URL and 50 MB limits, duplicates, lastmod format, URLs outside the sitemap's host or folder (with sitemapUrl). robots.txt: HTML served instead, rules before any User-agent, paths without a leading slash, fields Google ignores, relative Sitemap lines, and (with siteUrl) whether Googlebot may crawl the home page and the sitemaps. Nothing is fetched: child sitemaps and the listed pages are not checked; crawl_site checks a live site.",
+      inputSchema: {
+        sitemapXml: z.string().max(60_000_000).optional().describe("Sitemap or sitemap index XML"),
+        sitemapUrl: z.string().optional().describe("Where the sitemap will be served, e.g. https://example.com/sitemap.xml"),
+        robotsTxt: z.string().max(1_000_000).optional().describe("robots.txt contents"),
+        siteUrl: z.string().optional().describe("The site's URL, e.g. https://example.com"),
+      },
+      annotations: readOnly,
+    },
+    safe((a) => {
+      if (a.sitemapXml === undefined && a.robotsTxt === undefined) throw new Error("provide sitemapXml, robotsTxt or both");
+      return {
+        ...(a.sitemapXml !== undefined ? { sitemap: checkSitemapXml(a.sitemapXml, a.sitemapUrl ?? (a.siteUrl ? new URL("/sitemap.xml", a.siteUrl).toString() : undefined)) } : {}),
+        ...(a.robotsTxt !== undefined ? { robots: checkRobotsTxt(a.robotsTxt, a.siteUrl) } : {}),
+        notChecked: "Nothing was fetched. Child sitemaps, the listed pages, and how the live server answers (status codes, content type, firewall rules) were not checked.",
+      };
+    })
   );
 
   server.registerTool(
