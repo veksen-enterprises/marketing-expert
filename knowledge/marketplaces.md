@@ -1,10 +1,10 @@
 ---
 title: Two-sided marketplaces
-summary: Playbook for marketplaces that match buyers and sellers; the cold-start (chicken-and-egg) problem, Gurley's 10 factors, which side to build first, narrow launch markets, liquidity metrics, take rates, leakage, trust and reviews, SEO on supply pages, multi-homing, growth loops and what works by stage.
-tags: marketplace, two-sided marketplace, platform, cold start, chicken and egg, atomic network, supply, demand, liquidity, match rate, search to fill, time to match, take rate, rake, commission, gmv, disintermediation, leakage, trust and safety, reviews, ratings, programmatic seo, multi-homing, growth loops, gurley
+summary: Playbook for marketplaces that match buyers and sellers, and for apps where both people must say yes (dating, friend-finding); the cold-start (chicken-and-egg) problem, Gurley's 10 factors, which side to build first, narrow launch markets, liquidity metrics, take rates, leakage, trust and reviews, SEO on supply pages, multi-homing, growth loops and what works by stage.
+tags: marketplace, two-sided marketplace, dating app, matchmaking, friend-finding app, reciprocal matching, mutual match, hard side, short side, fake profiles, platform, cold start, chicken and egg, atomic network, supply, demand, liquidity, match rate, search to fill, time to match, take rate, rake, commission, gmv, disintermediation, leakage, trust and safety, reviews, ratings, programmatic seo, multi-homing, growth loops, gurley
 ---
 
-A **two-sided marketplace** matches two groups: supply (sellers, hosts, freelancers, drivers) and demand (buyers, guests, clients). Each side only joins if the other side is already there. This is the **cold-start** or **chicken-and-egg problem**. Defensibility from network effects, and why it is often weaker than it looks, is covered in competitive-analysis; this playbook is about building and growing one.
+A **two-sided marketplace** matches two groups: supply (sellers, hosts, freelancers, drivers) and demand (buyers, guests, clients). Each side only joins if the other side is already there. This is the **cold-start** or **chicken-and-egg problem**. Defensibility from network effects, and why it is often weaker than it looks, is covered in competitive-analysis; this playbook is about building and growing one. Dating and friend-finding apps break the buyer-and-seller model (nobody sells, and both people must say yes): see "Dating and friend-finding apps".
 
 ## Is this a good marketplace at all?
 
@@ -30,8 +30,8 @@ _In short:_ Beat the chicken-and-egg problem by building one small network that 
 
 - **Atomic network** (Andrew Chen, *The Cold Start Problem*): the smallest group of buyers and sellers that is useful on its own and keeps working without you pushing it, such as one city, one campus, one category [practitioner]. Build one, then copy it to the next.
 - **Constrain geography or category** until liquidity (see below) is good. "Home services in one city" or "vintage watches only" beats "everything everywhere" with empty shelves.
-- Find the **tipping point** in your data. Airbnb reported a step-change in bookings growth once a city had about 300 listings (with about 100 having reviews), when guests could find something that fit their dates and taste [practitioner, single company, Jonathan Golden / Chen].
-- Do things that don't scale: list supply by hand, call sellers, match the first transactions manually, act as the supplier yourself (e.g. buy and resell stock) to prove demand.
+- Find the **tipping point** in your data. Airbnb reported a step-change in bookings growth once a city had about 300 listings (with about 100 having reviews), when guests could find something that fit their dates and taste [practitioner, single company, Jonathan Golden / Chen]. Not for dating apps: see "Dating and friend-finding apps".
+- Do things that don't scale: list supply by hand, call sellers, match the first transactions manually, act as the supplier yourself (e.g. buy and resell stock) to prove demand. In a dating app this does not mean fake profiles: see "Dating and friend-finding apps".
 - **Single-player mode**: give one side a tool that is useful even without the other side (booking software for salons, inventory tools for sellers) and add the marketplace later [practitioner].
 
 ## Which side first? Usually supply
@@ -43,6 +43,17 @@ _In short:_ Usually start with supply, since there is nothing to buy without it.
 - Early demand levers: word of mouth was the top early demand driver in the same interviews; also SEO, communities where buyers already meet, and paid search on high-intent terms [practitioner].
 - Re-check which side is the constraint **every month** per market: are buyers leaving without finding something (supply short) or are sellers leaving without orders (demand short)?
 - Rule: spend on the constrained side only. Buying demand when supply can't serve it burns money and reputation.
+
+## Dating and friend-finding apps: cold start when both people must say yes
+
+_In short:_ A dating app has a chicken-and-egg problem, but nobody sells: a match needs two likes. The short side is the choosy side that gets flooded. A bigger pool makes people pickier, and no source gives a user count that makes a city work. Launch one dense place at a time, and label any profile the company runs.
+
+- **No supplier, two likes.** A match needs both people to like each other, so matches per user depend on new active users nearby, the share passing both people's filters, and both like rates. liquidity_math takes these in its reciprocal mode; its listings mode would count every profile that fits a filter as a match. Take rate, leakage and listing pages don't apply when nothing is sold.
+- **The short side is the choosy side, not the supply.** In straight dating apps, test profiles showed men's likes were returned far less often than women's [research; Tinder test accounts, 2016, one study]. Recruiting more of the eager side adds likes the choosy side can't answer [derived]. Rules that make interest scarce or visible raised matches: a limited "rose" raised acceptance of a date request about 20% [research; field experiment, 613 users; one site; accepted requests, not dates], and hiding who viewed a profile cut women's matches 14% [research; field experiment, 100,000 users; one site; one month]. No study shows such a rule keeps the choosy side on the app. These are product rules, not marketing moves.
+- **A bigger pool makes people pickier.** In one dating app's field experiment, users told the local pool was 50% bigger got choosier and matched about 2% less [research; field experiment, 84,589 users; one app; beliefs varied, not pool]. So matches don't rise in step with users, and a listings tipping point like Airbnb's 300 doesn't carry over. No source gives a users-per-city or per-campus count for dating.
+- **Launch one dense place at a time.** One campus, one event, one club, one city; bring in the choosy side first, by hand, and open the next place only once the first one works. The evidence is founders' accounts of winners (Facebook at Harvard, Tinder at one university, The League's city launches), with no comparison to places that failed [practitioner; founders' own accounts; survivors only].
+- **Label any profile the company runs.** Profiles or chats run by staff, bots or AI must be labelled where users see them, not only in the terms. Unlabelled ones were treated as deception: the FTC settled with refunds in 2014 and 2016, and two German regional courts ruled against them in 2022 [first-party; regulator and court reports, via fetch summaries; not legal advice]. Making accounts from people's photos without their consent drew a privacy fine in Korea in 2024 [secondary; one press report].
+- **Some churn is success.** People leave when they find someone: see consumer-apps.
 
 ## Liquidity metrics
 
@@ -143,4 +154,4 @@ _In short:_ Don't start too broad, report only global numbers, buy demand where 
 
 ## Sources
 
-research/ecommerce-and-marketplaces.md (Gurley 2012, 2013; Chen 2021; Golden / Airbnb; Jordan, Jin, Coolican & Chen 2020; Rachitsky 2019; Gu & Zhu 2021; Hagiu & Wright 2024; Tadelis 2016); research/competition-and-defensibility.md (Zhu & Iansiti 2019, multi-homing).
+research/reciprocal-liquidity.md, dating-hard-side.md, dating-market-thickness.md, dense-pocket-launches.md, seeded-profiles-law.md (dating section); research/ecommerce-and-marketplaces.md (Gurley 2012, 2013; Chen 2021; Golden / Airbnb; Jordan, Jin, Coolican & Chen 2020; Rachitsky 2019; Gu & Zhu 2021; Hagiu & Wright 2024; Tadelis 2016); research/competition-and-defensibility.md (Zhu & Iansiti 2019, multi-homing).

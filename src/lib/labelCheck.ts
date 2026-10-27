@@ -13,7 +13,7 @@ const STRENGTH: Array<[string, RegExp, number]> = [
   ["vendor", /\bvendor\b/i, 1],
   ["rule-of-thumb", /\brule[- ]of[- ]thumb\b/i, 0],
 ];
-const QUALIFIER = /snippet|not re-?verified|self-selected|small sample|preprint|secondary|survivor|vendor-adjacent|unverified|not read in full|summar(y|ies)/i;
+const QUALIFIER = /snippet|not re-?verified|self-selected|small sample|preprint|secondary|survivor|vendor-adjacent|unverified|not read in full|summar(y|ies)|\btheory\b|observational|quasi|field experiment|\bone (study|site|app|firm|platform|company|survey)\b|test accounts|founders' own/i;
 
 export interface LabelFinding {
   claim: string;
