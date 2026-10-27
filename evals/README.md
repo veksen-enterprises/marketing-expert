@@ -7,9 +7,28 @@ Realistic cases run through the MCP server by an agent playing the AI assistant 
 - `runs/<case>.md`: the assistant's answer plus its tool-call log.
 - `grades/<case>.md`: the grader's scores and the fixes it attributes to the server, with `errors.json` beside it (format in `rubric.md`): each error with the verbatim claim and source, so it can become a failing test. Round 6 had no such file, and its top error class couldn't be reproduced.
 
+## Comparing two versions
+
+`scripts/evals/grade.mjs` grades the baseline and the candidate in one batch, so grader drift between rounds hits both equally, and judges the change across cases instead of case by case (research/grader-reliability.md sections 4–5).
+
+```bash
+npm run build
+node scripts/evals/grade.mjs blind --baseline <old runs> --candidate <new runs> --out <batch>
+node scripts/evals/grade.mjs grade --batch <batch> --materials devtool-=/home/user/site,companion-=/home/user/gamex-companion
+node scripts/evals/grade.mjs compare --batch <batch>
+```
+
+- **Runs**: `<case>.md`, `<case>-<n>.md` or `<case>/<any>.md` in each folder, `<case>` an id from `cases.md`. Contaminated files and unknown names are skipped and listed.
+- **blind** copies every run to `<batch>/answers/<case>--<id>.md` in shuffled order, hides data folder and run folder names, checks each logged `check_answer` fingerprint against the saved answer, and writes the key to `<batch>/key.json`. It does not hide content differences (a tool only one version has). Fictional cases find their fixture themselves; real ones need `--materials`.
+- **grade** runs one `claude -p` grader per answer, in its own temp folder holding only that answer, with read-only tools and the business's material. Grades land in `<batch>/grades/`; rerunning retries only missing or unreadable ones.
+- **compare** prints each case's difference of run means and the mean difference across cases with a 95% t interval, for the total, each item, the gates, error classes, and (from the built `check_answer` and move check) word counts and move-format issues. A change counts when the total's interval excludes zero.
+- **double-grade** (`--runs <one round> --out <batch>`) grades every run twice, under separate ids, and prints grader agreement: ICC(1) on totals with a CI, raw agreement, AC1 and kappa per item, errors both graders found, and how much of the spread is grader versus run. With 11 cases × 3 runs it costs 66 grades; nobody has run it yet.
+
+Batches of real businesses' answers stay outside git unless the owner agrees.
+
 ## Results
 
-Scores out of 20 (rubric.md). Round 2 ran after the fixes from round 1's grades. Round-2 graders were stricter on length, evidence labels and plain language, so equal totals hide real changes; read the "Compared with round 1" section of each grade.
+Scores out of 20 (the rubric before 2026-10-27, ten items summed). Round 2 ran after the fixes from round 1's grades. Round-2 graders were stricter on length, evidence labels and plain language, so equal totals hide real changes; read the "Compared with round 1" section of each grade.
 
 | Case | Round 1 | Round 2 | Round 3 |
 |---|---|---|---|

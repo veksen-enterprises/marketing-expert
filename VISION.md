@@ -40,7 +40,7 @@ What the advisor aims for when the founder hasn't said otherwise, and where it s
 - **26 tools:** calculators (A/B tests, unit economics, paid media, funnels, market size, liquidity), audits (page, site crawl, AI crawler access, copy, platform limits, UTM), repo checks (`scan_source`), self-checks on the draft (`check_answer`, `verify_quotes`), business profiles, small-bet matching (`match_small_bets`), playbook search, and `learn_more` to expand any summary.
 - **12 prompts:** fixed workflows (diagnosis, strategy with a pre-revenue path, idea generation, positioning, landing page teardown, experiment plan, campaign brief, launch plan, opportunity assessment, competitive strategy, exits, technical SEO review).
 - **60 playbooks** in `knowledge/` built from **51 research notes** in `research/`. On 2026-10-05 the snippet-only citations were re-read at their sources; about 100 remain unreachable.
-- **An evaluation method** in `evals/`: real cases, a 10-item rubric, graders that check every claim against the business's repo.
+- **An evaluation method** in `evals/`: real cases, a rubric of 8 scored items and 2 pass/fail gates, blind graders that check every claim against the business's repo.
 - See `README.md` for usage and `ROADMAP.md` for gaps.
 
 ## Where it may go
@@ -55,7 +55,7 @@ These are the lessons a new contributor most needs.
 - **Tool notes are followed like instructions.** A note in `scan_source` saying "prefer the ADR index status" led three advisors to wrong conclusions because the index was stale. Write tool output with the same care as instructions.
 - **Self-checks give false confidence when they skip silently.** Early `verify_quotes` dropped short and backticked quotes without saying so. Every check must report what it didn't check.
 - **Single runs are noise.** One run per case moved up to 4 points between rounds on nearly the same server. Use at least three runs per case; within-case spread is about 2 points.
-- **Graders drift when they compare to the previous round.** They keep finding new faults. Grade each run against the rubric alone.
+- **Graders drift between rounds.** They keep finding new faults, and an instruction not to compare didn't stop it. Grade the old and new versions in one blind, shuffled batch, so drift hits both equally.
 - **Parallel agents must not share temp files.** Two evaluation answers were swapped between businesses through a shared scratch file. Give every agent its own directory, and fingerprint the checked text.
 - **Literature runs out quickly.** No study covers go-to-market at zero customers. The most useful evidence came from the product's own category (how developer tools that comment on code get adopted) and from generating evidence: a tool-selection experiment, a coded set of 31 first-customer stories, mined customer language.
 - **From-memory competitor claims are often wrong.** A comparison said a competitor had no MCP server; its public docs repo showed 30 tools. Check differences at the source.
