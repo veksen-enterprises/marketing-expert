@@ -773,7 +773,7 @@ export function createServer(): McpServer {
     {
       title: "Match small bets to a business",
       description:
-        "Sort the small-bets catalog (cheap marketing moves: listings, answering questions, comparison pages, founder emails, launch posts, open source, data pages, sponsorships...) into fitsNow, fitsLater (with what's missing) and doesntFit (with why), from a saved business profile's traction, assets, audiences, product surfaces, revenue, launch status and avoid list. Report only fitsNow by default (see howToReport). Playbook: small-bets.",
+        "Sort the small-bets catalog (cheap marketing moves: listings, answering questions, comparison pages, founder emails, launch posts, open source, data pages, sponsorships...) into fitsNow, fitsLater (with what's missing) and doesntFit (with why), from a saved business profile's traction, channels, assets, audiences, product surfaces, revenue, launch status and avoid list. Report only fitsNow by default (see howToReport). Playbook: small-bets.",
       inputSchema: { name: z.string().describe("Saved business profile id") },
       annotations: readOnly,
     },
