@@ -105,3 +105,81 @@ Not built here. Ordered by how much the notes agree and whether a test can come 
 Changes nothing: a base-rate requirement in `check_answer` or a prior field on predictions (#18: no field gain found, and a required base rate invites invented ones); `market_size` (#22, #30).
 
 Access mark added 2026-10-27: `[read DATE; fetch summary]` for a source seen only through a fetch tool that returns a summary and quotes (`knowledge/_conventions.md`; checked by `test/researchMarks.test.ts`). Applied where a note says how it read the page. Not applied, because the note doesn't say which tool read which source: the notes that only say "access marks as in `founder-test-samples.md`", and `query-page-outcomes.md`, `seasonal-and-hobby-products.md`, `small-bets-direct.md`, `start-with-why.md` (curl and a fetch tool mixed). Their `[read]` marks may overstate.
+
+## Round 3 (2026-10-27, parallel): home pages and landing pages
+
+Seed: the owner asked whether the server has anything specific for home and landing pages. It had a teardown prompt, one playbook and a few `audit_page` heuristics (no h1, form over 5 fields, generic "Submit", no CTA found); `leadText` included menu text. Aim: deterministic checks a tool can run on a page's HTML or URL. Same entry rule and caps as round 2. The design stance holds: no tool grades how a page looks.
+
+Access: in this cloud session the proxy refused curl to every source host and the shared web-search budget ran out partway, so every source was seen through WebFetch (`fetch summary`), an abstract or a snippet. Re-check any figure against its text before it enters a playbook.
+
+| # | Lead | Hop | From | Would change | Result that would change it | Status |
+|---|---|---|---|---|---|---|
+| 57 | What is the "first screen", and can a tool extract it? | 0 | seed | `audit_page` `leadText`; render-mode `firstScreen`; teardown step 1 | Fold attention share today; defensible viewport sizes | done: `first-screen.md` |
+| 58 | Do clear heroes convert better, and which text features predict it? | 0 | seed | `analyze_copy` hero flags; `messaging-and-copy.md` hero rule | A computable feature linked to clicks or sign-ups | done: `hero-message-clarity.md` (no flags) |
+| 59 | Competing actions, nav removal, CTA placement and wording | 0 | seed | `audit_page` CTA facts and "generic Submit" flag; "one primary goal" line | A controlled effect size | done: `cta-and-competing-actions.md` (none found) |
+| 60 | Page speed and weight: causal evidence and checkable thresholds | 0 | seed | `audit_page` size and request fields; Speed section | A causal threshold, or evidence that lab runs mislead | done: `page-speed-and-weight.md` |
+| 61 | Social proof on pages | 0 | seed | `audit_page` proof detection; Proof section tags | An effect size and its conditions | done: `social-proof-on-pages.md` |
+| 62 | Trust signals a crawler can see | 0 | seed | `crawl_site`/`audit_page` site-information links; teardown | Absence linked to trust or conversion, or a legal duty | done: `trust-signals.md` |
+| 63 | When is design the lever, and which cheap human checks are valid? | 0 | seed | teardown human checks; a render-mode trigger | Tester counts; computed measures that predict appeal | done: `design-lever-checks.md` (no computed trigger) |
+| 64 | Overlays on arrival and carousels | 0 | seed | render-mode overlay check; carousel detection | A first-party threshold or a measured effect | done: `overlays-and-carousels.md` |
+| 65 | Message match between ad and page | 0 | seed | teardown step 2; "Message match" line; overlap check | A measured congruence effect, or overlap failing as a proxy | done: `message-match.md` (no overlap score) |
+| 66 | Home page vs single-purpose landing page | 0 | seed | teardown home-page branch; which flags apply | Different failure points | done: `home-page-vs-landing-page.md` |
+| 67 | Can labels alone predict navigation problems? (Blackmon et al.) | 1 | 66 | `audit_page` `navLabels` and a generic-label flag | A validated goal-free rule | done: `nav-labels.md` (no; list plus Lighthouse's exact list) |
+| 68 | Do stated picks predict live A/B winners? | 1 | 63 | the side-by-side kit; teardown human checks | Agreement rates | done: `preference-vs-live-results.md` (near chance; overturns the kit as a decision aid) |
+| 69 | Page features that predict bounce after an ad click | 1 | 65 | `audit_page` fields or flags | A feature with a usable direction and size | done: `post-click-page-features.md` (none; one sideways-scroll fact) |
+| 70 | Real-user speed data (CrUX) for small sites; weight vs field pass rates | 1 | 60 | an optional CrUX lookup; byte and request flag wording | Coverage of small sites; a weight-to-failure link | done: `field-speed-data.md` |
+| 71 | Share of home pages whose h1 sits in the site header or is a logo | 1 | 57 | `leadText` header rule | Over about 10% | parked: needs HTTP Archive queries billed to a cloud project; the h1-first rule covers it either way |
+| 72 | Lagun & Lalmas 2016, mobile viewport attention | 1 | 57 | fold line; phone size | A measured mobile first-screen share | left for a later round (cap) |
+| 73 | Visible viewport heights of common phones | 1 | 57 | 390×664 phone size | Heights well above 664 | left for a later round (cap); settle at build time |
+| 74 | EasyList licence for consent selectors | 1 | 57 | consent ids in `leadText` | Incompatible licence | left; check at build time |
+| 75 | Home page's share of entrances on small product sites | 1 | 66 | weight of the home-page branch | Most visits start deep | parked: public dashboards (Plausible) refused here |
+| 76 | Home page vs dedicated page as ad destination, controlled | 1 | 66, 65 | "one goal for paid traffic" line | A consistent direction across advertisers | left for a later round (cap); Becker 2009 and Ghose & Yang 2009 full texts are the start |
+| 77 | Platform first-party results on nav or CTA count | 1 | 59 | `ctaTargets` note text; "one primary goal" | A first-party controlled result | left for a later round (cap) |
+| 78 | Qubit 2017 appendices: navigation removal only | 1 | 59 | "one primary goal" tag | A clearly non-zero removal effect | left for a later round (cap) |
+| 79 | Sadowski et al. 2025, pronouns in action prompts | 1 | 59 | "no pronoun check"; folklore line | A controlled behavioural test | left for a later round (cap) |
+| 80 | Kohavi 2013/2014 PDFs (Bing per-100 ms figure) | 1 | 60 | Speed line wording | The primary figure differs | parked: PDFs refused here; a local session can read them |
+| 81 | Google's current review-snippet page: "self-serving" reviews | 1 | 61 | a structured-data info flag | The rule confirmed or dropped | not research: re-read the first-party page when building (refused to curl here) |
+| 82 | Gee (Management Science) results by count bin | 1 | 61 | the "no small-number flag" decision | Reliable harm at low counts | left for a later round (cap) |
+| 83 | Fang, Kim & Chintagunta 2026, stacking proof cues | 1 | 61 | proof line | Effect sizes for review counts | left for a later round (cap) |
+| 84 | Özpolat 2013 and Özpolat & Jank 2015 full texts | 1 | 62 | seal line | Sizes by segment | left for a later round (cap) |
+| 85 | Google Search Quality Rater Guidelines on contact information | 1 | 62 | contact facts → flag | Raters told to mark shops without contact information low | left for a later round (cap) |
+| 86 | Consumer Rights Directive Art. 6 as amended by 2019/2161 | 1 | 62 | the proposed EU rows in `marketing-law-by-market.md` | Phone now required | left; must be re-read before those rows enter |
+| 87 | Within-category complexity vs appeal | 1 | 63 | a "much busier than competitors" note | Correlation above about .6 | parked: #68 shows picks don't predict live winners, so a better trigger for a human pick changes little |
+| 88 | 5-second test test-retest reliability | 1 | 63 | tester count | A reliability figure | left for a later round (cap) |
+| 89 | Blocking cookie walls vs bounce or conversion | 1 | 64 | overlay flag severity for consent | A measured drop | left for a later round (cap) |
+| 90 | Moe 2006 and Huang et al. full texts | 1 | 64 | overlay flag figures | Figures differ | parked: refused here; a local session can read them |
+| 91 | Microsoft Advertising landing-page relevance docs | 1 | 65 | "Message match" first-party wording | Microsoft requiring exact keywords | left for a later round (cap) |
+| 92 | Banerjee & Urminsky, published version | 1 | 58 | playbook line on which features help | Confirmatory effects that differ | left for a later round (cap) |
+| 93 | Category word in h1 when the profile stores a category | 1 | 58 | a new check | A behavioural study that naming the category lifts sign-ups | parked: lab evidence only, and the profile has no category field |
+| 94 | CWW "unfamiliar word" rule | 2 | 67 | a goal-free rare-word flag | A frequency threshold validated on marketing sites | left for a later round (cap) |
+| 95 | Agent vs first-click test on home pages | 2 | 67 | teardown home-page label step | Per-task agreement | blocked: needs an evaluation with people |
+| 96 | Monadic stated test (one page per tester) vs live A/B | 2 | 68 | the human check's design | Direction agreement near the 82–94% seen in persuasion studies, at 20–40 people | left for a later round (cap); the most useful next lead |
+| 97 | O'Keefe 2018 full text: subsets with lopsided picks | 2 | 68 | kit output text | A subset at 75% or more | left for a later round (cap) |
+| 98 | Dolma et al. 2021, bounce with landing-page signals | 2 | 69 | `audit_page` | A signal with a direction and size | parked: ACM refused here |
+| 99 | Keyed CrUX lookup of evaluation-case origins (counts only, outside git) | 2 | 70 | whether to build the CrUX lookup | Most return 404 (keep optional) or most have data (promote) | blocked: needs a CrUX API key |
+| 100 | Almanac weight-vs-pass query by rank, with request buckets | 2 | 70 | byte and request flag wording | The slope fading within rank groups | parked: BigQuery bills a cloud project |
+| 101 | Google APIs Terms for showing CrUX results | 2 | 70 | the CrUX lookup design | A limit on storing or showing results | left; read before building |
+
+Round 3 stopped at 14 notes. Depth reached: 1 hop; the hop-2 leads are left or blocked.
+
+### Round 3 result: checks worth building, ranked
+
+Ranked by evidence for the check itself, cost, and how often a teardown would use it. "Facts" means a field with no verdict; "info" is the lowest flag severity. No item claims a conversion effect the notes didn't find.
+
+1. **Fix `leadText`, add `navLabels` and `pageKind` (#57, #66, #67).** Start `leadText` at the h1 when there is one; otherwise skip `<nav>`, skip links, consent-tool markup and a `<header>` with no h1; say which rule applied (`leadTextSource`). About a third of home pages have no header or nav landmark, so landmarks alone don't fix it. `navLabels`: menu and header links as `{text, href}`, first 30. `pageKind`: home when the path is `/` or a language root. A measurement fix with a failing test already in the repo: `test/regressions3.test.ts` expects menu text as `leadText`.
+2. **Site-information links (#62).** On the start page, report which of contact (or mailto/tel), imprint, privacy and terms links are found, in English, German, French and Spanish words; About and pricing as facts only. Missing items are info, each tied to its law (EU e-Commerce Directive Art. 5, Germany DDG § 5, UK reg. 6, CalOPPA's home-page "privacy" link), and the output says the tool doesn't know which markets apply. Plus a warning for a page served over plain HTTP (Chrome's "Not secure" label). The strongest basis of any check here: first-party law, not conversion claims. The law text was seen through a fetch summary, so re-read it before building.
+3. **Render-mode first screen at 390×664 and 1280×720 (#57, #64, #69).** Per size: whether the h1 and any CTA candidate are on screen; fixed, sticky or modal elements covering 30% or more of the phone screen at load, with their text and a likely type (30% is the Better Ads limit for sticky ads, borrowed and said so; Google gives no number); and page wider than the phone screen. All info. Must say: popups on delay, scroll or exit aren't seen, and EU-only consent banners may not show from here.
+4. **Size and requests (#60, #70).** Fetch mode: `htmlBytes` and the compressed size (header or local gzip), compared with HTTP Archive's home-page HTML, which is measured compressed (about 155 KB at the 90th percentile). Render mode: `requests` and `transferBytes`, info above the 90th percentile (about 190 requests, 11 MB). For bytes, the text may say "pages over 5 MB passed Core Web Vitals about half as often as pages under 1 MB, across sites; not a measurement of this page". No flag on a lab LCP from one run. An optional CrUX API lookup (needs a key and a security look; sends only the origin) is held until #99 shows small sites have data; a "no data" answer has three causes and must say so.
+5. **Proof found, as facts (#61).** Ratings (JSON-LD and "4.8/5" text), number-plus-customer-noun counts, testimonial blocks, logo strips. Info when none is found, with what wasn't seen (images, script widgets, other pages). No small-number or rating-ceiling flag. Separate first-party item: review markup nested in Organization or LocalBusiness on the business's own site, once Google's current page confirms the "self-serving" rule (#81).
+6. **Link text (#59, #67).** Info for links whose text exactly matches Lighthouse's non-descriptive list ("learn more", "click here"…), worded as Lighthouse does (search engines and screen readers; no conversion claim). Optional: same text, different targets (WCAG 2.4.9). Reword "generic Submit" as common advice with no measured gain. Don't extend to "Solutions" or "Explore".
+7. **Offer tokens (#65).** Optional `adText` input: percentages, prices, "free", "trial", "no card" and quoted words from the ad that aren't in the page text. Rests on Google's own offer-follow-through example, no measured effect. Never flag a missing search keyword.
+8. **Carousel detection (#64).** Info, with slide count, the one-site click data (about 1% clicked; most clicks on slide 1), and the WCAG 2.2.2 pause note when autoplay hints are present.
+
+Text changes, not tools (replace, don't append):
+- Teardown prompt: a home-page branch (top tasks and their links, menu labels judged per task, visible menu, log-in) that drops message match and "one primary action" (#66, #67); step 2 as "put the ad text next to the title, h1 and first screen" (#65); step 1 reads `leadText` or the first screen.
+- Human checks: 5 people for whether the message is understood. A pick between pages, by strangers or experts, matched the live winner about as often as chance (#68), so the side-by-side kit from #63 is not built as a decision aid; if built, it says the pick doesn't predict which version wins.
+- `analyze_copy` description: "editing signals, not predictors" (#58: wording features pick the winner of headline tests little better than chance).
+- `landing-pages-and-cro.md` tags: the Deloitte method, "53% leave after 3 s" and "Amazon 100 ms = 1%" as folklore, the delay-injection line, the 2.5 s LCP origin (#60); Proof as `[research, mixed]` with the two testimonial trials (#61); "one primary goal" with the vendor meta-analysis near zero and "not for home pages" (#59, #66); Message match `[first-party]` plus vendor (#65); "my beats your" to folklore (#59).
+- `marketing-law-by-market.md`: EU, UK and Germany website-information rows, after #86.
+
+Don't build (the notes looked and found nothing to support them): hero length, readability or abstractness flags (#58); a CTA or nav count flag (#59); a pronoun check (#59); word-overlap message match (#65); a computed colourfulness or complexity trigger (#63); a lab LCP flag (#60); small-count or rating-ceiling flags (#61); a seal check (#62); flags from ad-network bounce models (#69); "competing labels" or "unfamiliar words" in code (#67).
