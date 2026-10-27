@@ -49,6 +49,7 @@ _In short:_ Search captures demand that already exists, paid social creates it a
 - **Search** captures existing demand; it can't create it. Useless for products nobody searches for yet.
 - **Paid social** creates demand and can target broad interest; it needs strong creative and a clear, low-friction offer.
 - **LinkedIn**: expensive per click but precise B2B targeting; works best for high ACV, account-based programs and content distribution, rarely for cheap self-serve.
+- **Dating apps need approval before any ad runs.** Google needs dating certification, Meta prior written permission, and TikTok a sales rep; all limit dating ads to adults. Google asks for no user count but wants a live store app or website, test log-ins and a screen recording of the signed-in app. No platform publishes how long approval takes, so apply as soon as the app is in a store, and plan paid tests after that, not from a waitlist page [first-party; policy pages read 2026-10-27, some via fetch summaries].
 - **Copy limits**: use check_copy_limits for Google responsive search ads (RSA, 30/90), PMax, Demand Gen, Meta, LinkedIn, X and TikTok.
 
 ## Testing and scaling
@@ -81,4 +82,4 @@ _In short:_ Stop an ad only when its results are unlikely for one at target; sto
 
 ## Sources
 
-research/landscape-2026.md §1, §5 (Google Privacy Sandbox update 2025; Adjust 2025; Consent Mode v2; Meta Andromeda; Google PMax 2025); research/measurement.md §1 (Blake, Nosko & Tadelis 2015; Gordon et al. 2019); research/platform-specs.md.
+research/dating-ad-and-store-rules.md and dating-ad-certification.md (dating ad rules); research/landscape-2026.md §1, §5 (Google Privacy Sandbox update 2025; Adjust 2025; Consent Mode v2; Meta Andromeda; Google PMax 2025); research/measurement.md §1 (Blake, Nosko & Tadelis 2015; Gordon et al. 2019); research/platform-specs.md.
