@@ -47,7 +47,7 @@ An entry in the catalog of cheap marketing tests (a listing, founder emails, a c
 _Avoid_: tactic, quick win, growth hack
 
 **Stage**:
-How far a business has got, from 0 to 3: no users yet, first users, steady use, something newsworthy. Worked out from traction, not from how the founder describes it.
+How far a business has got, from 0 to 3: no users yet, first users, steady use, something newsworthy. Worked out from traction, not from how the founder describes it (the profile keeps that as `selfDescribedStage`).
 _Avoid_: phase, maturity, funding stage
 
 **Working channel**:
