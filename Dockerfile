@@ -5,12 +5,14 @@ COPY package.json package-lock.json tsconfig.json ./
 RUN npm ci --ignore-scripts
 COPY src ./src
 COPY scripts/build-info.mjs scripts/archive-commit.txt ./scripts/
+# Only HEAD and the refs (see .dockerignore), so build-info records the commit Dokploy cloned. The glob lets a
+# build from a tree without .git go through; the commit is then unknown.
+COPY .gi[t] ./.git/
 RUN npx tsc && node scripts/build-info.mjs
 
 FROM node:24-alpine
 WORKDIR /app
-# The update check would tell callers to git pull a checkout they don't have; redeploy instead.
-ENV NODE_ENV=production PORT=3000 MARKETING_EXPERT_DATA_DIR=/data MARKETING_EXPERT_UPDATE_CHECK=0
+ENV NODE_ENV=production PORT=3000 MARKETING_EXPERT_DATA_DIR=/data
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --omit=optional --ignore-scripts && npm cache clean --force
 COPY --from=build /app/dist ./dist

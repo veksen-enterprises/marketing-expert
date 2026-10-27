@@ -25,6 +25,8 @@ export function readBuildInfo(path = BUILD_INFO): BuildInfo {
 }
 
 /** npx keeps installs under ~/.npm/_npx/; anything else is a local checkout that needs a pull and a build. */
+export type InstallKind = "npx" | "local" | "hosted";
+
 export function installKind(dir = HERE): "npx" | "local" {
   return /[\\/]_npx[\\/]/.test(dir) ? "npx" : "local";
 }
@@ -68,13 +70,14 @@ export async function compareWithMain(commit: string | null, fetchImpl: Fetch = 
 const short = (sha: string) => sha.slice(0, 7);
 
 /** What to do to load main, for this kind of install. */
-export function updateSteps(kind: "npx" | "local"): string {
+export function updateSteps(kind: InstallKind): string {
+  if (kind === "hosted") return "This is the hosted endpoint: whoever runs it redeploys it (Dokploy: Deploy on the marketing-expert app) to load main. Nothing to do in the client.";
   return kind === "npx"
     ? "To load it without a new session in Claude Code: run /mcp, pick marketing-expert, choose Reconnect (npx fetches main again on start). Other clients: restart the server or the client."
     : "This is a local copy: git pull and npm run build in it, then reconnect the server (Claude Code: /mcp, pick marketing-expert, Reconnect).";
 }
 
-export function describeCheck(build: BuildInfo, check: MainCheck | null, kind: "npx" | "local"): string {
+export function describeCheck(build: BuildInfo, check: MainCheck | null, kind: InstallKind): string {
   const running = build.commit ? `commit ${short(build.commit)}${build.dirty ? " with uncommitted changes" : ""}, built ${build.builtAt}` : "an unknown commit";
   if (!check) return `Running ${running}. The comparison with GitHub main has not finished yet.`;
   switch (check.state) {
@@ -93,12 +96,17 @@ export function describeCheck(build: BuildInfo, check: MainCheck | null, kind: "
   }
 }
 
-const TTL_MS = 60 * 60 * 1000;
+export const TTL_MS = 60 * 60 * 1000;
 
-/** Caches the comparison. Never awaited by tool calls: they read whatever result is in and start a refresh when it's old. */
+/**
+ * Caches the comparison. Never awaited by tool calls: they read whatever result is in and start a refresh when it's old.
+ * The hosted endpoint builds a server per request with no session to tell callers apart, so src/http.ts shares one
+ * instance per process and it, not the server, remembers when the out-of-date notice was last given.
+ */
 export class UpdateCheck {
   private result: MainCheck | null = null;
   private inflight: Promise<MainCheck> | null = null;
+  private warnedAt: number | null = null;
   constructor(readonly build: BuildInfo, private readonly fetchImpl?: Fetch, readonly enabled = process.env.MARKETING_EXPERT_UPDATE_CHECK !== "0") {}
 
   /** Starts a lookup if none is running and the last one is missing or older than an hour. */
@@ -120,5 +128,17 @@ export class UpdateCheck {
   latest(): MainCheck | null {
     if (!this.result || Date.now() - Date.parse(this.result.checkedAt) >= TTL_MS) void this.refresh();
     return this.result;
+  }
+
+  /**
+   * The check result when main is newer and no notice was given in the last `every` ms; null otherwise.
+   * Stdio has one client, so it warns once. Hosted warns once an hour, so other clients of a stale host hear it too.
+   */
+  takeNotice(every = Infinity): MainCheck | null {
+    const c = this.latest();
+    if (!c || (c.state !== "behind" && c.state !== "diverged")) return null;
+    if (this.warnedAt !== null && Date.now() - this.warnedAt < every) return null;
+    this.warnedAt = Date.now();
+    return c;
   }
 }
