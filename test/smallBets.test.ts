@@ -236,6 +236,17 @@ describe("matchSmallBets", () => {
     expect(v.stop).toMatch(/same version to the same site/);
     expect(v.stop).toMatch(/spike with no retained users/);
   });
+  it("gives search-page bets a stop for the likely case, almost no clicks, that a founder can check", () => {
+    // research/query-page-outcomes.md §1: a page on a new, unlinked site typically gets about zero clicks in 3 months,
+    // and a founder can't check a query's volume (keyword tools show under 10 searches for most queries).
+    const r = matchSmallBets({ audiences: ["developers"], traction: { activeUsers: 0 } });
+    const cmp = r.fitsNow.find((v) => v.id === "comparison-pages")!;
+    expect(cmp.stop).toMatch(/under about 10 search clicks across the first three pages/i);
+    expect(cmp.stop).not.toMatch(/no volume/);
+    const errBet = BETS.find((b) => b.id === "error-pages")!;
+    expect(errBet.stop).toMatch(/under about 10 search clicks across the first eight pages/i);
+    for (const b of [BETS.find((x) => x.id === "comparison-pages")!, errBet]) expect(b.measure, b.id).toMatch(/Pages tab/);
+  });
   it("says when channels are missing or match no bet, instead of skipping them silently", () => {
     expect(matchSmallBets(devtool).assumptions.join(" ")).toMatch(/Channels not saved/);
     expect(matchSmallBets({ ...devtool, channels: ["carrier pigeon"] }).assumptions.join(" ")).toMatch(/matched no bet by keyword.*carrier pigeon/);
