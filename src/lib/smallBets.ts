@@ -5,7 +5,7 @@
 // the evidence is in research/small-bets*.md.
 
 import type { BusinessProfile } from "./profile.js";
-import { BETS } from "./smallBetsCatalog.js";
+import { BETS, REGULATED } from "./smallBetsCatalog.js";
 import { sections } from "./knowledge.js";
 
 export const AUDIENCES = ["businesses", "developers", "consumers", "hobbyists", "local"] as const;
@@ -88,6 +88,8 @@ export interface Bet {
   cost: string;
   /** How long before you can judge it. */
   judgeAfter: string;
+  /** "weeks": judgeAfter is within about two months, or a count of tries or items; "months": longer. */
+  horizon: "weeks" | "months";
   measure: string;
   stop: string;
   evidence: "strong" | "some" | "anecdote";
@@ -99,6 +101,8 @@ export interface SmallBetsFacts {
   /** The business's own words for what it is; bets with onlyFor or notes read them. */
   category?: string;
   product?: string;
+  /** How the business makes money, in its own words; read with category and product to tell a service. */
+  businessModel?: string;
   traction?: { activeUsers?: number; monthlyVisits?: number; payingCustomers?: number; asOf?: string; basis?: "counted" | "estimated" };
   assets?: { data?: string; expertise?: string; founderAudience?: string; newsworthy?: string; monthlyBudget?: number; accounts?: boolean; communities?: string; season?: string; visual?: string };
   audiences?: Audience[];
@@ -139,6 +143,7 @@ export function readStage(f: SmallBetsFacts): StageReading {
   const as = `${t.asOf ? ` (as of ${t.asOf})` : ""}${t.basis === "counted" ? "" : ", estimated"}`;
   if (users >= STAGE2_USERS || visits >= STAGE2_VISITS) return { stage: 2, basis: `${users} active users, ${visits} monthly visits${as}` };
   if (f.surfaces?.includes("service") && paying >= SERVICE_STAGE2_CLIENTS) return { stage: 2, basis: `${paying} paying clients of a service${as}` };
+  if (f.surfaces?.includes("service") && users === 0 && paying > 0) return { stage: 1, basis: `${paying} paying clients of a service${as}` };
   if (users > 0 || paying > 0) return { stage: 1, basis: `${users} active users, ${paying} paying${as}` };
   return { stage: 0, basis: f.surfaces?.includes("service") ? `no paying clients yet${as}` : `no active users yet${as}` };
 }
@@ -155,6 +160,7 @@ export interface Verdict {
   reason: string;
   cost?: string;
   judgeAfter?: string;
+  horizon?: Bet["horizon"];
   measure?: string;
   stop?: string;
   evidence?: Bet["evidence"];
@@ -174,7 +180,10 @@ export interface Verdict {
 
 export interface MatchResult {
   stage: StageReading;
+  /** Grouped by horizon, weeks first; in each group a bet whose reason says do this first leads, then by score. */
   fitsNow: Verdict[];
+  /** How many fitsNow bets each horizon holds. */
+  horizons: Record<Bet["horizon"], number>;
   fitsLater: Verdict[];
   doesntFit: Verdict[];
   /** Facts the match had to guess; say these in one line so the user can correct them. */
@@ -187,7 +196,7 @@ export interface MatchResult {
 }
 
 export const HOW_TO_REPORT =
-  "Show only fitsNow, in the order given (score order: what it can do if it works, evidence, effort, a rule of thumb; a bet whose reason says do this first leads), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them. Before proposing a bet, check it against checkAgainst, the business's own principles; drop any it would break.";
+  "Show only fitsNow, as small bets separate from the moves, in two groups: bets judged within weeks, then bets that take months. Show the first 3 of each horizon in the order given (a bet whose reason says do this first leads, then score: what it can do if it works, evidence, effort, a rule of thumb) and say how many more fit (horizons has the counts); each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them. Before proposing a bet, check it against checkAgainst, the business's own principles; drop any it would break.";
 
 // Ranking weights, a rule of thumb: what a bet can do if it works, discounted a little for weak evidence and by the
 // square root of its effort, so a 1-hour bet doesn't beat everything just for being quick.
@@ -284,10 +293,43 @@ export function marketLawPointers(markets: string[] = []): MatchResult["marketLa
 }
 
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { category: p.category, product: p.product, traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
+  return { category: p.category, product: p.product, businessModel: p.businessModel, traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
 }
 
-export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
+// Words for one person selling their own time. Kept narrow: a product word anywhere in the texts ("coaching app",
+// "invoicing software for freelancers") means no guess, and phrases where "service" names software are removed first.
+const SERVICE_WORDS = /\b(services?|consult(ing|ations?|ancy|ants?)|coach(es|ing)?|freelanc\w*|agenc(y|ies)|(private|solo|own|group|clinical|therapy|nutrition|dental|law|medical) practice|(paid|private|one-to-one|one-on-one|video|coaching|therapy|counsell?ing) sessions?|(per|by the) (session|hour)|hourly|retainers?|(graphic|web|brand|interior|ux|ui) designers?|tutor(s|ing)?)\b/i;
+const SOFTWARE_SERVICE = /\b(customer|web|cloud|micro|streaming|subscription|delivery|hosting|e-?mail|messaging|payments?|managed|data) services?\b/gi;
+const PRODUCT_WORDS = /\b(apps?|software|saas|platforms?|tools?|apis?|sdks?|plugins?|extensions?|marketplaces?|cli|library|bots?|devices?|hardware)\b/i;
+const SERVICE_FIELDS = ["category", "product", "businessModel"] as const;
+
+/** A service read from the saved words when no surfaces are saved: the field and its text, or undefined. */
+export function inferService(f: SmallBetsFacts): { field: (typeof SERVICE_FIELDS)[number]; text: string } | undefined {
+  if (f.surfaces?.length) return undefined;
+  const texts = SERVICE_FIELDS.map((field) => ({ field, text: (f[field] ?? "").trim() })).filter((x) => x.text);
+  if (texts.some((x) => PRODUCT_WORDS.test(x.text.replace(SOFTWARE_SERVICE, "")))) return undefined;
+  return texts.find((x) => {
+    const t = x.text.replace(SOFTWARE_SERVICE, "");
+    return SERVICE_WORDS.test(t) || REGULATED.test(t);
+  });
+}
+
+// Plain words for the surfaces and audiences a bet needs, used when the profile doesn't say.
+const SURFACE_WORDS: Record<Surface, string> = { "web-app": "a web app", website: "a website", "mobile-app": "a mobile app", cli: "a command-line tool", library: "a code library", api: "an API", bot: "a bot", "browser-extension": "a browser extension", physical: "a physical product", service: "a service" };
+const AUDIENCE_WORDS: Record<Audience, string> = { businesses: "businesses", developers: "developers", consumers: "consumers", hobbyists: "hobbyists", local: "local shops" };
+const orList = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} or ${xs[xs.length - 1]}`);
+function surfaceIf(s: Surface[], also: boolean): string {
+  if (s.includes("service")) return "if you sell your own time, as a service (save surfaces to tell)";
+  const what = s.length >= 6 ? "a product people use, install or buy, such as an app, a website, a tool or a physical product" : orList(s.map((x) => SURFACE_WORDS[x]));
+  return `if you ${also ? "also " : ""}have ${what} (save surfaces to tell)`;
+}
+
+export function matchSmallBets(facts: SmallBetsFacts, bets: Bet[] = BETS): MatchResult {
+  // A service read from the words counts as one for stage, wording and firstFor. The saved surfaces still decide what
+  // doesn't fit, so a bet for another surface waits in fitsLater (the business may also have a product) rather than being ruled out.
+  const inferred = inferService(facts);
+  const saved = facts.surfaces;
+  const f: SmallBetsFacts = inferred ? { ...facts, surfaces: ["service"] } : facts;
   const stage = readStage(f);
   const a = f.assets ?? {};
   const budget = a.monthlyBudget ?? 0;
@@ -297,8 +339,10 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     assumptions.push(`Traction is not marked as counted from a record, so stage ${stage.stage} rests on an estimate. Say so in the answer; near ${STAGE2_USERS} active users or ${STAGE2_VISITS.toLocaleString("en-US")} monthly visits, ask for the counted number and save it with basis "counted".`);
   if (f.surfaces?.includes("service"))
     assumptions.push(`For a service, stage 2 starts at ${SERVICE_STAGE2_CLIENTS} paying clients, a rule of thumb: a solo practice can be full long before 100 active users. Say so if the stage decides a bet.`);
-  if (!f.audiences?.length) assumptions.push("Audience not saved (businesses, developers, consumers, hobbyists, local), so no bet was ruled out for its audience.");
-  if (!f.surfaces?.length) assumptions.push("Product surfaces not saved (web app, mobile app, CLI, library, API, bot...), so bets that need a specific surface were kept.");
+  if (!f.audiences?.length) assumptions.push("Audience not saved (businesses, developers, consumers, hobbyists, local), so bets for a given audience wait in fitsLater, each with an if.");
+  if (inferred)
+    assumptions.push(`Surfaces not saved; treated as a service (one person selling their own time) from the ${inferred.field === "businessModel" ? "business model" : inferred.field}: "${inferred.text}". Bets that need an app, a site or another product wait in fitsLater. Save surfaces to confirm or correct this.`);
+  else if (!f.surfaces?.length) assumptions.push("Product surfaces not saved (service, web app, mobile app, CLI, library, API, bot...), so bets that need a specific surface wait in fitsLater, each with an if.");
   if (!f.avoid) assumptions.push("No 'avoid' list saved, so no bet was ruled out by the business's principles. Check each fitting bet against its non-goals before proposing it.");
   if (f.revenue === undefined) assumptions.push("Revenue model not saved; bets that need something to sell were treated as fitting later.");
   // Users or payers mean the product is live, whatever the profile says.
@@ -322,8 +366,8 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       doesntFit.push({ ...base(b), reason: `suits ${b.audiences.join(" or ")}; the profile's audience is ${f.audiences.join(", ")}` });
       continue;
     }
-    if (b.surfaces && f.surfaces?.length && !b.surfaces.some((x) => f.surfaces!.includes(x))) {
-      doesntFit.push({ ...base(b), reason: `needs a ${b.surfaces.join(" or ")}; the product is ${f.surfaces.join(", ")}` });
+    if (b.surfaces && saved?.length && !b.surfaces.some((x) => saved.includes(x))) {
+      doesntFit.push({ ...base(b), reason: `needs a ${b.surfaces.join(" or ")}; the product is ${saved.join(", ")}` });
       continue;
     }
     const clash = (b.involves ?? []).filter((t) => f.avoid?.includes(t));
@@ -347,6 +391,9 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
 
     // Then what's missing now.
     const blockers: string[] = [];
+    // A bet for some surfaces or audiences, when the profile doesn't say: it waits, with the question to answer.
+    if (b.surfaces && !saved?.length && !(inferred && b.surfaces.includes("service"))) blockers.push(surfaceIf(b.surfaces, !!inferred));
+    if (b.audiences && !f.audiences?.length) blockers.push(`if your buyers are ${orList(b.audiences.map((x) => AUDIENCE_WORDS[x]))} (save audiences to tell)`);
     let need = b.stage;
     if (b.dataSkipsStage && a.data) need = 0;
     if (b.budgetSkipsStage !== undefined && budget >= b.budgetSkipsStage) need = 0;
@@ -383,6 +430,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
         notesFor(b, kind),
       cost: b.cost,
       judgeAfter: b.judgeAfter,
+      horizon: b.horizon,
       measure: b.measure,
       stop: b.stop,
       evidence: b.evidence,
@@ -395,14 +443,17 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     });
   }
   const isFirst = (v: Verdict) => first(bets.find((b) => b.id === v.id)!, f);
-  fitsNow.sort((x, y) => Number(isFirst(y)) - Number(isFirst(x)) || y.score! - x.score!);
+  // Bets judged within weeks first, then those that take months; the score ignores how long a bet takes to judge.
+  const H = { weeks: 0, months: 1 } as const;
+  fitsNow.sort((x, y) => H[x.horizon!] - H[y.horizon!] || Number(isFirst(y)) - Number(isFirst(x)) || y.score! - x.score!);
+  const horizons = { weeks: fitsNow.filter((v) => v.horizon === "weeks").length, months: fitsNow.filter((v) => v.horizon === "months").length };
   const marketLaw = marketLawPointers(f.markets);
   if (!f.markets?.length) assumptions.push("Markets not saved (where the business operates); legal notes can't name the rules that apply. Save markets, e.g. Quebec, Turkey.");
   for (const v of fitsNow) {
     const law = bets.find((b) => b.id === v.id)?.law;
     if (law) v.lawCheck = `Check the ${LAW_WHAT[law]} in each market${marketLaw.length ? `: ${marketLaw.map((x) => x.pointer ?? `${x.market} (not covered yet)`).join(", ")}` : " (markets not saved)"}.`;
   }
-  return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], marketLaw, howToReport: HOW_TO_REPORT };
+  return { stage, fitsNow, horizons, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], marketLaw, howToReport: HOW_TO_REPORT };
 }
 
 /** The bet's notes whose words match the saved category or product, as reason text. */

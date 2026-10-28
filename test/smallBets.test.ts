@@ -255,9 +255,12 @@ describe("matchSmallBets", () => {
   it("reads channels from the saved profile", () => {
     expect(factsFromProfile({ name: "x", channels: ["Google"] }).channels).toEqual(["Google"]);
   });
-  it("ranks by score, highest first", () => {
-    const scores = matchSmallBets(devtool).fitsNow.map((v) => v.score!);
-    expect(scores).toEqual([...scores].sort((a, b) => b - a));
+  it("ranks by score, highest first, within each horizon", () => {
+    for (const h of ["weeks", "months"]) {
+      const scores = matchSmallBets(devtool).fitsNow.filter((v) => v.horizon === h).map((v) => v.score!);
+      expect(scores.length, h).toBeGreaterThan(0);
+      expect(scores).toEqual([...scores].sort((a, b) => b - a));
+    }
   });
   it("scores a cheap lopsided bet above an equally cheap capped one, and discounts effort by its square root", () => {
     expect(betScore({ ceiling: "lopsided", evidence: "anecdote", effortHours: 4 })).toBeGreaterThan(betScore({ ceiling: "capped", evidence: "anecdote", effortHours: 4 }));
@@ -392,5 +395,83 @@ describe("solo service profiles", () => {
     expect(p("São Paulo")).toBe("playbook:marketing-law-by-market#Brazil");
     const r = matchSmallBets(dietitian);
     expect(find(r.fitsNow, "warm-network")!.lawCheck).toMatch(/#Quebec.*#Canada/);
+  });
+});
+
+// A saved profile with only a category, a business model and a few clients got 24 bets in fitsNow, led by newsletter
+// submissions, shop signs and a hiring post; say-what-you-sell came 10th because the service was never read from the text.
+describe("profiles with unsaved surfaces or audiences", () => {
+  const nutri: SmallBetsFacts = { category: "nutritionist, solo professional service", businessModel: "paid sessions", traction: { payingCustomers: 3 } };
+  const nutriService: SmallBetsFacts = { ...nutri, surfaces: ["service"] };
+  const bet = (id: string) => BETS.find((b) => b.id === id)!;
+
+  it("reads a service from the category, says so, and puts say-what-you-sell first", () => {
+    const r = matchSmallBets(nutri);
+    expect(r.fitsNow[0].id).toBe("say-what-you-sell");
+    expect(r.assumptions.join(" ")).toMatch(/treated as a service .*from the category: "nutritionist, solo professional service"/);
+    expect(r.stage.basis).not.toMatch(/active users/);
+    expect(find(r.fitsNow, "warm-network")!.reason).toMatch(/clients/);
+  });
+  it("keeps bets that need a product or a given audience out of fitsNow until the field is saved, with an if", () => {
+    for (const p of [nutri, nutriService]) {
+      const r = matchSmallBets(p);
+      for (const v of r.fitsNow) {
+        const b = bet(v.id);
+        expect(b.audiences, v.id).toBeUndefined();
+        if (b.surfaces) expect(b.surfaces, v.id).toContain("service");
+      }
+      expect(find(r.fitsLater, "in-store-signs")!.reason).toMatch(/if your buyers are local shops/);
+      expect(find(r.fitsLater, "freelance-platform")!.reason).toMatch(/if your buyers are businesses/);
+      for (const id of ["changelog", "embeds"]) expect(ids(r.fitsNow), id).not.toContain(id);
+    }
+    const r = matchSmallBets(nutri);
+    for (const id of ["curator-submissions", "browser-extension", "one-command-try", "integration", "hiring-post"]) expect(ids(r.fitsLater), id).toContain(id);
+    expect(find(r.fitsLater, "browser-extension")!.reason).toMatch(/^if you also have .*browser extension/);
+    expect(r.assumptions.join(" ")).toMatch(/Audience not saved.*wait in fitsLater/);
+    // Nothing saved and nothing inferred: the same, without "also".
+    const empty = matchSmallBets({});
+    expect(find(empty.fitsLater, "browser-extension")!.reason).toMatch(/^if you have /);
+    expect(find(empty.fitsLater, "warm-network")!.reason).toMatch(/^if you sell your own time/);
+  });
+  it("doesn't read a service from product words", () => {
+    for (const category of ["customer service tool", "web service API", "nutrition coaching app", "invoicing software for freelancers", "cloud services for agencies' websites, a SaaS"]) {
+      const r = matchSmallBets({ category });
+      expect(r.assumptions.join(" "), category).not.toMatch(/treated as a service/);
+      expect(r.fitsNow[0]?.id, category).not.toBe("say-what-you-sell");
+    }
+    for (const [field, text] of [["category", "freelance designer"], ["category", "marketing agency"], ["product", "life coaching for new parents"], ["category", "private practice psychotherapist"], ["businessModel", "paid sessions"], ["businessModel", "hourly consultations"]]) {
+      expect(matchSmallBets({ [field]: text }).assumptions.join(" "), text).toMatch(new RegExp(`treated as a service .*from the ${field === "businessModel" ? "business model" : field}: "${text}"`));
+    }
+    // A saved surface wins over the words.
+    expect(matchSmallBets({ category: "nutritionist", surfaces: ["web-app"] }).assumptions.join(" ")).not.toMatch(/treated as a service/);
+  });
+  it("gives every bet a horizon that agrees with its judging window", () => {
+    for (const b of BETS) {
+      expect(["weeks", "months"], b.id).toContain(b.horizon);
+      // The longest stated window, in weeks: over about two months is "months". A count of tries, items or issues
+      // with no window is "weeks", except a perk period, which runs for months.
+      const perWeek = { day: 1 / 7, week: 1, month: 4.35 } as const;
+      const windows = [...b.judgeAfter.matchAll(/(\d+)\s*(day|week|month)s?\b/g)].map((m) => Number(m[1]) * perWeek[m[2] as keyof typeof perWeek]);
+      const expected = windows.length ? (Math.max(...windows) > 8.5 ? "months" : "weeks") : /perk period/.test(b.judgeAfter) ? "months" : "weeks";
+      expect(b.horizon, `${b.id}: ${b.judgeAfter}`).toBe(expected);
+    }
+    expect(bet("build-a-network").horizon).toBe("months");
+    expect(bet("curator-submissions").horizon).toBe("weeks");
+  });
+  it("groups fitsNow by horizon, weeks first, firstFor then score within each, and counts both", () => {
+    for (const p of [nutri, nutriService, {}]) {
+      const r = matchSmallBets(p);
+      const h = r.fitsNow.map((v) => v.horizon);
+      expect(h).toEqual([...h].sort((a, b) => (a === b ? 0 : a === "weeks" ? -1 : 1)));
+      for (const g of ["weeks", "months"] as const) {
+        const scores = r.fitsNow.filter((v) => v.horizon === g && !/do this first/.test(v.reason)).map((v) => v.score!);
+        expect(scores).toEqual([...scores].sort((a, b) => b - a));
+        expect(r.horizons[g]).toBe(r.fitsNow.filter((v) => v.horizon === g).length);
+      }
+    }
+    const r = matchSmallBets(nutri);
+    expect(find(r.fitsNow, "build-a-network")!).toMatchObject({ horizon: "months" });
+    expect(r.howToReport).toMatch(/first 3 of each horizon/);
+    expect(r.howToReport).toMatch(/how many more/);
   });
 });
