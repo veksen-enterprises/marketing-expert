@@ -36,18 +36,20 @@ export const BETS: Bet[] = [
     section: S0,
   },
   {
-    id: "show-up-in-person",
-    effortHours: 12,
-    // Steady: people met in person remember you and refer you later. A judgment call; no source measures it.
+    id: "build-a-network",
+    effortHours: 24,
+    // Steady: people who know you pass your name on for years. A judgment call, as for every ceiling.
     ceiling: "steady",
-    name: "Show up in person where buyers gather",
-    what: "Go to the rooms where people who could buy already are (coworking events, meetups, trade and community events, the gym, club or class your buyers use), have a few real conversations each time, and follow up within two days.",
+    name: "Meet people and stay in touch, without selling",
+    what: "Go where interesting people are (coworking and community events, meetups, classes, clubs), be curious about their work, help where you can, and stay in touch every few months. Work comes later through who they know and who they work with.",
     stage: 0,
-    cost: "Free to low; an evening per event",
-    judgeAfter: "6 events",
-    measure: "Real conversations, follow-ups answered and calls booked per event",
-    stop: "6 events with no conversation that leads to a call: change the room, not the pitch. Say what you do in one sentence; don't sell at the event.",
-    evidence: "anecdote",
+    cost: "Free to low; an evening or two a week",
+    judgeAfter: "3–6 months",
+    measure: "Introductions, people who pass your name on, enquiries that say who sent them",
+    stop: "After 6 months, if nobody you met has introduced you or asked about your work, change where you go. Don't start pitching: that ends what makes it work.",
+    // research/solo-first-clients.md §6: a 5-year field experiment on LinkedIn (20M+ users) found moderately weak
+    // ties carried the most job moves. Jobs, not clients, and one platform.
+    evidence: "some",
     section: S0,
   },
   {
