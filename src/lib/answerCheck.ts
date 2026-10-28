@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { checkLabels, type LabelFinding } from "./labelCheck.js";
 import { KNOWLEDGE_DIR } from "./knowledge.js";
 import { lintMoves } from "./moveCheck.js";
+import { checkStageMap, splitStageMap } from "./stageMap.js";
 
 export interface AnswerCheck {
   /** Identifies the checked text: first words plus a hash of the whitespace-normalised text. Log it, so a reviewer can confirm the text sent is the text checked. */
@@ -18,6 +19,8 @@ export interface AnswerCheck {
   whitespaceWords: number;
   /** Words in "## Evidence" / "## Appendix" sections, which don't count toward maxWords. */
   appendixWords: number;
+  /** Words in the "## Stage map" section (0 if there is none), which don't count toward maxWords; the map has its own caps. */
+  stageMapWords: number;
   maxWords: number;
   /** Over the limit by the larger of the two counts. */
   overBy: number;
@@ -33,6 +36,9 @@ export interface AnswerCheck {
   labelIssues: LabelFinding[];
   /** Moves that bundle actions, lack a field of the move format, or have a stop line with no number. */
   moveIssues: string[];
+  /** A missing "## Stage map" section, or a map with a missing stage, a line without exactly one status, more than two
+   * constraints, or a line over 30 words. Empty when opts.stageMap is false. */
+  stageMapIssues: string[];
   problems: string[];
   /** Steps to take once, such as verify_quotes for repo citations. Not in problems: the check can't see that they were done. */
   reminders: string[];
@@ -185,9 +191,15 @@ const AGENT_CHANNEL: [string, RegExp] = [
   /\b(coding )?agents?\b[^.?!\n]{0,80}\b(channel|find|finds|choose|chooses|pick|picks|discover|select|call|calls)\b|\b(MCP|server) registry\b|\btool descriptions?\b|\b(channel|find|choose|pick|discover)\b[^.?!\n]{0,40}\b(coding )?agents?\b/i,
 ];
 
-export function checkAnswer(text: string, maxWords?: number, deliverable: keyof typeof WORD_LIMITS = "answer", opts: { agentChannel?: boolean } = {}): AnswerCheck {
+export function checkAnswer(
+  text: string,
+  maxWords?: number,
+  deliverable: keyof typeof WORD_LIMITS = "answer",
+  opts: { agentChannel?: boolean; stageMap?: boolean } = {}
+): AnswerCheck {
   const limit = maxWords ?? WORD_LIMITS[deliverable];
-  const { body, appendix } = splitAppendix(text);
+  const { body: withMap, appendix } = splitAppendix(text);
+  const { body, map } = splitStageMap(withMap);
   // Count prose words; code spans and URLs count as one word each, like a reader sees them.
   const count = (t: string) => {
     const plain = t.replace(/```[\s\S]*?```/g, " code ").replace(/`[^`]*`/g, " x ").replace(/https?:\/\/\S+/g, " url ");
@@ -197,6 +209,7 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   // Graders count with wc -w, which also counts dashes and symbols between spaces and every word in a code span.
   const whitespaceWords = body.split(/\s+/).filter(Boolean).length;
   const appendixWords = appendix.split(/\s+/).filter(Boolean).length;
+  const stageMapWords = map === null ? 0 : map.split(/\s+/).filter(Boolean).length;
   const lower = text.toLowerCase();
   const bannedWords = BANNED.filter((w) => new RegExp(`\\b${w.replace(/[-\s]/g, "[-\\s]")}\\b`, "i").test(lower));
   const { terms: unexplainedTerms, consider: considerExplaining } = unexplained(text);
@@ -237,6 +250,9 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   }
   const { issues: moveIssues } = lintMoves(body);
   problems.push(...moveIssues);
+  // Both deliverables need the map; a short answer to one narrow question opts out.
+  const stageMapIssues = opts.stageMap === false ? [] : checkStageMap(map);
+  problems.push(...stageMapIssues);
   // A repo citation (pricing.astro:263, ADR 0006) means quotes to check; a host and port (api.example.com:443) doesn't.
   const reminders: string[] = [];
   const cite = /\b[\w./-]+\.(?!(?:com|org|net|io|dev|ai|co|app)\b)[a-z][a-z0-9]{0,4}:\d+|\bADR[\s-]?\d{2,4}\b/i.exec(text.replace(/https?:\/\/\S+/g, " "));
@@ -245,5 +261,5 @@ export function checkAnswer(text: string, maxWords?: number, deliverable: keyof 
   if ((text.match(/^#{2,3} /gm) ?? []).length >= 2 && !/learn more/i.test(text)) {
     reminders.push("End each section with one or two 'Learn more:' lines naming topics the reader can ask to expand (learn_more expands a section, a small bet or a term).");
   }
-  return { fingerprint, words, whitespaceWords, appendixWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders };
+  return { fingerprint, words, whitespaceWords, appendixWords, stageMapWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, stageMapIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders };
 }

@@ -21,6 +21,10 @@ export const MAX_MOVES = 3;
 export const MOVE_FORMAT =
   'each move is one action (no "and", no "in the same change"), with the lines "Mechanism:", "Cheapest test:" (smaller than the move, with its cost), "Metric:", "Time box:" and "Stop:" (the number that means drop or change it)';
 
+// The answer's last part, for each workflow that diagnoses; check_answer (src/lib/stageMap.ts) checks it.
+const STAGE_MAP_STEP =
+  'Stage map: end with a "## Stage map" section, one line per stage (positioning, offer and price, presence, discovery, direct outreach, conversion, retention and referrals, legal limits, founder\'s time, measurement), each marked constraint, fine, unknown or later with a short reason, and the playbook or tool to go deeper if useful. Mark the constraint you diagnosed; "unknown" means you didn\'t check.';
+
 // marketing_strategy's steps, shared with get_started so the first run follows the same workflow.
 function strategySteps(business: string, goal?: string, budget?: string): string {
   return `Propose a marketing strategy for this business.${opt(goal, "\nGoal")}${opt(budget, "\nBudget / team")}
@@ -36,6 +40,7 @@ Business: ${business}
 6. The plan: at most ${MAX_MOVES} moves; ${MOVE_FORMAT}. Then the first 90 days in order, with calendar dates, founder or owner hours per week for each move, and owners if a team was described. At most 2–3 things at once; no move may depend on the output of one that starts later.
 7. Evidence: for each recommendation, say whether it rests on research, platform documentation, practitioner experience or vendor data. Don't call anything "proven" unless the playbook tags it [research] or [first-party], and even then say what context it was proven in.
 8. What not to do yet, and why.
+9. ${STAGE_MAP_STEP}
 Before sending, run check_answer with deliverable "plan" (a 1,800-word limit), and with agentChannel true if scan_source reported mcpServer.
 Offer to save the confirmed facts, and each move the user takes on as a prediction, with save_business_profile.`;
 }
@@ -138,7 +143,9 @@ Work in this order:
 2. List what you need to know and don't, as specific questions with the numbers you need (traffic, conversion by stage, CAC by channel, retention by cohort, margin, ACV, sales cycle). Ask them. If the user can't answer, state the assumption you'll make and how it would change the conclusion.
 3. Identify the constraint. It is usually one of: nobody outside the team has reached the product's value yet (activation and proof: the usual constraint below ~10 paying customers, see first-customers); nobody understands what it is or who it's for (positioning); not enough of the right people see it (reach/channel); they see it but don't act (offer, page, friction); they act but don't stay (retention/product, so stop buying acquisition); the numbers don't work (unit economics). Use funnel_analysis and unit_economics if numbers exist. Name the evidence for your call and what would falsify it.
 4. Recommend at most ${MAX_MOVES} moves against that constraint; ${MOVE_FORMAT}. search_playbooks for the relevant playbook and cite it.
-5. Say what NOT to do yet, and why.`)
+5. Say what NOT to do yet, and why.
+6. ${STAGE_MAP_STEP}
+Run check_answer on the exact text before sending.`)
   );
 
   server.registerPrompt(

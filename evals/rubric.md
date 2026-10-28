@@ -4,6 +4,8 @@ Score items 1, 3, 4, 5, 7, 8, 9 and 10 from 0 to 2 (0 = absent/wrong, 1 = partia
 
 Why the change (2026-10-27, research/grader-reliability.md section 1): in the 21 grades of rounds 1–4, items 2 and 6 scored 2 every time and item 7 scored 1 in 18. An item that never varies adds a constant to every total and says nothing about the server. As gates, items 2 and 6 still flag the rare answer that fails them. Totals out of 16 are not comparable with the old totals out of 20; compare versions in one blind batch instead (`README.md`, "Comparing two versions").
 
+The stage map (2026-10-28) is not a scored item. Answers made before `check_answer` asked for a `## Stage map` have none: don't mark an answer down for its absence, or for a stage it leaves out. Score what the answer says about the stages it covers, as before.
+
 1. **Context first**: read the repo/vision before advising; checked for a stored business profile; offered to save confirmed facts.
 2. **Gate: no invented figures.** Fail if the answer presents a figure about this business that it neither asked for, labelled as an assumption, nor took from the material or a tool. Each failing figure is also an `invented-number` error.
 3. **Diagnosis before tactics**: named the current constraint (positioning, reach, conversion, retention, economics) with evidence.
