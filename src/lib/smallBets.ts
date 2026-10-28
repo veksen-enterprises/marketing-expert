@@ -81,6 +81,8 @@ export interface Bet {
   tries?: number;
   /** Only for businesses whose saved category or product matches `words`; `label` names them in reasons. */
   onlyFor?: { words: RegExp; label: string };
+  /** Listed first in fitsNow for this surface, whatever its score, with `why` in the reason: other bets depend on it. */
+  firstFor?: { surface: Surface; why: string };
   /** Notes added to the fit reason when the saved category or product matches (a store rule for that kind of app). */
   notes?: Array<{ match: RegExp; note: string }>;
   cost: string;
@@ -138,9 +140,12 @@ export function readStage(f: SmallBetsFacts): StageReading {
   if (users >= STAGE2_USERS || visits >= STAGE2_VISITS) return { stage: 2, basis: `${users} active users, ${visits} monthly visits${as}` };
   if (f.surfaces?.includes("service") && paying >= SERVICE_STAGE2_CLIENTS) return { stage: 2, basis: `${paying} paying clients of a service${as}` };
   if (users > 0 || paying > 0) return { stage: 1, basis: `${users} active users, ${paying} paying${as}` };
-  return { stage: 0, basis: `no active users yet${as}` };
+  return { stage: 0, basis: f.surfaces?.includes("service") ? `no paying clients yet${as}` : `no active users yet${as}` };
 }
 
+// A service counts clients, not users; stages 2 and 3 already name both.
+const SERVICE_LABEL: Partial<Record<Stage, string>> = { 0: "no paying clients yet", 1: "first paying clients" };
+const stageLabel = (s: Stage, f: SmallBetsFacts) => (f.surfaces?.includes("service") && SERVICE_LABEL[s]) || STAGE_LABEL[s];
 const STAGE_LABEL: Record<Stage, string> = { 0: "no users yet", 1: "first users", 2: "steady use (around 100 active users or 2,000 monthly visits; for a service, about 20 paying clients)", 3: "a newsworthy story or numbers" };
 
 export interface Verdict {
@@ -182,7 +187,7 @@ export interface MatchResult {
 }
 
 export const HOW_TO_REPORT =
-  "Show only fitsNow, in score order (what it can do if it works, evidence, effort; a rule of thumb), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them. Before proposing a bet, check it against checkAgainst, the business's own principles; drop any it would break.";
+  "Show only fitsNow, in the order given (score order: what it can do if it works, evidence, effort, a rule of thumb; a bet whose reason says do this first leads), as small bets separate from the moves; each with its first test, how to measure it and when to stop. For a lopsided bet, say to run all its tries and judge by the best one. Mention a fitsLater bet in one line only if its blocker is close. List doesntFit only if the user asks or proposed that bet. Say the assumptions in one line so the user can correct them. Before proposing a bet, check it against checkAgainst, the business's own principles; drop any it would break.";
 
 // Ranking weights, a rule of thumb: what a bet can do if it works, discounted a little for weak evidence and by the
 // square root of its effort, so a 1-hour bet doesn't beat everything just for being quick.
@@ -346,12 +351,12 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (b.dataSkipsStage && a.data) need = 0;
     if (b.budgetSkipsStage !== undefined && budget >= b.budgetSkipsStage) need = 0;
     if (b.seasonSkipsStage && a.season) need = 0;
-    if (stage.stage < need) blockers.push(`needs ${STAGE_LABEL[need]}; now ${STAGE_LABEL[stage.stage]}`);
+    if (stage.stage < need) blockers.push(`needs ${stageLabel(need, f)}; now ${stageLabel(stage.stage, f)}`);
     const n = b.needs ?? {};
     if (n.data && !a.data) blockers.push("needs data you hold that nobody else has published");
     if (n.expertise && !a.expertise) blockers.push("needs expertise or a method to show (not in the profile)");
     if (n.founderAudience && !a.founderAudience) blockers.push("needs a founder audience where the buyers are");
-    if (n.accounts && !a.accounts) blockers.push("needs a way to reach each user (accounts or emails)");
+    if (n.accounts && !a.accounts) blockers.push(f.surfaces?.includes("service") ? "needs a way to reach each client (emails or messages)" : "needs a way to reach each user (accounts or emails)");
     if (n.revenue && f.revenue !== "live") blockers.push("needs something to sell now");
     if (n.budget && budget < n.budget) blockers.push(`needs about $${n.budget} a month`);
     if (n.newsworthy && !a.newsworthy) blockers.push("needs a story others would retell");
@@ -370,6 +375,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     fitsNow.push({
       ...base(b),
       reason:
+        (first(b, f) ? `${b.firstFor!.why}; ` : "") +
         fitReason(b, f, stage.stage) +
         (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : "") +
         (relaunch ? `; ${RELAUNCH_NOTE(relaunch)}` : "") +
@@ -388,7 +394,8 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
       playbookSection: b.section,
     });
   }
-  fitsNow.sort((x, y) => y.score! - x.score!);
+  const isFirst = (v: Verdict) => first(bets.find((b) => b.id === v.id)!, f);
+  fitsNow.sort((x, y) => Number(isFirst(y)) - Number(isFirst(x)) || y.score! - x.score!);
   const marketLaw = marketLawPointers(f.markets);
   if (!f.markets?.length) assumptions.push("Markets not saved (where the business operates); legal notes can't name the rules that apply. Save markets, e.g. Quebec, Turkey.");
   for (const v of fitsNow) {
@@ -415,12 +422,16 @@ function launchedOn(channels: Channel[] = []): string | undefined {
 const RELAUNCH_NOTE = (site: string) =>
   `you already launched on ${site}. Launching there again needs real news: Product Hunt asks for two months and a significant update; Show HN asks for a much changed version. Try a site you haven't used`;
 
+function first(b: Bet, f: SmallBetsFacts): boolean {
+  return !!b.firstFor && !!f.surfaces?.includes(b.firstFor.surface);
+}
+
 function fitReason(b: Bet, f: SmallBetsFacts, stage: Stage): string {
   const parts: string[] = [];
   if (b.dataSkipsStage && f.assets?.data && b.stage > stage) parts.push(`your data (${f.assets.data}) stands in for users`);
   else if (b.seasonSkipsStage && f.assets?.season && b.stage > stage) parts.push(`your season (${f.assets.season}) sets the timing`);
   else if (b.budgetSkipsStage !== undefined && (f.assets?.monthlyBudget ?? 0) >= b.budgetSkipsStage && b.stage > stage) parts.push("budget buys the reach users would bring; check the product keeps people first");
-  else parts.push(b.stage === 0 ? "works with no users" : `works at your stage (${STAGE_LABEL[stage]})`);
+  else parts.push(b.stage === 0 ? (f.surfaces?.includes("service") ? "works with no clients" : "works with no users") : `works at your stage (${stageLabel(stage, f)})`);
   if (b.needs?.expertise) parts.push("uses your expertise");
   if (b.needs?.data) parts.push("uses your data");
   if (b.needs?.founderAudience) parts.push("uses the founder's audience");

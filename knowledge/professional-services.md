@@ -1,7 +1,7 @@
 ---
 title: Professional services marketing (agencies, consultancies, freelancers, B2B firms)
 summary: Marketing for firms that sell expertise and time (agencies, consultancies, freelancers, B2B accountants and law firms); positioning by specialization, systematic referrals, visible expertise, productized services, value vs hourly pricing and retainers, proposals without free pitching, partnerships, case studies, utilization and pipeline math, and what works from solo to scaling firm.
-tags: professional services, agency, consultancy, consulting, freelancer, freelance, accountant, accounting firm, law firm, lawyer, specialization, niche, positioning, referrals, word of mouth, thought leadership, expertise, productized service, value pricing, value-based pricing, hourly billing, billable hour, retainer, proposal, pitch, spec work, free pitching, win without pitching, case study, utilization, billable utilization, pipeline, hinge
+tags: professional services, agency, consultancy, consulting, freelancer, freelance, accountant, accounting firm, law firm, lawyer, specialization, niche, positioning, referrals, word of mouth, thought leadership, expertise, productized service, value pricing, value-based pricing, hourly billing, billable hour, retainer, proposal, pitch, spec work, free pitching, win without pitching, case study, utilization, billable utilization, pipeline, hinge, first clients, first client, solo, practitioner, dietitian, nutritionist, coach, therapist, designer, networking, meetups, coworking, bio, profile, freelance platform, upwork, fiverr, malt
 ---
 
 Use this playbook when the product is people's expertise and time: agencies, consultancies, freelancers, and accounting or law firms that sell to businesses or serve clients outside one town. For businesses that serve a local area (a family lawyer, a neighbourhood accountant), see local-services and local-seo. For selling a software product with a sales team, see b2b-saas-sales-led.
@@ -110,6 +110,16 @@ _In short:_ Utilization (the share of available hours that are billed) guides hi
 _In short:_ A vendor study links high growth to certain practices, but it is self-reported and correlational. Treat its lists as ideas, not proven causes.
 
 - Hinge's High Growth Study 2024 (824 firms) defines high growth as ≥20% compound annual growth over three years and says these firms grow "4X faster" and are "almost 2X as profitable" [vendor]. The data is correlational and self-reported; treat its lists of "what high-growth firms do" as ideas, not causes.
+
+## First clients when you work alone
+
+_In short:_ Make every profile say what you sell, tell the people who already know your work one by one, keep going back to the same group of people without pitching, and for business clients try one freelance platform. Run match_small_bets for the order, costs and stop lines.
+
+- **Every profile says what you sell.** People can't pass on work they don't know you do. One line and one tagged link in each bio people already see. [anecdote]
+- **Tell people who already know your work**, including people you haven't spoken to in years, one by one, with one offer and a request for one introduction. Most freelancer surveys name word of mouth as the top source of work. [vendor; clients in general, not first clients]
+- **Meet people without selling, and go back** (coworking, meetups, networking events, clubs). Referrals in the one large experiment came from a group that met every month for a year, almost never from a single meeting. [research; RCT, 2,800 young firms; China; not solo] Judge it over 6–12 months on introductions.
+- **One freelance platform, for business clients.** About 10% of newcomers without an agency found any job on one platform; those hired sent a median of 10 applications. [research; one platform, 2008–09]
+- **Regulated professions** (dietitians, therapists, lawyers): check your code before posting results or testimonials, comparing yourself with others, or joining a paid referral group; see **marketing-law-by-market**.
 
 ## What usually works by stage
 
