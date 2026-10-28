@@ -239,3 +239,50 @@ Learn more: positioning, first customers.`;
     expect(r.problems).toEqual([]);
   });
 });
+
+// Improvement doc avenue 6 (2026-10-28): a Spanish answer got no move issues with its stop line deleted, and was told
+// its falsifier and open questions were missing though both were there. The checks match English words; they now
+// say so instead of passing the answer or reporting parts missing.
+describe("checks that match English words say when they didn't run", () => {
+  const spanish = `## Diagnóstico
+
+Tu consulta tiene clientes, pero nadie fuera de tu círculo sabe que existe. El problema no es el precio.
+
+## Movimientos
+
+1. **Escribe a 20 colegas que derivan pacientes.** Mecanismo: un colega que te conoce manda pacientes. Prueba más barata: cinco mensajes esta semana. Métrica: respuestas. Plazo: 3 semanas.
+
+## Qué demostraría que me equivoco
+
+Si menos de 2 de 20 colegas responden, el problema no es que no te conozcan.
+
+## Preguntas abiertas
+
+¿Cuántos pacientes nuevos tuviste en los últimos 28 días? ¿Quieres que guarde estos datos en tu perfil?`;
+  it("a Spanish answer: no parts reported missing, no move issues, and a line saying why", () => {
+    const r = checkAnswer(spanish, undefined, "answer", { stageMap: false });
+    expect(r.missingParts).toEqual([]);
+    expect(r.moveIssues).toEqual([]);
+    expect(r.problems.join(" ")).not.toMatch(/Not found/);
+    expect(r.notChecked.join(" ")).toMatch(/doesn't look like English.*moves, the parts the instructions ask for.*did not run/);
+    expect(r.notChecked.join(" ")).toMatch(/Checked: word count, evidence labels/);
+  });
+  it("tells Portuguese and French from English, and English with tables and terms from both", async () => {
+    const { englishShare } = await import("../src/lib/answerCheck.js");
+    const pt = "Seu consultório tem clientes, mas ninguém fora do seu círculo sabe que você existe. O problema não é o preço. Escreva para vinte colegas que encaminham pacientes, e peça a cada um que indique o seu trabalho a quem precisa. Se menos de dois responderem em três semanas, o problema não é que não conhecem você. Quantos pacientes novos você teve nos últimos 28 dias? Quer que eu salve esses dados no seu perfil?";
+    const fr = "Votre cabinet a des clients, mais personne en dehors de votre cercle ne sait que vous existez. On ne règle pas ça par le prix. Écrivez à vingt confrères qui orientent des patients, et demandez à chacun de vous recommander. Si moins de deux répondent en trois semaines, le problème ne vient pas de la notoriété. Combien de nouveaux patients avez-vous eu ces 28 derniers jours? Voulez-vous que je garde ces données dans votre profil?";
+    expect(englishShare(pt)).toBeLessThan(0.08);
+    expect(englishShare(fr)).toBeLessThan(0.08);
+    expect(englishShare(spanish)).toBeLessThan(0.08);
+    const en = "| Stage | Status |\n|---|---|\n| SEO | fine |\n\nThe site is fine; the problem is reach. Write to the ten people who use it and ask how they found it, then compare their answers with what the homepage says. If fewer than 2 of 10 reply, the problem is not reach but the offer itself, and that would change which move comes first.";
+    expect(englishShare(en)).toBeGreaterThan(0.15);
+  });
+  it("an English answer whose moves aren't found says the move check didn't run", () => {
+    const r = checkAnswer("## Diagnosis\n\nThe site is fine; the problem is reach.\n\n## What to do\n\nWrite to the ten people who use it and ask how they found it.\n\n## Risks\n\nIt might not work. What would prove me wrong: fewer than 2 of 10 reply.", undefined, "answer", { stageMap: false });
+    expect(r.notChecked.join(" ")).toMatch(/No moves found/);
+  });
+  it("says nothing when the answer is English and its moves are found", () => {
+    const r = checkAnswer("## Moves\n\n1. **Interview 5 users.** Mechanism: x. Cheapest test: 5 calls. Metric: replies. Time box: 2 weeks. Stop: fewer than 3 of 5 reply.\n\n## Risks\n\nNone.\n\n## Open questions\n\nHow many pay?", undefined, "answer", { stageMap: false });
+    expect(r.notChecked).toEqual([]);
+  });
+});
