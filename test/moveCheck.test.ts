@@ -173,6 +173,23 @@ describe("lintMoves stop thresholds", () => {
     expect(move("if fewer than 10% of launch signups reach a first CI run, fix onboarding.", "the first 40 signups")).toBe("");
   });
 
+  it("counts only a number of the rate's own units elsewhere in the move", () => {
+    // v3/devtool-strategy.md move 3: "10M rows" in the post's example title passed as the count of signups.
+    expect(move("if fewer than 10% of launch signups reach a CI comment, go back to Move 2.", 'a write-up titled "queries that degrade at 10M rows"')).toMatch(/rate with no count \("10%"\)/);
+    expect(move("if fewer than 30% of watches fire, stop.", "ask 3 moderators")).toMatch(/rate with no count/);
+    // A count of the same thing, in another word form, still counts.
+    expect(move("if fewer than half the testers can say what it does, change the headline.", "a 5-second test with 8 target testers")).toBe("");
+    expect(move("if fewer than 20% of signups activate, fix onboarding.", "wait for 30 new signup emails")).toBe("");
+    expect(move("if fewer than 25% of people who see the page sign up, rewrite it.", "show it to 40 people")).toBe("");
+    // 2026-10-28 real-case runs: a count of n in the stop line, and "them" pointing back into it, count.
+    expect(move("fewer than 2 in 20. Then the agent threat is bigger than I think.")).toBe("");
+    expect(move('fewer than 2 of 5 teams fix any finding ("about half accepted 15%").')).toBe("");
+    expect(move("if fewer than 15 watches are created, or fewer than 40% of them fire within 14 days, put this on hold.")).toBe("");
+    expect(move("fewer than 25 sign-ins, or more than half of the new watches with failed DMs.")).toMatch(/rate with no count \("half"\)/);
+    // A rate that doesn't say what it counts keeps the old rule: any count in the move.
+    expect(move("below 50% after two rewrites of the descriptions.", "6 tasks × 2 agents")).toBe("");
+  });
+
   it("passes the stop lines that give a threshold", () => {
     for (const stop of [
       "if fewer than 3 of 10 still run it after 30 days, fix the product or the target user before going public.", // v3/devtool-site.md

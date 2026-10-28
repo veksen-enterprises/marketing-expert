@@ -53,6 +53,8 @@ const MONEY = /[$€£]\s?\d[\d,.]*k?|\b\d[\d,.]*\s?(?:usd|eur|dollars?)\b/gi;
 // "Activation hasn't moved", "no rise above your baseline": a before/after comparison.
 const NO_CHANGE = /\b(no (?:change|movement|rise|lift|increase|improvement)|(?:has|have)n'?t (?:moved|changed|risen|improved|gone up)|(?:does|do)n'?t (?:move|change|rise|improve|go up)|flat|unchanged)\b/i;
 const RATE = new RegExp(`\\d+(?:\\.\\d+)?\\s?%|\\b(?:half|a third|a quarter)\\b|\\b(?:\\d+|one) in ${N}\\b`, "i");
+// "2 of 5", "2 in 20", "0 out of 10": a count of n, which needs no other count.
+const SHARE_OF_COUNT = new RegExp(`\\b\\d+\\s+(?:of|in|out of)\\s+(?:the\\s+)?(?:first\\s+)?\\d+\\b`, "i");
 const RATE_OF_COUNT = new RegExp(`(?:\\d\\s?%|\\bhalf|\\ba third|\\ba quarter|\\bin ${N})\\s+of\\s+(?:the\\s+)?(?:first\\s+)?${N}\\b`, "i");
 
 const noDurations = (s: string) => s.replace(DURATION, " ").replace(MONEY, " ");
@@ -68,8 +70,38 @@ const noBaseline = (stop: string) =>
   stop.split(/(?<=[.!?;])\s+/).find((s) => NO_CHANGE.test(s) && !HAS_NUMBER.test(noDurations(s)));
 /** A count anywhere in the move, outside durations, money, shares and move numbers: "show it to 8 testers". */
 const COUNT = new RegExp(`\\d|\\b(?:${NUMBER_WORDS.join("|")})\\b`, "i");
-const hasCount = (block: string) =>
-  COUNT.test(noDurations(block).replace(new RegExp(RATE.source, "gi"), " ").replace(/^\s*(?:#{1,6}\s*|\*\*)?(?:move\s+)?\d+[.):]?/i, " ").replace(/\bmove\s+\d+\b/gi, " "));
+const withoutShares = (block: string) =>
+  noDurations(block).replace(new RegExp(RATE.source, "gi"), " ").replace(/^\s*(?:#{1,6}\s*|\*\*)?(?:move\s+)?\d+[.):]?/i, " ").replace(/\bmove\s+\d+\b/gi, " ");
+const hasCount = (block: string) => COUNT.test(withoutShares(block));
+// Words between a rate and the thing it counts: "10% of the first signups", "half of your testers".
+const RATE_LEAD = /^(?:of|the|your|our|all|new|first|those|these)$/i;
+const PRONOUN = /^(?:them|they|those|these|it|which)$/i;
+/**
+ * What a rate counts, when the stop line says it with "of" (or "half the"): "10% of launch signups reach" gives
+ * launch, signups. "them" points back into the stop line itself. Null when the stop line doesn't say ("below 50%",
+ * "rise less than 30%").
+ */
+function rateUnits(stop: string, rate: RegExpExecArray): string[] | "pronoun" | null {
+  const after = stop.slice(rate.index + rate[0].length);
+  if (!/^\s+(?:of\b|the\b)/i.test(after)) return null;
+  const words = after.split(/[^\p{L}-]+/u).filter(Boolean);
+  const start = words.findIndex((w) => !RATE_LEAD.test(w));
+  if (start === -1) return null;
+  if (PRONOUN.test(words[start])) return "pronoun";
+  const units = words.slice(start, start + 2).filter((w) => w.length >= 3);
+  return units.length ? units : null;
+}
+/**
+ * A count of the rate's own units elsewhere in the move: a number, up to two words, then a word sharing the unit's
+ * stem ("8 target testers" for "half the testers"). Until 2026-10 any number counted, so "10M rows" in a post title
+ * passed as the count of signups (v3/devtool-strategy.md). A rate that doesn't say what it counts falls back to any count.
+ */
+function hasCountOf(block: string, units: string[] | null): boolean {
+  if (!units) return hasCount(block);
+  const stems = units.map((u) => u.toLowerCase().replace(/(?:ies|es|s)$/, "")).filter((st) => st.length >= 3);
+  const unit = new RegExp(`(?:^|[^\\p{L}\\p{N}])(?:\\d[\\d,]*|${NUMBER_WORDS.join("|")})\\s+(?:[\\p{L}-]+\\s+){0,2}?(?:${stems.map((st) => st.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "iu");
+  return unit.test(withoutShares(block));
+}
 // Verbs that start a piece of work. Two of them joined by "and" or ";" in one action is two moves, but not inside
 // "who build and ship". The gap is bounded: an unbounded lazy scan grew with the square of the action's length.
 const VERBS = "add|build|post|ship|write|ask|list|run|fix|offer|publish|pin|help|rewrite|make|create|launch|send|remove|change|interview|record|register|connect|update";
@@ -102,6 +134,14 @@ function fieldsOf(block: string): Map<string, string> {
     if (!out.has(f.key)) out.set(f.key, block.slice(f.end, stopAt).replace(/^[\s*_]+|[\s*_]+$/g, ""));
   });
   return out;
+}
+
+/** Whether a stop line's rate comes with a count: of n in the stop line, or a count of its units elsewhere in the move. */
+function rateCounted(stop: string, block: string, rate: RegExpExecArray): boolean {
+  // "2 of 5 teams" is a count of n. "fewer than 15 watches, or fewer than 40% of them": the count is in the stop line.
+  if (SHARE_OF_COUNT.test(stop)) return true;
+  const units = rateUnits(stop, rate);
+  return units === "pronoun" ? hasCount(stop.replace(rate[0], " ")) : hasCountOf(block.replace(stop, " "), units);
 }
 
 const HEADING = /^#{1,6}\s/;
@@ -218,7 +258,7 @@ export function lintMoves(text: string): MoveLint {
         issues.push(`${label}: the stop line has no number ("${snip(stop)}")${why}. Say the result that means drop or change it as a number ("fewer than 5 of 20 agree").`);
       } else {
         const rate = RATE.exec(stop);
-        if (rate && !RATE_OF_COUNT.test(stop) && !hasCount(block.replace(stop, " ")))
+        if (rate && !RATE_OF_COUNT.test(stop) && !rateCounted(stop, block, rate))
           issues.push(`${label}: the stop line gives a rate with no count ("${snip(rate[0])}"). Say how many it is out of ("fewer than 3 of 30 signups"), or the count you'll wait for before judging.`);
       }
     }
