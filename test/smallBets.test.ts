@@ -325,6 +325,43 @@ describe("solo service profiles", () => {
     expect(v.stop).toMatch(/6 months/);
     expect(v.judgeAfter).toMatch(/months/);
   });
+  // Round 6 (#160–#163): referrals came from repeat meetings in one group; at mixers people talk to who they know.
+  it("tells a service to keep going back to the same group, over a year, and to meet people it doesn't know", () => {
+    const v = find(matchSmallBets(designer).fitsNow, "build-a-network")!;
+    expect(v.judgeAfter).toMatch(/12 months/);
+    expect(v.what).toMatch(/same group/);
+    expect(v.what).toMatch(/don't already know/);
+    expect(v.stop).toMatch(/6 months/);
+    expect(v.stop).toMatch(/12 months/);
+    expect(find(matchSmallBets(designer).fitsNow, "warm-network")!.what).toMatch(/haven't spoken to in years/);
+  });
+  // Review of round 5 against the two real cases: these were planned in the round 5 result and not yet true.
+  it("puts say-what-you-sell first for a service, ahead of higher-scoring bets", () => {
+    for (const p of [dietitian, designer]) {
+      const r = matchSmallBets(p);
+      expect(r.fitsNow[0].id).toBe("say-what-you-sell");
+      expect(r.fitsNow[0].reason).toMatch(/first/);
+    }
+    expect(matchSmallBets(saas).fitsNow[0]?.id).not.toBe("say-what-you-sell");
+  });
+  it("offers a freelance platform to a service selling to businesses, not to consumers or products", () => {
+    const v = find(matchSmallBets({ ...designer, avoid: ["moving-users-off-platform"] }).fitsNow, "freelance-platform")!;
+    expect(v).toBeDefined();
+    expect(v.stop).toMatch(/two years/);
+    expect(ids(matchSmallBets(dietitian).doesntFit)).toContain("freelance-platform");
+    expect(ids(matchSmallBets(saas).doesntFit)).toContain("freelance-platform");
+  });
+  it("keeps product-only bets away from a service, and talks about clients, not users", () => {
+    const r = matchSmallBets(designer);
+    expect(ids(r.doesntFit)).toEqual(expect.arrayContaining(["error-pages", "hiring-post", "perk-programmes", "lifetime-deal"]));
+    expect(r.stage.basis).toMatch(/no paying clients/);
+    expect(r.fitsLater.map((v) => v.reason).join(" ")).not.toMatch(/no users yet|first users/);
+    expect(ids(matchSmallBets(saas).doesntFit)).not.toContain("error-pages");
+  });
+  it("warns a regulated profession to check its code before joining a referral group", () => {
+    expect(find(matchSmallBets(dietitian).fitsNow, "build-a-network")!.reason).toMatch(/referral group/);
+    expect(find(matchSmallBets(designer).fitsNow, "build-a-network")!.reason).not.toMatch(/referral group/);
+  });
   it("keeps the warm-network bet when the profile rules out cold outreach", () => {
     const r = matchSmallBets({ ...dietitian, avoid: ["cold-outreach"] });
     expect(ids(r.fitsNow)).toContain("warm-network");

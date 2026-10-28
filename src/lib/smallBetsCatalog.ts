@@ -2,7 +2,7 @@
 // Stage: 0 no users, 1 first users, 2 steady use, 3 newsworthy. Stages, minimums and stop signals are the notes'
 // judgment calls unless a platform sets them. Order within a stage: cheapest first.
 
-import type { Bet } from "./smallBets.js";
+import type { Bet, Surface } from "./smallBets.js";
 
 const S0 = "Stage 0: no users yet";
 const S1 = "Stage 1: the first users";
@@ -13,6 +13,8 @@ const S3 = "Stage 3: something newsworthy";
 // with other practitioners and price promotions. Ontario's dietitians' college bans asking for testimonials or
 // reviews; Brazil's nutritionists' code bans before-and-after images; Quebec bans only false testimonials
 // (research/regulated-health-pro-advertising.md, research/brazil-nutritionist-advertising.md).
+// Bets that need something other than one person's time to try, install or list.
+const PRODUCT: Surface[] = ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical"];
 const REGULATED = /\b(dieti[ct]ians?|nutritionists?|nutricionistas?|nutritionnistes?|di[ée]t[ée]tistes?|physio\w*|physical therap\w*|psycholog\w*|psychotherap\w*|therapists?|counsell?ors?|chiropract\w*|dentists?|doctors?|physicians?|nurses?|pharmacists?|optometrists?|lawyers?|attorneys?|notar\w*)\b/i;
 const REGULATED_NOTE = (what: string) => ({
   match: REGULATED,
@@ -33,6 +35,9 @@ export const BETS: Bet[] = [
     measure: "Visits per tagged profile link; 'how did you hear about us' answers",
     stop: "None: keep it. Rewrite the line if a month of profile visits brings no enquiry.",
     evidence: "anecdote",
+    // First for a service, whatever its score: the network bets send people to these profiles (owner's red input:
+    // a friend didn't know the person was a dietitian until told).
+    firstFor: { surface: "service", why: "do this first: the other bets send people to these profiles, and people can't pass on work they don't know you do" },
     section: S0,
   },
   {
@@ -41,15 +46,22 @@ export const BETS: Bet[] = [
     // Steady: people who know you pass your name on for years. A judgment call, as for every ceiling.
     ceiling: "steady",
     name: "Meet people and stay in touch, without selling",
-    what: "Go where interesting people are (coworking and community events, meetups, classes, clubs), be curious about their work, help where you can, and stay in touch every few months. Work comes later through who they know and who they work with.",
+    what: "Go where interesting people are (coworking and community events, meetups, classes, clubs), talk to people you don't already know, be curious about their work and help where you can. Prefer small sessions with a set format over open mixers, then pick one group and go back to the same group every month. Work comes later through who they know and who they work with.",
     stage: 0,
     cost: "Free to low; an evening or two a week",
-    judgeAfter: "3–6 months",
+    judgeAfter: "6–12 months",
     measure: "Introductions, people who pass your name on, enquiries that say who sent them",
-    stop: "After 6 months, if nobody you met has introduced you or asked about your work, change where you go. Don't start pitching: that ends what makes it work.",
+    stop: "At 6 months, if you are still meeting only new people, pick one group and go monthly. After 12 months in one group with no introduction or question about your work, change groups. Don't start pitching: that ends what makes it work.",
     // research/solo-first-clients.md §6: a 5-year field experiment on LinkedIn (20M+ users) found moderately weak
     // ties carried the most job moves. Jobs, not clients, and one platform.
+    // research/business-meetings-experiments.md: in an RCT of 2,800 young Chinese firms, monthly meetings in a fixed
+    // group for a year raised revenue 8.1%, still there a year later; a one-off meeting gave almost no referrers and a fifth of
+    // the partners. Not solo, not a rich country. research/coworking-and-meetups.md: at a mixer about half of
+    // encounters were with people already known; small structured sessions did better. No room ranks above another.
     evidence: "some",
+    // research/referral-groups.md: paid referral groups (BNI and similar) report outcomes only through vendor
+    // surveys, and some health codes bar paying for or promising referrals.
+    notes: [{ match: REGULATED, note: "regulated profession: check your regulator's code before joining a paid referral group. Some codes bar giving or receiving any benefit for a referral (Quebec dietitians' code, art. 60), and what members get is known only from the groups' own surveys" }],
     section: S0,
   },
   {
@@ -59,7 +71,7 @@ export const BETS: Bet[] = [
     // Steady: introductions lead to more introductions. A judgment call, as for every ceiling.
     ceiling: "steady",
     name: "Tell people who already know your work, one by one",
-    what: "Write one to one to former colleagues, classmates, past employers and friends with one specific offer, and ask each for one introduction to someone who has the problem.",
+    what: "Write one to one to former colleagues, classmates, past employers and friends, including people you haven't spoken to in years, with one specific offer, and ask each for one introduction to someone who has the problem.",
     stage: 0,
     // Only for one person selling their own time: four of five vendor surveys name word of mouth or the personal
     // network as freelancers' top source of work, none asks about the first client (research/solo-first-clients.md).
@@ -68,6 +80,25 @@ export const BETS: Bet[] = [
     judgeAfter: "30 people told",
     measure: "Introductions, calls and paid clients per person told",
     stop: "About 30 people told with no paid client or introduction after 6 weeks: change the offer, not the list (a rule of thumb).",
+    evidence: "some",
+    section: S0,
+  },
+  {
+    id: "freelance-platform",
+    effortHours: 15,
+    // Capped: platform jobs are small and the platform keeps the client.
+    ceiling: "capped",
+    name: "Win a first paid job on a freelance platform",
+    what: "Make a profile on one freelance platform (Upwork, Malt, Fiverr, Contra) and send short proposals to small jobs that fit, to earn a first rating and a first case.",
+    stage: 0,
+    audiences: ["businesses"],
+    surfaces: ["service"],
+    cost: "Free to join. Upwork: Connects at $0.15 each, 10 free a month, and 0–15% of each payment; Fiverr 20%; Malt 10%, then 5% after six months, and only in the countries it has opened; Contra no commission. Payouts from abroad usually go through Payoneer, PayPal or a local bank in local currency: check the fees for your country.",
+    judgeAfter: "20 proposals or 6 weeks",
+    measure: "Replies, interviews and paid jobs per proposal sent",
+    stop: "20 proposals to jobs that fit with no interview: change the profile and proposals once, then stop (a judgment call, twice the median for hired newcomers in one study). Don't move clients off the platform: Upwork charges 13.5% of a year's pay if you do within two years, and Fiverr suspends accounts.",
+    // research/freelance-platforms-first-clients.md: on oDesk, 10% of non-agency newcomers found any job; those hired
+    // sent a median of 10 applications; a first rated job raised later hiring. One platform, 2008–09.
     evidence: "some",
     section: S0,
   },
@@ -136,6 +167,7 @@ export const BETS: Bet[] = [
     what: "A page titled with the exact error text, explaining the cause and the fix.",
     stage: 0,
     needs: { expertise: true },
+    surfaces: PRODUCT,
     audiences: ["developers", "businesses"],
     cost: "1–2 hours per page",
     judgeAfter: "About 3 months in Search Console",
@@ -526,7 +558,7 @@ export const BETS: Bet[] = [
     stage: 0,
     launch: "after",
     // A product people can try; a person selling their own time has nothing to post here.
-    surfaces: ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical"],
+    surfaces: PRODUCT,
     cost: "Mostly free; 1–2 days of preparation and a day of replies per post",
     judgeAfter: "1 week after the second post",
     measure: "Votes and comments per post; sign-ups through a tagged link; retained users a month later",
@@ -559,7 +591,7 @@ export const BETS: Bet[] = [
     stage: 0,
     launch: "after",
     // A product people can try; a person selling their own time has nothing to post here.
-    surfaces: ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical"],
+    surfaces: PRODUCT,
     cost: "Free; minutes each",
     judgeAfter: "Per issue",
     measure: "Tagged clicks and sign-ups per mention",
@@ -667,6 +699,7 @@ export const BETS: Bet[] = [
     name: "A hiring post that explains the product",
     what: "A post in a hiring thread (for example HN's monthly 'Who is hiring') that describes what you build. Only with a real open role.",
     stage: 1,
+    surfaces: PRODUCT,
     audiences: ["developers", "businesses"],
     cost: "Free; an hour",
     judgeAfter: "1 month",
@@ -811,6 +844,7 @@ export const BETS: Bet[] = [
     name: "Startup and student perk listings",
     what: "Offer credits or a free tier through startup perk catalogues and student developer bundles.",
     stage: 2,
+    surfaces: PRODUCT,
     audiences: ["developers", "businesses"],
     cost: "Hours to apply, plus the cost of the perks",
     judgeAfter: "After the perk period",
@@ -828,6 +862,7 @@ export const BETS: Bet[] = [
     what: "Sell lifetime access for a one-time price. Brings cash and users who expect support forever; often the wrong customers.",
     stage: 2,
     needs: { revenue: true },
+    surfaces: PRODUCT,
     audiences: ["businesses"],
     involves: ["discounts"],
     cost: "Revenue share with the site, plus future support",
