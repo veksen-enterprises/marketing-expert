@@ -7,7 +7,8 @@
 // The server is exported from <ref> into a temp folder without evals/, test/ or .git, so an advisor can't read the
 // grader notes, and built there. Only fictional cases (a fixture folder in evals/cases.md) run: a real case needs
 // the business's own repo, which isn't in this one. Each run lands at <out>/<case>-<n>.md as "## Answer" plus
-// "## Tool log", the shape grade.mjs reads; a run that wrote no answer is listed and left out.
+// "## Tool log", the shape grade.mjs reads; a run that wrote no answer is listed and left out. The profiles a run saved
+// go to <out>/profiles/<case>-<n>/, so a tool's output can be reproduced from what the advisor actually saved.
 import { execFileSync, spawn } from "node:child_process";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -73,6 +74,7 @@ function runOne(caseId, n) {
         const text = `## Answer\n\n${readFileSync(answer, "utf8").trim()}\n\n## Tool log\n\n${existsSync(log) ? readFileSync(log, "utf8").trim() : "(no log written)"}\n`;
         writeFileSync(join(opt.out, `${caseId}-${n}.md`), text);
       }
+      if (existsSync(join(data, "profiles"))) cpSync(join(data, "profiles"), join(opt.out, "profiles", `${caseId}-${n}`), { recursive: true });
       rmSync(work, { recursive: true, force: true });
       done({ file: `${caseId}-${n}.md`, problem });
     });
