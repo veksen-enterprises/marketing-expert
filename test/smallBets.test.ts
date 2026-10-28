@@ -319,6 +319,10 @@ describe("solo service profiles", () => {
     expect(find(r.fitsNow, "listings")!.reason).toMatch(/professional directory|in-person contact/);
     expect(find(matchSmallBets(designer).fitsNow, "listings")!.reason).not.toMatch(/in-person contact/);
   });
+  it("tells a business with no users to show up in person where buyers gather", () => {
+    for (const p of [dietitian, designer, saas]) expect(ids(matchSmallBets(p).fitsNow)).toContain("show-up-in-person");
+    expect(find(matchSmallBets(dietitian).fitsNow, "show-up-in-person")!.stop).toMatch(/events/);
+  });
   it("keeps the warm-network bet when the profile rules out cold outreach", () => {
     const r = matchSmallBets({ ...dietitian, avoid: ["cold-outreach"] });
     expect(ids(r.fitsNow)).toContain("warm-network");
