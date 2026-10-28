@@ -7,6 +7,10 @@ Realistic cases run through the MCP server by an agent playing the AI assistant 
 - `runs/<case>.md`: the assistant's answer plus its tool-call log.
 - `grades/<case>.md`: the grader's scores and the fixes it attributes to the server, with `errors.json` beside it (format in `rubric.md`): each error with the verbatim claim and source, so it can become a failing test. Round 6 had no such file, and its top error class couldn't be reproduced.
 
+## Running the advisor
+
+`node scripts/evals/run.mjs --ref <git ref> --out <runs dir> [--cases a,b] [--runs 3] [--parallel 4]` runs the fictional cases through the server built from that ref: one `claude -p` advisor per run, each in its own temp folder and data directory, allowed only `./mcp` (a wrapper around `scripts/mcp.mjs`) and file tools in that folder. The server copy leaves out `evals/` and `test/`, so an advisor can't read the grader notes. Real cases need the business's repo and still run by hand.
+
 ## Comparing two versions
 
 `scripts/evals/grade.mjs` grades the baseline and the candidate in one batch, so grader drift between rounds hits both equally, and judges the change across cases instead of case by case (research/grader-reliability.md sections 4–5).

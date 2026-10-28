@@ -17,7 +17,7 @@ Their original material:
 | companion-risk | GameX Companion | "Is GameX Companion worth building seriously? What are the big risks, and could it ever make money?" |
 | companion-site | GameX Companion | "Review companion.example for SEO and AI search. What should I fix?" |
 
-## Cases for other business types (fictional, added 2026-10-05)
+## Cases for other business types (fictional, added 2026-10-05; the two solo cases 2026-10-28)
 
 These businesses are invented, so their material can live in the repo: `evals/fixtures/<case>/` (ABOUT.md, NUMBERS.md, sometimes a page). The advisor reads only that folder. What a good answer should notice is in `evals/expectations.md`, for graders only.
 
@@ -29,5 +29,7 @@ These businesses are invented, so their material can live in the repo: `evals/fi
 | marketplace-city | Kitlend (camping gear rental) | kitlend | "Should we launch a third city before next season?" |
 | services-growth | Ledgerline (bookkeeping firm) | ledgerline | "Almost all our clients come from referrals. How do we get clients beyond that?" |
 | follow-up | Rowcount (knitting row counter app) | rowcount | "What should I do next to get more paying users for Rowcount?" |
+| solo-health | Olivo Nutrición (online dietitian, Spain) | olivo-nutricion | "I'm a dietitian working online and I have 4 clients, all friends of friends. How do I get more?" |
+| solo-design | Marea Studio (freelance designer, Mexico) | marea-studio | "I'm a freelance brand designer in Mexico City and I want clients from US and Canadian startups. Where do I start?" |
 
 The follow-up case starts from a saved profile: copy `evals/fixtures/rowcount.profile.json` to `$MARKETING_EXPERT_DATA_DIR/profiles/rowcount.json` before the run, and keep it out of the folder the advisor reads. The profile holds two moves an earlier run set in August 2026, both past their check date with no outcome. NUMBERS.md answers one (the yarn-shop emails hit their stop line); nothing in the material answers the other. Run it with today set to 2026-10-27 or later.

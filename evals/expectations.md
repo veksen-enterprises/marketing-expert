@@ -42,3 +42,19 @@ Graders score with `rubric.md`; these notes say what "specific to this business"
 - Referral sources (accountants, a distributor's rep) can be made systematic: partnerships.
 - The website brings non-restaurant leads: niche positioning on the site.
 - Respects "restaurants only" and the named-bookkeeper principle.
+
+## solo-health (Olivo Nutrición)
+- Demand comes only from people who were told about her (9 of 9 enquiries), and most people who know her haven't been told: her Instagram bio and LinkedIn don't say she takes clients, and 3 of about 25 former colleagues know. Telling the people who already know her, and making every profile say the offer and how to book, comes before new channels.
+- Conversion is not the problem: 7 of 9 enquiries booked, 4 of 7 bought the plan. Capacity is about 20 clients, so she has room for 16 more.
+- Former colleagues (doctors, nurses) are a referral source with a professional reason to refer: a clear note of who she helps, for what.
+- She is a regulated health professional: advertising, testimonials and promises fall under her professional college's code and Spanish health-advertising rules. The playbooks cover Spain's cold-email rules, not health advertising there, so a good answer says what wasn't checked and doesn't invent the rule. Her principles already rule out before-and-after photos and weight-loss promises.
+- Ads, TikTok and free first consultations are weak first moves at 15 hours a week and 4 clients; a booking platform listing is cheap to test with a stop line.
+- Respects her principles: no paid referral groups, no supplements.
+
+## solo-design (Marea Studio)
+- The US work that paid full price all came through one friend's introductions (3 of 6 became projects). That is the working channel; most of his 60-person network doesn't know what he offers. Asking for introductions on purpose, with a one-line offer, comes first.
+- The portfolio shows agency work with no offer, no price and no startup focus, and its traffic is mostly from Mexico; LinkedIn says only "Designer". The offer (brand identity for early-stage software startups, from US$3,500) should be on every profile.
+- Buying a list and cold-emailing 500 US founders: US commercial email is legal with an opt-out and a real address (CAN-SPAM), but a bought list hurts deliverability and reputation; small, researched one-to-one outreach is the better test.
+- Upwork: 2 proposals is too few to judge; the playbooks' stop line is about 20 proposals.
+- Payment fees (about 4%) and invoicing from Mexico are a real cost, but the playbooks don't cover getting paid from abroad, so a good answer flags it as not checked.
+- Respects his principles: no spec work, no contests.
