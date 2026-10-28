@@ -194,3 +194,48 @@ export function shuffle(xs, random) {
   }
   return a;
 }
+
+/**
+ * Side-by-side preference of a candidate over a baseline. `judgements`: one per judge call,
+ * { case, pair, firstShown: "baseline"|"candidate", pick: "baseline"|"candidate"|"tie" }. Each pair is judged in both
+ * orders when it can be; a pair's score is the mean over its judgements (candidate 1, tie 0.5, baseline 0). A case's
+ * score is the mean of its pairs, and the overall figure is the mean of case scores, with a t interval over cases
+ * (cases are the unit, as in pairedComparison). 0.5 is no preference.
+ * Position: how often the first-shown answer won, and how many pairs judged both ways got the same winner both times.
+ */
+export function preferenceSummary(judgements, level = 0.95) {
+  const value = { candidate: 1, tie: 0.5, baseline: 0 };
+  const byPair = new Map();
+  for (const j of judgements) byPair.set(`${j.case}\u0000${j.pair}`, [...(byPair.get(`${j.case}\u0000${j.pair}`) ?? []), j]);
+  const byCase = new Map();
+  let bothOrders = 0;
+  let sameWinner = 0;
+  for (const js of byPair.values()) {
+    const c = js[0].case;
+    byCase.set(c, [...(byCase.get(c) ?? []), mean(js.map((j) => value[j.pick]))]);
+    const orders = new Set(js.map((j) => j.firstShown));
+    if (orders.size === 2) {
+      bothOrders++;
+      if (new Set(js.map((j) => j.pick)).size === 1 && js[0].pick !== "tie") sameWinner++;
+    }
+  }
+  const cases = [...byCase].sort(([a], [b]) => a.localeCompare(b)).map(([id, scores]) => ({ case: id, pairs: scores.length, score: mean(scores) }));
+  const k = cases.length;
+  const m = k ? mean(cases.map((c) => c.score)) : NaN;
+  const se = k >= 2 ? sd(cases.map((c) => c.score)) / Math.sqrt(k) : NaN;
+  const t = k >= 2 ? tQuantile(1 - (1 - level) / 2, k - 1) : NaN;
+  const decided = judgements.filter((j) => j.pick !== "tie");
+  return {
+    cases,
+    k,
+    judgements: judgements.length,
+    counts: { candidate: judgements.filter((j) => j.pick === "candidate").length, baseline: judgements.filter((j) => j.pick === "baseline").length, tie: judgements.length - decided.length },
+    preference: m,
+    se,
+    ci: [m - t * se, m + t * se],
+    level,
+    firstShownWins: decided.length ? decided.filter((j) => j.pick === j.firstShown).length / decided.length : NaN,
+    bothOrders,
+    sameWinner,
+  };
+}

@@ -30,6 +30,21 @@ node scripts/evals/grade.mjs compare --batch <batch>
 
 Batches of real businesses' answers stay outside git unless the owner agrees.
 
+### Side by side
+
+Item scores sat at 14 to 15 of 16 for both versions in the 2026-10-28 batches, real cases and fictional, so a gain has almost no room to show. A side-by-side judgement asks one question with no ceiling: which of two answers would the owner act on.
+
+```bash
+node scripts/evals/grade.mjs pair --baseline <old runs> --candidate <new runs> --out <batch>
+node scripts/evals/grade.mjs judge --batch <batch> --materials devtool-=/home/user/site,companion-=/home/user/gamex-companion
+node scripts/evals/grade.mjs prefer --batch <batch>
+```
+
+- **pair** matches baseline and candidate runs of the same case at random, one of each per pair (extra runs are listed, not judged), hides the round as blind does, and names the files `<case>--<id>-X.md` and `-Y.md`, with X picked at random per pair.
+- **judge** runs one `claude -p` judge per pair and order: each pair is judged twice, once with each version first, as separate calls, because LLM judges favour a position (research/grader-reliability.md section 4). The judge gets both answers, the material, the case's grader notes and the quote and label findings for each answer, and ends with `Verdict: first`, `second` or `tie`. Rerunning retries only judgements with no verdict line.
+- **prefer** scores a pair 1 when the candidate is picked, 0.5 for a tie and 0 for the baseline, averaged over its two orders, then averages pairs within a case and prints the mean over cases with a 95% t interval. 50% is no preference. It also prints how often the first-shown answer won and how many pairs kept their winner when the order flipped: a pair that flips scores about even, so a judge that only follows position shows as no preference, not as a gain.
+- Not checked: whether the judge agrees with the owner. A judge from the advisor's model family may favour its style; check a sample with `--grader-cmd` pointing at another family's judge. Costs 2 calls per pair: 36 for 6 cases × 3 runs.
+
 ## Results
 
 Scores out of 20 (the rubric before 2026-10-27, ten items summed). Round 2 ran after the fixes from round 1's grades. Round-2 graders were stricter on length, evidence labels and plain language, so equal totals hide real changes; read the "Compared with round 1" section of each grade.

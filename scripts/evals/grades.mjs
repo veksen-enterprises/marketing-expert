@@ -259,3 +259,51 @@ export function copyableMaterial(relPath) {
   if (parts.some((p) => NEVER_COPIED_DIRS.has(p) || p === "..")) return false;
   return !SECRET_FILE.test(parts.at(-1));
 }
+
+/**
+ * Plans a side-by-side batch: per case, runs of the two versions matched at random into pairs (as many as the
+ * smaller side has; extra runs are listed in `unpaired`), each pair judged twice, once with each version shown
+ * first, as two separate judge calls. Files are `<case>--<pair id>-<X|Y>.md`; which version is X is random per pair,
+ * and the order a judge sees them in comes from the judgement, so neither the file name nor the position names a version.
+ * `versions`: [baseline, candidate], shaped as in planBatch. Returns files, the key, and unpaired runs.
+ */
+export function planPairs([base, cand], { seed = Date.now() % 2 ** 31, patterns = [] } = {}) {
+  const random = rng(seed);
+  const paths = [base, cand].flatMap((v) => v.paths ?? []);
+  const caseIds = [...new Set([...base.runs, ...cand.runs].map((r) => r.case))].sort();
+  const used = new Set();
+  const newId = () => {
+    for (;;) {
+      const id = Math.floor(random() * 36 ** 6).toString(36).padStart(6, "0");
+      if (!used.has(id)) return used.add(id), id;
+    }
+  };
+  const files = [];
+  const pairs = [];
+  const unpaired = [];
+  for (const c of caseIds) {
+    const b = shuffle(base.runs.filter((r) => r.case === c), random);
+    const k = shuffle(cand.runs.filter((r) => r.case === c), random);
+    const n = Math.min(b.length, k.length);
+    for (const r of [...b.slice(n).map((r) => ({ ...r, version: base.label })), ...k.slice(n).map((r) => ({ ...r, version: cand.label }))]) unpaired.push({ case: c, version: r.version, source: r.file });
+    for (let i = 0; i < n; i++) {
+      const id = newId();
+      const xIsBase = random() < 0.5;
+      const side = (r, v, letter) => {
+        const file = `${c}--${id}-${letter}.md`;
+        files.push({ name: file, text: redact(r.text, { paths, patterns }).text });
+        return { file, version: v, source: r.file, fingerprint: fingerprintStatus(r.text) };
+      };
+      const x = xIsBase ? side(b[i], base.label, "X") : side(k[i], cand.label, "X");
+      const y = xIsBase ? side(k[i], cand.label, "Y") : side(b[i], base.label, "Y");
+      pairs.push({ id, case: c, X: x, Y: y, judgements: [{ id: `${id}-XY`, first: "X" }, { id: `${id}-YX`, first: "Y" }] });
+    }
+  }
+  return { seed, files, pairs, unpaired };
+}
+
+/** The verdict of a side-by-side judgement: the last "Verdict: first|second|tie" line, or null if there is none. */
+export function parseVerdict(text) {
+  const all = [...String(text).matchAll(/^\W*verdict\W*:?\s*\**\s*(first|second|tie)\b/gim)];
+  return all.length ? all.at(-1)[1].toLowerCase() : null;
+}
