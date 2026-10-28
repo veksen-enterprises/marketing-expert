@@ -246,3 +246,16 @@ export function formatToolFindings({ quote, label }) {
     : "Evidence brackets: none found upgraded or missing a qualifier.";
   return `${q}\n${l}\nNot covered by these tools: claims in your own words (a paraphrase outside quotation marks or brackets) that widen who, how many or how sure. Those are yours to check.`;
 }
+
+const NEVER_COPIED_DIRS = new Set([".git", "node_modules", ".ssh", ".aws", ".gnupg", ".docker", ".kube", ".config"]);
+const SECRET_FILE = /^(\.env.*|\.envrc|\.npmrc|\.yarnrc(\.yml)?|\.pypirc|\.netrc|\.pgpass|credentials?(\..*)?|.*\.(pem|key|p12|pfx|jks|keystore)|id_(rsa|dsa|ecdsa|ed25519)(\.pub)?)$/i;
+
+/**
+ * Whether a repo-relative path (from `git ls-files`) may be copied into an advisor's ./material: never anything
+ * under .git, node_modules or a credential folder, never .env* files, package-manager tokens or keys. Pure.
+ */
+export function copyableMaterial(relPath) {
+  const parts = relPath.split(/[\\/]/);
+  if (parts.some((p) => NEVER_COPIED_DIRS.has(p) || p === "..")) return false;
+  return !SECRET_FILE.test(parts.at(-1));
+}

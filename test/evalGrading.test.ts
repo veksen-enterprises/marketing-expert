@@ -9,7 +9,7 @@ import { join } from "node:path";
 // @ts-ignore: plain .mjs scripts, no type declarations
 import { fQuantile, iccOneWay, itemAgreement, pairedComparison, tQuantile, varianceSplit } from "../scripts/evals/stats.mjs";
 // @ts-ignore
-import { answerSection, caseOfRun, errorsOverlap, fingerprintStatus, formatToolFindings, parseGrade, planBatch, redact, toolFindings } from "../scripts/evals/grades.mjs";
+import { answerSection, caseOfRun, copyableMaterial, errorsOverlap, fingerprintStatus, formatToolFindings, parseGrade, planBatch, redact, toolFindings } from "../scripts/evals/grades.mjs";
 
 const script = join(__dirname, "../scripts/evals/grade.mjs");
 
@@ -156,6 +156,15 @@ describe("tool findings for graders (research/llm-citation-checking.md §5)", ()
     expect(text).toMatch(/Quotes: not checked/);
     expect(text).toMatch(/paraphrase/);
     expect(formatToolFindings({ quote: [], label: [] })).toMatch(/Quotes: none found/);
+  });
+});
+
+describe("real-case material for advisor runs", () => {
+  it("copies tracked docs and code, never git internals, dependencies, env or credential files", () => {
+    for (const ok of ["VISION.md", "docs/adr/0011-provisioning-that-returns-a-credential-needs-its-own-scope.md", "apps/blog/src/pricing.tsx", "envoy.md"])
+      expect(copyableMaterial(ok), ok).toBe(true);
+    for (const no of [".env", ".env.example", "apps/app/.env.test", "apps/analyzer/.envrc", ".npmrc", "deploy/server.pem", "certs/tls.key", "credentials.json", ".aws/config", "home/.ssh/id_ed25519", "node_modules/x/index.js", ".git/config", "../outside.md"])
+      expect(copyableMaterial(no), no).toBe(false);
   });
 });
 

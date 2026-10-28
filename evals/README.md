@@ -9,7 +9,7 @@ Realistic cases run through the MCP server by an agent playing the AI assistant 
 
 ## Running the advisor
 
-`node scripts/evals/run.mjs --ref <git ref> --out <runs dir> [--cases a,b] [--runs 3] [--parallel 4]` runs the fictional cases through the server built from that ref: one `claude -p` advisor per run, each in its own temp folder and data directory, allowed only `./mcp` (a wrapper around `scripts/mcp.mjs`) and file tools in that folder. The server copy leaves out `evals/` and `test/`, so an advisor can't read the grader notes. Real cases need the business's repo and still run by hand.
+`node scripts/evals/run.mjs --ref <git ref> --out <runs dir> [--cases a,b] [--runs 3] [--parallel 4]` runs the fictional cases through the server built from that ref: one `claude -p` advisor per run, each in its own temp folder and data directory, allowed only `./mcp` (a wrapper around `scripts/mcp.mjs`) and file tools in that folder. The server copy leaves out `evals/` and `test/`, so an advisor can't read the grader notes. A real case needs `--materials <case or prefix>=<repo dir>`: the repo's tracked files are copied into the run's material folder, without .git, node_modules, .env* or credential files.
 
 ## Comparing two versions
 
