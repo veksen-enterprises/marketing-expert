@@ -9,8 +9,51 @@ const S1 = "Stage 1: the first users";
 const S2 = "Stage 2: steady use";
 const S3 = "Stage 3: something newsworthy";
 
+// Regulated professions (health, law): their regulators often limit testimonials, result images, comparisons
+// with other practitioners and price promotions. Ontario's dietitians' college bans asking for testimonials or
+// reviews; Brazil's nutritionists' code bans before-and-after images; Quebec bans only false testimonials
+// (research/regulated-health-pro-advertising.md, research/brazil-nutritionist-advertising.md).
+const REGULATED = /\b(dieti[ct]ians?|nutritionists?|nutricionistas?|nutritionnistes?|di[ée]t[ée]tistes?|physio\w*|physical therap\w*|psycholog\w*|psychotherap\w*|therapists?|counsell?ors?|chiropract\w*|dentists?|doctors?|physicians?|nurses?|pharmacists?|optometrists?|lawyers?|attorneys?|notar\w*)\b/i;
+const REGULATED_NOTE = (what: string) => ({
+  match: REGULATED,
+  note: `regulated profession: check your regulator's advertising code before ${what}. Many limit testimonials, result or before-and-after images, comparisons with other practitioners and price promotions (Ontario dietitians may not ask for reviews; Brazil's nutritionists may not show before-and-after images)`,
+});
+
 export const BETS: Bet[] = [
   // ── Stage 0 ─────────────────────────────────────────────────────────────
+  {
+    id: "say-what-you-sell",
+    effortHours: 2,
+    ceiling: "capped",
+    name: "Make every profile you already have say what you sell",
+    what: "Put the same one line (what you do, for whom, how to start) and one tagged link in every bio people already see: WhatsApp, Instagram, LinkedIn, Discord, email signature, community profiles.",
+    stage: 0,
+    cost: "Free; an afternoon",
+    judgeAfter: "30 days",
+    measure: "Visits per tagged profile link; 'how did you hear about us' answers",
+    stop: "None: keep it. Rewrite the line if a month of profile visits brings no enquiry.",
+    evidence: "anecdote",
+    section: S0,
+  },
+  {
+    id: "warm-network",
+    law: "messages",
+    effortHours: 8,
+    // Steady: introductions lead to more introductions. A judgment call, as for every ceiling.
+    ceiling: "steady",
+    name: "Tell people who already know your work, one by one",
+    what: "Write one to one to former colleagues, classmates, past employers and friends with one specific offer, and ask each for one introduction to someone who has the problem.",
+    stage: 0,
+    // Only for one person selling their own time: four of five vendor surveys name word of mouth or the personal
+    // network as freelancers' top source of work, none asks about the first client (research/solo-first-clients.md).
+    surfaces: ["service"],
+    cost: "Free; 10–15 minutes per message",
+    judgeAfter: "30 people told",
+    measure: "Introductions, calls and paid clients per person told",
+    stop: "About 30 people told with no paid client or introduction after 6 weeks: change the offer, not the list (a rule of thumb).",
+    evidence: "some",
+    section: S0,
+  },
   {
     id: "listings",
     effortHours: 3,
@@ -25,6 +68,11 @@ export const BETS: Bet[] = [
     evidence: "some",
     section: S0,
   notes: [
+      {
+        // research/practitioner-directories-and-coverage.md: directories exist, nothing measures what they bring.
+        match: REGULATED,
+        note: "for a regulated practitioner, list in the professional association's directory and on insurers' directories and direct billing where they take your profession; nobody has measured what a directory brings. Google Business Profile needs in-person contact with clients, so an online-only practice can't have one",
+      },
       {
         match: /\b(dating|matchmak\w*|hook-?ups?|singles)\b/i,
         note: "Apple accepts a new dating app only if it offers a meaningfully different or improved experience (App Review Guideline 4.3(b)), and both stores require filtering, reporting and blocking of other users at review (Apple 1.2; Google Play's user-generated content policy). Have them, and say what is different, before you submit",
@@ -53,6 +101,7 @@ export const BETS: Bet[] = [
     name: "Comparison and 'alternative to X' pages",
     what: "Honest pages comparing you with known rivals, and help docs written as answers to search queries.",
     stage: 0,
+    notes: [REGULATED_NOTE("comparing yourself with other practitioners; compare approaches, not people")],
     cost: "2–4 hours per page",
     judgeAfter: "2–3 months in Search Console",
     // The likely case is about zero clicks (research/query-page-outcomes.md §1). "About 10" across the batch the effort
@@ -215,6 +264,7 @@ export const BETS: Bet[] = [
     name: "Post regularly as the founder",
     what: "A founder account on the one platform where buyers already talk, posting findings and the build at least twice a week.",
     stage: 0,
+    notes: [REGULATED_NOTE("posting client results or testimonials")],
     cost: "2–5 hours a week",
     judgeAfter: "8–12 weeks of steady posting",
     measure: "Conversations with buyer-type people; sign-ups that name the platform",
@@ -232,6 +282,7 @@ export const BETS: Bet[] = [
     what: "Founder-made 15–60 second videos showing one result, posted on the short-video platform the audience uses.",
     stage: 0,
     involves: ["founder-on-camera"],
+    notes: [REGULATED_NOTE("showing client results")],
     cost: "A phone and about 30 minutes a video",
     judgeAfter: "A fixed number of posts set in advance (for example 20)",
     measure: "Views to installs or sign-ups per video, with a link per platform",
@@ -248,6 +299,7 @@ export const BETS: Bet[] = [
     stage: 0,
     needs: { visual: true },
     audiences: ["consumers", "hobbyists"],
+    notes: [REGULATED_NOTE("posting client results")],
     cost: "Free; about 30 minutes a pin; 2:3 images",
     judgeAfter: "20 pins, then 2–3 months (pins keep getting found)",
     measure: "Saves and outbound clicks per pin in Pinterest analytics (claim your site); sign-ups from Pinterest",
@@ -437,6 +489,7 @@ export const BETS: Bet[] = [
     name: "Ask happy users for an introduction, a review or a quote",
     what: "Right after a success moment, ask for one introduction, a review or a testimonial. Ask every customer for reviews, not only happy ones (Google's rule).",
     stage: 1,
+    notes: [REGULATED_NOTE("asking for a review or testimonial")],
     cost: "Free; minutes per ask",
     judgeAfter: "20 asks",
     measure: "Introductions, reviews and quotes per ask",
@@ -455,6 +508,8 @@ export const BETS: Bet[] = [
     what: "Product Hunt, Show HN, a fitting subreddit or BetaList, with a working product people can try now: one post on each of two different sites.",
     stage: 0,
     launch: "after",
+    // A product people can try; a person selling their own time has nothing to post here.
+    surfaces: ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical"],
     cost: "Mostly free; 1–2 days of preparation and a day of replies per post",
     judgeAfter: "1 week after the second post",
     measure: "Votes and comments per post; sign-ups through a tagged link; retained users a month later",
@@ -486,6 +541,8 @@ export const BETS: Bet[] = [
     what: "Submit a useful post or tool to the 'tools' or 'links' sections of newsletters your audience reads.",
     stage: 0,
     launch: "after",
+    // A product people can try; a person selling their own time has nothing to post here.
+    surfaces: ["web-app", "website", "mobile-app", "cli", "library", "api", "bot", "browser-extension", "physical"],
     cost: "Free; minutes each",
     judgeAfter: "Per issue",
     measure: "Tagged clicks and sign-ups per mention",

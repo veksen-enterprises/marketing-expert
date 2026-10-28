@@ -295,3 +295,59 @@ describe("bets that read the business's category", () => {
     expect(factsFromProfile({ name: "x", category: "dating app", product: "a dating app for climbers" } as never)).toMatchObject({ category: "dating app", product: "a dating app for climbers" });
   });
 });
+
+// Round 5 (research/QUEUE.md #129–#149): one person selling their own expertise got the startup catalog.
+describe("solo service profiles", () => {
+  const dietitian: SmallBetsFacts = { category: "registered dietitian, online nutrition coaching", product: "online nutrition counselling, video sessions", audiences: ["consumers"], surfaces: ["service"], revenue: "planned", launched: true, traction: { payingCustomers: 0, asOf: "2026-10" }, assets: { expertise: "registered dietitian" }, markets: ["Quebec"] };
+  const designer: SmallBetsFacts = { category: "freelance designer and marketer", product: "brand and web design for small businesses", audiences: ["businesses"], surfaces: ["service"], revenue: "planned", launched: true, traction: { payingCustomers: 0, asOf: "2026-10" }, assets: { expertise: "design" } };
+  const saas: SmallBetsFacts = { category: "invoicing software", audiences: ["businesses"], surfaces: ["web-app"], revenue: "live", launched: true, traction: { activeUsers: 0 } };
+
+  it("tells a service to say what it sells everywhere and to write to people who know the person", () => {
+    for (const p of [dietitian, designer]) {
+      expect(ids(matchSmallBets(p).fitsNow)).toContain("say-what-you-sell");
+      expect(ids(matchSmallBets(p).fitsNow)).toContain("warm-network");
+    }
+    expect(ids(matchSmallBets(saas).fitsNow)).toContain("say-what-you-sell");
+    expect(ids(matchSmallBets(saas).doesntFit)).toContain("warm-network");
+  });
+  it("keeps product launch bets away from a service, and ranks the network above them", () => {
+    const r = matchSmallBets(dietitian);
+    expect(ids(r.doesntFit)).toEqual(expect.arrayContaining(["launch-sites", "curator-submissions"]));
+    expect(ids(r.fitsNow)).not.toContain("launch-sites");
+    const now = ids(r.fitsNow);
+    expect(now.indexOf("warm-network")).toBeLessThan(now.indexOf("comparison-pages"));
+    expect(find(r.fitsNow, "listings")!.reason).toMatch(/professional directory|in-person contact/);
+    expect(find(matchSmallBets(designer).fitsNow, "listings")!.reason).not.toMatch(/in-person contact/);
+  });
+  it("keeps the warm-network bet when the profile rules out cold outreach", () => {
+    const r = matchSmallBets({ ...dietitian, avoid: ["cold-outreach"] });
+    expect(ids(r.fitsNow)).toContain("warm-network");
+    expect(ids(r.doesntFit)).toContain("cold-one-to-one");
+    expect(find(r.fitsNow, "warm-network")!.reason).not.toMatch(/cold/);
+  });
+  it("warns a regulated profession about testimonials and results, on fitsLater bets too", () => {
+    const r = matchSmallBets(dietitian);
+    expect(find(r.fitsLater, "ask-happy-users")!.reason).toMatch(/regulator/);
+    expect(find(r.fitsNow, "comparison-pages")!.reason).toMatch(/regulator/);
+    expect(find(r.fitsNow, "founder-videos")!.reason).toMatch(/regulator/);
+    const d = matchSmallBets(designer);
+    expect(find(d.fitsLater, "ask-happy-users")!.reason).not.toMatch(/regulator/);
+    expect(matchSmallBets({ ...dietitian, category: "nutricionista online", product: "" }).fitsLater.find((v) => v.id === "ask-happy-users")!.reason).toMatch(/regulator/);
+  });
+  it("lets paying clients reach stage 2 for a service, at a rule-of-thumb 20", () => {
+    expect(readStage({ surfaces: ["service"], traction: { payingCustomers: 20 } }).stage).toBe(2);
+    expect(readStage({ surfaces: ["web-app"], traction: { payingCustomers: 20 } }).stage).toBe(1);
+    expect(readStage({ surfaces: ["service"], traction: { payingCustomers: 12 } }).stage).toBe(1);
+    const r = matchSmallBets({ ...designer, traction: { payingCustomers: 30 } });
+    expect(ids(r.fitsNow)).toContain("co-marketing");
+    expect(r.assumptions.join(" ")).toMatch(/20 paying clients/);
+  });
+  it("points Brazil at its section, and a Quebec message bet at federal Canada too", () => {
+    const p = (m: string) => marketLawPointers([m])[0].pointer;
+    expect(p("Brazil")).toBe("playbook:marketing-law-by-market#Brazil");
+    expect(p("Brasil")).toBe("playbook:marketing-law-by-market#Brazil");
+    expect(p("São Paulo")).toBe("playbook:marketing-law-by-market#Brazil");
+    const r = matchSmallBets(dietitian);
+    expect(find(r.fitsNow, "warm-network")!.lawCheck).toMatch(/#Quebec.*#Canada/);
+  });
+});

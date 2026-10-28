@@ -121,6 +121,9 @@ export interface StageReading {
 // Stage thresholds are rules of thumb: stage 2 starts around a hundred active users or a couple of thousand monthly visits.
 export const STAGE2_USERS = 100;
 export const STAGE2_VISITS = 2000;
+// One person selling their own time may never reach 100 active users, even when fully booked; paying clients stand in
+// for them. 20 is a judgment call: caseload data is thin (research/solo-practice-capacity-and-stage.md).
+export const SERVICE_STAGE2_CLIENTS = 20;
 
 export function readStage(f: SmallBetsFacts): StageReading {
   const t = f.traction;
@@ -133,11 +136,12 @@ export function readStage(f: SmallBetsFacts): StageReading {
   const paying = t.payingCustomers ?? 0;
   const as = `${t.asOf ? ` (as of ${t.asOf})` : ""}${t.basis === "counted" ? "" : ", estimated"}`;
   if (users >= STAGE2_USERS || visits >= STAGE2_VISITS) return { stage: 2, basis: `${users} active users, ${visits} monthly visits${as}` };
+  if (f.surfaces?.includes("service") && paying >= SERVICE_STAGE2_CLIENTS) return { stage: 2, basis: `${paying} paying clients of a service${as}` };
   if (users > 0 || paying > 0) return { stage: 1, basis: `${users} active users, ${paying} paying${as}` };
   return { stage: 0, basis: `no active users yet${as}` };
 }
 
-const STAGE_LABEL: Record<Stage, string> = { 0: "no users yet", 1: "first users", 2: "steady use (around 100 active users or 2,000 monthly visits)", 3: "a newsworthy story or numbers" };
+const STAGE_LABEL: Record<Stage, string> = { 0: "no users yet", 1: "first users", 2: "steady use (around 100 active users or 2,000 monthly visits; for a service, about 20 paying clients)", 3: "a newsworthy story or numbers" };
 
 export interface Verdict {
   id: string;
@@ -248,16 +252,29 @@ const MARKET_ALIASES: Record<string, string> = {
   istanbul: "turkey", "türkiye": "turkey", turkiye: "turkey", ankara: "turkey",
   yerevan: "armenia",
   "buenos aires": "argentina", caba: "argentina",
+  brasil: "brazil", "são paulo": "brazil", "sao paulo": "brazil", "rio de janeiro": "brazil",
+  "españa": "spain", espana: "spain", madrid: "spain", barcelona: "spain", valencia: "spain",
 };
+// Federal Canadian law (CASL, Competition Act) also applies in Quebec, and sits in its own section.
+const ALSO_FEDERAL = new Set(["quebec"]);
 
 /** The marketing-law section for each market: a section whose heading names the market (or the market names it). */
 export function marketLawPointers(markets: string[] = []): MatchResult["marketLaw"] {
   const secs = sections().filter((s) => s.slug === LAW_PLAYBOOK && !/^sources?$/i.test(s.heading) && s.heading !== "Marketing law by market");
-  return markets.map((market) => {
+  const find = (m: string) => secs.find((x) => x.heading.toLowerCase().includes(m) || (m.length > 3 && m.includes(x.heading.toLowerCase().split(/[ (,]/)[0])));
+  const named = new Set(markets.map((x) => MARKET_ALIASES[x.trim().toLowerCase()] ?? x.trim().toLowerCase()));
+  let fedAdded = false;
+  return markets.flatMap((market) => {
     const raw = market.trim().toLowerCase();
     const m = MARKET_ALIASES[raw] ?? raw;
-    const s = secs.find((x) => x.heading.toLowerCase().includes(m) || (m.length > 3 && m.includes(x.heading.toLowerCase().split(/[ (,]/)[0])));
-    return { market, pointer: s ? s.pointer : null };
+    const s = find(m);
+    const out: MatchResult["marketLaw"] = [{ market, pointer: s ? s.pointer : null }];
+    const fed = find("canada");
+    if (ALSO_FEDERAL.has(m) && !named.has("canada") && fed && !fedAdded) {
+      fedAdded = true;
+      out.push({ market: `${market} (federal Canada)`, pointer: fed.pointer });
+    }
+    return out;
   });
 }
 
@@ -273,6 +290,8 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
   if (stage.basis.startsWith("no traction")) assumptions.push("No traction numbers saved; treated as no users yet. Save traction (active users, monthly visits, paying customers) to unlock later-stage bets.");
   else if (f.traction?.basis !== "counted" && !stage.basis.startsWith("newsworthy"))
     assumptions.push(`Traction is not marked as counted from a record, so stage ${stage.stage} rests on an estimate. Say so in the answer; near ${STAGE2_USERS} active users or ${STAGE2_VISITS.toLocaleString("en-US")} monthly visits, ask for the counted number and save it with basis "counted".`);
+  if (f.surfaces?.includes("service"))
+    assumptions.push(`For a service, stage 2 starts at ${SERVICE_STAGE2_CLIENTS} paying clients, a rule of thumb: a solo practice can be full long before 100 active users. Say so if the stage decides a bet.`);
   if (!f.audiences?.length) assumptions.push("Audience not saved (businesses, developers, consumers, hobbyists, local), so no bet was ruled out for its audience.");
   if (!f.surfaces?.length) assumptions.push("Product surfaces not saved (web app, mobile app, CLI, library, API, bot...), so bets that need a specific surface were kept.");
   if (!f.avoid) assumptions.push("No 'avoid' list saved, so no bet was ruled out by the business's principles. Check each fitting bet against its non-goals before proposing it.");
@@ -342,7 +361,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (b.onlyFor && !kind) blockers.push(`only for ${b.onlyFor.label}; save the profile's category to tell`);
 
     if (blockers.length) {
-      fitsLater.push({ ...base(b), reason: blockers.join("; ") });
+      fitsLater.push({ ...base(b), reason: blockers.join("; ") + notesFor(b, kind) });
       continue;
     }
     const channel = working.byBet.get(b.id);
@@ -355,7 +374,7 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
         (channel ? `; builds on ${channel.name}, which already brings users (${channel.how})` : "") +
         (relaunch ? `; ${RELAUNCH_NOTE(relaunch)}` : "") +
         (b.onlyFor ? `; for ${b.onlyFor.label}, read from the profile: ${kind}` : "") +
-        (b.notes ?? []).filter((x) => kind && x.match.test(kind)).map((x) => `; ${x.note}`).join(""),
+        notesFor(b, kind),
       cost: b.cost,
       judgeAfter: b.judgeAfter,
       measure: b.measure,
@@ -377,6 +396,11 @@ export function matchSmallBets(f: SmallBetsFacts, bets: Bet[] = BETS): MatchResu
     if (law) v.lawCheck = `Check the ${LAW_WHAT[law]} in each market${marketLaw.length ? `: ${marketLaw.map((x) => x.pointer ?? `${x.market} (not covered yet)`).join(", ")}` : " (markets not saved)"}.`;
   }
   return { stage, fitsNow, fitsLater, doesntFit, assumptions, checkAgainst: f.principles ?? [], marketLaw, howToReport: HOW_TO_REPORT };
+}
+
+/** The bet's notes whose words match the saved category or product, as reason text. */
+function notesFor(b: Bet, kind: string): string {
+  return (b.notes ?? []).filter((x) => kind && x.match.test(kind)).map((x) => `; ${x.note}`).join("");
 }
 
 /** The first profile channel that names a launch site: the founder has launched there before. */
