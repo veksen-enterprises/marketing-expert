@@ -46,6 +46,11 @@ Not fetched: curl was refused at the proxy (403) for sources 1, 3, 4 and the UK 
 - Disagrees a little with `devtools-cases-and-agent-choice.md`: there, founder-driven routes led with 39% of 31, but that group bundles network with cold outreach and the founder's audience. These sources do not let the two be split either.
 - Adds nothing to `partners-referral-outbound.md` §2: those studies are about customers referring customers, which needs customers.
 
+## 6. Weak ties (added 2026-10-28, after the owner's point)
+
+- In a 5-year experiment, LinkedIn randomly varied how many weak ties its "People You May Know" suggestions gave over 20 million people. Moderately weak ties (measured by mutual connections) led to the most job moves: an inverted U between tie strength and jobs passed on. Weak ties helped more in digital industries, strong ties in less digital ones. [research, Rajkumar, Saint-Jacques, Bojinov, Brynjolfsson & Aral, *Science* 377(6612), 2022, doi:10.1126/science.abl4476; https://digitaleconomy.stanford.edu/publication/a-causal-test-of-the-strength-of-weak-ties; read 2026-10-28; fetch summary; abstract only; job moves, not clients; one platform]
+- So a solo practitioner's network is worth building beyond people who could buy: acquaintances pass work on. The evidence is about jobs moving through ties, not clients, so it supports the direction, not a number. [derived]
+
 ## What this changes
 
 The lead's rule was: add the bet only if surveys put the person's own network first **as a first-client source**. No source measures first clients. So, by that rule: **no `warm-network` bet**. A note at most.
