@@ -3,18 +3,20 @@
 // data directory, using the server built from a git ref through scripts/mcp.mjs.
 //
 //   node scripts/evals/run.mjs --ref <git ref> --out <runs dir> [--cases a,b] [--runs 3] [--parallel 4] [--model <id>] [--timeout-min 40]
+//                              [--materials <case or prefix>=<repo dir>,...]
 //
 // The server is exported from <ref> into a temp folder without evals/, test/ or .git, so an advisor can't read the
-// grader notes, and built there. Only fictional cases (a fixture folder in evals/cases.md) run: a real case needs
-// the business's own repo, which isn't in this one. Each run lands at <out>/<case>-<n>.md as "## Answer" plus
+// grader notes, and built there. Fictional cases use their fixture folder from evals/cases.md. A real case runs only
+// with --materials: its repo's tracked files (`git ls-files`) are copied into the run's ./material, leaving out .git,
+// node_modules, .env* and credential files (copyableMaterial in grades.mjs). Each run lands at <out>/<case>-<n>.md as "## Answer" plus
 // "## Tool log", the shape grade.mjs reads; a run that wrote no answer is listed and left out. The profiles a run saved
 // go to <out>/profiles/<case>-<n>/, so a tool's output can be reproduced from what the advisor actually saved.
 import { execFileSync, spawn } from "node:child_process";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseCases } from "./grades.mjs";
+import { copyableMaterial, parseCases } from "./grades.mjs";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const opt = {};
@@ -27,8 +29,29 @@ const casesMd = readFileSync(join(repo, "evals/cases.md"), "utf8");
 const cases = parseCases(casesMd);
 // The user message is the last cell of the case's table row.
 const messageOf = (id) => casesMd.split("\n").find((l) => l.startsWith(`| ${id} |`))?.split("|").at(-2).trim().replace(/^"|"$/g, "");
+const materials = String(opt.materials ?? "").split(",").filter(Boolean).map((m) => m.split("="));
+const repoFor = (id) => materials.find(([k]) => id === k || id.startsWith(k))?.[1];
 const wanted = opt.cases ? String(opt.cases).split(",") : [...cases.keys()].filter((c) => cases.get(c).fixture);
-for (const c of wanted) if (!cases.get(c)?.fixture) fail(`${c}: not a fictional case with a fixture folder in evals/cases.md`);
+for (const c of wanted) {
+  if (!cases.has(c)) fail(`${c}: not a case id in evals/cases.md`);
+  if (!cases.get(c).fixture && !repoFor(c)) fail(`${c}: a real case needs its repo: pass --materials <case or prefix>=<dir>`);
+}
+
+/** The tracked files of a real case's repo, as listed by git, minus anything copyableMaterial refuses. */
+function copyRepo(dir, dest) {
+  const root = resolve(dir);
+  const files = execFileSync("git", ["-C", root, "ls-files", "-z"], { maxBuffer: 1 << 28 }).toString().split("\0").filter(Boolean);
+  let copied = 0;
+  for (const f of files.filter(copyableMaterial)) {
+    const from = join(root, f);
+    // ls-files lists tracked symbolic links and deleted files too; copy only regular files, so nothing outside the repo comes in.
+    if (!existsSync(from) || !lstatSync(from).isFile()) continue;
+    mkdirSync(dirname(join(dest, f)), { recursive: true });
+    copyFileSync(from, join(dest, f));
+    copied++;
+  }
+  return copied;
+}
 
 const server = mkdtempSync(join(tmpdir(), "eval-server-"));
 execFileSync("sh", ["-c", `git -C "${repo}" archive "${opt.ref}" | tar -x -C "${server}"`]);
@@ -49,11 +72,12 @@ const prompt = (message) =>
 function runOne(caseId, n) {
   const work = mkdtempSync(join(tmpdir(), "eval-run-"));
   const fixture = cases.get(caseId).fixture;
-  cpSync(join(repo, "evals/fixtures", fixture), join(work, "material"), { recursive: true });
+  if (fixture) cpSync(join(repo, "evals/fixtures", fixture), join(work, "material"), { recursive: true });
+  else copyRepo(repoFor(caseId), join(work, "material"));
   const data = join(work, ".data");
   mkdirSync(join(data, "profiles"), { recursive: true });
-  const profile = join(repo, "evals/fixtures", `${fixture}.profile.json`);
-  if (existsSync(profile)) cpSync(profile, join(data, "profiles", `${fixture}.json`));
+  const profile = fixture && join(repo, "evals/fixtures", `${fixture}.profile.json`);
+  if (profile && existsSync(profile)) cpSync(profile, join(data, "profiles", `${fixture}.json`));
   writeFileSync(join(work, "mcp"), `#!/bin/sh\nexec node "${server}/scripts/mcp.mjs" "$@"\n`);
   chmodSync(join(work, "mcp"), 0o755);
   const args = ["-p", prompt(messageOf(caseId)), "--output-format", "text", "--no-session-persistence", "--setting-sources", "project", "--allowedTools", "Bash(./mcp:*),Read,Write,Edit,Glob,Grep"];
