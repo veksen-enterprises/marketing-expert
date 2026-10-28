@@ -292,8 +292,28 @@ export function marketLawPointers(markets: string[] = []): MatchResult["marketLa
   });
 }
 
+/** The profile fields matchSmallBets reads. */
+export const FACT_KEYS = ["category", "product", "businessModel", "traction", "assets", "audiences", "surfaces", "revenue", "launched", "avoid", "principles", "markets", "channels"] as const satisfies ReadonlyArray<keyof SmallBetsFacts & keyof BusinessProfile>;
+
 export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
-  return { category: p.category, product: p.product, businessModel: p.businessModel, traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
+  return Object.fromEntries(FACT_KEYS.map((k) => [k, p[k]])) as SmallBetsFacts;
+}
+
+/**
+ * Facts for one match: a saved profile's, with fields given in the call laid over them (null clears a field for
+ * this call). Says where the facts came from, because facts given in the call were not confirmed by a save.
+ */
+export function factsForMatch(profile: BusinessProfile | null, given: Partial<Record<(typeof FACT_KEYS)[number], unknown>> | undefined): { facts: SmallBetsFacts; from?: string } {
+  const facts = profile ? factsFromProfile(profile) : ({} as SmallBetsFacts);
+  const keys = FACT_KEYS.filter((k) => given && k in given);
+  for (const k of keys) (facts as Record<string, unknown>)[k] = given![k] ?? undefined;
+  if (!keys.length) return { facts };
+  return {
+    facts,
+    from: profile
+      ? `saved profile "${profile.name}", with ${keys.join(", ")} from this call (not saved)`
+      : "facts given in this call, not a saved profile: say which ones the user confirmed, and offer to save them with save_business_profile",
+  };
 }
 
 // Words for one person selling their own time. Kept narrow: a product word in the texts ("coaching app", "invoicing
