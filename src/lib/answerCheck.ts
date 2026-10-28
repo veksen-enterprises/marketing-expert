@@ -42,6 +42,8 @@ export interface AnswerCheck {
   problems: string[];
   /** Steps to take once, such as verify_quotes for repo citations. Not in problems: the check can't see that they were done. */
   reminders: string[];
+  /** Checks that didn't run on this text, and why: the move, part, jargon and stage-map checks match English words. */
+  notChecked: string[];
 }
 
 /** Default word limits: a direct answer, and a 90-day plan, which has more required parts. */
@@ -185,6 +187,17 @@ function splitAppendix(text: string): { body: string; appendix: string } {
   return { body: body.join("\n"), appendix: appendix.join("\n") };
 }
 
+// Common English words that other languages don't share: in English prose they are about a fifth of the words; in a
+// Spanish, Portuguese or French answer, a few English terms ("small bet", "landing page") bring the share near zero.
+// Left out because those languages use them: do and as (Portuguese), on (French), a, no, me.
+const ENGLISH = new Set(["the", "of", "to", "and", "is", "it", "for", "that", "you", "your", "with", "are", "this", "be", "at", "by", "not", "or", "if", "from", "have", "what", "will", "can", "they", "we", "would", "which", "their", "there", "than", "does", "how", "who", "when", "into", "about", "one", "only", "more"]);
+const ENGLISH_MIN_SHARE = 0.08;
+/** Share of the words that are common English words, or NaN under 40 words (too short to tell). */
+export function englishShare(text: string): number {
+  const words = text.toLowerCase().match(/\p{L}+/gu) ?? [];
+  return words.length < 40 ? NaN : words.filter((w) => ENGLISH.has(w)).length / words.length;
+}
+
 // Required when the product ships an MCP server (scan_source says so): how coding agents find and choose it.
 const AGENT_CHANNEL: [string, RegExp] = [
   "the agent channel (how coding agents find and choose the MCP server)",
@@ -237,7 +250,14 @@ export function checkAnswer(
   }
   const norm = text.replace(/\s+/g, " ").trim();
   const fingerprint = `${createHash("sha256").update(norm).digest("hex").slice(0, 10)} "${norm.split(" ").slice(0, 6).join(" ")}…"`;
-  const missingParts = [...PARTS, ...(opts.agentChannel ? [AGENT_CHANNEL] : [])].filter(([, re]) => !re.test(text)).map(([name]) => name);
+  const share = englishShare(body);
+  const english = !(share < ENGLISH_MIN_SHARE);
+  const notChecked: string[] = [];
+  if (!english)
+    notChecked.push(
+      `This answer doesn't look like English (${Math.round(100 * share)}% of its words are common English words; English prose has about 20%). The checks for moves, the parts the instructions ask for and the stage map match English words, so they did not run: no issue from them means nothing here. Banned words and unexplained terms are matched in English only. Checked: word count, evidence labels and the fingerprint. Check the moves, the falsifier, the open questions and the stage map yourself.`
+    );
+  const missingParts = english ? [...PARTS, ...(opts.agentChannel ? [AGENT_CHANNEL] : [])].filter(([, re]) => !re.test(text)).map(([name]) => name) : [];
   if (missingParts.length) problems.push(`Not found (ignore if it's there in other words): ${missingParts.join("; ")}.`);
   const labelIssues = checkLabels(text).filter((l) => l.status !== "ok" && l.status !== "no-source");
   for (const l of labelIssues) {
@@ -248,10 +268,13 @@ export function checkAnswer(
     else if (l.status === "unlabelled-reuse" || !l.answerLabel) problems.push(`Add the playbook's label [${l.sourceLabels.join("; ")}] (${l.source}): ${claim}`);
     else problems.push(`Label [${l.answerLabel}] drops the source's qualifier (${src}): ${claim}. Copy the whole bracket.`);
   }
-  const { issues: moveIssues } = lintMoves(body);
+  const lint = english ? lintMoves(body) : { moves: [], issues: [] };
+  const moveIssues = lint.issues;
   problems.push(...moveIssues);
+  if (english && !lint.moves.length && (body.match(/^#{2,3} /gm) ?? []).length >= 3)
+    notChecked.push('No moves found (numbered items under a heading with "moves" in it, or "Move 1"). If this answer has moves under other headings, the move check did not run on them.');
   // Both deliverables need the map; a short answer to one narrow question opts out.
-  const stageMapIssues = opts.stageMap === false ? [] : checkStageMap(map);
+  const stageMapIssues = opts.stageMap === false || !english ? [] : checkStageMap(map);
   problems.push(...stageMapIssues);
   // A repo citation (pricing.astro:263, ADR 0006) means quotes to check; a host and port (api.example.com:443) doesn't.
   const reminders: string[] = [];
@@ -261,5 +284,5 @@ export function checkAnswer(
   if ((text.match(/^#{2,3} /gm) ?? []).length >= 2 && !/learn more/i.test(text)) {
     reminders.push("End each section with one or two 'Learn more:' lines naming topics the reader can ask to expand (learn_more expands a section, a small bet or a term).");
   }
-  return { fingerprint, words, whitespaceWords, appendixWords, stageMapWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, stageMapIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders };
+  return { fingerprint, words, whitespaceWords, appendixWords, stageMapWords, maxWords: limit, overBy, bannedWords, missingParts, labelIssues, moveIssues, stageMapIssues, unexplainedTerms, explainWith, considerExplaining, problems, reminders, notChecked };
 }
