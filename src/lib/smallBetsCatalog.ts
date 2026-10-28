@@ -36,6 +36,21 @@ export const BETS: Bet[] = [
     section: S0,
   },
   {
+    id: "show-up-in-person",
+    effortHours: 12,
+    // Steady: people met in person remember you and refer you later. A judgment call; no source measures it.
+    ceiling: "steady",
+    name: "Show up in person where buyers gather",
+    what: "Go to the rooms where people who could buy already are (coworking events, meetups, trade and community events, the gym, club or class your buyers use), have a few real conversations each time, and follow up within two days.",
+    stage: 0,
+    cost: "Free to low; an evening per event",
+    judgeAfter: "6 events",
+    measure: "Real conversations, follow-ups answered and calls booked per event",
+    stop: "6 events with no conversation that leads to a call: change the room, not the pitch. Say what you do in one sentence; don't sell at the event.",
+    evidence: "anecdote",
+    section: S0,
+  },
+  {
     id: "warm-network",
     law: "messages",
     effortHours: 8,
