@@ -1,7 +1,7 @@
 ---
 title: Marketing law by market
-summary: The marketing rules a small product runs into in Quebec, the rest of Canada (federal and Ontario), the United States and California, Turkey, Armenia and Argentina; consent for messages, privacy and cookies, price display, reviews and influencers, language, subscriptions and cancellation, with first steps for each market.
-tags: marketing law, quebec, bill 96, french language, law 25, casl, canada anti-spam, pipeda, competition act, drip pricing, all-in price, ontario, california, ccpa, automatic renewal, san francisco, turkey, kvkk, iys, verbis, armenia, armenian language, argentina, ley 25326, boton de arrepentimiento, boton de baja, no llame, cancellation button, consumer protection, jurisdiction
+summary: The marketing rules a small product runs into in Quebec, the rest of Canada (federal and Ontario), the United States and California, Turkey, Armenia, Argentina, Brazil (nutritionists and online health care only) and Spain; consent for messages, privacy and cookies, price display, reviews and influencers, language, subscriptions and cancellation, with first steps for each market.
+tags: marketing law, quebec, bill 96, french language, law 25, casl, canada anti-spam, pipeda, competition act, drip pricing, all-in price, ontario, california, ccpa, automatic renewal, san francisco, turkey, kvkk, iys, verbis, armenia, armenian language, argentina, ley 25326, boton de arrepentimiento, boton de baja, no llame, cancellation button, brazil, brasil, cfn, nutricionista, telenutrição, spain, lssi, aepd, lista robinson, regulated professions, consumer protection, jurisdiction
 ---
 
 _In short:_ Rules depend on where your customers are, not where you live. Find each market you sell in below, do its first steps before launch, and check with a local lawyer before relying on any of it.
@@ -39,6 +39,10 @@ _In short:_ Quebec customers get French first: website, app, terms, receipts, ad
 - Suggested tips are calculated on the pre-tax price, with a custom-amount option, all shown equally (since May 2025). [first-party; CPA s.225.1; OPC]
 - Contests no longer need registration or duties with the RACJ (since 27 October 2023), but all conditions must be clearly disclosed. [first-party; S.Q. 2023 c.24; CPA s.233]
 
+**Regulated professions**
+- Professional orders set their own advertising rules. Quebec's dietitians' code bans only false or misleading testimonials; price ads must say what the fee includes and how long it is valid; insidious or repeated solicitation is banned. "Nutritionniste" is a reserved title. [first-party; C-26, r. 97.1 s.76; fetch summary] Ontario's dietitians' college goes further: no asking for testimonials or reviews (see the next section). Check the order's code before quoting a client.
+- Online clients in another province: a dietitian must be registered where the client lives in most provinces. [first-party; provincial regulators' tables, 2024; fetch summary]
+
 **Online sales and subscriptions**
 - Before an online sale, show your identity and address, a full description, an itemised price with all fees, the total, and the cancellation and refund policies. If you don't, the customer can cancel within 7 days of getting the contract copy; refunds within 15 days. [first-party; CPA ss.54.4, 54.8, 54.13]
 - Since 12 September 2026, subscriptions sold online must be cancellable through an easy-to-find online button. Send a written reminder 2–10 days before a discounted period ends, with the end date and the new price. Show one-time fees next to the monthly price. Contracts cannot forbid customers from posting reviews. [first-party; Bill 10 (2026, c.20); OPC]
@@ -69,6 +73,7 @@ _In short:_ Marketing email and texts need consent in Canada, B2B included. Adve
 - Implied consent applies after a purchase (two years) or an inquiry (six months). A published work address counts only if it carries no "no spam" note and your message is relevant to the person's job. [first-party; CASL s.10(9)–(10)]
 - Every CEM identifies the sender, gives contact details and has a free unsubscribe that works within 10 business days. [first-party; CASL ss.6(2), 11]
 - Penalties go up to $10 million per violation for a business. There is no private lawsuit: that section was repealed before coming into force. The CRTC acts on complaints (414,630 in 2024–25). OneClass, an online study platform, paid $100,000 (2020) for CEMs without consent and for installing a browser extension without consent. Gap paid $200,000 (2021) for missing or broken unsubscribe links. [first-party; CASL s.20(4); ISED report; CRTC]
+- Messages to family and to friends you are really in touch with are exempt: the CRTC reads "personal relationship" strictly (real two-way contact; a like or follow is not enough). Former colleagues and LinkedIn contacts usually need consent, a call, or a referral: one message that names the person who referred you in full and says so. [first-party; SOR/2013-221 ss.2, 4(1); CRTC FAQ 2026; fetch summary]
 - Transactional and B2B details are in **outbound-and-abm** and **email-and-lifecycle**.
 
 **Privacy (PIPEDA, federal law outside Quebec, BC and Alberta)**
@@ -88,6 +93,7 @@ _In short:_ Marketing email and texts need consent in Canada, B2B included. Adve
 - Contests: disclose the number and approximate value of prizes and anything that affects the odds, and award prizes promptly. [first-party; s.74.06]
 
 **Ontario**
+- Ontario's dietitians may not ask clients for testimonials or reviews or link to review sites, and must not claim to be better than other dietitians. [first-party; College of Dietitians of Ontario, advertising standard, September 2024; fetch summary]
 - The Consumer Protection Act, 2002 is still the law: refunds within 15 days after a valid cancellation, refunds for delivery more than 30 days late, no charging for goods nobody ordered. [first-party; Ontario.ca]
 - The Consumer Protection Act, 2023 (assented December 2023) adds active consent to renewals, a continuing right to cancel auto-renewing contracts, and a ban on barriers to cancelling. It is not in force yet: it waits for a proclamation date and regulations. [secondary; snippet-only]
 - Ontario's delivery cap (15% delivery, 20% total, platforms with 500+ restaurants) applied only where indoor dining was banned during COVID. It no longer has practical effect; its formal repeal date was not confirmed. [secondary; snippet-only]
@@ -281,6 +287,55 @@ _In short:_ Argentina requires a visible withdrawal button on sites selling onli
 
 See: privacy-and-marketing-law, retention-and-expansion, pricing, email-and-lifecycle, seasonal-and-hobby-products, fitness-and-health-apps.
 
+## Brazil
+
+_In short:_ Only the rules for regulated nutritionists and online health care are covered here; Brazil's general consumer and privacy law is not yet. Nutritionists may not show before-and-after images or use prices, promotions or giveaways as advertising. For a client abroad, the client's country's law applies.
+
+> Not legal advice; check with a local lawyer. Sources and access levels: research/brazil-nutritionist-advertising.md, research/brazil-code-status-and-portugal.md. Every source was seen through a summarising fetch tool.
+
+**Which nutritionists' code applies**
+- Res. CFN 599/2018 applies now. Res. CFN 856/2026 (published 28 April 2026) replaces it, and its start was reported postponed to 23 January 2027 by Res. CFN 858/2026. The postponement was seen once, through a copy of the official gazette, and not confirmed. The lines below hold under both codes. [first-party; CFN Res. 599/2018, 856/2026, 858/2026; fetch summary; checked 2026-10-28]
+
+**Advertising by nutritionists (CFN)**
+- No before-and-after images of clients. From 2027 the ban covers any results of yourself or clients (photos, body composition, lab data, charts, AI images), even with consent. [first-party; CFN 2018 reading of Res. 599; Res. 856 Art. 69 §2; fetch summary]
+- No fees, promotions or giveaways used as advertising, including for online care. [first-party; Res. 599 Art. 57; Res. 760/2023 Art. 12 §1; fetch summary] The 2026 code makes publishing prices a right (Art. 68) but keeps the ban on promotions and giveaways. The two rules conflict from 2027 unless the CFN changes one. [derived]
+- No promise of guaranteed results; say results may differ between people. [first-party; Res. 599 Art. 55; Res. 856 Art. 69 §6; fetch summary]
+- Testimonials are not banned in either code's text; the CFN president said in June 2026 that a nutritionist may publish a client's testimonial. [press, quoting the CFN president; June 2026]
+
+**Online care (telenutrition, Res. CFN 760/2023)**
+- Allowed without an in-person first visit. Needs active CRN registration, prior registration in e-Nutricionista, a signed consent form before the first session and records. [first-party; Res. 760 Arts. 2, 5, 9–11; fetch summary]
+- Valid across Brazil's states with no second registration. [first-party; Res. 760 Arts. 4, 13; fetch summary]
+- For a client abroad, "o nutricionista deverá atender à regulamentação e legislação do país em questão" (follow that country's law); the CFN's manual warns it may count as illegal practice there. [first-party; Res. 760 Art. 4 §2; CFN manual 2026; fetch summary] Most Canadian provinces and many US states license dietitians where the client is. So abroad, offer general nutrition education (classes, group programmes, content), not individual assessment or diet prescription, unless licensed there. [derived; not legal advice]
+
+**First steps for a nutritionist**
+1. Register in e-Nutricionista and use a consent form before online sessions.
+2. Put your CRN number in every profile and ad.
+3. No before-and-after images, no promotions or giveaways in ads; testimonials and athletes' results that aren't body results are fine.
+4. For clients outside Brazil, sell education and group programmes, or get licensed where the client lives.
+
+## Spain
+
+_In short:_ Spain bans commercial email and equivalent electronic messages without prior consent, to companies too, and the rule reaches senders abroad who aim at Spain. Call a firm's business line instead: write down why the call fits their work, and check the Robinson list first.
+
+> Not legal advice; check with a local lawyer. Sources and access levels: research/spain-cold-email-law.md. Every source was seen through a summarising fetch tool.
+
+**Messages (LSSI, Ley 34/2002)**
+- Advertising by email "u otro medio de comunicación electrónica equivalente" needs the recipient's prior request or express permission. The law's recipient is a person or a company, "sea o no por motivos profesionales". [first-party; LSSI art. 21.1 and Anexo; consolidated 23 Jan 2025; fetch summary]
+- The only exception is an existing customer, for products similar to what they bought, with an easy opt-out in every message. With no clients it covers nobody. [first-party; LSSI arts. 21.2, 22.1; fetch summary]
+- A breach is a minor offence up to €30,000; mass or repeated sending €30,001–150,000. Of six AEPD files read, none ended in a fine (three warnings, three closures); fines seen ran from €800 to €6,000, all with individual recipients. [first-party; LSSI arts. 38–39; AEPD decisions 2014–2022; hand-picked, not a sample]
+- Treat a LinkedIn or WhatsApp sales message like an email. The AEPD has applied art. 21 to WhatsApp; no source on LinkedIn was found. [secondary; derived]
+
+**Calls**
+- Unsolicited commercial calls need consent or another lawful basis. Legitimate interest works only with a balancing test written before calling, and the Robinson opt-out list must be checked first. [first-party; Ley 11/2022 art. 66.1.b; AEPD Circular 1/2023, in force 29 Jun 2023; fetch summary]
+
+**Scope**
+- A provider outside the EU that aims its services at Spain falls under the LSSI. [first-party; LSSI art. 4; fetch summary] Whether the GDPR reaches a cold email to a company's employee is open. [derived]
+
+**First steps for selling to Spanish firms**
+1. No cold email or LinkedIn sales messages to Spanish firms.
+2. Ask permission first: an introduction, a call to the business line with a written balancing test and a Robinson check, or the contact form the firm publishes.
+3. Put an opt-out in every message after that.
+
 ## Sources
 
-research/marketing-law-canada-us.md (Quebec Charter of the French language and its regulation, Law 25 (P-39.1), Consumer Protection Act (P-40.1) and Bill 10; CASL, PIPEDA and the Competition Act with the Cineplex and DoorDash cases; British Columbia Food Delivery Service Fee Act; California Civil Code and Business and Professions Code; San Francisco Ordinance 164-22). research/marketing-law-turkey-armenia-argentina.md (Turkey's KVKK, Law 6563 and İYS, advertising board guidance, Law 6502; Armenia's personal data, advertising and language laws; Argentina's Law 25.326, Law 24.240, Disposición 954/2025 and the No Llame register). Read 2026-10-05 unless a note marks an item snippet-only.
+research/marketing-law-canada-us.md (Quebec Charter of the French language and its regulation, Law 25 (P-39.1), Consumer Protection Act (P-40.1) and Bill 10; CASL, PIPEDA and the Competition Act with the Cineplex and DoorDash cases; British Columbia Food Delivery Service Fee Act; California Civil Code and Business and Professions Code; San Francisco Ordinance 164-22). research/marketing-law-turkey-armenia-argentina.md (Turkey's KVKK, Law 6563 and İYS, advertising board guidance, Law 6502; Armenia's personal data, advertising and language laws; Argentina's Law 25.326, Law 24.240, Disposición 954/2025 and the No Llame register). research/regulated-health-pro-advertising.md and research/casl-personal-network-messages.md (professional orders, CASL exemptions). research/brazil-nutritionist-advertising.md and research/brazil-code-status-and-portugal.md (CFN codes, telenutrition). research/spain-cold-email-law.md (LSSI, AEPD). Round 5 notes read 2026-10-28 through fetch summaries. Read 2026-10-05 unless a note marks an item snippet-only.
