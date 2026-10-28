@@ -20,7 +20,7 @@ import { marketSize } from "./lib/marketSize.js";
 import { welchTest, sampleSizeMeans } from "./lib/means.js";
 import { sequentialTest } from "./lib/sequential.js";
 import { listProfiles, getProfile, saveProfile, missingFields, staleMetrics, duePredictions, estimatedFacts, DUE_PREDICTIONS_NOTE } from "./lib/profile.js";
-import { matchSmallBets, factsFromProfile, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
+import { matchSmallBets, factsForMatch, FACT_KEYS, AUDIENCES, SURFACES, AVOID_TAGS } from "./lib/smallBets.js";
 import { loadPlaybooks, getPlaybook, searchPlain } from "./lib/knowledge.js";
 import { learnMore } from "./lib/learnMore.js";
 import { registerPrompts, MAX_MOVES, MOVE_FORMAT, INSTALL_COMMAND } from "./prompts.js";
@@ -894,6 +894,91 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
 
   const strList = z.array(z.string()).nullable().optional();
   const basis = z.enum(["counted", "estimated"]).optional().describe("counted: looked up in a record (database, Stripe, analytics). Missing means estimated");
+  // The profile's fields, shared by save_business_profile and match_small_bets' inline facts.
+  const profileFields = {
+    product: z.string().nullable().optional(),
+    category: z.string().nullable().optional().describe("What kind of product, in plain words (e.g. dating app, invoicing tool); match_small_bets reads it"),
+    businessModel: z.string().nullable().optional(),
+    selfDescribedStage: z.string().nullable().optional().describe("How the founder describes where the business is (e.g. private beta). match_small_bets works out the stage from traction, not from this"),
+    bestFitCustomers: z.string().nullable().optional(),
+    competitiveAlternatives: strList,
+    differentiators: strList,
+    valueThemes: strList,
+    proof: strList,
+    pricing: z.string().nullable().optional(),
+    channels: z
+      .array(z.union([z.string(), z.object({ name: z.string(), how: z.string().optional() })]))
+      .nullable()
+      .optional()
+      .describe('Where users came from. Only a channel with how (how the founder knows: a user said so, a referrer, a tagged link) ranks bets up; a plain string is a guess. e.g. [{"name": "Reddit", "how": "two users said so"}]'),
+    metrics: z
+      .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional(), basis }).nullable())
+      .nullable()
+      .optional()
+      .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe", "basis": "counted"}}'),
+    voice: z.object({ do: strList, dont: strList }).nullable().optional(),
+    limits: strList.describe("The founder's practical limits, such as hours a week or budget. Not the constraint the diagnosis names"),
+    traction: z
+      .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional(), basis })
+      .nullable()
+      .optional()
+      .describe("Replaces the whole object; date it with asOf"),
+    assets: z
+      .object({
+        data: z.string().optional().describe("Data you hold that nobody else has published, including public data you collect"),
+        expertise: z.string().optional(),
+        founderAudience: z.string().optional().describe("Where the founder already has followers, and how many"),
+        newsworthy: z.string().optional().describe("A story or numbers others would retell"),
+        monthlyBudget: z.number().min(0).optional().describe("Dollars a month available for marketing"),
+        accounts: z.boolean().optional().describe("You can reach each user one to one (accounts, emails)"),
+        communities: z.string().optional().describe("Where the audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups)"),
+        season: z.string().optional().describe("When demand peaks, if it is seasonal (e.g. the six weeks before a holiday)"),
+        visual: z.string().optional().describe("What users make or see that is worth showing as an image (finished projects, dishes, rooms)"),
+      })
+      .nullable()
+      .optional()
+      .describe("Replaces the whole object"),
+    audiences: z.array(z.enum(AUDIENCES)).nullable().optional(),
+    surfaces: z.array(z.enum(SURFACES)).nullable().optional(),
+    revenue: z.enum(["none", "planned", "live"]).nullable().optional(),
+    launched: z.boolean().nullable().optional().describe("People can use the product now"),
+    markets: strList.describe("Where the business operates or sells (countries, provinces, states), e.g. Quebec, Ontario, Turkey; legal advice follows these"),
+    principles: strList.describe("What the business refuses to do, in its own words (its non-goals); match_small_bets returns them to check each bet against"),
+    avoid: z
+      .array(z.enum(AVOID_TAGS))
+      .nullable()
+      .optional()
+      .describe("What the business rules out, from its non-goals and principles. Save only what the user confirmed"),
+    openQuestions: strList,
+    predictions: z
+      .array(
+        z.object({
+          id: z.string().describe("Lowercase letters, digits and dashes; send the same id to add the outcome"),
+          madeOn: z.string().nullable().optional().describe("YYYY-MM-DD; defaults to today"),
+          move: z.string().nullable().optional(),
+          metric: z.string().nullable().optional(),
+          stop: z.string().nullable().optional().describe("The stop line as written in the move"),
+          k: z.number().int().min(0).nullable().optional().describe("For a count stop line: stop if fewer than k of n"),
+          n: z.number().int().min(1).nullable().optional(),
+          checkOn: z.string().nullable().optional().describe("YYYY-MM-DD: when to read the stop line"),
+          outcome: z
+            .object({
+              recordedOn: z.string().optional().describe("Defaults to today"),
+              result: z.string().describe("What happened, with the number"),
+              stopHit: z.boolean().nullable().describe("true: stop line hit; false: cleared (result must hold the number); null: unknown or not run"),
+              how: z.enum(["measured", "recalled"]),
+              k: z.number().int().min(0).optional(),
+              n: z.number().int().min(1).optional(),
+            })
+            .nullable()
+            .optional(),
+        })
+      )
+      .nullable()
+      .optional()
+      .describe("Merged by id: ids not sent are kept; a new id needs move, stop and checkOn. null deletes all predictions"),
+    notes: z.string().nullable().optional(),
+  };
   server.registerTool(
     "save_business_profile",
     {
@@ -902,88 +987,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
         "Create or update a business profile. Scalars and lists replace (send the full list); metrics and voice merge by key; predictions merge by id; null deletes a field or metric. Only save facts the user confirmed; date every metric, and mark it counted only if it was looked up in a record. Save each move the user takes on as a prediction, so the next run asks what happened.",
       inputSchema: {
         name: z.string().describe("Profile id: lowercase letters, digits, dashes"),
-        product: z.string().nullable().optional(),
-        category: z.string().nullable().optional().describe("What kind of product, in plain words (e.g. dating app, invoicing tool); match_small_bets reads it"),
-        businessModel: z.string().nullable().optional(),
-        selfDescribedStage: z.string().nullable().optional().describe("How the founder describes where the business is (e.g. private beta). match_small_bets works out the stage from traction, not from this"),
-        bestFitCustomers: z.string().nullable().optional(),
-        competitiveAlternatives: strList,
-        differentiators: strList,
-        valueThemes: strList,
-        proof: strList,
-        pricing: z.string().nullable().optional(),
-        channels: z
-          .array(z.union([z.string(), z.object({ name: z.string(), how: z.string().optional() })]))
-          .nullable()
-          .optional()
-          .describe('Where users came from. Only a channel with how (how the founder knows: a user said so, a referrer, a tagged link) ranks bets up; a plain string is a guess. e.g. [{"name": "Reddit", "how": "two users said so"}]'),
-        metrics: z
-          .record(z.string(), z.object({ value: z.union([z.number(), z.string()]), asOf: z.string().optional(), source: z.string().optional(), basis }).nullable())
-          .nullable()
-          .optional()
-          .describe('e.g. {"trialToPaid": {"value": 0.12, "asOf": "2026-09", "source": "Stripe", "basis": "counted"}}'),
-        voice: z.object({ do: strList, dont: strList }).nullable().optional(),
-        limits: strList.describe("The founder's practical limits, such as hours a week or budget. Not the constraint the diagnosis names"),
-        traction: z
-          .object({ activeUsers: z.number().min(0).optional(), monthlyVisits: z.number().min(0).optional(), payingCustomers: z.number().min(0).optional(), asOf: z.string().optional(), basis })
-          .nullable()
-          .optional()
-          .describe("Replaces the whole object; date it with asOf"),
-        assets: z
-          .object({
-            data: z.string().optional().describe("Data you hold that nobody else has published, including public data you collect"),
-            expertise: z.string().optional(),
-            founderAudience: z.string().optional().describe("Where the founder already has followers, and how many"),
-            newsworthy: z.string().optional().describe("A story or numbers others would retell"),
-            monthlyBudget: z.number().min(0).optional().describe("Dollars a month available for marketing"),
-            accounts: z.boolean().optional().describe("You can reach each user one to one (accounts, emails)"),
-            communities: z.string().optional().describe("Where the audience gathers in moderated communities (Discord servers, subreddits, forums, Facebook groups)"),
-            season: z.string().optional().describe("When demand peaks, if it is seasonal (e.g. the six weeks before a holiday)"),
-            visual: z.string().optional().describe("What users make or see that is worth showing as an image (finished projects, dishes, rooms)"),
-          })
-          .nullable()
-          .optional()
-          .describe("Replaces the whole object"),
-        audiences: z.array(z.enum(AUDIENCES)).nullable().optional(),
-        surfaces: z.array(z.enum(SURFACES)).nullable().optional(),
-        revenue: z.enum(["none", "planned", "live"]).nullable().optional(),
-        launched: z.boolean().nullable().optional().describe("People can use the product now"),
-        markets: strList.describe("Where the business operates or sells (countries, provinces, states), e.g. Quebec, Ontario, Turkey; legal advice follows these"),
-        principles: strList.describe("What the business refuses to do, in its own words (its non-goals); match_small_bets returns them to check each bet against"),
-        avoid: z
-          .array(z.enum(AVOID_TAGS))
-          .nullable()
-          .optional()
-          .describe("What the business rules out, from its non-goals and principles. Save only what the user confirmed"),
-        openQuestions: strList,
-        predictions: z
-          .array(
-            z.object({
-              id: z.string().describe("Lowercase letters, digits and dashes; send the same id to add the outcome"),
-              madeOn: z.string().nullable().optional().describe("YYYY-MM-DD; defaults to today"),
-              move: z.string().nullable().optional(),
-              metric: z.string().nullable().optional(),
-              stop: z.string().nullable().optional().describe("The stop line as written in the move"),
-              k: z.number().int().min(0).nullable().optional().describe("For a count stop line: stop if fewer than k of n"),
-              n: z.number().int().min(1).nullable().optional(),
-              checkOn: z.string().nullable().optional().describe("YYYY-MM-DD: when to read the stop line"),
-              outcome: z
-                .object({
-                  recordedOn: z.string().optional().describe("Defaults to today"),
-                  result: z.string().describe("What happened, with the number"),
-                  stopHit: z.boolean().nullable().describe("true: stop line hit; false: cleared (result must hold the number); null: unknown or not run"),
-                  how: z.enum(["measured", "recalled"]),
-                  k: z.number().int().min(0).optional(),
-                  n: z.number().int().min(1).optional(),
-                })
-                .nullable()
-                .optional(),
-            })
-          )
-          .nullable()
-          .optional()
-          .describe("Merged by id: ids not sent are kept; a new id needs move, stop and checkOn. null deletes all predictions"),
-        notes: z.string().nullable().optional(),
+        ...profileFields,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
@@ -1000,14 +1004,22 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
     {
       title: "Match small bets to a business",
       description:
-        "Sort the small-bets catalog (cheap marketing moves: listings, answering questions, comparison pages, founder emails, launch posts, open source, data pages, sponsorships...) into fitsNow, fitsLater (with what's missing) and doesntFit (with why), from a saved business profile's category and product, traction, channels, assets, audiences, product surfaces, revenue, launch status and avoid list. Report only fitsNow by default (see howToReport). Playbook: small-bets.",
-      inputSchema: { name: z.string().describe("Saved business profile id") },
+        "Sort the small-bets catalog (cheap marketing moves: listings, answering questions, comparison pages, founder emails, launch posts, open source, data pages, sponsorships...) into fitsNow, fitsLater (with what's missing) and doesntFit (with why), from a business's category and product, traction, channels, assets, audiences, product surfaces, revenue, launch status and avoid list: a saved profile's, or the same fields given in the call when nothing is saved yet. Report only fitsNow by default (see howToReport). Playbook: small-bets.",
+      inputSchema: {
+        name: z.string().optional().describe("Saved business profile id"),
+        facts: z
+          .object(Object.fromEntries(FACT_KEYS.map((k) => [k, profileFields[k]])) as { [K in (typeof FACT_KEYS)[number]]: (typeof profileFields)[K] })
+          .optional()
+          .describe("The same fields as save_business_profile, for a business with no saved profile, or laid over the named one for this call. Nothing is saved"),
+      },
       annotations: readOnly,
     },
     safe((a) => {
-      const p = getProfile(a.name);
-      if (!p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
-      return matchSmallBets(factsFromProfile(p));
+      if (!a.name && !a.facts) throw new Error(`give a saved profile's name, or facts. Existing profiles: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
+      const p = a.name ? getProfile(a.name) : null;
+      if (a.name && !p) throw new Error(`no profile "${a.name}". Existing: ${listProfiles().map((x) => x.name).join(", ") || "none"}`);
+      const { facts, from } = factsForMatch(p, a.facts);
+      return { ...(from ? { factsFrom: from } : {}), ...matchSmallBets(facts) };
     })
   );
 
