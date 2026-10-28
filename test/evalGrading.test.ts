@@ -7,9 +7,9 @@ import { checkQuotes } from "../src/lib/quoteCheck.js";
 import { checkLabels } from "../src/lib/labelCheck.js";
 import { join } from "node:path";
 // @ts-ignore: plain .mjs scripts, no type declarations
-import { fQuantile, iccOneWay, itemAgreement, pairedComparison, tQuantile, varianceSplit } from "../scripts/evals/stats.mjs";
+import { fQuantile, iccOneWay, itemAgreement, pairedComparison, preferenceSummary, tQuantile, varianceSplit } from "../scripts/evals/stats.mjs";
 // @ts-ignore
-import { answerSection, caseOfRun, copyableMaterial, errorsOverlap, fingerprintStatus, formatToolFindings, parseGrade, planBatch, redact, toolFindings } from "../scripts/evals/grades.mjs";
+import { answerSection, caseOfRun, copyableMaterial, errorsOverlap, fingerprintStatus, formatToolFindings, parseGrade, parseVerdict, planBatch, planPairs, redact, toolFindings } from "../scripts/evals/grades.mjs";
 
 const script = join(__dirname, "../scripts/evals/grade.mjs");
 
@@ -279,5 +279,91 @@ console.log("\\x60\\x60\\x60json\\n" + JSON.stringify(q < 2 ? [{ class: "bundled
     expect(out).toMatch(/Errors found by both graders/);
     const key = JSON.parse(readFileSync(join(dbl, "key.json"), "utf8"));
     expect(key.entries).toHaveLength(8);
+  });
+});
+
+describe("side-by-side judging", () => {
+  const versions = [
+    { label: "base", paths: ["runs/v4"], runs: ["1", "2", "3"].map((n) => ({ case: "ecom-ads", file: `runs/v4/ecom-ads-${n}.md`, text: `base ${n} in runs/v4` })).concat([{ case: "local-weekdays", file: "runs/v4/local-weekdays-1.md", text: "base lw" }]) },
+    { label: "cand", paths: ["runs/v5"], runs: ["1", "2"].map((n) => ({ case: "ecom-ads", file: `runs/v5/ecom-ads-${n}.md`, text: `cand ${n}` })).concat([{ case: "local-weekdays", file: "runs/v5/local-weekdays-1.md", text: "cand lw" }]) },
+  ];
+  it("pairs runs within a case, judges each pair in both orders, and lists the extra run", () => {
+    const plan = planPairs(versions, { seed: 11 });
+    expect(planPairs(versions, { seed: 11 })).toEqual(plan);
+    expect(plan.pairs).toHaveLength(3);
+    expect(plan.unpaired).toEqual([{ case: "ecom-ads", version: "base", source: expect.stringMatching(/^runs\/v4\/ecom-ads-\d\.md$/) }]);
+    for (const p of plan.pairs) {
+      expect(new Set([p.X.version, p.Y.version])).toEqual(new Set(["base", "cand"]));
+      expect(p.judgements.map((j: { first: string }) => j.first)).toEqual(["X", "Y"]);
+    }
+    for (const f of plan.files) {
+      expect(f.name).toMatch(/^(ecom-ads|local-weekdays)--[0-9a-z]{6}-[XY]\.md$/);
+      expect(f.text).not.toMatch(/v4|v5/);
+    }
+    // Which version is X is random, so over many pairs both sides carry both versions.
+    const many = planPairs([{ ...versions[0], runs: Array.from({ length: 40 }, (_, i) => ({ case: "ecom-ads", file: `b${i}.md`, text: `b${i}` })) }, { ...versions[1], runs: Array.from({ length: 40 }, (_, i) => ({ case: "ecom-ads", file: `c${i}.md`, text: `c${i}` })) }], { seed: 2 });
+    const xBase = many.pairs.filter((p: { X: { version: string } }) => p.X.version === "base").length;
+    expect(xBase).toBeGreaterThan(10);
+    expect(xBase).toBeLessThan(30);
+  });
+  it("reads the last verdict line, and nothing else", () => {
+    expect(parseVerdict("The first is longer.\n\nVerdict: second")).toBe("second");
+    expect(parseVerdict("**Verdict:** First\n")).toBe("first");
+    expect(parseVerdict("Verdict: first\nOn reflection...\nVerdict: tie")).toBe("tie");
+    expect(parseVerdict("I prefer the second answer.")).toBeNull();
+  });
+  it("scores pairs over both orders and cases as the unit (hand-computed)", () => {
+    const j = (c: string, pair: string, firstShown: string, pick: string) => ({ case: c, pair, firstShown, pick });
+    const r = preferenceSummary([
+      // a: pair 1 candidate both orders (1); pair 2 first-shown both times (0.5). Case a = 0.75.
+      j("a", "1", "candidate", "candidate"), j("a", "1", "baseline", "candidate"),
+      j("a", "2", "candidate", "candidate"), j("a", "2", "baseline", "baseline"),
+      // b: one tie and one candidate (0.75). c: baseline both orders (0).
+      j("b", "3", "candidate", "tie"), j("b", "3", "baseline", "candidate"),
+      j("c", "4", "candidate", "baseline"), j("c", "4", "baseline", "baseline"),
+    ]);
+    expect(r.cases.map((c: { score: number }) => c.score)).toEqual([0.75, 0.75, 0]);
+    expect(r.preference).toBeCloseTo(0.5, 10);
+    // sd(0.75, 0.75, 0) = 0.4330; se = 0.25; t(0.975, 2) = 4.3027.
+    expect(r.se).toBeCloseTo(0.25, 4);
+    expect(r.ci[0]).toBeCloseTo(0.5 - 4.3027 * 0.25, 3);
+    expect(r.counts).toEqual({ candidate: 4, baseline: 3, tie: 1 });
+    // Decided: 7; first shown won in a1 (once), a2 (twice), c4 (once) = 4 of 7.
+    expect(r.firstShownWins).toBeCloseTo(4 / 7, 10);
+    expect(r).toMatchObject({ bothOrders: 4, sameWinner: 2 });
+  });
+  it("pair, judge and prefer end to end, with a stand-in judge that prefers QUALITY", () => {
+    const tmp = mkdtempSync(join(tmpdir(), "eval-pair-test-"));
+    const judgeCmd = join(tmp, "judge.cjs");
+    writeFileSync(
+      judgeCmd,
+      `#!/usr/bin/env node
+const fs = require("fs");
+const prompt = process.argv[process.argv.indexOf("-p") + 1];
+const q = (label) => Number(fs.readFileSync(prompt.match(new RegExp(label + " answer: (\\\\S+\\\\.md)"))[1], "utf8").match(/QUALITY=(\\d)/)[1]);
+const a = q("First"), b = q("Second");
+console.log("Reasons.\\n\\nVerdict: " + (a > b ? "first" : a < b ? "second" : "tie"));
+`
+    );
+    chmodSync(judgeCmd, 0o755);
+    const write = (dir: string, files: Record<string, number>) => {
+      mkdirSync(join(tmp, dir), { recursive: true });
+      for (const [name, q] of Object.entries(files)) writeFileSync(join(tmp, dir, name), `## Answer\n\nAdvice. QUALITY=${q}\n\n## Tool log\n\nMARKETING_EXPERT_DATA_DIR=evals/data/${dir}-x\n`);
+    };
+    write("v1", { "ecom-ads-1.md": 1, "ecom-ads-2.md": 1, "local-weekdays-1.md": 2 });
+    write("v2", { "ecom-ads-1.md": 2, "ecom-ads-2.md": 2, "local-weekdays-1.md": 2, "local-weekdays-2.md": 2 });
+    const batch = join(tmp, "pairs");
+    const run = (args: string[]) => execFileSync(process.execPath, [script, ...args], { encoding: "utf8" });
+    expect(run(["pair", "--baseline", join(tmp, "v1"), "--candidate", join(tmp, "v2"), "--out", batch, "--seed", "4"])).toMatch(/not paired: .*local-weekdays-\d\.md \(candidate/);
+    for (const f of readdirSync(join(batch, "answers"))) expect(readFileSync(join(batch, "answers", f), "utf8")).not.toMatch(/v1|v2/);
+    run(["judge", "--batch", batch, "--grader-cmd", judgeCmd, "--parallel", "2"]);
+    expect(readdirSync(join(batch, "judgements"))).toHaveLength(6);
+    const r = JSON.parse(run(["prefer", "--batch", batch, "--json"]));
+    // ecom-ads: candidate wins both pairs in both orders (1); local-weekdays: ties (0.5).
+    expect(r.cases).toEqual([{ case: "ecom-ads", pairs: 2, score: 1 }, { case: "local-weekdays", pairs: 1, score: 0.5 }]);
+    expect(r.counts).toEqual({ candidate: 4, baseline: 0, tie: 2 });
+    expect(run(["prefer", "--batch", batch])).toMatch(/candidate preferred: 75%/);
+    // Rerunning judges only what has no verdict.
+    expect(run(["judge", "--batch", batch, "--grader-cmd", judgeCmd])).toMatch(/judging 0 of 6/);
   });
 });
