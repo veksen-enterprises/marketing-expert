@@ -28,7 +28,8 @@ describe("checkAnswer", () => {
   });
   it("passes a clean short answer that has the required parts", () => {
     const t = "Fix the homepage price first. It says $20; the pricing page says $16. I'm wrong if fewer than 1 in 10 buyers see the pricing page. Open questions: which price is current? I can save these facts as a business profile.";
-    expect(checkAnswer(t).problems).toEqual([]);
+    // A short answer to one narrow question: no stage map (tested below).
+    expect(checkAnswer(t, undefined, "answer", { stageMap: false }).problems).toEqual([]);
   });
   it("lists required parts it can't find", () => {
     const r = checkAnswer("Fix the homepage price first.");
@@ -57,7 +58,7 @@ describe("checkAnswer", () => {
     expect(checkAnswer("Your customer acquisition cost is high, so CAC payback is long.").unexplainedTerms).toEqual([]);
   });
   it("lists common words with a marketing meaning separately, not as problems", () => {
-    const r = checkAnswer("Churn is high. Fix the price first. I'm wrong if fewer than 1 in 10 buyers see the pricing page. Open questions: which price is current? I can save these facts as a business profile.");
+    const r = checkAnswer("Churn is high. Fix the price first. I'm wrong if fewer than 1 in 10 buyers see the pricing page. Open questions: which price is current? I can save these facts as a business profile.", undefined, "answer", { stageMap: false });
     expect(r.considerExplaining).toEqual(["churn"]);
     expect(r.problems).toEqual([]);
   });
@@ -120,10 +121,121 @@ describe("checkAnswer", () => {
     expect(r.unexplainedTerms).toEqual(["CTA"]);
   });
   it("keeps the verify_quotes reminder out of problems, and doesn't read host:port as a citation", () => {
-    const r = checkAnswer("The homepage says $20 (pricing.astro:263). I'm wrong if 3 of 5 buyers pay. Open questions: which price? I can save these facts as a business profile.");
+    const r = checkAnswer("The homepage says $20 (pricing.astro:263). I'm wrong if 3 of 5 buyers pay. Open questions: which price? I can save these facts as a business profile.", undefined, "answer", { stageMap: false });
     expect(r.problems).toEqual([]);
     expect(r.reminders.join(" ")).toMatch(/run verify_quotes/);
     expect(checkAnswer("Point it at api.example.com:443 first.").reminders).toEqual([]);
     expect(checkAnswer("Open the docs at docs.stripe.com:1 now.").reminders).toEqual([]);
+  });
+});
+
+describe("checkAnswer: stage map", () => {
+  // The parts every short answer above needs, so only the stage map is under test.
+  const parts = "I'm wrong if fewer than 3 of 20 buyers reply. Open questions: which price is current? I can save these facts as a business profile.";
+  const MAP = `## Stage map
+- Positioning: constraint. Nobody can tell who it's for; see positioning.
+- Offer and price: fine. $20 a month matches what buyers pay for the alternatives.
+- Presence: unknown. I didn't open the app store listing.
+- Discovery: later. Reach matters once the page says who it's for.
+- Direct outreach: later. Worth it after positioning is fixed.
+- Conversion: unknown. No sign-up numbers yet.
+- Retention and referrals: fine. 4 of 5 early users still log in weekly.
+- Legal limits: fine. No email lists yet, so no consent rules apply.
+- Founder's time: constraint. Five hours a week; one move at a time.
+- Measurement: unknown. No sign-up source is recorded; see check_tracking_events.`;
+  const answer = (map: string) => `Fix positioning first. ${parts}\n\n${map}\n`;
+  const issues = (map: string) => checkAnswer(answer(map)).stageMapIssues;
+
+  it("passes a full map, and doesn't count it toward the word limit", () => {
+    const r = checkAnswer(answer(MAP));
+    expect(r.stageMapIssues).toEqual([]);
+    expect(r.problems).toEqual([]);
+    expect(r.stageMapWords).toBeGreaterThan(100);
+    expect(r.words).toBe(checkAnswer(`Fix positioning first. ${parts}`, undefined, "answer", { stageMap: false }).words);
+  });
+  it("accepts the plain-words names and a table", () => {
+    const plain = `## Stage map
+- Who it's for and against what: constraint. No named buyer.
+- Price: fine. Matches the alternatives.
+- Site and profiles: unknown. Not opened.
+- How strangers find you: later. After positioning.
+- Cold outreach: later. After positioning.
+- Sign-up or sales call: unknown. No numbers.
+- Retention: fine. Users stay.
+- Privacy and law: fine. No email list.
+- Founder hours: fine. Ten hours a week.
+- Tracking: unknown. Nothing recorded.`;
+    expect(issues(plain)).toEqual([]);
+    const table =
+      `## Stage map\n\n| Stage | Status | Reason |\n|---|---|---|\n` +
+      MAP.split("\n")
+        .slice(1)
+        .map((l) => {
+          const [, stage, status, reason] = /^- (.+?): (\w+)\. (.*)$/.exec(l)!;
+          return `| ${stage} | ${status} | ${reason} |`;
+        })
+        .join("\n");
+    expect(issues(table)).toEqual([]);
+  });
+  it("asks for the section when the heading is missing", () => {
+    const r = checkAnswer(`Fix positioning first. ${parts}`);
+    expect(r.stageMapIssues).toHaveLength(1);
+    expect(r.problems.join(" ")).toMatch(/No "## Stage map" section/);
+    // A plan needs one too; a short single-question answer can opt out.
+    expect(checkAnswer(`Fix positioning first. ${parts}`, undefined, "plan").stageMapIssues).toHaveLength(1);
+    expect(checkAnswer(`Fix positioning first. ${parts}`, undefined, "answer", { stageMap: false })).toMatchObject({ stageMapIssues: [], problems: [] });
+  });
+  it("names the stages that have no line", () => {
+    const r = issues(MAP.split("\n").filter((l) => !/Direct outreach|Measurement/.test(l)).join("\n"));
+    expect(r).toHaveLength(1);
+    expect(r[0]).toMatch(/direct outreach/);
+    expect(r[0]).toMatch(/measurement/);
+  });
+  it("needs exactly one status per line", () => {
+    const two = issues(MAP.replace("Conversion: unknown.", "Conversion: fine / unknown."));
+    expect(two).toHaveLength(1);
+    expect(two[0]).toMatch(/Conversion.*2 statuses \(fine, unknown\)/);
+    const none = issues(MAP.replace("Conversion: unknown. No sign-up numbers yet.", "Conversion: no sign-up numbers yet."));
+    expect(none).toHaveLength(1);
+    expect(none[0]).toMatch(/Conversion.*no status/);
+    // A status word in the reason is not a second status.
+    expect(issues(MAP.replace("Worth it after positioning is fixed.", "Fine once positioning is fixed; revisit later."))).toEqual([]);
+  });
+  it("allows at most two constraints", () => {
+    const r = issues(MAP.replace("Measurement: unknown.", "Measurement: constraint."));
+    expect(r).toHaveLength(1);
+    expect(r[0]).toMatch(/3 stages are marked constraint \(positioning, founder's time, measurement\)/);
+  });
+  it("caps each line at 30 words", () => {
+    const long = "Nobody can tell who it's for, because the homepage lists every feature and names no buyer, no use and no alternative, so visitors leave within seconds of arriving on a phone.";
+    const r = issues(MAP.replace("Nobody can tell who it's for; see positioning.", long));
+    expect(r).toHaveLength(1);
+    expect(r[0]).toMatch(/Positioning line has 3\d words; keep it to 30/);
+  });
+  it("passes a real-looking full answer with a valid map", () => {
+    const full = `You have 4 paying customers and no clear buyer on the homepage. Fix who it's for before spending on reach.
+
+## Moves
+
+1. **Rewrite the homepage headline for one buyer.**
+   Mechanism: visitors who see their own job in the headline stay to read the rest.
+   Cheapest test: show two headlines to 5 past trial users on a call (cost: 2 hours).
+   Metric: how many of the 5 can say who it's for after 10 seconds.
+   Time box: 2 weeks.
+   Stop: fewer than 3 of 5 can say it.
+
+## Not yet
+
+Skip paid ads until the headline test passes. Learn more: paid acquisition.
+
+I'm wrong if 3 of 5 users already describe the same buyer. Open questions: which customer pays most? I can save these facts as a business profile.
+
+${MAP}
+
+Learn more: positioning, first customers.`;
+    const r = checkAnswer(full);
+    expect(r.stageMapIssues).toEqual([]);
+    expect(r.moveIssues).toEqual([]);
+    expect(r.problems).toEqual([]);
   });
 });

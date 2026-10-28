@@ -217,13 +217,17 @@ console.log("\\x60\\x60\\x60json\\n" + JSON.stringify(q < 2 ? [{ class: "bundled
     const grader = join(tmp, "grader.cjs");
     writeFileSync(grader, mock);
     chmodSync(grader, 0o755);
-    const write = (dir: string, files: Record<string, number>) => {
+    // A stage map with one stage missing: one check_answer problem.
+    const map = "\n\n### Stage map\n- Positioning: constraint. No buyer named.\n- Price: fine. Matches alternatives.\n- Site: unknown. Not opened.\n- Discovery: later.\n- Outreach: later.\n- Conversion: unknown.\n- Retention: fine.\n- Legal: fine.\n- Founder's time: fine.";
+    const write = (dir: string, files: Record<string, number>, withMap = false) => {
       mkdirSync(join(tmp, dir), { recursive: true });
-      for (const [name, q] of Object.entries(files)) writeFileSync(join(tmp, dir, name), `## Answer\n\nAdvice. QUALITY=${q}\n\n## Tool log\n\nMARKETING_EXPERT_DATA_DIR=evals/data/${dir}-x\n`);
+      for (const [name, q] of Object.entries(files))
+        writeFileSync(join(tmp, dir, name), `## Answer\n\nAdvice. QUALITY=${q}${withMap ? map : ""}\n\n## Tool log\n\nMARKETING_EXPERT_DATA_DIR=evals/data/${dir}-x\n`);
     };
     // Baseline: every run scores 1 on the seven id-independent items; candidate: 2. Difference: 7 points per case.
     write("v1", { "ecom-ads-1.md": 1, "ecom-ads-2.md": 1, "kitlend-ish-1.md": 1, "local-weekdays-1.md": 1 });
-    write("v2", { "ecom-ads-1.md": 2, "ecom-ads-2.md": 2, "local-weekdays-1.md": 2, "local-weekdays-2.md": 2 });
+    // The candidate has a stage map; the baseline was made before check_answer asked for one.
+    write("v2", { "ecom-ads-1.md": 2, "ecom-ads-2.md": 2, "local-weekdays-1.md": 2, "local-weekdays-2.md": 2 }, true);
     const batch = join(tmp, "batch");
     const blinded = run(["blind", "--baseline", join(tmp, "v1"), "--candidate", join(tmp, "v2"), "--out", batch, "--seed", "3"]);
     expect(blinded).toMatch(/skipped .*kitlend-ish-1\.md: not a case id/);
@@ -246,6 +250,18 @@ console.log("\\x60\\x60\\x60json\\n" + JSON.stringify(q < 2 ? [{ class: "bundled
     const bundled = json.results.find((r: { name: string }) => r.name === "errors: bundled-move");
     expect(bundled.meanDiff).toBe(-1);
     expect(run(["compare", "--batch", batch])).toMatch(/mean difference \+/);
+    // A baseline with no stage map would show "missing stage map" in every run: not compared, and said so.
+    expect(json.results.map((r: { name: string }) => r.name).filter((n: string) => /stage/i.test(n))).toEqual([]);
+    expect(json.notes.join(" ")).toMatch(/Stage-map problems not compared: no baseline answer has a "## Stage map"/);
+    expect(run(["compare", "--batch", batch])).toMatch(/Stage-map problems not compared/);
+    // Both versions with a map: compared as their own measure, apart from move-format issues.
+    write("v3", { "ecom-ads-1.md": 1, "ecom-ads-2.md": 1, "local-weekdays-1.md": 1 }, true);
+    const both = join(tmp, "batch-both");
+    run(["blind", "--baseline", join(tmp, "v3"), "--candidate", join(tmp, "v2"), "--out", both, "--seed", "3"]);
+    run(["grade", "--batch", both, "--grader-cmd", grader, "--parallel", "2"]);
+    const bothJson = JSON.parse(run(["compare", "--batch", both, "--json"]));
+    expect(bothJson.results.find((r: { name: string }) => r.name === "stage-map problems (check_answer)")).toMatchObject({ k: 2, meanDiff: 0 });
+    expect(bothJson.notes).toEqual([]);
 
     const dbl = join(tmp, "double");
     const out = run(["double-grade", "--runs", join(tmp, "v2"), "--out", dbl, "--seed", "5", "--grader-cmd", grader]);

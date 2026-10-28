@@ -198,7 +198,17 @@ async function mechanical(rows) {
   return (r) => {
     const a = checkAnswer(r.answer);
     const f = toolFindings(r.answer, materialFor(r.case), tools);
-    return { words: a.words, moveIssues: lintMoves(r.answer).issues.length, bannedWords: a.bannedWords.length, quoteProblems: f.quote ? f.quote.length : NaN, labelProblems: f.label.length };
+    // words leaves out a "## Stage map" section, so a map doesn't count against a candidate. Stage-map problems are
+    // their own measure, never part of the move-format count.
+    return {
+      words: a.words,
+      moveIssues: lintMoves(r.answer).issues.length,
+      bannedWords: a.bannedWords.length,
+      quoteProblems: f.quote ? f.quote.length : NaN,
+      labelProblems: f.label.length,
+      hasStageMap: a.stageMapWords > 0,
+      stageMapProblems: (a.stageMapIssues ?? []).length,
+    };
   };
 }
 
@@ -210,6 +220,7 @@ async function compare(batch) {
   const errorClasses = [...new Set(rows.flatMap((r) => (r.grade.errors ?? []).map((e) => e.class)))].sort();
   measures.push(["errors", (r) => (r.grade.errors ? r.grade.errors.length : NaN)], ...errorClasses.map((c) => [`errors: ${c}`, (r) => (r.grade.errors ? r.grade.errors.filter((e) => e.class === c).length : NaN)]));
   const mech = await mechanical(rows);
+  const notes = [];
   if (mech) {
     for (const r of rows) r.mech = mech(r);
     measures.push(
@@ -218,9 +229,15 @@ async function compare(batch) {
       ["quote problems (verify_quotes)", (r) => r.mech.quoteProblems],
       ["label problems (check_answer)", (r) => r.mech.labelProblems]
     );
+    // Answers made before check_answer asked for a stage map have none, so each would count as one problem: a change
+    // in what was asked, not in quality. Compared only when both versions have at least one answer with a map.
+    const noMap = key.versions.map((v) => v.label).filter((label) => !rows.some((r) => r.version === label && r.mech.hasStageMap));
+    if (noMap.length)
+      notes.push(`Stage-map problems not compared: no ${noMap.join(" or ")} answer has a "## Stage map" (made before check_answer asked for one). Word counts leave the map out for both versions.`);
+    else measures.push(["stage-map problems (check_answer)", (r) => r.mech.stageMapProblems]);
   }
   const results = measures.map(([name, f]) => ({ name, ...pairedComparison(rows.map((r) => ({ case: r.case, version: r.version, value: f(r) })).filter((x) => Number.isFinite(x.value)), base, cand) }));
-  if (opt.json) return console.log(JSON.stringify({ baseline: base, candidate: cand, results }, null, 2));
+  if (opt.json) return console.log(JSON.stringify({ baseline: base, candidate: cand, results, notes }, null, 2));
   const total = results[0];
   console.log(`Paired comparison, ${cand} minus ${base}, ${total.k} cases (cases are the unit; each case's runs are averaged first).\n`);
   console.log("| Case | Runs (base / cand) | Base mean | Cand mean | Difference |\n|---|---|---|---|---|");
@@ -235,6 +252,7 @@ async function compare(batch) {
   for (const r of results.slice(1)) console.log(`| ${r.name} | ${signed(r.meanDiff)} | ${ci(r)} | ${r.k} |`);
   const noQuotes = [...new Set(rows.filter((r) => r.mech && !Number.isFinite(r.mech.quoteProblems)).map((r) => r.case))];
   if (noQuotes.length) console.log(`\nQuote problems not counted for ${noQuotes.join(", ")}: no material folder (pass --materials).`);
+  for (const n of notes) console.log(`\n${n}`);
   console.log(`\nNot checked: whether graders could tell the versions apart from the content. The CI assumes cases are independent and treats them as equally weighted; a change that helps one business type and hurts another shows in the per-case rows, not in the mean. ${mech ? "" : "Word counts, move-format issues, quote problems and label problems were skipped: run npm run build first."}`);
 }
 

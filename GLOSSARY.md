@@ -36,6 +36,10 @@ _Avoid_: recommendation, tactic, initiative, bet
 The threshold that, if not met by the end of the time box, means stopping the move: a number, or a count of tries (fewer than k of n).
 _Avoid_: stop condition, stop rule, kill criteria, exit condition
 
+**Stage map**:
+The section that ends an answer or plan: one line per funnel stage (positioning, offer and price, presence, discovery, direct outreach, conversion, retention and referrals, legal limits, founder's time, measurement), each marked constraint, fine, unknown or later, with a short reason. It shows what the advisor ruled out and what it didn't check. Funnel stages here are not the business's Stage (0 to 3).
+_Avoid_: funnel audit, scorecard
+
 **Agent channel**:
 Coding agents as a route to users: how an agent finds and chooses a product's MCP server or library.
 _Avoid_: AI channel, LLM distribution
