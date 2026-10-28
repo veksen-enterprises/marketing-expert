@@ -518,6 +518,8 @@ export const BETS: Bet[] = [
     name: "Signs and QR codes in partner shops",
     what: "Give each signed merchant a counter sign or table tent with a QR code to your app or page, tagged per shop.",
     stage: 1,
+    // Merchants who signed up hand your app or page to their own customers: a product, not a service selling its time.
+    surfaces: PRODUCT,
     audiences: ["local"],
     cost: "Printing; minutes per shop",
     judgeAfter: "4 weeks per shop",

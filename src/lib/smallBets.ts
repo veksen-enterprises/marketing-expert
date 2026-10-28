@@ -296,18 +296,20 @@ export function factsFromProfile(p: BusinessProfile): SmallBetsFacts {
   return { category: p.category, product: p.product, businessModel: p.businessModel, traction: p.traction, assets: p.assets, audiences: p.audiences, surfaces: p.surfaces, revenue: p.revenue, launched: p.launched, avoid: p.avoid, principles: p.principles, markets: p.markets, channels: p.channels };
 }
 
-// Words for one person selling their own time. Kept narrow: a product word anywhere in the texts ("coaching app",
-// "invoicing software for freelancers") means no guess, and phrases where "service" names software are removed first.
-const SERVICE_WORDS = /\b(services?|consult(ing|ations?|ancy|ants?)|coach(es|ing)?|freelanc\w*|agenc(y|ies)|(private|solo|own|group|clinical|therapy|nutrition|dental|law|medical) practice|(paid|private|one-to-one|one-on-one|video|coaching|therapy|counsell?ing) sessions?|(per|by the) (session|hour)|hourly|retainers?|(graphic|web|brand|interior|ux|ui) designers?|tutor(s|ing)?)\b/i;
+// Words for one person selling their own time. Kept narrow: a product word in the texts ("coaching app", "invoicing
+// software for freelancers") means no guess, and phrases where "service" names software are removed first. A "for ..."
+// phrase names the clients, so its product words don't count ("brand identity for software startups").
+const SERVICE_WORDS = /\b(services?|consult(ing|ations?|ancy|ants?)|coach(es|ing)?|freelanc\w*|agenc(y|ies)|(private|solo|own|group|clinical|therapy|nutrition|dental|law|medical) practice|(paid|private|one-to-one|one-on-one|video|coaching|therapy|counsell?ing) sessions?|(per|by the) (session|hour)|hourly|retainers?|(graphic|web|brand|interior|ux|ui|logo) design(ers?)?|brand(ing| identity)|(design|branding|creative) studio|tutor(s|ing)?)\b/i;
 const SOFTWARE_SERVICE = /\b(customer|web|cloud|micro|streaming|subscription|delivery|hosting|e-?mail|messaging|payments?|managed|data) services?\b/gi;
 const PRODUCT_WORDS = /\b(apps?|software|saas|platforms?|tools?|apis?|sdks?|plugins?|extensions?|marketplaces?|cli|library|bots?|devices?|hardware)\b/i;
+const FOR_CLIENTS = /\b(for|with)\b[^,;.]*/gi;
 const SERVICE_FIELDS = ["category", "product", "businessModel"] as const;
 
 /** A service read from the saved words when no surfaces are saved: the field and its text, or undefined. */
 export function inferService(f: SmallBetsFacts): { field: (typeof SERVICE_FIELDS)[number]; text: string } | undefined {
   if (f.surfaces?.length) return undefined;
   const texts = SERVICE_FIELDS.map((field) => ({ field, text: (f[field] ?? "").trim() })).filter((x) => x.text);
-  if (texts.some((x) => PRODUCT_WORDS.test(x.text.replace(SOFTWARE_SERVICE, "")))) return undefined;
+  if (texts.some((x) => PRODUCT_WORDS.test(x.text.replace(SOFTWARE_SERVICE, "").replace(FOR_CLIENTS, "")))) return undefined;
   return texts.find((x) => {
     const t = x.text.replace(SOFTWARE_SERVICE, "");
     return SERVICE_WORDS.test(t) || REGULATED.test(t);
@@ -329,6 +331,8 @@ export function matchSmallBets(facts: SmallBetsFacts, bets: Bet[] = BETS): Match
   // doesn't fit, so a bet for another surface waits in fitsLater (the business may also have a product) rather than being ruled out.
   const inferred = inferService(facts);
   const saved = facts.surfaces;
+  // A service's own site is its shop window: it doesn't make the business a product.
+  const ownSite = (x: Surface) => x === "website" && !!saved?.includes("service");
   const f: SmallBetsFacts = inferred ? { ...facts, surfaces: ["service"] } : facts;
   const stage = readStage(f);
   const a = f.assets ?? {};
@@ -368,6 +372,10 @@ export function matchSmallBets(facts: SmallBetsFacts, bets: Bet[] = BETS): Match
     }
     if (b.surfaces && saved?.length && !b.surfaces.some((x) => saved.includes(x))) {
       doesntFit.push({ ...base(b), reason: `needs a ${b.surfaces.join(" or ")}; the product is ${saved.join(", ")}` });
+      continue;
+    }
+    if (b.surfaces && saved?.length && !b.surfaces.some((x) => !ownSite(x) && saved.includes(x))) {
+      doesntFit.push({ ...base(b), reason: "needs a product people use; a service's own website is where people book it, not a product" });
       continue;
     }
     const clash = (b.involves ?? []).filter((t) => f.avoid?.includes(t));

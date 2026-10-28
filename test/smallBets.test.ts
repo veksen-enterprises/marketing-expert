@@ -420,7 +420,7 @@ describe("profiles with unsaved surfaces or audiences", () => {
         expect(b.audiences, v.id).toBeUndefined();
         if (b.surfaces) expect(b.surfaces, v.id).toContain("service");
       }
-      expect(find(r.fitsLater, "in-store-signs")!.reason).toMatch(/if your buyers are local shops/);
+      expect(find(r.fitsLater, "merchant-visits")!.reason).toMatch(/if your buyers are local shops/);
       expect(find(r.fitsLater, "freelance-platform")!.reason).toMatch(/if your buyers are businesses/);
       for (const id of ["changelog", "embeds"]) expect(ids(r.fitsNow), id).not.toContain(id);
     }
@@ -444,6 +444,29 @@ describe("profiles with unsaved surfaces or audiences", () => {
     }
     // A saved surface wins over the words.
     expect(matchSmallBets({ category: "nutritionist", surfaces: ["web-app"] }).assumptions.join(" ")).not.toMatch(/treated as a service/);
+  });
+  // Eval 2026-10-28, solo-design: the designer's own words name the clients' product ("for software startups"), and
+  // say-what-you-sell wasn't first in 2 of 3 runs.
+  it("reads a service when a product word names the clients, not what is sold", () => {
+    for (const [field, text] of [["category", "brand identity for early-stage software startups"], ["product", "brand identity and landing page design for SaaS startups"], ["category", "branding studio"], ["category", "freelance brand designer working with app founders"]]) {
+      const r = matchSmallBets({ [field]: text });
+      expect(r.assumptions.join(" "), text).toMatch(/treated as a service/);
+      expect(r.fitsNow[0]?.id, text).toBe("say-what-you-sell");
+    }
+    for (const category of ["design tool for startups", "an app for nutritionists", "invoicing software for freelancers"]) expect(matchSmallBets({ category }).assumptions.join(" "), category).not.toMatch(/treated as a service/);
+  });
+  // Eval 2026-10-28, services-growth: a bookkeeping firm saved with surfaces service and website got hiring-post and
+  // in-store-signs in fitsNow. A service's own site is where people book it, not a product.
+  it("doesn't count a service's own website as a product", () => {
+    const firm: SmallBetsFacts = { category: "bookkeeping firm for independent restaurants", surfaces: ["service", "website"], audiences: ["businesses", "local"], revenue: "live", launched: true, traction: { payingCustomers: 38, asOf: "2026-09" } };
+    const r = matchSmallBets(firm);
+    for (const id of ["hiring-post", "in-store-signs", "changelog", "embeds", "launch-sites", "browser-extension", "curator-submissions"]) {
+      expect(ids(r.fitsNow), id).not.toContain(id);
+      expect(ids(r.doesntFit), id).toContain(id);
+    }
+    expect(find(r.doesntFit, "hiring-post")!.reason).toMatch(/service's own website/);
+    // A product with a website still gets them.
+    expect(ids(matchSmallBets({ ...firm, category: "restaurant bookkeeping software", surfaces: ["web-app", "website"] }).fitsNow)).toContain("hiring-post");
   });
   it("gives every bet a horizon that agrees with its judging window", () => {
     for (const b of BETS) {
