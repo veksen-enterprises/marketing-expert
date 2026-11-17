@@ -5,7 +5,7 @@ description: Set up marketing-expert for the product in this repo and write its 
 
 <!-- Generated from getStartedText in src/prompts.ts by scripts/build-skill.mjs. Edit there, not here. -->
 
-First check that the marketing-expert MCP server is connected: its tools include get_playbook, scan_source and check_answer. If they aren't available, tell the user to install it with `/plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert` or with `claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert`, then restart the session, and stop. Once connected, follow the server's instructions: they override your habits on length, evidence labels and numbers.
+First check that the marketing-expert MCP server is connected: its tools include get_playbook, scan_source and check_answer. If they aren't available, tell the user to install it with `/plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert` or with `claude mcp add -s user -e NODE_OPTIONS=--max-semi-space-size=4 marketing-expert -- npx -y github:veksen-enterprises/marketing-expert`, then restart the session, and stop. Once connected, follow the server's instructions: they override your habits on length, evidence labels and numbers.
 
 Set up marketing-expert for the product in this repo and show the user what it can do for it.
 

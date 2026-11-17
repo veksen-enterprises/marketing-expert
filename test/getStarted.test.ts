@@ -66,4 +66,13 @@ describe("get_started", () => {
     const args = plugin.mcpServers["marketing-expert"].args.join(" ");
     expect(getStartedSkill()).toContain(args);
   });
+  // Without the cap the server's memory after a set of heavy tool calls was 269 MB instead of 146 MB (2026-11-17).
+  it("plugin and README start the server with a capped young-generation heap", () => {
+    const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));
+    const flag = plugin.mcpServers["marketing-expert"].env?.NODE_OPTIONS;
+    expect(flag).toBe("--max-semi-space-size=4");
+    const readme = readFileSync("README.md", "utf8");
+    expect(readme).toContain(`"env": { "NODE_OPTIONS": "${flag}" }`);
+    expect(readme).toContain(`claude mcp add -s user -e NODE_OPTIONS=${flag} marketing-expert`);
+  });
 });

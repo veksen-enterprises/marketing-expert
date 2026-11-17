@@ -82,7 +82,7 @@ export function getStartedText(goal?: string): string {
 ${strategySteps("the product in this repo; use the profile saved in step 4", goal)}`;
 }
 
-export const INSTALL_COMMAND = "claude mcp add -s user marketing-expert -- npx -y github:veksen-enterprises/marketing-expert";
+export const INSTALL_COMMAND = "claude mcp add -s user -e NODE_OPTIONS=--max-semi-space-size=4 marketing-expert -- npx -y github:veksen-enterprises/marketing-expert";
 
 export function getStartedSkill(): string {
   return `---

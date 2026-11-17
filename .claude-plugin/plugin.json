@@ -1,7 +1,7 @@
 {
   "name": "marketing-expert",
   "description": "Careful marketing advisor for your product: the marketing-expert MCP server plus a get-started skill that profiles the repo and writes a first strategy.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "veksen-enterprises"
   },
@@ -12,7 +12,10 @@
       "args": [
         "-y",
         "github:veksen-enterprises/marketing-expert"
-      ]
+      ],
+      "env": {
+        "NODE_OPTIONS": "--max-semi-space-size=4"
+      }
     }
   }
 }
