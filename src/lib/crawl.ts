@@ -4,13 +4,13 @@
 // canonical problems, link depth and hreflang errors.
 
 import { parse } from "node-html-parser";
-import { guardedFetch, readCapped, MAX_HTML_BYTES, MAX_ROBOTS_BYTES } from "./netguard.js";
+import { guardedFetch, readCapped, MAX_HTML_BYTES, MAX_ROBOTS_BYTES, type FetchedResponse } from "./netguard.js";
 import { countWords, elementsOf, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
 import { parseRobots, robotsAllows, type RobotsRules } from "./robots.js";
 
 export { parseRobots, robotsAllows };
 
-export type FetchFn = (url: string, init: { redirect: "manual"; headers: Record<string, string>; signal: AbortSignal }) => Promise<Response>;
+export type FetchFn = (url: string, init: { redirect: "manual"; headers: Record<string, string>; signal: AbortSignal }) => Promise<FetchedResponse>;
 
 export interface CrawlOptions {
   startUrl: string;
@@ -102,7 +102,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const get = async (url: string) =>
     fetchFn(url, { redirect: "manual", headers: { "user-agent": UA, accept: "text/html,application/xml,text/xml,*/*;q=0.8" }, signal: AbortSignal.timeout(timeoutMs) });
   // For robots.txt, sitemaps and the start URL: follow up to 5 redirects (any host).
-  const getFollow = async (url: string): Promise<{ res: Response; url: string; chain: string[] }> => {
+  const getFollow = async (url: string): Promise<{ res: FetchedResponse; url: string; chain: string[] }> => {
     let current = url;
     const chain: string[] = [];
     for (let hop = 0; hop < 5; hop++) {
@@ -195,7 +195,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   let sitemapPartial = false;
   let urlLimitHit = false;
   const notFullUrls: string[] = [];
-  const readSitemap = async (r: Response, url: string): Promise<string> => {
+  const readSitemap = async (r: FetchedResponse, url: string): Promise<string> => {
     const { text, truncated } = await readCapped(r, MAX_SITEMAP_BYTES);
     if (truncated) {
       sitemapPartial = true;
@@ -348,7 +348,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
   const fetchPage = async (url: string): Promise<Fetched[]> => {
     const page = newPage(url);
     let current = url;
-    let res: Response | null = null;
+    let res: FetchedResponse | null = null;
     try {
       for (let hop = 0; hop < 6; hop++) {
         res = await get(current);
@@ -390,7 +390,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlResult> {
     }
     return [html ? await readBody(res!, page) : { page, links: [] }];
   };
-  const readBody = async (res: Response, page: CrawledPage): Promise<Fetched> => {
+  const readBody = async (res: FetchedResponse, page: CrawledPage): Promise<Fetched> => {
     let html: string;
     try {
       ({ text: html, truncated: page.truncated } = await readCapped(res, MAX_HTML_BYTES));

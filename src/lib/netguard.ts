@@ -2,8 +2,8 @@
 // steered by text on web pages it has read (prompt injection). Without a guard, a page could get the
 // server to request internal addresses (routers, admin panels, cloud metadata at 169.254.169.254).
 // Private, loopback, link-local and similar ranges are refused unless MARKETING_EXPERT_ALLOW_PRIVATE=1.
-// Limitation: for fetch(), DNS could change between this check and the request (DNS rebinding); this guard
-// raises the bar, it is not a network firewall. Render mode connects only to the checked addresses.
+// Requests connect only to the addresses that were checked, so a name can't resolve to a public address for the
+// check and a private one for the request (DNS rebinding). This raises the bar; it is not a network firewall.
 
 import type { LookupAddress } from "node:dns";
 import { lookup } from "node:dns/promises";
@@ -113,7 +113,7 @@ export const MAX_ROBOTS_BYTES = 500 * 1024;
  * Reads at most maxBytes of a response body (after gzip/brotli decoding) as UTF-8, like res.text(), then
  * stops the download. A few KB of gzip can inflate to gigabytes, and parsing that would crash the server.
  */
-export async function readCapped(res: Response, maxBytes: number): Promise<{ text: string; truncated: boolean }> {
+export async function readCapped(res: { body: ReadableStream<Uint8Array> | null }, maxBytes: number): Promise<{ text: string; truncated: boolean }> {
   if (!res.body) return { text: "", truncated: false };
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
@@ -132,17 +132,103 @@ export async function readCapped(res: Response, maxBytes: number): Promise<{ tex
   }
 }
 
+/** The part of a fetch() Response the page tools read. A real Response fits it, so tests can pass one. */
+export interface FetchedResponse {
+  status: number;
+  ok: boolean;
+  url: string;
+  headers: { get(name: string): string | null };
+  body: ReadableStream<Uint8Array> | null;
+}
+
+export interface GuardedInit {
+  headers?: Record<string, string>;
+  signal?: AbortSignal;
+  redirect?: "manual" | "follow";
+}
+
+/** Sends one GET without following redirects. `addrs`: connect only to these (null: resolve as usual). */
+export type Transport = (url: URL, init: GuardedInit, addrs: LookupAddress[] | null) => Promise<FetchedResponse>;
+
+// Ports fetch() refuses (the Fetch standard's "bad ports": mail, SSH, DNS, IRC and others), refused the same way here so
+// a page can't steer a request at a service that isn't a web server. Checked against Node 24's fetch on 2026-11-17.
+const BAD_PORTS = new Set([1, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 25, 37, 42, 43, 53, 69, 77, 79, 87, 95, 101, 102, 103, 104, 109, 110, 111, 113, 115, 117, 119, 123, 135, 137, 139, 143, 161, 179, 389, 427, 465, 512, 513, 514, 515, 526, 530, 531, 532, 540, 548, 554, 556, 563, 587, 601, 636, 989, 990, 993, 995, 1719, 1720, 1723, 2049, 3659, 4045, 4190, 5060, 5061, 6000, 6566, 6665, 6666, 6667, 6668, 6669, 6679, 6697, 10080]);
+
+// Statuses whose response has no body, as fetch() treats them.
+const NULL_BODY = new Set([101, 103, 204, 205, 304]);
+
 /**
- * fetch() that checks every URL, including each redirect hop, against assertPublicUrl.
- * With redirect "manual", the caller handles redirects (and must call this again for each hop).
+ * GET with node:http(s). Not fetch(): fetching 300 pages with fetch() left the server 51 MB larger, and with node:http
+ * 14 MB (macOS footprint, 2026-11-17). Decodes gzip, deflate and br like fetch(), and fails like fetch(), with a
+ * TypeError "fetch failed" whose cause is the network error, so messages built from it read the same.
  */
-export async function guardedFetch(url: string | URL, init: RequestInit = {}, maxRedirects = 5): Promise<Response> {
+export const httpTransport: Transport = async (url, init, addrs) => {
+  if (url.port && BAD_PORTS.has(Number(url.port))) throw new TypeError("fetch failed", { cause: new Error("bad port") });
+  const { request } = url.protocol === "https:" ? await import("node:https") : await import("node:http");
+  const zlib = await import("node:zlib");
+  const { Readable, pipeline } = await import("node:stream");
+  const headers: Record<string, string> = { "accept-encoding": "gzip, deflate, br" };
+  for (const [k, v] of Object.entries(init.headers ?? {})) headers[k.toLowerCase()] = v;
+  const lookup = addrs
+    ? (_host: string, opts: { all?: boolean }, cb: (...a: unknown[]) => void) => (opts?.all ? cb(null, addrs) : cb(null, addrs[0].address, addrs[0].family))
+    : undefined;
+  return new Promise<FetchedResponse>((resolve, reject) => {
+    const req = request(url, { method: "GET", headers, signal: init.signal, lookup: lookup as never, autoSelectFamily: true } as Parameters<typeof request>[1], (res) => {
+      const status = res.statusCode ?? 0;
+      const get = (name: string) => {
+        const v = res.headers[name.toLowerCase()];
+        return v === undefined ? null : Array.isArray(v) ? v.join(", ") : String(v);
+      };
+      let body: ReadableStream<Uint8Array> | null = null;
+      if (NULL_BODY.has(status)) res.resume();
+      else {
+        // Lenient flushes, as fetch() decodes: a body cut short gives what arrived, not an error.
+        const decoders = (get("content-encoding") ?? "")
+          .toLowerCase()
+          .split(",")
+          .map((e) => e.trim())
+          .filter(Boolean)
+          .reverse()
+          .map((e) =>
+            e === "gzip" || e === "x-gzip"
+              ? zlib.createGunzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH })
+              : e === "deflate"
+                ? zlib.createUnzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH })
+                : e === "br"
+                  ? zlib.createBrotliDecompress({ flush: zlib.constants.BROTLI_OPERATION_FLUSH, finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH })
+                  : null
+          );
+        // An encoding fetch() doesn't decode either is passed through as it came.
+        const chain = decoders.includes(null) ? [] : (decoders as NodeJS.ReadWriteStream[]);
+        const out = chain.length ? (pipeline as (...s: unknown[]) => NodeJS.ReadableStream)(res, ...chain, () => undefined) : res;
+        body = Readable.toWeb(out as InstanceType<typeof Readable>) as unknown as ReadableStream<Uint8Array>;
+      }
+      resolve({ status, ok: status >= 200 && status < 300, url: url.toString(), headers: { get }, body });
+    });
+    // fetch() rejects with the signal's reason when it aborts (a timeout's TimeoutError), else "fetch failed".
+    req.on("error", (e) => reject(init.signal?.aborted ? init.signal.reason : new TypeError("fetch failed", { cause: e })));
+    req.end();
+  });
+};
+
+let transport: Transport = httpTransport;
+/** For tests: send the requests another way (the guard checks still run). */
+export function setTransport(t: Transport): void {
+  transport = t;
+}
+
+/**
+ * GET that checks every URL, including each redirect hop, against the address guard, and connects only to the checked
+ * addresses. With redirect "manual", the caller handles redirects (and must call this again for each hop).
+ */
+export async function guardedFetch(url: string | URL, init: GuardedInit = {}, maxRedirects = 5): Promise<FetchedResponse & { redirectChain?: string[] }> {
   let current = new URL(url);
   const manual = init.redirect === "manual";
   const chain: string[] = [];
   for (let hop = 0; ; hop++) {
-    await assertPublicUrl(current);
-    const res = await fetch(current, { ...init, redirect: "manual" });
+    if (!/^https?:$/.test(current.protocol)) throw new BlockedAddressError(`only http(s) URLs are allowed (got ${current.protocol})`);
+    const addrs = privateAllowed() ? null : await resolvePublic(current.hostname);
+    const res = await transport(current, { ...init, redirect: "manual" }, addrs);
     const loc = res.headers.get("location");
     if (manual || !(res.status >= 300 && res.status < 400 && loc)) {
       if (!manual) {

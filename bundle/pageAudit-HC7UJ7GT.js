@@ -17,7 +17,7 @@ import {
   guardedFetch,
   readCapped,
   resolvePublic
-} from "./chunk-X2BDET27.js";
+} from "./chunk-XXICBILB.js";
 import "./chunk-5TJOM2CG.js";
 
 // src/lib/pageAudit.ts
