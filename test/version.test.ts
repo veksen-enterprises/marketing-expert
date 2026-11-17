@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../src/server.js";
-import { compareBundleWithMain, compareWithMain, describeCheck, installKind, UpdateCheck } from "../src/lib/version.js";
+import { compareBundleWithMain, compareWithMain, describeCheck, httpGet, installKind, UpdateCheck } from "../src/lib/version.js";
 
 const OLD = "a".repeat(40);
 const MAIN = "b".repeat(40);
@@ -168,5 +168,29 @@ describe("plugin bundle", () => {
     await updates.refresh();
     expect(updates.takeNotice()?.state).toBe("changed");
     expect(updates.takeNotice()).toBeNull();
+  });
+});
+
+describe("httpGet", () => {
+  it("returns status and body, sends the headers, and follows no redirect", async () => {
+    const { createServer: http } = await import("node:http");
+    const seen: string[] = [];
+    const srv = http((req, res) => {
+      seen.push(String(req.headers["user-agent"]));
+      if (req.url === "/moved") return res.writeHead(302, { location: "/ok" }).end();
+      res.writeHead(req.url === "/ok" ? 200 : 404).end(req.url === "/ok" ? "sha" : "nope");
+    });
+    await new Promise<void>((r) => srv.listen(0, "127.0.0.1", r));
+    const base = `http://127.0.0.1:${(srv.address() as { port: number }).port}`;
+    try {
+      const init = { headers: { "User-Agent": "marketing-expert-mcp" }, signal: AbortSignal.timeout(2000) };
+      const ok = await httpGet(`${base}/ok`, init);
+      expect([ok.ok, ok.status, await ok.text()]).toEqual([true, 200, "sha"]);
+      expect((await httpGet(`${base}/missing`, init)).ok).toBe(false);
+      expect((await httpGet(`${base}/moved`, init)).status).toBe(302);
+      expect(seen[0]).toBe("marketing-expert-mcp");
+    } finally {
+      srv.close();
+    }
   });
 });

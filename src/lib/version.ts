@@ -49,7 +49,36 @@ export type MainCheck =
 
 type Fetch = (url: string, init: { headers: Record<string, string>; signal: AbortSignal }) => Promise<{ ok: boolean; status: number; text(): Promise<string> }>;
 
-export async function compareWithMain(commit: string | null, fetchImpl: Fetch = fetch as unknown as Fetch, timeoutMs = 3000): Promise<MainCheck> {
+/**
+ * A GET with node:https, not the global fetch. This check runs in every session at start, and the first fetch() loads
+ * undici: a server's memory went from 48 to 78 MB for it (macOS footprint, 2026-11-17), against about 8 MB for node:https.
+ * No redirects are followed (a 3xx is not ok). A body over MAX_BODY is dropped and the answer is not ok.
+ */
+const MAX_BODY = 10 * 1024 * 1024;
+export const httpGet: Fetch = async (url, { headers, signal }) => {
+  const { request } = url.startsWith("https:") ? await import("node:https") : await import("node:http");
+  return new Promise((resolve, reject) => {
+    const req = request(url, { headers, signal }, (res) => {
+      const chunks: Buffer[] = [];
+      let size = 0;
+      res.on("data", (c: Buffer) => {
+        size += c.length;
+        if (size <= MAX_BODY) chunks.push(c);
+        else res.destroy();
+      });
+      res.on("close", () => {
+        const status = res.statusCode ?? 0;
+        const body = Buffer.concat(chunks).toString("utf8");
+        resolve({ ok: size <= MAX_BODY && status >= 200 && status < 300, status, text: async () => body });
+      });
+      res.on("error", reject);
+    });
+    req.on("error", reject);
+    req.end();
+  });
+};
+
+export async function compareWithMain(commit: string | null, fetchImpl: Fetch = httpGet, timeoutMs = 3000): Promise<MainCheck> {
   const checkedAt = new Date().toISOString();
   if (!commit) return { state: "not-checked", reason: "this build has no recorded commit (built without git)", checkedAt };
   const get = async (path: string, accept: string) => {
@@ -78,7 +107,7 @@ export async function compareWithMain(commit: string | null, fetchImpl: Fetch = 
 }
 
 /** The plugin's bundle against main's: same files, same hash. Fetches one fixed file from GitHub, never tool input. */
-export async function compareBundleWithMain(hash: string, fetchImpl: Fetch = fetch as unknown as Fetch, timeoutMs = 3000): Promise<MainCheck> {
+export async function compareBundleWithMain(hash: string, fetchImpl: Fetch = httpGet, timeoutMs = 3000): Promise<MainCheck> {
   const checkedAt = new Date().toISOString();
   try {
     const r = await fetchImpl(`https://raw.githubusercontent.com/${REPO}/main/bundle/build-info.json`, {

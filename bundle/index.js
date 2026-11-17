@@ -42781,7 +42781,30 @@ function installKind(dir = HERE) {
   if (/[\\/]_npx[\\/]/.test(dir)) return "npx";
   return basename2(dir) === "bundle" ? "bundle" : "local";
 }
-async function compareWithMain(commit, fetchImpl = fetch, timeoutMs = 3e3) {
+var MAX_BODY = 10 * 1024 * 1024;
+var httpGet = async (url2, { headers, signal }) => {
+  const { request } = url2.startsWith("https:") ? await import("node:https") : await import("node:http");
+  return new Promise((resolve2, reject) => {
+    const req = request(url2, { headers, signal }, (res) => {
+      const chunks = [];
+      let size = 0;
+      res.on("data", (c) => {
+        size += c.length;
+        if (size <= MAX_BODY) chunks.push(c);
+        else res.destroy();
+      });
+      res.on("close", () => {
+        const status = res.statusCode ?? 0;
+        const body = Buffer.concat(chunks).toString("utf8");
+        resolve2({ ok: size <= MAX_BODY && status >= 200 && status < 300, status, text: async () => body });
+      });
+      res.on("error", reject);
+    });
+    req.on("error", reject);
+    req.end();
+  });
+};
+async function compareWithMain(commit, fetchImpl = httpGet, timeoutMs = 3e3) {
   const checkedAt = (/* @__PURE__ */ new Date()).toISOString();
   if (!commit) return { state: "not-checked", reason: "this build has no recorded commit (built without git)", checkedAt };
   const get = async (path, accept) => {
@@ -42807,7 +42830,7 @@ async function compareWithMain(commit, fetchImpl = fetch, timeoutMs = 3e3) {
     return { state: "not-checked", reason: `GitHub lookup failed (${e instanceof Error ? e.message : String(e)})`, checkedAt };
   }
 }
-async function compareBundleWithMain(hash2, fetchImpl = fetch, timeoutMs = 3e3) {
+async function compareBundleWithMain(hash2, fetchImpl = httpGet, timeoutMs = 3e3) {
   const checkedAt = (/* @__PURE__ */ new Date()).toISOString();
   try {
     const r = await fetchImpl(`https://raw.githubusercontent.com/${REPO}/main/bundle/build-info.json`, {
