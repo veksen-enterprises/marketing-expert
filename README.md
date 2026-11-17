@@ -35,6 +35,8 @@ Needs Node 20 or later.
 /plugin install marketing-expert --marketplace veksen-enterprises/marketing-expert
 ```
 
+The plugin runs the server with `node` from its own folder, so it starts in about 0.1 seconds and takes half the memory of the npx install below (measured 2026-11-17: 48 MB against 103 MB). To update it, run `claude plugin update marketing-expert@marketing-expert` and start a new session.
+
 Then, in a product's repo, run `/marketing-expert:get-started`. The agent reads the repo, sums up the product, offers the directions it can take (a first strategy, small bets, positioning, a page teardown, the economics…), and asks a few profile questions the repo can't answer. A marked guess is fine. It then saves the profile and takes the direction you pick. The default is a first strategy, saved to `marketing/strategy-YYYY-MM-DD.md`.
 
 **Any agent: paste this** in a session opened at your product's repo:

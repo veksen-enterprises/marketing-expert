@@ -1,10 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import { ROOT } from "./lib/paths.js";
 
-const PROMPTS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "prompts");
+const PROMPTS_DIR = join(ROOT, "prompts");
 
 // Prompts are workflows: they fix the ORDER of thinking, which is where most marketing advice goes
 // wrong (tactics before diagnosis, copy before positioning, tests before power analysis).

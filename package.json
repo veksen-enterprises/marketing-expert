@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "MCP server that gives an LLM marketing tooling: calculators, copy/page audits, and opinionated playbooks.",
   "scripts": {
-    "build": "tsc && node scripts/build-info.mjs",
+    "build": "tsc && node scripts/build-info.mjs && node scripts/bundle.mjs",
+    "bundle": "node scripts/bundle.mjs",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
+    "esbuild": "0.28.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.3"

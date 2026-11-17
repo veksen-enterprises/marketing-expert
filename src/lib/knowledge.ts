@@ -3,8 +3,8 @@
 // and keeps the server dependency- and network-free.
 
 import { readFileSync, readdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import { ROOT } from "./paths.js";
 
 export interface Playbook {
   slug: string;
@@ -50,7 +50,7 @@ export function summaryOf(text: string): string {
   return words.length > SUMMARY_MAX_WORDS ? `${words.slice(0, SUMMARY_MAX_WORDS).join(" ")}…` : first;
 }
 
-export const KNOWLEDGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "knowledge");
+export const KNOWLEDGE_DIR = join(ROOT, "knowledge");
 
 function parseFrontmatter(raw: string): { meta: Record<string, string>; body: string } {
   // A Windows checkout (core.autocrlf) has CRLF line ends; some editors add a BOM.
