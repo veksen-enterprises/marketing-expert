@@ -135,17 +135,42 @@ export interface SearchHit {
 /** Query terms beyond this are ignored: each one costs a scan of the whole corpus. */
 export const MAX_QUERY_TERMS = 32;
 
+/** How often each word occurs in a section, and the section's length in words. */
+export interface TermCounts {
+  tf: Map<string, number>;
+  len: number;
+}
+
+/**
+ * A section's words for search: heading terms count triple (a section titled "Pricing" is about pricing), and tags count
+ * once per section (they tie every section to its playbook's topic). Counts, not the word list: a list held every word
+ * of every playbook as its own string, about 8 MB that stayed for the life of the server. `intern` gives one string per
+ * distinct word across the corpus.
+ */
+export function termCounts(s: Section, intern: Map<string, string>): TermCounts {
+  const tf = new Map<string, number>();
+  let len = 0;
+  const add = (toks: string[], times: number) => {
+    for (const t of toks) {
+      let k = intern.get(t);
+      if (k === undefined) intern.set(t, (k = t));
+      tf.set(k, (tf.get(k) ?? 0) + times);
+      len += times;
+    }
+  };
+  add(tokenize(s.text), 1);
+  add(tokenize(`${s.playbookTitle} ${s.heading}`), 2);
+  add(tokenize(s.tags.join(" ")), 1);
+  return { tf, len };
+}
+
 // Each corpus is split into words once, not on every search.
-const docCache = new WeakMap<Section[], Array<{ s: Section; toks: string[] }>>();
+const docCache = new WeakMap<Section[], Array<{ s: Section } & TermCounts>>();
 function docsOf(corpus: Section[]) {
   let docs = docCache.get(corpus);
   if (!docs) {
-    docs = corpus.map((s) => {
-      const head = tokenize(`${s.playbookTitle} ${s.heading}`);
-      // Heading terms count triple: a section titled "Pricing" is about pricing.
-      // Tags count once per section: they tie every section to its playbook's topic.
-      return { s, toks: [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))] };
-    });
+    const intern = new Map<string, string>();
+    docs = corpus.map((s) => ({ s, ...termCounts(s, intern) }));
     docCache.set(corpus, docs);
   }
   return docs;
@@ -156,20 +181,20 @@ export function searchKnowledge(query: string, limit = 5, corpus = sections()): 
   if (q.length === 0) return [];
   const docs = docsOf(corpus);
   const N = docs.length;
-  const avg = docs.reduce((n, d) => n + d.toks.length, 0) / Math.max(1, N);
+  const avg = docs.reduce((n, d) => n + d.len, 0) / Math.max(1, N);
   const df = new Map<string, number>();
-  for (const t of q) df.set(t, docs.filter((d) => d.toks.includes(t)).length);
+  for (const t of q) df.set(t, docs.filter((d) => d.tf.has(t)).length);
   const k1 = 1.2;
   const b = 0.75;
   return docs
     .map((d) => {
       let score = 0;
       for (const t of q) {
-        const f = d.toks.filter((x) => x === t).length;
+        const f = d.tf.get(t) ?? 0;
         if (!f) continue;
         const n = df.get(t) ?? 0;
         const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
-        score += (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.toks.length) / avg));
+        score += (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * d.len) / avg));
       }
       return { slug: d.s.slug, playbookTitle: d.s.playbookTitle, heading: d.s.heading, score, text: d.s.text, summary: d.s.summary, pointer: d.s.pointer };
     })

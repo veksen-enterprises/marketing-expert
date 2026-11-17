@@ -4,7 +4,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { sections, tokenize, loadPlaybooks, KNOWLEDGE_DIR, type Section, type SearchHit } from "./knowledge.js";
+import { sections, tokenize, termCounts, loadPlaybooks, KNOWLEDGE_DIR, type Section, type SearchHit } from "./knowledge.js";
 
 const STRENGTH: Array<[string, RegExp, number]> = [
   ["research", /\b(controlled )?research\b|\bpeer-reviewed\b|\brct\b|\bpreprint\b/i, 4],
@@ -75,12 +75,17 @@ function namedSlug(claim: string): string | null {
   return null;
 }
 
+// The paragraphs' normalised text, built once: normalising every paragraph again for each quoted phrase was most of what
+// a check_answer call allocated.
+let normParagraphs: string[] | null = null;
+
 /** The labelled paragraph that contains a phrase quoted in the claim. */
 function quotedSource(claim: string): Section | null {
   for (const m of claim.matchAll(/["“]([^"”\n]{12,200})["”]/g)) {
     const q = norm(m[1]);
-    const p = paragraphs().find((p) => norm(p.text).includes(q));
-    if (p) return p;
+    const texts = (normParagraphs ??= paragraphs().map((p) => norm(p.text)));
+    const i = texts.findIndex((t) => t.includes(q));
+    if (i >= 0) return paragraphs()[i];
   }
   return null;
 }
@@ -153,7 +158,8 @@ export function paragraphs(): Section[] {
   return paragraphCache;
 }
 
-let searchIndex: { docs: Array<{ s: Section; len: number }>; postings: Map<string, Array<[number, number]>>; avg: number } | null = null;
+// postings: for each token, its paragraphs and counts as flat pairs [paragraph, count, paragraph, count, ...].
+let searchIndex: { docs: Array<{ s: Section; len: number }>; postings: Map<string, number[]>; avg: number } | null = null;
 
 /** searchKnowledge(query, limit, paragraphs()) with each paragraph tokenised once: searchKnowledge tokenises the whole
  * corpus on every call, and check_answer searches once per labelled sentence. Same tokens, weights and ranking. */
@@ -161,18 +167,16 @@ export function searchParagraphs(query: string, limit = 5, slug?: string): Searc
   if (!searchIndex) {
     // For each token, the paragraphs that hold it (by index) and how often. A query then reads only those paragraphs;
     // counting each token's paragraphs by reading all of them took 1.3 s for 500 sentences of different words.
-    const postings = new Map<string, Array<[number, number]>>();
+    const postings = new Map<string, number[]>();
+    const intern = new Map<string, string>();
     const docs = paragraphs().map((s, i) => {
-      const head = tokenize(`${s.playbookTitle} ${s.heading}`);
-      const toks = [...tokenize(s.text), ...head, ...head, ...tokenize(s.tags.join(" "))];
-      const tf = new Map<string, number>();
-      for (const t of toks) tf.set(t, (tf.get(t) ?? 0) + 1);
+      const { tf, len } = termCounts(s, intern);
       for (const [t, f] of tf) {
         const list = postings.get(t);
-        if (list) list.push([i, f]);
-        else postings.set(t, [[i, f]]);
+        if (list) list.push(i, f);
+        else postings.set(t, [i, f]);
       }
-      return { s, len: toks.length };
+      return { s, len };
     });
     searchIndex = { docs, postings, avg: docs.reduce((n, d) => n + d.len, 0) / Math.max(1, docs.length) };
   }
@@ -187,9 +191,13 @@ export function searchParagraphs(query: string, limit = 5, slug?: string): Searc
   for (const t of q) {
     const list = postings.get(t);
     if (!list) continue;
-    const n = list.length;
+    const n = list.length / 2;
     const idf = Math.log(1 + (N - n + 0.5) / (n + 0.5));
-    for (const [i, f] of list) scores.set(i, (scores.get(i) ?? 0) + (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * docs[i].len) / avg)));
+    for (let j = 0; j < list.length; j += 2) {
+      const i = list[j];
+      const f = list[j + 1];
+      scores.set(i, (scores.get(i) ?? 0) + (idf * f * (k1 + 1)) / (f + k1 * (1 - b + (b * docs[i].len) / avg)));
+    }
   }
   // In paragraph order before the sort, so equal scores rank as in searchKnowledge.
   const hits: SearchHit[] = [...scores]
