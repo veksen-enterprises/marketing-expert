@@ -164,14 +164,40 @@ const NULL_BODY = new Set([101, 103, 204, 205, 304]);
  */
 export const httpTransport: Transport = async (url, init, addrs) => {
   if (url.port && BAD_PORTS.has(Number(url.port))) throw new TypeError("fetch failed", { cause: new Error("bad port") });
+  // fetch() refuses these; node:http would send them as an Authorization header.
+  if (url.username || url.password) throw new TypeError("Request cannot be constructed from a URL that includes credentials");
   const { request } = url.protocol === "https:" ? await import("node:https") : await import("node:http");
   const zlib = await import("node:zlib");
-  const { Readable, pipeline } = await import("node:stream");
-  const headers: Record<string, string> = { "accept-encoding": "gzip, deflate, br" };
+  const { Readable, Transform, pipeline } = await import("node:stream");
+  // fetch()'s defaults, so servers and firewalls answer as they did; the caller's headers replace them.
+  const headers: Record<string, string> = { accept: "*/*", "accept-language": "*", "accept-encoding": "gzip, deflate, br" };
   for (const [k, v] of Object.entries(init.headers ?? {})) headers[k.toLowerCase()] = v;
   const lookup = addrs
     ? (_host: string, opts: { all?: boolean }, cb: (...a: unknown[]) => void) => (opts?.all ? cb(null, addrs) : cb(null, addrs[0].address, addrs[0].family))
     : undefined;
+  // Lenient flushes, as fetch() decodes: a body cut short gives what arrived, not an error.
+  const sync = { flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH };
+  // "deflate" is meant to have a zlib header, but some servers send raw deflate; fetch() reads both. The first byte tells.
+  const deflate = () => {
+    let inner: InstanceType<typeof Transform> | null = null;
+    return new Transform({
+      transform(chunk: Buffer, _enc, cb) {
+        if (!inner) {
+          inner = (chunk[0] & 0x0f) === 0x08 ? zlib.createInflate(sync) : zlib.createInflateRaw(sync);
+          inner.on("data", (d) => this.push(d)).on("error", (e) => this.destroy(e));
+        }
+        inner.write(chunk, () => cb());
+      },
+      flush(cb) {
+        if (!inner) return cb();
+        inner.on("end", () => cb()).end();
+      },
+      destroy(err, cb) {
+        inner?.destroy();
+        cb(err);
+      },
+    });
+  };
   return new Promise<FetchedResponse>((resolve, reject) => {
     const req = request(url, { method: "GET", headers, signal: init.signal, lookup: lookup as never, autoSelectFamily: true } as Parameters<typeof request>[1], (res) => {
       const status = res.statusCode ?? 0;
@@ -182,7 +208,6 @@ export const httpTransport: Transport = async (url, init, addrs) => {
       let body: ReadableStream<Uint8Array> | null = null;
       if (NULL_BODY.has(status)) res.resume();
       else {
-        // Lenient flushes, as fetch() decodes: a body cut short gives what arrived, not an error.
         const decoders = (get("content-encoding") ?? "")
           .toLowerCase()
           .split(",")
@@ -191,9 +216,9 @@ export const httpTransport: Transport = async (url, init, addrs) => {
           .reverse()
           .map((e) =>
             e === "gzip" || e === "x-gzip"
-              ? zlib.createGunzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH })
+              ? zlib.createGunzip(sync)
               : e === "deflate"
-                ? zlib.createUnzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH })
+                ? deflate()
                 : e === "br"
                   ? zlib.createBrotliDecompress({ flush: zlib.constants.BROTLI_OPERATION_FLUSH, finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH })
                   : null
@@ -201,7 +226,27 @@ export const httpTransport: Transport = async (url, init, addrs) => {
         // An encoding fetch() doesn't decode either is passed through as it came.
         const chain = decoders.includes(null) ? [] : (decoders as NodeJS.ReadWriteStream[]);
         const out = chain.length ? (pipeline as (...s: unknown[]) => NodeJS.ReadableStream)(res, ...chain, () => undefined) : res;
-        body = Readable.toWeb(out as InstanceType<typeof Readable>) as unknown as ReadableStream<Uint8Array>;
+        // A body that fails after the headers fails like fetch(): the signal's reason on a timeout, else
+        // TypeError "terminated" with the cause (a bare stream error can have an empty message, or just "aborted").
+        const chunks = (out as InstanceType<typeof Readable>)[Symbol.asyncIterator]();
+        body = new ReadableStream<Uint8Array>(
+          {
+            async pull(c) {
+              try {
+                const { value, done } = await chunks.next();
+                if (done) c.close();
+                else c.enqueue(value as Uint8Array);
+              } catch (e) {
+                c.error(init.signal?.aborted ? init.signal.reason : new TypeError("terminated", { cause: e }));
+              }
+            },
+            async cancel() {
+              res.destroy();
+              await chunks.return?.();
+            },
+          },
+          { highWaterMark: 0 }
+        );
       }
       resolve({ status, ok: status >= 200 && status < 300, url: url.toString(), headers: { get }, body });
     });
