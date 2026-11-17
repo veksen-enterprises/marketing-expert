@@ -9,9 +9,11 @@ import { checkQuotes } from "./lib/quoteCheck.js";
 import { analyzeCopy, checkLimits } from "./lib/copy.js";
 import { PLATFORM_LIMITS } from "./lib/platformLimits.js";
 import { buildUtm } from "./lib/utm.js";
-import { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } from "./lib/pageAudit.js";
-import { crawlSite } from "./lib/crawl.js";
-import { checkAiCrawlerAccess, evaluateAiAccess } from "./lib/aiCrawlers.js";
+// The page tools load on first use: their modules pull in node:http and the HTML parser (about 4 MB of a fresh server's
+// resident memory), and most sessions never fetch a page.
+const pageAudit = () => import("./lib/pageAudit.js");
+const crawl = () => import("./lib/crawl.js");
+const aiCrawlers = () => import("./lib/aiCrawlers.js");
 import { checkSitemapXml, checkRobotsTxt } from "./lib/sitemapRobots.js";
 import { checkEmailDomain } from "./lib/emailDomain.js";
 import { checkEmailHtml } from "./lib/emailHtml.js";
@@ -707,6 +709,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
     safe(async (a) => {
+      const { auditHtml, fetchAndAudit, renderAndAudit, NotCheckedError } = await pageAudit();
       if (a.html) return { untrustedContent: UNTRUSTED, ...auditHtml(a.html, a.url) };
       if (!a.url) throw new Error("provide url or html");
       try {
@@ -733,7 +736,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    safe(async (a) => ({ untrustedContent: UNTRUSTED, ...(await crawlSite({ startUrl: a.url, maxPages: a.maxPages, useSitemap: a.useSitemap, respectRobots: a.respectRobots })) }))
+    safe(async (a) => ({ untrustedContent: UNTRUSTED, ...(await (await crawl()).crawlSite({ startUrl: a.url, maxPages: a.maxPages, useSitemap: a.useSitemap, respectRobots: a.respectRobots })) }))
   );
 
   server.registerTool(
@@ -773,11 +776,12 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
       },
       annotations: { readOnlyHint: true, openWorldHint: true },
     },
-    safe(async (a) =>
-      a.robotsTxt !== undefined
+    safe(async (a) => {
+      const { evaluateAiAccess, checkAiCrawlerAccess } = await aiCrawlers();
+      return a.robotsTxt !== undefined
         ? { untrustedContent: UNTRUSTED, ...evaluateAiAccess(a.robotsTxt, a.url, a.paths), llmsTxtFound: null, note: "Evaluated the robots.txt text you supplied; the live site was not fetched. Firewall/CDN rules and the live file may differ." }
-        : { untrustedContent: UNTRUSTED, ...(await checkAiCrawlerAccess(a.url, a.paths)) }
-    )
+        : { untrustedContent: UNTRUSTED, ...(await checkAiCrawlerAccess(a.url, a.paths)) };
+    })
   );
 
   // ── Analytics tracking ────────────────────────────────────────────────────
