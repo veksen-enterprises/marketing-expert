@@ -55,34 +55,93 @@ function entity(e: string, k: string): string {
 }
 
 // Applied the same way to source lines and to quotes, so a quote of the rendered words matches the markup.
+// Each step runs only when its line holds the character the step needs: most lines need none, and every step copies the line.
 function norm(s: string): string {
-  return s
-    // JSX writes a space at a line break as {" "}.
-    .replace(/\{\s*(["'])\s\1\s*\}/g, " ")
-    // Drop tags but keep their quoted attribute values (tooltips, alt text, titles). [^<>], not [^>]: from every "<"
-    // with no ">" after it, the scan ran to the end of the line.
-    .replace(/<[^<>]+>/g, (tag) => [...tag.matchAll(/=\s*"([^"]*)"/g)].map((m) => ` ${m[1]} `).join(""))
-    // Markdown links and images show only their text.
-    .replace(/!?\[([^\[\]]*)\]\([^()\s]*\)/g, "$1")
-    // After the tags are dropped, so a decoded "&lt;b&gt;" stays as text.
-    .replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, entity)
-    .toLowerCase()
-    .replace(/[‘’]/g, "'")
-    .replace(/[“”]/g, '"')
-    .replace(/[*_`]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  // JSX writes a space at a line break as {" "}.
+  if (s.includes("{")) s = s.replace(/\{\s*(["'])\s\1\s*\}/g, " ");
+  // Drop tags but keep their quoted attribute values (tooltips, alt text, titles). [^<>], not [^>]: from every "<"
+  // with no ">" after it, the scan ran to the end of the line.
+  if (s.includes("<")) s = s.replace(/<[^<>]+>/g, (tag) => [...tag.matchAll(/=\s*"([^"]*)"/g)].map((m) => ` ${m[1]} `).join(""));
+  // Markdown links and images show only their text.
+  if (s.includes("](")) s = s.replace(/!?\[([^\[\]]*)\]\([^()\s]*\)/g, "$1");
+  // After the tags are dropped, so a decoded "&lt;b&gt;" stays as text.
+  if (s.includes("&")) s = s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, entity);
+  s = s.toLowerCase();
+  if (/[‘’“”]/.test(s)) s = s.replace(/[‘’]/g, "'").replace(/[“”]/g, '"');
+  if (/[*_`]/.test(s)) s = s.replace(/[*_`]/g, "");
+  return s.replace(/\s+/g, " ").trim();
 }
 
-interface Indexed {
-  rel: string;
-  raw: string[];
+/**
+ * A file read for this call. The normalised text is built on the first search of the file, so a file never searched
+ * costs only its source. Line offsets are kept in typed arrays and source lines are cut out on demand: an array of line
+ * strings and a normalised copy for every file tripled the memory a call held (a 20 MB repository peaked near 120 MB).
+ */
+class Indexed {
+  #src: string;
+  #lineStarts: Int32Array | null = null;
+  #joined: string | null = null;
+  #starts: Int32Array | null = null;
+  constructor(
+    readonly rel: string,
+    src: string,
+    /** The directory `rel` is relative to. */
+    readonly base?: string
+  ) {
+    this.#src = src;
+  }
+  /** Where each source line starts in the source, plus one past the end. */
+  get #ls(): Int32Array {
+    if (!this.#lineStarts) {
+      const at = [0];
+      for (let i = this.#src.indexOf("\n"); i >= 0; i = this.#src.indexOf("\n", i + 1)) at.push(i + 1);
+      at.push(this.#src.length + 1);
+      this.#lineStarts = Int32Array.from(at);
+    }
+    return this.#lineStarts;
+  }
+  /** How many lines the source has, as src.split("\n").length counts them. */
+  get lineCount(): number {
+    return this.#ls.length - 1;
+  }
+  /** Source line i (0-based), without its "\n". */
+  line(i: number): string {
+    const ls = this.#ls;
+    return this.#src.slice(ls[i], ls[i + 1] - 1);
+  }
   /** The normalised lines, joined with spaces. */
-  joined: string;
+  get joined(): string {
+    if (this.#joined === null) this.#build();
+    return this.#joined as string;
+  }
   /** Character offset in `joined` where each line starts. */
-  starts: number[];
-  /** The directory `rel` is relative to. */
-  base?: string;
+  get starts(): Int32Array {
+    if (this.#starts === null) this.#build();
+    return this.#starts as Int32Array;
+  }
+  /** Whether the normalised text is built. */
+  get normalised(): boolean {
+    return this.#joined !== null;
+  }
+  /** Drop the normalised text; it is built again if the file is searched again. */
+  release(): void {
+    this.#joined = null;
+    this.#starts = null;
+  }
+  #build(): void {
+    const n = this.lineCount;
+    const starts = new Int32Array(n);
+    const parts: string[] = new Array(n);
+    let pos = 0;
+    for (let i = 0; i < n; i++) {
+      const l = norm(this.line(i));
+      parts[i] = l;
+      starts[i] = pos;
+      pos += l.length + 1;
+    }
+    this.#joined = parts.join(" ");
+    this.#starts = starts;
+  }
 }
 
 // A quote not found in its cited file is searched for in every file, so the time grows with quotes x repository size.
@@ -94,15 +153,7 @@ const MAX_TOTAL = 50 * 1024 * 1024;
 const MAX_DIRECT = 5 * 1024 * 1024;
 
 function indexed(rel: string, src: string, base?: string): Indexed {
-  const raw = src.split("\n");
-  const lines = raw.map(norm);
-  const starts: number[] = [];
-  let pos = 0;
-  for (const l of lines) {
-    starts.push(pos);
-    pos += l.length + 1;
-  }
-  return { rel, raw, joined: lines.join(" "), starts, base };
+  return new Indexed(rel, src, base);
 }
 
 function index(dirs: string[], notes: string[], read: { roots: string[]; total: number }): Indexed[] {
@@ -335,6 +386,7 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
   const unpaired: string[] = [];
   // Many quotes in one sentence often cite the same file: resolve each citation once per call.
   const resolved = new Map<string, Indexed[]>();
+  const pending: Array<{ r: QuoteResult; fragments: string[]; found: Map<Indexed, number[]>; status: (found: boolean) => QuoteStatus }> = [];
   const targetsOf = (c: Citation) => {
     const key = c.adr ? `adr ${c.adr}` : c.path;
     let t = resolved.get(key);
@@ -410,20 +462,22 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
       // quote, then the nearest one.
       const holder = adjacent ?? [...cites].sort((a, b) => dist(a) - dist(b)).find((c) => targetsOf(c).some((f) => findIn(f).length));
       const cite = holder ?? (cites.length ? cites.reduce((a, b) => (dist(b) < dist(a) ? b : a)) : null);
-      const everywhere = () => files.flatMap((f) => findIn(f).map((l) => `${f.rel}:${l}`)).slice(0, 5);
+      // Searched for in every file after the loop, in one pass over the files (see below).
+      const everywhere = (r: QuoteResult, status: (found: boolean) => QuoteStatus) => {
+        results.push(r);
+        pending.push({ r, fragments, found, status });
+      };
       if (!cite) {
-        const at = everywhere();
-        results.push({ quote, cited: null, status: at.length ? "uncited-found" : "uncited-not-found", foundAt: at });
+        everywhere({ quote, cited: null, status: "uncited-not-found", foundAt: [] }, (at) => (at ? "uncited-found" : "uncited-not-found"));
         continue;
       }
       const label = `${cite.adr ? `ADR ${cite.adr}` : cite.path}${cite.start ? `:${cite.start}${cite.end ? `-${cite.end}` : ""}` : ""}`;
       const targets = targetsOf(cite);
       if (!targets.length) {
-        const at = everywhere();
         const why = notRead.get(cite.adr ? `adr ${cite.adr}` : cite.path);
-        const r: QuoteResult = { quote, cited: label, status: at.length ? "other-file" : why ? "cited-file-not-read" : "cited-file-missing", foundAt: at };
+        const r: QuoteResult = { quote, cited: label, status: "cited-file-missing", foundAt: [] };
         if (why === "budget") budgetHit.add(r);
-        results.push(r);
+        everywhere(r, (at) => (at ? "other-file" : why ? "cited-file-not-read" : "cited-file-missing"));
         continue;
       }
       const inCited = targets.flatMap((f) => findIn(f).map((l) => ({ f, l })));
@@ -437,17 +491,31 @@ export function checkQuotes(text: string, dirs: string[], lineTolerance = 2, too
         const { f, l } = inCited[0];
         // The nearest non-blank line before and after the match, plus the match itself.
         let before = l - 2;
-        while (before >= 0 && !f.raw[before].trim()) before--;
+        while (before >= 0 && !f.line(before).trim()) before--;
         let after = l;
-        while (after < f.raw.length && !f.raw[after].trim()) after++;
-        const context = [before >= 0 ? f.raw[before] : "", f.raw[l - 1], after < f.raw.length ? f.raw[after] : ""].map((x) => x.trim()).filter(Boolean).join(" / ").slice(0, 400);
+        while (after < f.lineCount && !f.line(after).trim()) after++;
+        const context = [before >= 0 ? f.line(before) : "", f.line(l - 1), after < f.lineCount ? f.line(after) : ""].map((x) => x.trim()).filter(Boolean).join(" / ").slice(0, 400);
         results.push({ quote, cited: label, status: near ? "verified" : "wrong-line", foundAt: inCited.slice(0, 5).map(({ f, l }) => `${f.rel}:${l}`), context });
         continue;
       }
-      const at = everywhere();
-      results.push({ quote, cited: label, status: at.length ? "other-file" : "not-found", foundAt: at });
+      everywhere({ quote, cited: label, status: "not-found", foundAt: [] }, (at) => (at ? "other-file" : "not-found"));
     }
   }
+  // Quotes to look for in every file: the first 5 places, in file order. One pass, each file normalised once and let go
+  // after it is searched, so a call holds the sources and one normalised file, not a normalised copy of the whole repo.
+  const want = 5;
+  for (const f of files) {
+    const open = pending.filter((p) => p.r.foundAt.length < want);
+    if (!open.length) break;
+    const kept = f.normalised;
+    for (const p of open) {
+      let hits = p.found.get(f);
+      if (!hits) p.found.set(f, (hits = find(f, p.fragments)));
+      for (const l of hits) if (p.r.foundAt.length < want) p.r.foundAt.push(`${f.rel}:${l}`);
+    }
+    if (!kept) f.release();
+  }
+  for (const p of pending) p.r.status = p.status(p.r.foundAt.length > 0);
   if (skipped) notes.push(`Only the first ${MAX_QUOTES} quotes were checked; ${skipped} more were not. Check them in another call.`);
   const counts = { verified: 0, "wrong-line": 0, "other-file": 0, "cited-file-missing": 0, "cited-file-not-read": 0, "not-found": 0, "uncited-found": 0, "uncited-not-found": 0 } as Record<QuoteStatus, number>;
   for (const r of results) counts[r.status]++;
