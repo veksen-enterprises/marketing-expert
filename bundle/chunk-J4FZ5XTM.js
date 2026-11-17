@@ -120,12 +120,34 @@ var BAD_PORTS = /* @__PURE__ */ new Set([1, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22
 var NULL_BODY = /* @__PURE__ */ new Set([101, 103, 204, 205, 304]);
 var httpTransport = async (url, init, addrs) => {
   if (url.port && BAD_PORTS.has(Number(url.port))) throw new TypeError("fetch failed", { cause: new Error("bad port") });
+  if (url.username || url.password) throw new TypeError("Request cannot be constructed from a URL that includes credentials");
   const { request } = url.protocol === "https:" ? await import("node:https") : await import("node:http");
   const zlib = await import("node:zlib");
-  const { Readable, pipeline } = await import("node:stream");
-  const headers = { "accept-encoding": "gzip, deflate, br" };
+  const { Readable, Transform, pipeline } = await import("node:stream");
+  const headers = { accept: "*/*", "accept-language": "*", "accept-encoding": "gzip, deflate, br" };
   for (const [k, v] of Object.entries(init.headers ?? {})) headers[k.toLowerCase()] = v;
   const lookup2 = addrs ? (_host, opts, cb) => opts?.all ? cb(null, addrs) : cb(null, addrs[0].address, addrs[0].family) : void 0;
+  const sync = { flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH };
+  const deflate = () => {
+    let inner = null;
+    return new Transform({
+      transform(chunk, _enc, cb) {
+        if (!inner) {
+          inner = (chunk[0] & 15) === 8 ? zlib.createInflate(sync) : zlib.createInflateRaw(sync);
+          inner.on("data", (d) => this.push(d)).on("error", (e) => this.destroy(e));
+        }
+        inner.write(chunk, () => cb());
+      },
+      flush(cb) {
+        if (!inner) return cb();
+        inner.on("end", () => cb()).end();
+      },
+      destroy(err, cb) {
+        inner?.destroy();
+        cb(err);
+      }
+    });
+  };
   return new Promise((resolve, reject) => {
     const req = request(url, { method: "GET", headers, signal: init.signal, lookup: lookup2, autoSelectFamily: true }, (res) => {
       const status = res.statusCode ?? 0;
@@ -137,11 +159,29 @@ var httpTransport = async (url, init, addrs) => {
       if (NULL_BODY.has(status)) res.resume();
       else {
         const decoders = (get("content-encoding") ?? "").toLowerCase().split(",").map((e) => e.trim()).filter(Boolean).reverse().map(
-          (e) => e === "gzip" || e === "x-gzip" ? zlib.createGunzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH }) : e === "deflate" ? zlib.createUnzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH }) : e === "br" ? zlib.createBrotliDecompress({ flush: zlib.constants.BROTLI_OPERATION_FLUSH, finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH }) : null
+          (e) => e === "gzip" || e === "x-gzip" ? zlib.createGunzip(sync) : e === "deflate" ? deflate() : e === "br" ? zlib.createBrotliDecompress({ flush: zlib.constants.BROTLI_OPERATION_FLUSH, finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH }) : null
         );
         const chain = decoders.includes(null) ? [] : decoders;
         const out = chain.length ? pipeline(res, ...chain, () => void 0) : res;
-        body = Readable.toWeb(out);
+        const chunks = out[Symbol.asyncIterator]();
+        body = new ReadableStream(
+          {
+            async pull(c) {
+              try {
+                const { value, done } = await chunks.next();
+                if (done) c.close();
+                else c.enqueue(value);
+              } catch (e) {
+                c.error(init.signal?.aborted ? init.signal.reason : new TypeError("terminated", { cause: e }));
+              }
+            },
+            async cancel() {
+              res.destroy();
+              await chunks.return?.();
+            }
+          },
+          { highWaterMark: 0 }
+        );
       }
       resolve({ status, ok: status >= 200 && status < 300, url: url.toString(), headers: { get }, body });
     });
