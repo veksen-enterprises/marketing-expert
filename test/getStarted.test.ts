@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { getStartedSkill, getStartedText, PROFILE_QUESTIONS } from "../src/prompts.js";
 import { factsFromProfile, matchSmallBets } from "../src/lib/smallBets.js";
 import type { BusinessProfile } from "../src/lib/profile.js";
+import { REPO } from "../src/lib/version.js";
 
 describe("get_started", () => {
   it("the committed skill matches the prompt text (rebuild: npm run build && node scripts/build-skill.mjs)", () => {
@@ -63,8 +64,10 @@ describe("get_started", () => {
   });
   it("plugin and skill install the same server", () => {
     const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));
-    const args = plugin.mcpServers["marketing-expert"].args.join(" ");
-    expect(getStartedSkill()).toContain(args);
+    // The plugin runs the bundle committed in this repo; the skill's install command runs the same repo through npx.
+    expect(plugin.mcpServers["marketing-expert"]).toMatchObject({ command: "node", args: ["${CLAUDE_PLUGIN_ROOT}/bundle/index.js"] });
+    expect(plugin.repository).toBe(`https://github.com/${REPO}`);
+    expect(getStartedSkill()).toContain(`npx -y github:${REPO}`);
   });
   // Without the cap the server's memory after a set of heavy tool calls was 269 MB instead of 146 MB (2026-11-17).
   it("plugin and README start the server with a capped young-generation heap", () => {

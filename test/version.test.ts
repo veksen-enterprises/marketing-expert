@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createServer } from "../src/server.js";
-import { compareWithMain, describeCheck, installKind, UpdateCheck } from "../src/lib/version.js";
+import { compareBundleWithMain, compareWithMain, describeCheck, installKind, UpdateCheck } from "../src/lib/version.js";
 
 const OLD = "a".repeat(40);
 const MAIN = "b".repeat(40);
@@ -150,5 +150,23 @@ describe("build-info script", () => {
       execFileSync(process.execPath, [join(dir, "scripts", "build-info.mjs")], { cwd: dir, stdio: "ignore", env: { PATH: "/nonexistent" } });
       expect(JSON.parse(readFileSync(join(dir, "dist", "build-info.json"), "utf8"))).toMatchObject({ commit: OLD, dirty: null });
     }
+  });
+});
+
+describe("plugin bundle", () => {
+  const H = "c".repeat(64);
+  const raw = (body: string, status = 200) => async () => ({ ok: status === 200, status, text: async () => body });
+  it("compares its hash with main's bundle", async () => {
+    expect(await compareBundleWithMain(H, raw(JSON.stringify({ bundle: H })))).toMatchObject({ state: "latest" });
+    const c = await compareBundleWithMain(H, raw(JSON.stringify({ bundle: "d".repeat(64) })));
+    expect(c).toMatchObject({ state: "changed", main: "d".repeat(64) });
+    expect(describeCheck({ commit: null, dirty: null, builtAt: null, bundle: H }, c, "bundle")).toMatch(/^Out of date: running the plugin bundle ccccccc.*claude plugin update marketing-expert@marketing-expert/);
+    expect((await compareBundleWithMain(H, raw("Not Found", 404))).state).toBe("not-checked");
+  });
+  it("gives the out-of-date notice once", async () => {
+    const updates = new UpdateCheck({ commit: null, dirty: null, builtAt: null, bundle: H }, raw(JSON.stringify({ bundle: "d".repeat(64) })), true);
+    await updates.refresh();
+    expect(updates.takeNotice()?.state).toBe("changed");
+    expect(updates.takeNotice()).toBeNull();
   });
 });

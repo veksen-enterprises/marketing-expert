@@ -8,10 +8,9 @@
   "repository": "https://github.com/veksen-enterprises/marketing-expert",
   "mcpServers": {
     "marketing-expert": {
-      "command": "npx",
+      "command": "node",
       "args": [
-        "-y",
-        "github:veksen-enterprises/marketing-expert"
+        "${CLAUDE_PLUGIN_ROOT}/bundle/index.js"
       ],
       "env": {
         "NODE_OPTIONS": "--max-semi-space-size=4"

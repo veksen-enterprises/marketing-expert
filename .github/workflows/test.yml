@@ -1,0 +1,20 @@
+name: test
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The build also rebuilds bundle/, which the Claude Code plugin runs. A difference here means the committed
+      # bundle is older than the source: run `npm run bundle` and commit bundle/.
+      - run: npm run build
+      - run: git diff --exit-code --stat -- bundle/
+      - run: npm test
