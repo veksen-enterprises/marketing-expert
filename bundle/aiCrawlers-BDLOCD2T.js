@@ -10,7 +10,7 @@ import {
   MAX_ROBOTS_BYTES,
   guardedFetch,
   readCapped
-} from "./chunk-X2BDET27.js";
+} from "./chunk-XXICBILB.js";
 import "./chunk-5TJOM2CG.js";
 
 // src/lib/aiCrawlers.ts

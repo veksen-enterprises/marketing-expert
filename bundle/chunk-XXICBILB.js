@@ -116,13 +116,48 @@ async function readCapped(res, maxBytes) {
     text += decoder.decode(value, { stream: true });
   }
 }
+var BAD_PORTS = /* @__PURE__ */ new Set([1, 7, 9, 11, 13, 15, 17, 19, 20, 21, 22, 23, 25, 37, 42, 43, 53, 69, 77, 79, 87, 95, 101, 102, 103, 104, 109, 110, 111, 113, 115, 117, 119, 123, 135, 137, 139, 143, 161, 179, 389, 427, 465, 512, 513, 514, 515, 526, 530, 531, 532, 540, 548, 554, 556, 563, 587, 601, 636, 989, 990, 993, 995, 1719, 1720, 1723, 2049, 3659, 4045, 4190, 5060, 5061, 6e3, 6566, 6665, 6666, 6667, 6668, 6669, 6679, 6697, 10080]);
+var NULL_BODY = /* @__PURE__ */ new Set([101, 103, 204, 205, 304]);
+var httpTransport = async (url, init, addrs) => {
+  if (url.port && BAD_PORTS.has(Number(url.port))) throw new TypeError("fetch failed", { cause: new Error("bad port") });
+  const { request } = url.protocol === "https:" ? await import("node:https") : await import("node:http");
+  const zlib = await import("node:zlib");
+  const { Readable, pipeline } = await import("node:stream");
+  const headers = { "accept-encoding": "gzip, deflate, br" };
+  for (const [k, v] of Object.entries(init.headers ?? {})) headers[k.toLowerCase()] = v;
+  const lookup2 = addrs ? (_host, opts, cb) => opts?.all ? cb(null, addrs) : cb(null, addrs[0].address, addrs[0].family) : void 0;
+  return new Promise((resolve, reject) => {
+    const req = request(url, { method: "GET", headers, signal: init.signal, lookup: lookup2, autoSelectFamily: true }, (res) => {
+      const status = res.statusCode ?? 0;
+      const get = (name) => {
+        const v = res.headers[name.toLowerCase()];
+        return v === void 0 ? null : Array.isArray(v) ? v.join(", ") : String(v);
+      };
+      let body = null;
+      if (NULL_BODY.has(status)) res.resume();
+      else {
+        const decoders = (get("content-encoding") ?? "").toLowerCase().split(",").map((e) => e.trim()).filter(Boolean).reverse().map(
+          (e) => e === "gzip" || e === "x-gzip" ? zlib.createGunzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH }) : e === "deflate" ? zlib.createUnzip({ flush: zlib.constants.Z_SYNC_FLUSH, finishFlush: zlib.constants.Z_SYNC_FLUSH }) : e === "br" ? zlib.createBrotliDecompress({ flush: zlib.constants.BROTLI_OPERATION_FLUSH, finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH }) : null
+        );
+        const chain = decoders.includes(null) ? [] : decoders;
+        const out = chain.length ? pipeline(res, ...chain, () => void 0) : res;
+        body = Readable.toWeb(out);
+      }
+      resolve({ status, ok: status >= 200 && status < 300, url: url.toString(), headers: { get }, body });
+    });
+    req.on("error", (e) => reject(init.signal?.aborted ? init.signal.reason : new TypeError("fetch failed", { cause: e })));
+    req.end();
+  });
+};
+var transport = httpTransport;
 async function guardedFetch(url, init = {}, maxRedirects = 5) {
   let current = new URL(url);
   const manual = init.redirect === "manual";
   const chain = [];
   for (let hop = 0; ; hop++) {
-    await assertPublicUrl(current);
-    const res = await fetch(current, { ...init, redirect: "manual" });
+    if (!/^https?:$/.test(current.protocol)) throw new BlockedAddressError(`only http(s) URLs are allowed (got ${current.protocol})`);
+    const addrs = privateAllowed() ? null : await resolvePublic(current.hostname);
+    const res = await transport(current, { ...init, redirect: "manual" }, addrs);
     const loc = res.headers.get("location");
     if (manual || !(res.status >= 300 && res.status < 400 && loc)) {
       if (!manual) {

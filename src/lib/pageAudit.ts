@@ -4,7 +4,7 @@
 import { createServer, request as httpRequest, type IncomingHttpHeaders } from "node:http";
 import { connect, type AddressInfo, type NetConnectOpts, type Socket } from "node:net";
 import { parse, HTMLElement } from "node-html-parser";
-import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES } from "./netguard.js";
+import { guardedFetch, assertPublicUrl, resolvePublic, readCapped, BlockedAddressError, MAX_HTML_BYTES, type FetchedResponse } from "./netguard.js";
 import { checkStructuredData, type StructuredDataIssue } from "./structuredData.js";
 import { siteInfoOf, siteInfoFlags, type SiteInfo } from "./siteInfo.js";
 import { visibleText, elementsOf, wordCount as countWordsIn, documentTitle, robotsDirectives, robotsMetaTags } from "./text.js";
@@ -382,7 +382,7 @@ const BLOCKED_HINT =
 export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<PageFacts> {
   const u = new URL(url);
   if (!/^https?:$/.test(u.protocol)) throw new RangeError("only http(s) URLs are supported");
-  let res: Response;
+  let res: FetchedResponse;
   try {
     res = await guardedFetch(u, {
       signal: AbortSignal.timeout(timeoutMs),
@@ -423,7 +423,7 @@ export async function fetchAndAudit(url: string, timeoutMs = 15000): Promise<Pag
   if (truncated) facts.flags.unshift({ severity: "warning", message: TOO_LARGE });
   applyResponseChecks(facts, res.status, res.url || url, res.headers.get("x-robots-tag"));
   await checkCanonicalTarget(facts, res.url || url, timeoutMs);
-  const chain = (res as Response & { redirectChain?: string[] }).redirectChain ?? [];
+  const chain = (res as FetchedResponse & { redirectChain?: string[] }).redirectChain ?? [];
   if (chain.length) {
     facts.redirectChain = chain;
     facts.flags.unshift({
@@ -448,7 +448,7 @@ async function checkCanonicalTarget(facts: PageFacts, finalUrl: string, timeoutM
       headers: { "user-agent": "Mozilla/5.0 (compatible; marketing-expert-mcp/0.1; page audit)", accept: "text/html,*/*;q=0.8" },
     });
     r.body?.cancel().catch(() => undefined);
-    const chain = (r as Response & { redirectChain?: string[] }).redirectChain ?? [];
+    const chain = (r as FetchedResponse & { redirectChain?: string[] }).redirectChain ?? [];
     if (r.status !== 200) problem = `returns HTTP ${r.status}`;
     else if (chain.length) problem = `redirects (${chain.join(" ")})`;
     else if (robotsDirectives(r.headers.get("x-robots-tag") ?? "").has("noindex")) problem = "is noindex (X-Robots-Tag)";

@@ -3,7 +3,7 @@
 // blocking a search bot can keep the site out of AI answers and citations.
 
 import { parseRobotsFile, rulesFor, robotsAllows } from "./robots.js";
-import { guardedFetch, readCapped, MAX_ROBOTS_BYTES } from "./netguard.js";
+import { guardedFetch, readCapped, MAX_ROBOTS_BYTES, type FetchedResponse } from "./netguard.js";
 
 export type BotPurpose = "training" | "search" | "user-fetch" | "search-and-training";
 
@@ -138,7 +138,7 @@ export async function checkAiCrawlerAccess(site: string, paths?: string[], timeo
   let serverError: number | null = null;
   let unverified = false;
   let denyReason: string | undefined;
-  let r: Response;
+  let r: FetchedResponse;
   try {
     r = await get("/robots.txt");
   } catch (e) {
