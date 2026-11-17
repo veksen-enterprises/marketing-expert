@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll } from "vitest";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { brotliCompressSync, deflateSync, gzipSync } from "node:zlib";
+import { brotliCompressSync, deflateRawSync, deflateSync, gzipSync } from "node:zlib";
 import { httpTransport, readCapped } from "../src/lib/netguard.js";
 
 // The page tools' real transport (setup.ts routes to it whenever fetch isn't stubbed).
@@ -14,6 +14,17 @@ const routes: Record<string, (q: IncomingMessage, s: ServerResponse) => void> = 
   "/empty": (_q, s) => s.writeHead(204).end(),
   "/two": (_q, s) => s.writeHead(200, [["x-a", "1"], ["x-a", "2"]]).end("ok"),
   "/slow": () => undefined,
+  "/raw-deflate": (_q, s) => s.writeHead(200, { "content-encoding": "deflate" }).end(deflateRawSync("hello raw deflate")),
+  "/bad-gzip": (_q, s) => s.writeHead(200, { "content-encoding": "gzip" }).end("not gzip at all"),
+  "/cut": (q, s) => {
+    s.writeHead(200, { "content-length": "100" }).write("only part");
+    setTimeout(() => q.socket.destroy(), 50);
+  },
+  "/trickle": (q, s) => {
+    s.writeHead(200).write("x");
+    const t = setInterval(() => s.write("x"), 50);
+    q.socket.on("close", () => clearInterval(t));
+  },
 };
 const server = createServer((q, s) => {
   seen.push(q);
@@ -33,6 +44,30 @@ describe("httpTransport", () => {
     expect(await text("/unknown")).toBe("raw bytes");
   });
 
+  it("decodes raw deflate (no zlib header) as fetch() does", async () => {
+    expect(await text("/raw-deflate")).toBe("hello raw deflate");
+  });
+
+  // A failed body read must say why: the tools put the message in their output ("body download failed: ...").
+  it("fails a body read like fetch: the timeout's reason, or TypeError 'terminated' with the cause", async () => {
+    const slow = await get("/trickle", "127.0.0.1", { signal: AbortSignal.timeout(300) });
+    const t = await readCapped(slow, 1e6).catch((x) => x);
+    expect([t.name, t.message]).toEqual(["TimeoutError", "The operation was aborted due to timeout"]);
+    for (const path of ["/bad-gzip", "/cut"]) {
+      const e = await readCapped(await get(path), 1000).catch((x) => x);
+      expect(e).toBeInstanceOf(TypeError);
+      expect(e.message).toBe("terminated");
+      expect(e.cause).toBeInstanceOf(Error);
+    }
+  });
+
+  it("refuses a URL with credentials, as fetch() does, instead of sending them", async () => {
+    const before = seen.length;
+    const e = await get("/gzip", "user:pw@127.0.0.1").catch((x) => x);
+    expect(e).toBeInstanceOf(TypeError);
+    expect(seen.length).toBe(before);
+  });
+
   it("connects only to the checked address, whatever the name resolves to", async () => {
     // .invalid never resolves; the request reaches the server because the transport uses the given address.
     const r = await get("/gzip", "rebind.invalid");
@@ -44,6 +79,10 @@ describe("httpTransport", () => {
     await get("/gzip", "127.0.0.1", { headers: { "User-Agent": "test-agent" } });
     expect(seen.at(-1)?.headers["user-agent"]).toBe("test-agent");
     expect(seen.at(-1)?.headers["accept-encoding"]).toBe("gzip, deflate, br");
+    // fetch() sent these when the caller didn't; some firewalls answer differently without them.
+    expect([seen.at(-1)?.headers.accept, seen.at(-1)?.headers["accept-language"]]).toEqual(["*/*", "*"]);
+    await get("/gzip", "127.0.0.1", { headers: { Accept: "text/html" } });
+    expect(seen.at(-1)?.headers.accept).toBe("text/html");
   });
 
   it("does not follow a redirect, has no body for 204, and joins repeated headers", async () => {
