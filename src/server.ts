@@ -602,7 +602,7 @@ export function createServer(opts: { updates?: UpdateCheck; hosted?: boolean } =
     {
       title: "Analyze copy",
       description:
-        "Deterministic signals on marketing copy: readability (Flesch, grade), sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, absence of numbers. With a profile or voice, also flags the voice's dont words and prefer swaps (case-insensitive, whole words, plural endings), and lists what it could not check: do rules and dont entries over 4 words. Use as input to your critique, not as the critique itself.",
+        "Deterministic signals on marketing copy: readability (Flesch, grade), sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, absence of numbers. With a profile or voice, also flags the voice's dont words and prefer swaps (case-insensitive, whole words, plural endings), and lists what it could not check: do rules and dont entries over 4 words. Matching is by word, not meaning, so quotes, names and compounds ('power users') are flagged too. Use as input to your critique, not as the critique itself.",
       inputSchema: {
         text: z.string().min(1).max(50000),
         profile: z.string().optional().describe("A saved business profile whose voice to check against"),

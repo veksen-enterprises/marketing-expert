@@ -102,6 +102,7 @@ describe("copy analysis against a saved voice", () => {
     expect(r.voice?.checked).toEqual(expect.arrayContaining(["cheap", "best-in-town", "users", "sign up"]));
     expect(r.voice?.notChecked.join("\n")).toMatch(/short sentences/);
     expect(r.voice?.notChecked.join("\n")).toMatch(/never talk down/);
+    expect(r.voice?.note).toMatch(/by word, not meaning/);
   });
   it("says nothing about voice when none is given", () => {
     expect(analyzeCopy("Plans for users.").voice).toBeUndefined();

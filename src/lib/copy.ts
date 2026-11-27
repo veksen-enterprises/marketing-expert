@@ -127,7 +127,7 @@ export interface CopyAnalysis {
   numbersCount: number;
   flags: CopyFlag[];
   /** Present when a voice was given: which entries were matched against the text, and which could not be. */
-  voice?: { checked: string[]; notChecked: string[] };
+  voice?: { checked: string[]; notChecked: string[]; note?: string };
 }
 
 /** A business's voice as saved in its profile. dont and prefer keys are words or short phrases; do is guidance. */
@@ -147,7 +147,7 @@ function phraseRe(phrase: string): RegExp {
   return new RegExp(`(?<![\\p{L}\\p{N}-])${parts.join("\\s+")}(?![\\p{L}\\p{N}-])`, "giu");
 }
 
-function checkVoice(text: string, voice: Voice, flags: CopyFlag[]): { checked: string[]; notChecked: string[] } {
+function checkVoice(text: string, voice: Voice, flags: CopyFlag[]): { checked: string[]; notChecked: string[]; note: string } {
   const checked: string[] = [];
   const notChecked = (voice.do ?? []).map((d) => `${d} (a "do" rule; read it yourself)`);
   const entries: Array<[string, string | undefined]> = [...(voice.dont ?? []).map((d) => [d, undefined] as [string, undefined]), ...Object.entries(voice.prefer ?? {})];
@@ -162,8 +162,11 @@ function checkVoice(text: string, voice: Voice, flags: CopyFlag[]): { checked: s
     const n = (text.match(re) ?? []).length;
     if (n) flags.push({ type: "voice", severity: "warning", message: `"${phrase}" ×${n}: ${instead ? `the voice says use "${instead}" instead` : "the voice says not to use it"}`, excerpt: excerptAround(text, re) });
   }
-  return { checked, notChecked };
+  return { checked, notChecked, note: VOICE_NOTE };
 }
+
+// Matching is by word, not meaning: say so, so a flag isn't read as a verdict.
+export const VOICE_NOTE = "Matched by word, not meaning: a flagged word inside a quote, a name or a compound (\"power users\") may be fine. Read each excerpt before changing it.";
 
 export function analyzeCopy(text: string, voice?: Voice): CopyAnalysis {
   const flags: CopyFlag[] = [];

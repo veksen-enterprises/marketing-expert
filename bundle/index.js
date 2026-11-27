@@ -40040,8 +40040,9 @@ function checkVoice(text, voice, flags) {
     const n = (text.match(re) ?? []).length;
     if (n) flags.push({ type: "voice", severity: "warning", message: `"${phrase}" \xD7${n}: ${instead ? `the voice says use "${instead}" instead` : "the voice says not to use it"}`, excerpt: excerptAround(text, re) });
   }
-  return { checked, notChecked };
+  return { checked, notChecked, note: VOICE_NOTE };
 }
+var VOICE_NOTE = 'Matched by word, not meaning: a flagged word inside a quote, a name or a compound ("power users") may be fine. Read each excerpt before changing it.';
 function analyzeCopy(text, voice) {
   const flags = [];
   const lower = text.toLowerCase();
@@ -43425,7 +43426,7 @@ ${HOSTED_NOTE}` : INSTRUCTIONS });
     "analyze_copy",
     {
       title: "Analyze copy",
-      description: "Deterministic signals on marketing copy: readability (Flesch, grade), sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, absence of numbers. With a profile or voice, also flags the voice's dont words and prefer swaps (case-insensitive, whole words, plural endings), and lists what it could not check: do rules and dont entries over 4 words. Use as input to your critique, not as the critique itself.",
+      description: "Deterministic signals on marketing copy: readability (Flesch, grade), sentence length, vague/hype terms, hedges, passive voice, we-vs-you framing, absence of numbers. With a profile or voice, also flags the voice's dont words and prefer swaps (case-insensitive, whole words, plural endings), and lists what it could not check: do rules and dont entries over 4 words. Matching is by word, not meaning, so quotes, names and compounds ('power users') are flagged too. Use as input to your critique, not as the critique itself.",
       inputSchema: {
         text: external_exports.string().min(1).max(5e4),
         profile: external_exports.string().optional().describe("A saved business profile whose voice to check against"),
