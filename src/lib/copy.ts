@@ -114,7 +114,7 @@ export function readability(text: string): Readability {
 }
 
 export interface CopyFlag {
-  type: "vague" | "hedge" | "passive" | "length" | "punctuation" | "framing" | "specificity";
+  type: "vague" | "voice" | "hedge" | "passive" | "length" | "punctuation" | "framing" | "specificity";
   severity: "error" | "warning" | "info";
   message: string;
   excerpt?: string;
@@ -126,11 +126,52 @@ export interface CopyAnalysis {
   weCount: number;
   numbersCount: number;
   flags: CopyFlag[];
+  /** Present when a voice was given: which entries were matched against the text, and which could not be. */
+  voice?: { checked: string[]; notChecked: string[]; note?: string };
 }
 
-export function analyzeCopy(text: string): CopyAnalysis {
+/** A business's voice as saved in its profile. dont and prefer keys are words or short phrases; do is guidance. */
+export interface Voice {
+  do?: string[] | null;
+  dont?: string[] | null;
+  prefer?: Record<string, string> | null;
+}
+
+// Past this many words a dont entry reads as a rule ("never talk down to beginners"), which can't be matched.
+const MAX_PHRASE_WORDS = 4;
+
+function phraseRe(phrase: string): RegExp {
+  const parts = phrase.trim().toLowerCase().split(/\s+/).map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/-/g, "[- ]?"));
+  // The last word may take a plural ending, so "user" also finds "users". Save the singular to catch both.
+  parts.push(`${parts.pop()}(?:s|es)?`);
+  return new RegExp(`(?<![\\p{L}\\p{N}-])${parts.join("\\s+")}(?![\\p{L}\\p{N}-])`, "giu");
+}
+
+function checkVoice(text: string, voice: Voice, flags: CopyFlag[]): { checked: string[]; notChecked: string[]; note: string } {
+  const checked: string[] = [];
+  const notChecked = (voice.do ?? []).map((d) => `${d} (a "do" rule; read it yourself)`);
+  const entries: Array<[string, string | undefined]> = [...(voice.dont ?? []).map((d) => [d, undefined] as [string, undefined]), ...Object.entries(voice.prefer ?? {})];
+  for (const [phrase, instead] of entries) {
+    if (!/[\p{L}\p{N}]/u.test(phrase)) continue;
+    if (phrase.trim().split(/\s+/).length > MAX_PHRASE_WORDS) {
+      notChecked.push(`${phrase} (longer than ${MAX_PHRASE_WORDS} words, so read as a rule, not a phrase to match)`);
+      continue;
+    }
+    checked.push(phrase);
+    const re = phraseRe(phrase);
+    const n = (text.match(re) ?? []).length;
+    if (n) flags.push({ type: "voice", severity: "warning", message: `"${phrase}" ×${n}: ${instead ? `the voice says use "${instead}" instead` : "the voice says not to use it"}`, excerpt: excerptAround(text, re) });
+  }
+  return { checked, notChecked, note: VOICE_NOTE };
+}
+
+// Matching is by word, not meaning: say so, so a flag isn't read as a verdict.
+export const VOICE_NOTE = "Matched by word, not meaning: a flagged word inside a quote, a name or a compound (\"power users\") may be fine. Read each excerpt before changing it.";
+
+export function analyzeCopy(text: string, voice?: Voice): CopyAnalysis {
   const flags: CopyFlag[] = [];
   const lower = text.toLowerCase();
+  const voiceResult = voice ? checkVoice(text, voice, flags) : undefined;
   for (const [term, why] of Object.entries(VAGUE_TERMS)) {
     const base = term.replace(/[-]/g, "[- ]?");
     const inflected = term.endsWith("e") ? `${base.slice(0, -1)}(?:e|es|ed|ing)` : `${base}(?:s|es|ed|ing)?`;
@@ -162,11 +203,11 @@ export function analyzeCopy(text: string): CopyAnalysis {
   if (r.longestSentenceWords > 30) {
     flags.push({ type: "length", severity: "info", message: `Longest sentence is ${r.longestSentenceWords} words; consider splitting.` });
   }
-  return { readability: r, youCount: you, weCount: we, numbersCount: numbers, flags };
+  return { readability: r, youCount: you, weCount: we, numbersCount: numbers, flags, ...(voiceResult ? { voice: voiceResult } : {}) };
 }
 
 function excerptAround(text: string, re: RegExp): string | undefined {
-  const m = new RegExp(re.source, "i").exec(text);
+  const m = new RegExp(re.source, re.flags.replace("g", "")).exec(text);
   if (!m) return undefined;
   const start = Math.max(0, m.index - 30);
   return (start > 0 ? "…" : "") + text.slice(start, m.index + m[0].length + 30).replace(/\s+/g, " ") + "…";
