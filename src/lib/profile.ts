@@ -60,7 +60,8 @@ export interface BusinessProfile {
   pricing?: string;
   channels?: Channel[];
   metrics?: Record<string, Metric>;
-  voice?: { do?: string[]; dont?: string[] };
+  /** dont and prefer keys are words or short phrases analyze_copy matches; do is guidance it lists as not checked. */
+  voice?: { do?: string[]; dont?: string[]; prefer?: Record<string, string> };
   /** The founder's practical limits, such as hours a week or budget. Not the constraint, which the diagnosis names. */
   limits?: string[];
   /** Facts match_small_bets uses to decide which bets fit. */

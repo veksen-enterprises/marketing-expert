@@ -72,9 +72,10 @@ export function getStartedText(goal?: string): string {
 2. Call list_business_profiles. If a profile matches this product, load it with get_business_profile; ask about its duePredictions first, then in step 3 ask only the questions whose fields are still empty, plus its staleMetrics. Otherwise name the new profile after the repo folder (lowercase letters, digits and dashes).
 3. Send the user one short message that shows what this tool can do for the product:
    - What the product is, in two or three lines, each fact with the file it came from. If something couldn't be read or found (no site URL, files scan_source didn't parse), say so in one line at most and work from what you have.
+   - Up to 3 word choices the product's own copy makes where generic copy would say something else (e.g. "teams", not "users"; "fixed price", not "cheap"), as "say X, not Y", for the user to confirm or correct. Leave this out if the copy shows no clear pattern.
    - 4 to 6 directions to take next that fit this product, one line each, in plain words: what the user gets and the one input it still needs. Choose from: a first marketing strategy with a 90-day plan; small bets (cheap tests that fit now, from match_small_bets); the one thing holding growth back (marketing_diagnosis); positioning against what users do instead (positioning_workshop); a teardown of the homepage or landing page (landing_page_teardown); a technical SEO review of the site source (technical_seo_review); site claims that contradict the docs (scan_source with compareWith); what a customer is worth and what acquisition the business can afford (unit_economics); a launch plan (launch_plan); competing with larger players (competitive_strategy).
    - The profile questions, numbered, one line each, answerable in a few words, in this order, skipping any the repo already answers: ${questionList}. Say once that a guess is fine if they say it's a guess, and to skip only what they have no idea about. Then ask which direction to start with; the first strategy is the default.
-4. Save what the user confirmed with save_business_profile: ${["product", "category", ...savedFields, "audiences", "surfaces", "launched"].join(", ")}, because match_small_bets and the strategy read them. Don't save assumptions; state them in the answer.
+4. Save what the user confirmed with save_business_profile: ${["product", "category", ...savedFields, "audiences", "surfaces", "launched"].join(", ")}, because match_small_bets and the strategy read them; and the confirmed word choices as voice.prefer ({"user": "team"}) or voice.dont, which analyze_copy checks. Don't save assumptions; state them in the answer.
 5. Do the direction the user picked, using the saved profile, and end with one line naming the next direction worth taking. The first strategy follows the steps below; save it to marketing/strategy-YYYY-MM-DD.md in the repo, and don't commit it unless the user asks.
 
 ## First strategy
@@ -208,7 +209,7 @@ Go in this order and do not skip ahead; each step depends on the previous:
 4. Value: what each attribute enables for the customer, with proof (numbers, stories). Group attributes into 2–4 value themes.
 5. Target market characteristics: what makes a buyer care a lot about that value; how to recognise them.
 6. Market category: the frame that makes the value obvious. Consider head-to-head, a subsegment of an existing category, or a new category, and the cost of each.
-7. Only now: a one-sentence positioning statement, a homepage headline + subhead, and the 3 proof points to lead with. Run analyze_copy on the headline and subhead.
+7. Only now: a one-sentence positioning statement, a homepage headline + subhead, and the 3 proof points to lead with. Run analyze_copy on the headline and subhead, with the profile if one is saved.
 List the assumptions that most need customer validation, and the interview questions to test them (Mom Test style: past behaviour, not opinions about the future).`)
   );
 
@@ -232,7 +233,7 @@ Structure:
 0. Facts check: if you have the product's docs or repo, compare the page's claims (features, "coming soon", prices, setup steps, plans, and every data-handling or credential claim, tooltips and FAQ included) with them. If the docs disagree with each other, report that instead of picking one. Mismatches go to the top of the list: they're cheap to fix and cost trust.
 1. First-screen read (yours, from the text): from the lead text and h1 alone, what does a first-time visitor think this is, who it's for, and what to do next? Quote the page.
 2. Message match: does the headline continue what the traffic source promised? If the source is unknown, say what to check.
-3. Run analyze_copy on the lead text. Note vague claims, missing proof, writer-centric framing.
+3. Run analyze_copy on the lead text, with the profile if one is saved. Note vague claims, missing proof, writer-centric framing.
 4. Offer and CTA: is there one primary action, and is it clear what the visitor gets and what it costs them (time, money, data)?
 5. Proof and objections: what objections would this audience have (price, switching cost, risk, credibility), and where are they answered? A missing contact or legal link (audit siteInfo) is a fact with the legal rule the audit names, not a proven loss of sales.
 6. Friction: forms, steps, speed, mobile. Use the audit flags.

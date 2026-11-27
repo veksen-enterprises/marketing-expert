@@ -62,6 +62,15 @@ describe("get_started", () => {
       }
     }
   });
+  // voice was stored but never asked for: 0 of 36 profiles in the 2026-10-28 real-case eval had one.
+  it("proposes word choices from the product's own copy and saves the confirmed ones as voice", () => {
+    const t = getStartedText();
+    const step3 = t.slice(t.indexOf("\n3. "), t.indexOf("\n4. "));
+    const step4 = t.slice(t.indexOf("\n4. "), t.indexOf("\n5. "));
+    expect(step3).toMatch(/say X, not Y/);
+    expect(step4).toMatch(/voice\.prefer/);
+    expect(step4).toMatch(/analyze_copy/);
+  });
   it("plugin and skill install the same server", () => {
     const plugin = JSON.parse(readFileSync(".claude-plugin/plugin.json", "utf8"));
     // The plugin runs the bundle committed in this repo; the skill's install command runs the same repo through npx.

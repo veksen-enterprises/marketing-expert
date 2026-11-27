@@ -78,3 +78,32 @@ describe("utm", () => {
     expect(r.warnings.join(" ")).toMatch(/looks like a source/);
   });
 });
+
+// A founder's saved voice: words to avoid and preferred swaps, checked like the hype list. Rules that aren't
+// phrases can't be matched, so they are listed as not checked instead of passing silently.
+describe("copy analysis against a saved voice", () => {
+  const voice = { dont: ["cheap", "best-in-town"], prefer: { users: "teams", "sign up": "start free" }, do: ["short sentences, no exclamation marks"] };
+  it("flags avoided words and preferred swaps, with the replacement", () => {
+    const r = analyzeCopy("Cheap plans for Users. Sign up today and invite more users.", voice);
+    const msgs = r.flags.filter((f) => f.type === "voice").map((f) => f.message);
+    expect(msgs.some((m) => /"cheap" ×1/.test(m))).toBe(true);
+    expect(msgs.some((m) => /"users" ×2.*"teams"/.test(m))).toBe(true);
+    expect(msgs.some((m) => /"sign up" ×1.*"start free"/.test(m))).toBe(true);
+  });
+  it("matches plurals and spacing variants but not substrings", () => {
+    expect(analyzeCopy("Two user accounts.", { prefer: { user: "team" } }).flags.some((f) => f.type === "voice")).toBe(true);
+    expect(analyzeCopy("Our users love it.", { prefer: { user: "team" } }).flags.some((f) => f.type === "voice")).toBe(true);
+    expect(analyzeCopy("Sign\n up now.", { prefer: { "sign up": "start free" } }).flags.some((f) => f.type === "voice")).toBe(true);
+    expect(analyzeCopy("For superusers and cheapskates.", { dont: ["cheap"], prefer: { users: "teams" } }).flags.some((f) => f.type === "voice")).toBe(false);
+  });
+  it("lists what it could not check: do rules and long dont entries", () => {
+    const r = analyzeCopy("Plans for teams.", { ...voice, dont: [...voice.dont, "never talk down to beginners or make them feel slow"] });
+    expect(r.flags.some((f) => f.type === "voice")).toBe(false);
+    expect(r.voice?.checked).toEqual(expect.arrayContaining(["cheap", "best-in-town", "users", "sign up"]));
+    expect(r.voice?.notChecked.join("\n")).toMatch(/short sentences/);
+    expect(r.voice?.notChecked.join("\n")).toMatch(/never talk down/);
+  });
+  it("says nothing about voice when none is given", () => {
+    expect(analyzeCopy("Plans for users.").voice).toBeUndefined();
+  });
+});
